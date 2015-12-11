@@ -1,0 +1,272 @@
+\documentclass[11pt]{article}
+
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{cancel}
+
+
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{cancel}
+\usepackage{verbatim}
+\usepackage{chngpage}
+\usepackage{fullpage}
+
+\usepackage{color}
+
+\usepackage{mathrsfs}
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}{Example}
+\newtheorem{question}{Open Question}
+\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{Algo}{Algorithm}
+\newtheorem{remark}[theorem]{Remark}
+
+\def\arr#1{\stackrel{#1}{\longrightarrow}}
+
+\def\Aa{{\mathscr{A} }}
+
+\def\Bb{{\mathscr{B} }}
+
+\def\Cc{{\mathscr{C} }}
+
+\def\Dd{{\mathbb{D} }}
+
+\def\Ee{{\mathcal{E} }}
+
+\def\Ff{{\mathcal{F} }}
+
+\def\Zz{{\mathcal{Z} }}
+
+\def\Nn{{\mathbb{N} }}
+
+\def\Ss{{\mathcal{S} }}
+
+\def\Tt{{\mathcal{T} }}
+
+\def\Ii{{\mathbb{Z} }}
+
+\def\Jj{{\mathcal{J}}}
+
+\def\Vv{{\mathcal{V}}}
+
+\def\Rr{{\mathcal{R} }}
+
+\def\Ll{{\mathcal{L}}}
+
+
+\def\treeset{{\mathscr{T}}}
+
+\def\contextset{{\mathcal{C}}}
+
+\def\theory{{\mathcal{L}}}
+
+\def\termset{{\mathcal{T}}}
+
+\def\formulaset{{\mathcal{F}}}
+
+\newcommand\univ{\mathsf{Univ}}
+
+\newcommand\op{\mathfrak{o}}
+
+\newcommand\dv{\mathtt{x}}
+
+\newcommand\ydv{\mathtt{y}}
+
+\newcommand\cv{\mathtt{z}}
+
+\newcommand\thla{\mathcal{LIA}}
+
+\newcommand\thdif{\mathcal{DIF}}
+
+\newcommand\thord{\mathcal{ORD}}
+
+\newcommand\thset{\mathcal{SET}}
+
+\newcommand\thmset{\mathcal{MUS}}
+
+\newcommand\natnum{{\mathbb{N} }}
+
+\newcommand\intnum{{\mathbb{Z} }}
+
+\newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
+\newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
+\newcommand{\lei}[1]{\color{green} {LE: #1 :EL} \color{black}}
+
+%\def\Ss{{$\mathcal{A}$\ }}
+
+\title{Streaming data string to integer transducer}
+
+\author{Yufang Chen, Lei Song, Zhilin Wu}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In this note, we define streaming data string to integer transducers (SDSIT), motivated by modeling the reducers in MapReduce framework. We investigate the theoretical properties of SDSIT and the decision problems of SDSIT. 
+\end{abstract}
+
+\section{Introduction}
+
+Our main goal is to introduce a formal model for the reducers in MapReduce framework and investigate the related decision problem, e.g. equivalences and commutativity of the reducers. Our main idea is to extend streaming transducer introduced by \cite{RP11} as follows: the transducers work on data strings where multiple data values may occur in each position, the outputs may be integers obtained from the input data strings by arithmetic operations (e.g. sum, subtraction, and so on). \zhilin{Should we consider compositions of multiple map-reduce jobs ? What does the commutativity mean for the compositions ?} 
+
+MapReduce framework:
+\[
+\begin{array}{l l c l} 
+map & (k1,v1) & \rightarrow & list(k2,v2)\\
+reduce & (k2,list(v2)) & \rightarrow & (k2,v2) 
+%\\
+%combine & (k2,list(v2)) & \rightarrow & list(k2,v2)
+\end{array}
+\]
+\zhilin{in general, the reduce function can also output $(k2, list(v2))$}
+
+\section{Preliminaries}
+
+Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. Then a guard over $X$ is the formulae defined by the rules, $g::= x = y \mid x < y \mid g \vee g \mid \neg g$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $Y$ with respect to $X$ is a partial function from $Y$ to $\Ee_{X \cup Y}$, the set of arithmetic expressions over $X \cup Y$.
+
+A data string is a sequences of vectors of data values, that is, sequences $\vec{d}_1\vec{d}_1\dots \vec{d}_n$, where $\vec{d}_i \in \Ii^+$.
+
+A (deterministic) streaming data string to integer transducer (SDSIT) $\Ss$ is a tuple $(Q, K, X, Y, \delta, q_0, O)$ such that 
+\begin{itemize}
+\item $Q$ is a finite set of states,
+\item $K \in \Nn$ is the maximum number of data values in each position, 
+\item $X$ is a finite set of data variables which is used to store some data values that have been met,
+\item $Y$ is a finite set of output variables, which is used to aggregate some information for the output,
+\item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$, \zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
+
+\item $q_0 \in Q$ is the initial state,
+\item $O$ is the output function, which is a partial function from $Q$ to $(X \cup Y})^{\le K}$.
+\end{itemize}
+It is required that the following constraints are satisfied: 
+\begin{description}
+\item[1 (copyless).] For each $(q,k, g, \eta, q') \in \delta$ and each $y \in Y$, there is at most one $y' \in Y$ such that $y$ occurs in $\eta(y')$, moreover, in this case, there is at most one occurrence of $y$ in $\eta(y')$; 
+\item [2 (deterministic).] For every pair of distinct tuples $(q,k, g_1, \eta_1,q'_1), (q, k, g_2,\eta_2,q'_2) \in \delta$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
+\end{description}
+
+The semantics of a SDSIT $\Ss$  is given by a transduction as follows: A configuration of $\Ss$ is a pair $(q,\beta)$, where $q \in Q$ and $\beta$ is a valuation of $X \cup Y$, that is, a partial function from $X \cup Y$ to $\Ii$. When reading a data string $w=\vec{d}_1 \dots \vec{d}_n$, $\Ss$ runs over $w$ from left to right. Let $(q, \beta)$ be the configuration of $\Ss$ reached after running over $w$, then the output of $\Ss$ is $\beta(O(q))$, if $O(q)$ is defined, and the output is undefined otherwise. \zhilin{Formal semantics to be written}
+
+\zhilin{To model reducers in MapReduce framework, we may assume that the first element in a data string is a single data value which is a key.}
+
+\begin{example}[Max, average]
+The max transducer over sequences of integers is given by the transitions $(q_0, 1, x < p_1, x:=p_1, q_0)$, where $x:= p_1$ assigns $p_1$ to $x$, and $(q_0, 1, x \ge p_1 , \emptyset, q_0)$, and the output function $O(q_0)=x$. The average transducer over sequences of integers is given by the transition $(q_0, 1, true, (sum:=sum + p_1, len := len +1), q_0)$, and $O(q_0)=sum / len$. 
+\end{example}
+
+\begin{example}[Example inspired by Pagerank]
+The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
+\end{example}
+
+\yfc{can we describe the following Triangle-counting algorithm using the model?}
+\zhilin{Could you describe how to implement the algorithm in MapReduce framework?}
+\yfc{this is based on the sample code in Spark, I found antoher sample code in Hadoop, maybe fits the model better, check https://github.com/vertica/Graph-Analytics----Triangle-Counting/blob/master/src/com/vertica/mr/graphs/TriangleCounter.java}
+
+\zhilin{I will describe my understanding of the algorithm in the following} 
+
+The task comprises of three MapReduce jobs. 
+\begin{description}
+\item[Job1] Map: Filter out the pairs $(v1,v2)$ such that $v1 > v2$. Reduce: on the input $(v, w_1 \dots w_k)$ (where $v < w_i$ for each $i$), output the list $((v,w_1),0), \dots, ((v,w_k),0), ((w_1,w_2),1), \dots, ((w_{k-1},w_k),1)$.
+\item[Job2] Map: Identity function. Reduce: on the input $((v1,v2),i_1 ... i_k)$, if $i_j=0$ for some $j$, then output $(1, i_1+...i_k)$, otherwise, output $(1,0)$.
+\item[Job3] Map: Identity function. Reduce: on the input $(1,n_1 \dots n_k)$, ouput $((n_1+\dots + n_k),null)$.
+\end{description}
+
+\zhilin{The most challenging one is Job1. The reducer in Job1 need output each distinct pair $((w_i, w_j),1)$ for a list $w_1 \dots w_n$. For this transduction, at first we need extend the transducer to output a list of $(key, value)$ pairs, instead of a single $(key,value)$ pair. Moreover, the relatively complex transduction from lists to lists seems exceeding the capability of streaming transducers.}
+
+\newcommand{\numTri}[1]{\triangle_{#1}}
+Let $G = (V, E)$ be an undirected graph without self-loops or multiple
+edges. For $u, v \in V$, $\{ u, v \} \in E$ denotes that $u$ and $v$
+are adjacent. A  \emph{triangle} in $G$ is formed by $u, v, w \in V$ with $\{ u, v \},
+\{ u, w \}, \{ v, w \} \in E$. 
+We want to count the number of triangles in a given graph.
+
+Suppose that the graph is described as a list of edges.
+
+For each edge $\{ u, v \} \in E$, the algorithm sends the sets $\{ u \}$
+and $\{ v \}$ to $v$ and $u$ respectively. If several messages are
+sent to a vertex, they are merged by unions.
+\yfc{So maybe we need to also support the data type ``set''}
+
+After this operation, we get a list of pairs $(u, U)$, where $u \in V$ and $U$ is the set $\{ v : \{ u, v \} \in E \}$.
+
+Then for each edge $\{ u, w \} \in E$, again we send the size of the set $| U \cap W |$ to both $u$ and $w$, where $U$ and $W$ are
+the set of vertices adjacent to $u$ and $v$ respectively. 
+\yfc{This is difficult in our model. We need to first traverse E (the first input list) and then get the corresponding set U and W from the 2nd list. Then count the size of their intersection. Maybe can be implemented in a slightly different way.}
+
+Observe that for every $s \in U \cap W$, we have $\{ s, u \}, \{ s, w \}, \{ u, w
+\} \in E$. Let $\numTri{\{u, v\}}$ denote the number of triangles
+containing the edge $\{ u, w \}$. Then $\numTri{\{u, w\}}$ is sent to
+both $u$ and $w$. If several messages are sent to $w$, they are merged
+by summation. After this operation we get a list of pairs $(u, \sum_{\{ u, w \} \in E} \numTri{\{u, w\}})$.
+
+Now consider a vertex $v$ in a triangle of $u, v, w$. The triangle is
+counted in both $\numTri{\{ u, v \}}$ and $\numTri{\{ w, v \}}$. Hence
+we need to divide the the number by 2 to get the number of triangles containing $v$. 
+
+
+\section{Closure properties}
+
+Boolean operations.
+
+Union, intersection, complement
+
+composition: It seems that SDSITs are not closed under composition, similar to that of streaming transducers.
+
+\section{Decision problems}
+
+equivalence, commutativity.
+
+Cost register automata may be relevant \cite{ADD+13}. 
+\yfc{The paper assumes finite input alphabet}
+
+Let us start with the following simple model, called SDSIT$_{\pm}$, where the assignment expressions used in assignments are defined by the rules $e::= y \mid e+e \mid e - e$. Note that only $+,-$ are used here and constants are forbidden. Moreover, without loss of generality, we assume that for a SDSIT$_{\pm}$, it only ouputs a single integer (instead of a tuple of integers).
+
+\begin{proposition}
+From two SDSIT$_{\pm}$ $\Aa,\Bb$, a SDSIT$_{\pm}$ $\Cc$ can be constructed in polynomial time such that $\Aa$ is not equivalent to $\Bb$ iff there is a data word $w$ such that the output of $\Cc$ over $w$ is nonzero. 
+\end{proposition}
+
+Therefore, the equivalence problem of SDSIT$_{\pm}$ is reduced to the problem whether another SDSIT$_{\pm}$ can produce a non-zero output.
+
+\medskip
+
+\noindent {\bf NON-ZERO OUPUT PROBLEM}: Given a SDSIT$_{\pm}$ $\Aa$, decide whether there is a data word $w$ such that the output of $\Aa$ over $w$ is non-zero. 
+
+\medskip
+
+\zhilin{I think our main focus at present should be on the aformentioned problem.}
+
+To even simplify the problem, we may start with the flat SDSIT$_{\pm}$, where there are no nested-loops in the transition structure, aka flat counter automata.
+
+\noindent {\bf Reduction of commutativity to equivalence of SDSIT}.
+
+Consider the permutation $\tau_2$ and $\tau_n$ in \cite{CHSW15}. We can define two streaming transducers $\Ss$ and $\Ss'$ (note that $\Ss'$ is independent from $n$)  for $\tau_2$ and $\tau_n$.
+
+Then the commutativity of a given SDSIT $\Tt$ is reduced to the equivalence of $\Tt$ and $\Ss \circ \Tt$ as well as the equivalence of $\Tt$ and $\Ss'\circ \Tt$. Note that an equivalent SDSIT can be defined for $\Ss \circ \Tt$ and $\Ss' \circ \Tt$ respectively. Therefore, we get the following result.
+
+\begin{proposition}
+The commutativity of SDSITs is reduced to the equivalence of SDSITs in linear time.
+\end{proposition}
+
+\section{Discussions}
+
+From the analysis of the commutativity of reducers in \cite{XZZ+14}, the commutativity of a reducer in a sequential composition oa map-reduce jobs may depend on some implicit data properties guaranteed by the preceding map-reduce jobs. Therefore, to analyze the commutativity of a reducer in a sequential composition of map-reduce jobs, we may need model both mappers and reducers and do a backward analysis.
+
+\bibliographystyle{alpha}
+\bibliography{data}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
