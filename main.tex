@@ -145,7 +145,7 @@ A (deterministic) streaming data string to integer transducer (SDSIT) $\Ss$ is a
 \item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$, \zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
 
 \item $q_0 \in Q$ is the initial state,
-\item $O$ is the output function, which is a partial function from $Q$ to $(X \cup Y})^{\le K}$.
+\item $O$ is the output function, which is a partial function from $Q$ to $(X \cup Y)^{\le K}$.
 \end{itemize}
 It is required that the following constraints are satisfied: 
 \begin{description}
