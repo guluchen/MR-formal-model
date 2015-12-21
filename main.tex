@@ -241,7 +241,7 @@ Therefore, the equivalence problem of SDSIT$_{\pm}$ is reduced to the problem wh
 
 \medskip
 
-\zhilin{I think our main focus at present should be on the aformentioned problem.}
+\zhilin{I think our main focus at present should be on the aforementioned problem.}
 
 To even simplify the problem, we may start with the flat SDSIT$_{\pm}$, where there are no nested-loops in the transition structure, aka flat counter automata.
 
@@ -255,6 +255,17 @@ Then the commutativity of a given SDSIT $\Tt$ is reduced to the equivalence of $
 The commutativity of SDSITs is reduced to the equivalence of SDSITs in linear time.
 \end{proposition}
 
+We then focus on the equivalence problem of generalized flat SDSIT$_{\pm}$.
+
+A SDSIT$_{\pm}$ is called \emph{generalized flat} if each nontrivial SCC (strongly-connected component) of the transition graph is a collection of edge-disjoint cycles such that there is a unique state which is shared by each pair of distinct cycles in the collection.
+
+Let $\Ss_1$ and $\Ss_2$ be two generalized flat SDSIT$_{\pm}$.
+
+Let us start with the simplest case, where there are no data variables. Then all the guards are trivial and the transition graph of $\Ss_1$ and $\Ss_2$ are both lassos, then we do the analysis based on the lassos. Let $\ell_1,m_1$ and $\ell_2,m_2$ be the length (number of edges) of the handles and periods of the two lassos respectively. The main idea is that it is sufficient to decide whether the two transducers are equivalent over the set of data words of the length at most $\max(\ell_1+m_1,\ell_2+m_2)$.
+
+Then we consider more general case. Because of the generalized flatness, we can focus on path schema. A path scheme is a path in the SCC graph, which corresponds to a sequence of SCCs in the transition graph such that for each pair of consecutive SCCs in the sequence, say $C_1$ and $C_2$, there is an edge from $C_1$ to $C_2$.
+
+Let us fix a path scheme, say $C_1 \dots C_n$.
 \section{Discussions}
 
 From the analysis of the commutativity of reducers in \cite{XZZ+14}, the commutativity of a reducer in a sequential composition oa map-reduce jobs may depend on some implicit data properties guaranteed by the preceding map-reduce jobs. Therefore, to analyze the commutativity of a reducer in a sequential composition of map-reduce jobs, we may need model both mappers and reducers and do a backward analysis.
