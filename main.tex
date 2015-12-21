@@ -97,6 +97,7 @@
 
 \newcommand\intnum{{\mathbb{Z} }}
 
+\newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
 \newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
 \newcommand{\lei}[1]{\color{green} {LE: #1 :EL} \color{black}}
@@ -105,7 +106,7 @@
 
 \title{Streaming data string to integer transducer}
 
-\author{Yufang Chen, Lei Song, Zhilin Wu}
+\author{Yu-Fang Chen, Lei Song, Zhilin Wu}
 
 \begin{document}
 
@@ -142,8 +143,8 @@ A (deterministic) streaming data string to integer transducer (SDSIT) $\Ss$ is a
 \item $K \in \Nn$ is the maximum number of data values in each position, 
 \item $X$ is a finite set of data variables which is used to store some data values that have been met,
 \item $Y$ is a finite set of output variables, which is used to aggregate some information for the output,
-\item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$, \zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
-
+\item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$, 
+%\zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
 \item $q_0 \in Q$ is the initial state,
 \item $O$ is the output function, which is a partial function from $Q$ to $(X \cup Y)^{\le K}$.
 \end{itemize}
@@ -164,7 +165,7 @@ The max transducer over sequences of integers is given by the transitions $(q_0,
 \begin{example}[Example inspired by Pagerank]
 The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
 \end{example}
-
+\hide{
 \yfc{can we describe the following Triangle-counting algorithm using the model?}
 \zhilin{Could you describe how to implement the algorithm in MapReduce framework?}
 \yfc{this is based on the sample code in Spark, I found antoher sample code in Hadoop, maybe fits the model better, check https://github.com/vertica/Graph-Analytics----Triangle-Counting/blob/master/src/com/vertica/mr/graphs/TriangleCounter.java}
@@ -208,7 +209,7 @@ by summation. After this operation we get a list of pairs $(u, \sum_{\{ u, w \} 
 
 Now consider a vertex $v$ in a triangle of $u, v, w$. The triangle is
 counted in both $\numTri{\{ u, v \}}$ and $\numTri{\{ w, v \}}$. Hence
-we need to divide the the number by 2 to get the number of triangles containing $v$. 
+we need to divide the the number by 2 to get the number of triangles containing $v$. }
 
 
 \section{Closure properties}
