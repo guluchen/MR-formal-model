@@ -271,6 +271,59 @@ Let us start with the simplest case, where there are no data variables. Then all
 
 In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$.
 
+\subsection{The analysis of a lasso}
+
+Let $\Ss=(Q, K, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. Suppose $Y=\{y_1,\dots,y_l\}$. For simplicity, we assume that $X=\emptyset$, thus all the guards in the transitions are trivial, and $K = 1$, that is, each position holds one data value.
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=q'_0 q'_1 \dots q'_m$, $q'_0 = q'_m=q_n$, $O(q_n)$ is defined and $O(q'_j)$ is undefined for each $j \neq 1$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(q'_j, g'_j, \eta'_j, q'_{j+1})$ is the $j$-th transition in the handle. 
+
+We use $d_1,\dots,d_n$ to denote the $n$ data values for the handle.
+
+Then for each $j: 1 \le j \le l$, an expression $e_{j}=c_{j,0}+ c_{j,1}d_1 + \dots c_{j,n}d_n$ can be constructed to describe the value of $y_j$ after going through the handle, where the coefficients $c_{j,0},\dots, c_{j,n}$ are obtained from the transitions in the handle. Note here we ignore the special situations that the value of $y_j$ is undefined after going through the handle.
+
+Let $\theta$ be the assignment function such that $\theta(y_j)=e_j$ for each $j: 1 \le j \le l$.
+
+Suppose $O(q_n)=a_0+a_1 y_1 + \dots + a_l y_l$. Then $\theta(O(q_n))$, that is, the expression obtained by replacing each $y_j$ with $e_j$ in $O(q_n)$, is $a_0+ a_1 e_1 + \dots +a_l e_l$, which can be rearranged into the following expression,
+\[
+(a_0 + \sum \limits_{1 \le j \le l} c_{j,0}) + (\sum\limits_{1 \le j \le l} a_j c_{j,1}) d_1 + \dots + (\sum \limits_{1 \le j \le l} a_j c_{j,n}) d_n.
+\]
+Let $a'_0,\dots,a'_n$ denote the coefficients of the expression. 
+If $a'_j \neq 0$ for some $i: 1 \le i \le n$, then we know that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Otherwise, we continue considering the loop. 
+
+Similarly, for each $j: 1 \le j \le l$, an expression $e'_j = c'_{j,0} + c'_{j,1} y_1 + \dots + c'_{j,l} y_l + c''_{j,1} d'_1 + \dots + c''_{j,m} d'_m$ can be constructed to describe the value of $y_j$ after going through the loop, where $y_1, \dots,y_l$ denote the initial value of the output variables and $d'_1, \dots, d'_m$ denote the data values on the loop.
+
+Let $\theta'$ be the assignment function such that $\theta'(y_j)=e'_j$ for each $j: 1 \le j \le l$.
+
+Then $\theta'(O(q_n))$ is $a_0 + a_1 e'_1 + \dots + a_l e'_l$, can be rearranged into the following expression,
+\[
+\begin{array} {l}
+(a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',1}) y_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c'_{j',l}) y_l \ + \\
+ (\sum\limits_{1 \le j' \le l} a_{j'} c''_{j',1}) d'_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c''_{j',m}) d'_m.
+\end{array}
+\]
+
+If $\sum\limits_{1 \le j' \le l} a_{j'} c''_{j',i} \neq 0$ for some $i: 1 \le i \le m$, then we are done.
+
+Otherwise, if apply $\theta$ to $(a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',1}) y_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c'_{j',l}) y_l$, then we get the following expression,
+\[
+((a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + \sum \limits_{1 \le j \le l} c_{j,0}) + (\sum\limits_{1 \le j \le l} (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) c_{j,1}) d_1 + \dots + (\sum \limits_{1 \le j \le l} (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) c_{j,n}) d_n.
+\]
+For each $j: 0 \le j \le n$, let $b'_j$ denote the subtraction of the $j$-th coefficient of the expression and $a'_j$. Then $b'_0=\sum \limits_{1 \le j' \le l} c'_{j',0}$, and for each $i: 1 \le i \le n$,
+\[b'_i = \sum\limits_{1 \le j \le l} c_{j,i} ((\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) - a_j)\]
+
+Intuitively, $\theta(O(q_n)) = a'_0 + a'_1 d_1 + \dots + a'_n d_n$ and $\theta'(\theta(O(q_n))) = \theta(O(q_n)) + b'_0 + b'_1 d_1 + \dots b'_n d_n$.
+
+If $b'_i \neq 0$ for some $i: 0 \le i \le n$, then we are done. Otherwise, we conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{More general situations}
+
 Let $\Ss=(Q, K, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. Suppose $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. For simplicity, we assume that $K = 1$, that is, each position holds one data value.
 
 A path scheme is a path in the SCC graph, which corresponds to a sequence of SCCs in the transition graph such that for each pair of consecutive SCCs in the sequence, say $C_1$ and $C_2$, there is an edge from $C_1$ to $C_2$.
