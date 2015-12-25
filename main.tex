@@ -150,9 +150,10 @@ A (deterministic) streaming data string to integer transducer (SDSIT) $\Ss$ is a
 \end{itemize}
 It is required that the following constraints are satisfied: 
 \begin{description}
-\item[1 (copyless).] For each $(q,k, g, \eta, q') \in \delta$ and each $y \in Y$, there is at most one $y' \in Y$ such that $y$ occurs in $\eta(y')$, moreover, in this case, there is at most one occurrence of $y$ in $\eta(y')$; 
+\item[1 (copyless).] For each $q \in Q$ and $y \in Y$, there is at most one occurrence of $y$ in $O(q)$, moreover, for each $(q,k, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in the collection of expressions $\{\eta(y') \mid y' \in Y\}$; 
 \item [2 (deterministic).] For every pair of distinct tuples $(q,k, g_1, \eta_1,q'_1), (q, k, g_2,\eta_2,q'_2) \in \delta$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
 \end{description}
+Note that the ``copyless'' constraint forbids the use of the expressions of the form $y+y$ in the output expressions or in the assignments.
 
 The semantics of a SDSIT $\Ss$  is given by a transduction as follows: A configuration of $\Ss$ is a pair $(q,\beta)$, where $q \in Q$ and $\beta$ is a valuation of $X \cup Y$, that is, a partial function from $X \cup Y$ to $\Ii$. When reading a data string $w=\vec{d}_1 \dots \vec{d}_n$, $\Ss$ runs over $w$ from left to right. Let $(q, \beta)$ be the configuration of $\Ss$ reached after running over $w$, then the output of $\Ss$ is $\beta(O(q))$, if $O(q)$ is defined, and the output is undefined otherwise. \zhilin{Formal semantics to be written}
 
@@ -239,9 +240,6 @@ Therefore, the equivalence problem of SDSIT$_{\pm}$ is reduced to the problem wh
 
 \noindent {\bf NON-ZERO OUPUT PROBLEM}: Given a SDSIT$_{\pm}$ $\Aa$, decide whether there is a data word $w$ such that the output of $\Aa$ over $w$ is non-zero. 
 
-\medskip
-
-\zhilin{I think our main focus at present should be on the aforementioned problem.}
 
 To even simplify the problem, we may start with the flat SDSIT$_{\pm}$, where there are no nested-loops in the transition structure, aka flat counter automata.
 
@@ -261,62 +259,133 @@ A SDSIT$_{\pm}$ is called \emph{generalized flat} if each nontrivial SCC (strong
 
 Let $\Ss_1$ and $\Ss_2$ be two generalized flat SDSIT$_{\pm}$.
 
-\iffalse
-Let us start with the simplest case, where there are no data variables. Then all the guards are trivial and the transition graph of $\Ss_1$ and $\Ss_2$ are both lassos, then we do the analysis based on the lassos. Let $\ell_1,m_1$ and $\ell_2,m_2$ be the length (number of edges) of the handles and periods of the two lassos respectively. The main idea is that it is sufficient to decide whether the two transducers are equivalent over the set of data words of the length at most $\max(\ell_1+m_1,\ell_2+m_2)$.
-\fi
+\begin{proposition}\label{prop-equiv-reduce}
+The equivalence problem of two generalized flat SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat SDSIT$_{\pm}$.
+\end{proposition}
 
-{\bf Question}: Can the equivalence problem of two generalized flat SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat SDSIT$_{\pm}$ ? 
+Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
+\begin{quote}
+\it the output variables in $Y_1$ are updated independently of those in $Y_2$: For each transition $((q_1,q_2),g,\eta,(q'_1,q'_2))$ in $\Ss$, for each $y_1 \in Y_1$(resp. $y_2 \in Y_2$), no variables from $Y_2$ (resp. $Y_1$) occurs in $\eta(y_1)$ (resp. $\eta(Y_2)$). \hfill ($\ast$)
+\end{quote}
 
-\zhilin{It seems for me that it is the case}
+In the rest of this paper, we will assume that the SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
 
-In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$.
+For simplicity, from now on, we assume that $K=1$, that is, there is at most one data value over each position, and we will omit the number $K$ in the definition of SDSIT$_{\pm}$.
+
+In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
+
 
 \subsection{The analysis of a lasso}
 
-Let $\Ss=(Q, K, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. Suppose $Y=\{y_1,\dots,y_l\}$. For simplicity, we assume that $X=\emptyset$, thus all the guards in the transitions are trivial, and $K = 1$, that is, each position holds one data value.
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. Suppose $Y=Y_1 \cup Y_2$, $Y_1 \cap Y_2 = \emptyset$, $Y_1=\{y_1\}$ and $Y_2 = \{y_2\}$. We will do the analysis step by step.
 
-Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=q'_0 q'_1 \dots q'_m$, $q'_0 = q'_m=q_n$, $O(q_n)$ is defined and $O(q'_j)$ is undefined for each $j \neq 1$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(q'_j, g'_j, \eta'_j, q'_{j+1})$ is the $j$-th transition in the handle. 
+At first, we assume that $X=\emptyset$, thus all the guards in the transitions are trivial.
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=p_0 p_1 \dots p_m$, $p_0 = p_m=q_n$, $O(q_n)$ is defined and $O(p_j)$ is undefined for each $j \neq 0,m$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(p_j, g'_j, \eta'_j, p_{j+1})$ is the $j$-th transition in the handle. 
 
 We use $d_1,\dots,d_n$ to denote the $n$ data values for the handle.
 
-Then for each $j: 1 \le j \le l$, an expression $e_{j}=c_{j,0}+ c_{j,1}d_1 + \dots c_{j,n}d_n$ can be constructed to describe the value of $y_j$ after going through the handle, where the coefficients $c_{j,0},\dots, c_{j,n}$ are obtained from the transitions in the handle. Note here we ignore the special situations that the value of $y_j$ is undefined after going through the handle.
+Then for $j=1,2$, an expression $e_{j}=\alpha_{j,0}+ \alpha_{j,1}d_1 + \dots \alpha_{j,n}d_n$ can be constructed to describe the value of $y_{j}$ after going through the handle, where the coefficients $\alpha_{j,0},\dots, \alpha_{j,n}$ are obtained from the transitions in the handle. Note here we ignore the special situations that the value of $y_{j}$ is undefined after going through the handle. Because of the ``copyless'' constraint, it holds that $\alpha_{j,1},\dots,\alpha_{j,n} \in \{0,+1,-1\}$.
 
-Let $\theta$ be the assignment function such that $\theta(y_j)=e_j$ for each $j: 1 \le j \le l$.
+Let $\theta$ be the assignment function such that $\theta(y_1)=e_1$ and $\theta(y_2)=e_2$.
 
-Suppose $O(q_n)=a_0+a_1 y_1 + \dots + a_l y_l$. Then $\theta(O(q_n))$, that is, the expression obtained by replacing each $y_j$ with $e_j$ in $O(q_n)$, is $a_0+ a_1 e_1 + \dots +a_l e_l$, which can be rearranged into the following expression,
+Suppose $O(q_n)=a_0+a_1 y_{1} + a_2 y_2$. Then $\theta(O(q_n))$, that is, the expression obtained by replacing $y_1,y_2$ with $e_1,e_2$, is $a_0+a_1 e_{1} + a_2 e_2$, which can be rearranged into the following expression,
 \[
-(a_0 + \sum \limits_{1 \le j \le l} c_{j,0}) + (\sum\limits_{1 \le j \le l} a_j c_{j,1}) d_1 + \dots + (\sum \limits_{1 \le j \le l} a_j c_{j,n}) d_n.
+(a_0 + \alpha_{1,0}+\alpha_{2,0}) + (a_1 \alpha_{1,1}+a_2 \alpha_{2,1}) d_1 + \dots + (a_1 \alpha_{1,n}+a_2 \alpha_{2,n}) d_n.
 \]
-Let $a'_0,\dots,a'_n$ denote the coefficients of the expression. 
-If $a'_j \neq 0$ for some $i: 1 \le i \le n$, then we know that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+Let $\mu_0,\dots,\mu_n$ denote the coefficients of the expression. 
+If $\mu_i \neq 0$ for some $i: 1 \le i \le n$, then we know that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
 
-Otherwise, we continue considering the loop. 
+Otherwise, we continue analyzing the loop. 
 
-Similarly, for each $j: 1 \le j \le l$, an expression $e'_j = c'_{j,0} + c'_{j,1} y_1 + \dots + c'_{j,l} y_l + c''_{j,1} d'_1 + \dots + c''_{j,m} d'_m$ can be constructed to describe the value of $y_j$ after going through the loop, where $y_1, \dots,y_l$ denote the initial value of the output variables and $d'_1, \dots, d'_m$ denote the data values on the loop.
+Similarly to the handle, for each $j=1,2$, an expression $f_1 = \beta_{1,0} + \beta_{1,1} \theta(y_1) + \gamma_{1,1} d'_1 + \dots + \gamma_{1,m} d'_m$ can be constructed to describe the value of the variable $y_{1}$ after going through the loop, where $\theta(y_{1})$ denote the initial value of the output variable $y_1$ and $d'_1, \dots, d'_m$ denote the data values occurring in the loop. Similarly, an expression $f_2 = \beta_{2,0} + \beta_{2,1} \theta(y_2) + \gamma_{2,1} d'_1 + \dots + \gamma_{2,m} d'_m$ can be constructed for $y_2$. As a result of the ``copyless'' constraint again, we know that $\beta_{j,1}, \gamma_{j,1},\dots,\gamma_{j,m} \in \{0,+1,-1\}$ for $j=1,2$.
 
-Let $\theta'$ be the assignment function such that $\theta'(y_j)=e'_j$ for each $j: 1 \le j \le l$.
+Let $\chi$ be the assignment function such that $\chi(y_1)=f_1$ and $\chi(y_2)=f_2$.
 
-Then $\theta'(O(q_n))$ is $a_0 + a_1 e'_1 + \dots + a_l e'_l$, can be rearranged into the following expression,
+Then $\chi(O(q_n)) = a_0 + a_1 f_1 + a_2 f_2$ can be rearranged into the following expression,
 \[
-\begin{array} {l}
-(a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',1}) y_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c'_{j',l}) y_l \ + \\
- (\sum\limits_{1 \le j' \le l} a_{j'} c''_{j',1}) d'_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c''_{j',m}) d'_m.
+(a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} ) + (a_1 \beta_{1,1})\theta(y_1)+(a_2 \beta_{2,1} )\theta(y_2) + 
+ (a_1\gamma_{1,1} + a_2 \gamma_{2,1}) d'_1 + \dots + (a_1\gamma_{1,m} + a_2 \gamma_{2,m}) d'_m.
+\]
+
+
+If $a_1 \gamma_{1,i} +a_2 \gamma_{2,i} \neq 0$ for some $i: 1 \le i \le m$, then we are done.
+
+
+Otherwise, let $a'_0, a'_1,a'_2$ be the coefficients in the expression above, that is, $\chi(O(q_n))=a'_0 + a'_1 \theta(y_1)+ a'_2 \theta(y_2)$.
+
+By expanding the expressions $\theta(y_1)=e_1$ and $\theta(y_2)=e_2$ in $\chi(O(q_n))$, we get the following expression,
+
+\[
+(a'_0 + \alpha_{1,0}+\alpha_{2,0}) + (a'_1 \alpha_{1,1}+a'_2 \alpha_{2,1}) d_1 + \dots + (a'_1 \alpha_{1,n}+a'_2 \alpha_{2,n}) d_n.
+\]
+
+For each $i: 0 \le i \le n$, let $\mu'_i$ denote the $i$-th coefficient of the expression. 
+%
+Intuitively, $\theta(O(q_n)) = \mu_0 + \mu_1 d_1 + \dots + \mu_n d_n$ and $\chi(O(q_n)) = \mu'_0 + \mu'_1 d_1 + \dots \mu'_n d_n$.
+
+If $\mu'_i \neq 0$ for some $i: 0 \le i \le n$, then we are done. 
+
+Otherwise, we iterate the loop once more.  Then we get the output $a'_0 + a'_1 \chi(y_1)+ a'_2 \chi(y_2)$, which can be rearranged into
+\[
+ (a'_0 + a'_1 \beta_{1,0} + a'_2 \beta_{2,0} ) + (a'_1 \beta_{1,1})\theta(y_1)+(a'_2 \beta_{2,1} )\theta(y_2) + 
+ (a'_1\gamma_{1,1} + a'_2 \gamma_{2,1}) d'_1 + \dots + (a'_1\gamma_{1,m} + a'_2 \gamma_{2,m}) d'_m.
+\]
+
+By expanding the expressions $a'_0 = a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0}$, $a'_1=a_1 \beta_{1,1}$, $a'_2=a_2 \beta_{2,1}$, as well as $\theta(y_1)$ and $\theta(y_2)$, we get the following expression,
+\[
+\begin{array}{l}
+ (a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} + \alpha_{1,0} + \alpha_{2,0}) + \\
+ ((a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,1}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,1})d_1 + \\
+ \multicolumn{1}{c}{\dots} \\
+  ((a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,n}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,n})d_n \\
+ (a_1 \beta_{1,1}\gamma_{1,1} + a_2 \beta_{2,1} \gamma_{2,1}) d'_1 + 
+ \dots + (a_1 \beta_{1,1}\gamma_{1,m} + a_2 \beta_{2,1} \gamma_{2,m}) d'_m.
 \end{array}
 \]
 
-If $\sum\limits_{1 \le j' \le l} a_{j'} c''_{j',i} \neq 0$ for some $i: 1 \le i \le m$, then we are done.
-
-Otherwise, if apply $\theta$ to $(a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',1}) y_1 + \dots + (\sum \limits_{1 \le j' \le l} a_{j'} c'_{j',l}) y_l$, then we get the following expression,
+From the fact that $\mu_0=\mu_1 = \dots \mu_n =0$ and $\mu'_0=\mu'_1=\dots = \mu'_n=0$, we get the following equations, 
 \[
-((a_0 + \sum \limits_{1 \le j' \le l} c'_{j',0}) + \sum \limits_{1 \le j \le l} c_{j,0}) + (\sum\limits_{1 \le j \le l} (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) c_{j,1}) d_1 + \dots + (\sum \limits_{1 \le j \le l} (\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) c_{j,n}) d_n.
-\]
-For each $j: 0 \le j \le n$, let $b'_j$ denote the subtraction of the $j$-th coefficient of the expression and $a'_j$. Then $b'_0=\sum \limits_{1 \le j' \le l} c'_{j',0}$, and for each $i: 1 \le i \le n$,
-\[b'_i = \sum\limits_{1 \le j \le l} c_{j,i} ((\sum\limits_{1 \le j' \le l} a_{j'} c'_{j',j}) - a_j)\]
+\begin{array}{l c l}
+a_0 + \alpha_{1,0}+\alpha_{2,0} & = & 0,\\
+a_1 \alpha_{1,1} + a_2 \alpha_{2,1} & = & 0,\\
+\multicolumn{3}{c}{\dots}  \\
+a_1 \alpha_{1,n} + a_2 \alpha_{2,n} & = & 0, \\
+a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + \alpha_{1,0}+ \alpha_{2,0}  & =  & 0,\\
+a_1\beta_{1,1} \alpha_{1,1} + a_2 \beta_{2,1} \alpha_{2,1} & = & 0,\\
+\multicolumn{3}{c}{\dots}  \\
+a_1\beta_{1,1} \alpha_{1,n} + a_2 \beta_{2,1} \alpha_{2,n}  & = & 0.
+\end{array}
+\] 
 
-Intuitively, $\theta(O(q_n)) = a'_0 + a'_1 d_1 + \dots + a'_n d_n$ and $\theta'(\theta(O(q_n))) = \theta(O(q_n)) + b'_0 + b'_1 d_1 + \dots b'_n d_n$.
+If $\beta_{1,1} \neq \beta_{2,1}$ and $a_1 \beta_{1,0} \neq 0$, then from $a_1 \beta_{1,0} + a_2 \beta_{2,0} =0$, we deduce that 
+\[a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} + \alpha_{1,0} + \alpha_{2,0} = a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} \neq 0.\]
+In this case, we conclude that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
 
-If $b'_i \neq 0$ for some $i: 0 \le i \le n$, then we are done. Otherwise, we conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+Similarly, if $\beta_{1,1} \neq \beta_{2,1}$ and $a_1 \gamma_{1,i} \neq 0$ for some $i: 1 \le i \le m$, then from $a_1 \gamma_{1,i} + a_2 \gamma_{2,i} =0$, we deduce that 
+$(a_1 \beta_{1,1}\gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i}) \neq 0$. In this case, we also conclude that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
 
+In the following, we assume that $\beta_{1,1} = \beta_{2,1}$ or $a_1 \beta_{1,0} = 0$ or for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$.
+
+If $\beta_{1,1} = \beta_{2,1}$, then it is easy to see that $a'_0 + a'_1 \chi(y_1)+ a'_2 \chi(y_2) = 0$ and we can conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Therefore, in the following, we assume that $\beta_{1,1} \neq \beta_{2,1}$. Then $a_1 \beta_{1,0} = 0$ or for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$. 
+
+If $|\beta_{1,1}| =|\beta_{2,1}|$ and for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$, then we can conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Therefore, in the following, we assume that $|\beta_{1,1}| \neq |\beta_{2,1}|$ or there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$. 
+\begin{enumerate}
+\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} = 0$, there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$,
+\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} = 0$, for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$,
+%\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} \neq 0$, for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$,
+\item $|\beta_{1,1}| = |\beta_{2,1}|$ (but $\beta_{1,1} \neq \beta_{2,1}$), $a_1 \beta_{1,0} = 0$, there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$.
+\end{enumerate}
+
+For the first case above, we have $\beta_{1,1}=0$ and $\beta_{2,1} = \pm 1$, or vice versa. Then $a_1 \beta_{1,1} \gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i} \neq 0$. Therefore, we conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+For the second case above, we have $\beta_{1,1}=0$ and $\beta_{2,1} = \pm 1$, or vice versa. Then for each $i: 1 \le i \le n$, $(a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,i}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,i} = a_2  \alpha_{2,i}$ or $a_1 \alpha_{1,i}$. If there is $i: 1 \le i \le n$ such that $a_1 \alpha_{1,i} \neq 0$, then we conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero. Otherwise, we conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+For the third case above, we have that $\beta_{1,1} = 1$ and $\beta_{2,1} =-1$ or vice versa. Then $a_1 \beta_{1,1}\gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i} = 2a_1 \gamma_{1,i}$ or $-2a_1 \gamma_{1,i}$. We conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -380,6 +449,85 @@ From the analysis of the commutativity of reducers in \cite{XZZ+14}, the commuta
 
 \bibliographystyle{alpha}
 \bibliography{data}
+
+
+\begin{appendix}
+
+\section{Analysis of a lasso}
+
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. Suppose $Y=Y_1 \cup Y_2$, $Y_1 \cap Y_2 = \emptyset$, $Y_1=\{y_{1,1}, \dots, y_{1,l_1}\}$ and $Y_2 = \{y_{2,1}, \dots, y_{2,l_2}\}$. We go step by step.
+
+At first, we assume that $X=\emptyset$, thus all the guards in the transitions are trivial.
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=p_0 p_1 \dots p_m$, $p_0 = p_m=q_n$, $O(q_n)$ is defined and $O(p_j)$ is undefined for each $j \neq 0,m$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(p_j, g'_j, \eta'_j, p_{j+1})$ is the $j$-th transition in the handle. 
+
+We use $d_1,\dots,d_n$ to denote the $n$ data values for the handle.
+
+Then for each $j: 1 \le j \le l_1$, an expression $e_{1,j}=\alpha^1_{j,0}+ \alpha^1_{j,1}d_1 + \dots \alpha^1_{j,n}d_n$ can be constructed to describe the value of $y_{1,j}$ after going through the handle, where the coefficients $\alpha^1_{j,0},\dots, \alpha^1_{j,n}$ are obtained from the transitions in the handle. Note here we ignore the special situations that the value of $y_{1,j}$ is undefined after going through the handle. Similarly, for each $j: 1 \le j \le l_2$, an expression $e_{2,j}=\alpha^2_{j,0}+ \alpha^2_{j,1}d_1 + \dots \alpha^2_{j,n}d_n$ can be constructed to describe the value of $y_{2,j}$ after going through the handle.
+
+Let $\theta$ be the assignment function such that $\theta(y_{1,j})=e_{1,j}$ for each $j: 1 \le j \le l_1$ and $\theta(y_{2,j})=e_{2,j}$ for $j: 1 \le j \le l_2$.
+
+Suppose $O(q_n)=a_0+a^1_1 y_{1,1} + \dots + a^1_{l_1} y_{1,l_1} + a^2_1 y_{2,1} + \dots + a^2_{l_2} y_{2,l_2}$. Then $\theta(O(q_n))$, that is, the expression obtained by replacing each $y_{1,j}$ with $e_{1,j}$ and $y_{2,j}$ with $e_{2,j}$ in $O(q_n)$, is $a^1_0+a^1_1 e_{1,1} + \dots + a^1_{l_1} e_{1,l_1} + a^2_1 e_{2,1} + \dots + a^2_{l_2} e_{2,l_2}$, which can be rearranged into the following expression,
+\[
+(a_0 + \sum \limits_{b=1,2, 1 \le j \le l_b} \alpha^b_{j,0}) + (\sum\limits_{b=1,2, 1 \le j \le l_b} a^b_j \alpha^b_{j,1}) d_1 + \dots + (\sum \limits_{b=1,2, 1 \le j \le l_b} a^b_j \alpha^b_{j,n}) d_n.
+\]
+Let $\mu_0,\dots,\mu_n$ denote the coefficients of the expression. 
+If $\mu_i \neq 0$ for some $i: 1 \le i \le n$, then we know that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Otherwise, we continue considering the loop. 
+
+Similarly to the handle, for each $b=1,2, j: 1 \le j \le l_b$, an expression $f_{b,j} = \beta^b_{j,0} + \beta^b_{j,1} \theta(y_{b,1}) + \dots + \beta^b_{j,l_b} \theta(y_{b,l_b}) + \gamma^b_{j,1} d'_1 + \dots + \gamma^b_{j,m} d'_m$ can be constructed to describe the value of the variable $y_{b,j}$ after going through the loop, where $\theta(y_{b,1}), \dots, \theta(y_{b,l_b})$ denote the initial value of the output variables and $d'_1, \dots, d'_m$ denote the data values on the loop.
+
+Let $\chi$ be the assignment function such that $\chi(y_{b,j})=f_{b,j}$ for each $b=1,2$ and $j: 1 \le j \le l_b$.
+
+Then $\chi(O(q_n)) = a_0 + a^1_{1} f_{1,1} + \dots + a^1_{l_1} f_{1,l_1}+a^2_{1} f_{2,1} + \dots + a^2_{l_2} f_{2,l_2}$ can be rearranged into the following expression,
+\[
+\begin{array} {l}
+(a_0 + \sum \limits_{b'=1,2, 1 \le j' \le l_{b'}} \beta^{b'}_{j',0} ) + (\sum \limits_{b'=1,2} (\sum\limits_{1 \le j' \le l_{b'}} a^{b'}_{j'} \beta^{b'}_{j',1} ) \theta(y_{b',1})) + \dots + (\sum \limits_{b'=1,2} (\sum \limits_{1 \le j' \le l_{b'}} a^{b'}_{j'} \beta^{b'}_{j',l_{b'}}) \theta(y_{b',l_{b'}})) \ + \\
+ (\sum\limits_{b'=1,2} (\sum \limits_{1 \le j' \le l_{b'}} a^{b'}_{j'} \gamma^{b'}_{j',1} )) d'_1 + \dots + (\sum \limits_{b'=1,2} (\sum \limits_{1 \le j' \le l_{b'}} a^{b'}_{j'} \gamma^{b'}_{j',m} )) d'_m.
+\end{array}
+\]
+
+
+If $(\sum\limits_{b'=1,2}  (\sum \limits_{1 \le j' \le l_{b'}} a^{b'}_{j'} \gamma^{b'}_{j',i})) \neq 0$ for some $i: 1 \le i \le m$, then we are done.
+
+
+Otherwise, let $a'_0, (a^1_1)',\dots, (a^1_{l_1})', (a^2_1)',\dots, (a^2_{l_2})'$ be the coefficients in the expression above, that is, $\chi(O(q_n))$ becomes $a'_0 + (a^1_1)' \theta(y_{1,1}) + \dots + (a^1_{l_1})' \theta(y_{1,l_1}) + (a^2_1)' \theta(y_{2,1}) + \dots (a^2_{l_2})' \theta(y_{2,l_2})$.
+
+By expanding the expressions $\theta(y_{b,j})=e_{b,j}$ in $\chi(O(q_n))$, we get the following expression,
+
+\[
+(a'_0 + \sum \limits_{b=1,2, 1 \le j \le l_b} \alpha^b_{j,0}) + (\sum\limits_{b=1,2, 1 \le j \le l_b} (a^b_j)' \alpha^b_{j,1}) d_1 + \dots + (\sum \limits_{b=1,2, 1 \le j \le l_b} (a^b_j)' \alpha^b_{j,n}) d_n.
+\]
+
+%\[
+%\begin{array}{l}
+%((a_0 + \sum \limits_{b'=1,2, 1 \le j' \le l_{b'}} (c^{b'}_{j',0})' ) + \sum \limits_{b=1,2, 1 \le j \le l_b} c^b_{j,0}) \ +\\
+% (\sum\limits_{b=1,2, 1 \le j \le l_b} (\sum\limits_{b'=1,2, 1 \le j' \le l_{b'}} a^{b'}_{j'} (c^{b'}_{j',j})' ) c^b_{j,1})\ d_1 + \dots \\
+%+ (\sum\limits_{b=1,2, 1 \le j \le l_b} (\sum\limits_{b'=1,2, 1 \le j' \le l_{b'}} a^{b'}_{j'} (c^{b'}_{j',j})' ) c^b_{j,n})\ d_n.
+%\end{array}
+%\]
+For each $i: 0 \le i \le n$, let $\mu'_i$ denote the $i$-th coefficient of the expression. 
+%
+Intuitively, $\theta(O(q_n)) = \mu_0 + \mu_1 d_1 + \dots + \mu_n d_n$ and $\chi(O(q_n)) = \mu'_0 + \mu'_1 d_1 + \dots \mu'_n d_n$.
+
+If $\mu'_i \neq 0$ for some $i: 0 \le i \le n$, then we are done. Otherwise, we conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+In order to see this, let us iterate once more of the loop. Then we get the following output,
+\[a'_0 + (a^1_1)' \chi(y_{1,1}) + \dots + (a^1_{l_1})' \chi(y_{1,l_1}) + (a^2_1)' \chi(y_{2,1}) + \dots (a^2_{l_2})' \chi(y_{2,l_2}).\]
+
+By expanding the expressions $\chi(y_{b,j})$, we get the following expression,
+
+\[
+(a'_0 + \sum \limits_{b=1,2, 1 \le j \le l_b} (\alpha^b_{j,0})') + (\sum\limits_{b=1,2, 1 \le j \le l_b} (a^b_j)' (\alpha^b_{j,1})' ) d_1 + \dots + (\sum \limits_{b=1,2, 1 \le j \le l_b} (a^b_j)' (\alpha^b_{j,n})') d_n,
+\]
+where the coefficients $(\alpha^b_{j,0})', (\alpha^b_{j,1})', \dots, (\alpha^b_{j,n})'$ satisfy that 
+$f_{b,j} = (\alpha^b_{j,0})' + (\alpha^b_{j,1})' d_1 + \dots + (\alpha^b_{j,n})' d_n$, more specifically, 
+\[
+f_{b,j} = (\beta^b_{j,0} + \sum \limits_{1 \le j' \le l_b} \alpha^b_{j',0}) + (\sum\limits_{1 \le j' \le l_b} \beta^b_{j,j'} \alpha^b_{j',1}) d_1 + \dots + (\sum \limits_{1 \le j' \le l_b} \beta^b_{j,j'} \alpha^b_{j',n}) d_n.
+\]
+
+\end{appendix}
 
 \end{document}
 
