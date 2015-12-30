@@ -105,8 +105,10 @@
 \newcommand{\name}{streaming data string to integer transducer}
 %\def\Ss{{$\mathcal{A}$\ }}
 
-\title{A Commutative Decidable Language for Reducers}
+\title{The~Commutativity~Problem~of~the~Map-Reduce Framework: A Transducer-based Approach}
 %\title{Deciding Commutative of Reducers}
+\author{}
+\institute{}
 
 %\author{Yu-Fang Chen, Lei Song, Zhilin Wu}
 
@@ -124,7 +126,10 @@ We show that the language is expressive enough for common data analytics operati
 
 \section{Introduction}
 %What is Map-Reduce
-Map-Reduce is a very popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, \emph{mappers} collect data and organize them into the form of key-value pairs. 
+Map-Reduce is a very popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} takes a key-value pair as input and output a list of key-value pairs. The load balance mechanism of the Map-Reduce framework will process the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of the key and a list of values. The reducer reads the input list and output a key-value pair.
+
+
+
 %The communitativity problem
 
 %The reason for studying syntatical restrictions 
