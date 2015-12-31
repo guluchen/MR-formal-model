@@ -30,7 +30,6 @@
 %\newtheorem{Algo}{Algorithm}
 \newtheorem{remark}[theorem]{Remark}
 
-\def\arr#1{\stackrel{#1}{\longrightarrow}}
 
 \def\Aa{{\mathscr{A} }}
 
@@ -132,7 +131,7 @@ reduce & (k2,list(v2)) & \rightarrow & (k2,v2)
 
 \section{Preliminaries}
 
-Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. Then a guard over $X$ is the formulae defined by the rules, $g::= x = y \mid x < y \mid g \vee g \mid \neg g$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $Y$ with respect to $X$ is a partial function from $Y$ to $\Ee_{X \cup Y}$, the set of arithmetic expressions over $X \cup Y$.
+Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. Then a guard over $X$ is the formulae defined by the rules, $g::= x = y \mid x \neq y \mid x\ o\  y \mid g \wedge g$, where $o  \in \{<, \le\}$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $Y$ with respect to $X$ is a partial function from $Y$ to $\Ee_{X \cup Y}$, the set of arithmetic expressions over $X \cup Y$.
 
 A data string is a sequences of vectors of data values, that is, sequences $\vec{d}_1\vec{d}_1\dots \vec{d}_n$, where $\vec{d}_i \in \Ii^+$.
 
@@ -142,19 +141,23 @@ A (deterministic) streaming data string to integer transducer (SDSIT) $\Ss$ is a
 \item $K \in \Nn$ is the maximum number of data values in each position, 
 \item $X$ is a finite set of data variables which is used to store some data values that have been met,
 \item $Y$ is a finite set of output variables, which is used to aggregate some information for the output,
-\item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$, \zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
+\item $\delta$ comprises the tuples $(q, k, g, \eta, q')$, where $q,q'\in Q $, $1 \le k \le K$ is the number of data values in the current position, $g$ is a guard over $X \cup \{p_1,\dots,p_k\}$ ($p_1,\dots,p_k$ denote the $k$ data values in the current position), $\eta$ is (1) an assignment for $Y$ with respect to $\Ee_{X \cup Y}$ or (2) an assignment for $X$ with respect to $X \cup \{p_1,\dots,p_k\}$ (we will usually use $ q \xrightarrow{(k,g,\eta)} q'$ to denote the transition $(q,k,g,\eta,q')$),
+
+
+\zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
 
 \item $q_0 \in Q$ is the initial state,
 \item $O$ is the output function, which is a partial function from $Q$ to $(X \cup Y)^{\le K}$.
 \end{itemize}
 It is required that the following constraints are satisfied: 
 \begin{description}
-\item[1 (copyless).] For each $q \in Q$ and $y \in Y$, there is at most one occurrence of $y$ in $O(q)$, moreover, for each $(q,k, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in the collection of expressions $\{\eta(y') \mid y' \in Y\}$; 
+\item[1 (copyless).] For each $(q,k, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in the collection of expressions $\{\eta(y') \mid y' \in Y\}$; 
 \item [2 (deterministic).] For every pair of distinct tuples $(q,k, g_1, \eta_1,q'_1), (q, k, g_2,\eta_2,q'_2) \in \delta$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
 \end{description}
 Note that the ``copyless'' constraint forbids the use of the expressions of the form $y+y$ in the output expressions or in the assignments.
 
 The semantics of a SDSIT $\Ss$  is given by a transduction as follows: A configuration of $\Ss$ is a pair $(q,\beta)$, where $q \in Q$ and $\beta$ is a valuation of $X \cup Y$, that is, a partial function from $X \cup Y$ to $\Ii$. When reading a data string $w=\vec{d}_1 \dots \vec{d}_n$, $\Ss$ runs over $w$ from left to right. Let $(q, \beta)$ be the configuration of $\Ss$ reached after running over $w$, then the output of $\Ss$ is $\beta(O(q))$, if $O(q)$ is defined, and the output is undefined otherwise. \zhilin{Formal semantics to be written}
+
 
 \zhilin{To model reducers in MapReduce framework, we may assume that the first element in a data string is a single data value which is a key.}
 
@@ -239,9 +242,6 @@ Therefore, the equivalence problem of SDSIT$_{\pm}$ is reduced to the problem wh
 
 \noindent {\bf NON-ZERO OUPUT PROBLEM}: Given a SDSIT$_{\pm}$ $\Aa$, decide whether there is a data word $w$ such that the output of $\Aa$ over $w$ is non-zero. 
 
-
-To even simplify the problem, we may start with the flat SDSIT$_{\pm}$, where there are no nested-loops in the transition structure, aka flat counter automata.
-
 \noindent {\bf Reduction of commutativity to equivalence of SDSIT}.
 
 Consider the permutation $\tau_2$ and $\tau_n$ in \cite{CHSW15}. We can define two streaming transducers $\Ss$ and $\Ss'$ (note that $\Ss'$ is independent from $n$)  for $\tau_2$ and $\tau_n$.
@@ -262,18 +262,173 @@ Let $\Ss_1$ and $\Ss_2$ be two generalized flat SDSIT$_{\pm}$.
 The equivalence problem of two generalized flat SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat SDSIT$_{\pm}$.
 \end{proposition}
 
-Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
-\begin{quote}
-\it the output variables in $Y_1$ are updated independently of those in $Y_2$: For each transition $((q_1,q_2),g,\eta,(q'_1,q'_2))$ in $\Ss$, for each $y_1 \in Y_1$(resp. $y_2 \in Y_2$), no variables from $Y_2$ (resp. $Y_1$) occurs in $\eta(y_1)$ (resp. $\eta(Y_2)$). \hfill ($\ast$)
-\end{quote}
+%Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
+%\begin{quote}
+%\it the output variables in $Y_1$ are updated independently of those in $Y_2$: For each transition $((q_1,q_2),g,\eta,(q'_1,q'_2))$ in $\Ss$, for each $y_1 \in Y_1$(resp. $y_2 \in Y_2$), no variables from $Y_2$ (resp. $Y_1$) occurs in $\eta(y_1)$ (resp. $\eta(Y_2)$). \hfill ($\ast$)
+%\end{quote}
 
-In the rest of this paper, we will assume that the SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
+%In the rest of this paper, we will assume that the SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
 
 For simplicity, from now on, we assume that $K=1$, that is, there is at most one data value over each position, and we will omit the number $K$ in the definition of SDSIT$_{\pm}$.
 
-In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
 
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a generalized flat SDSIT$_{\pm}$.  Suppose $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. In addition, we assume that all the output variables are \emph{independently evolving} in the sense that for each transition $(q, g, \eta, q')$, it holds that for each $y \in Y$, only $y$ can occur in $\eta(y)$ and no other output variables can occur in $\eta(y)$.  
 
+From now on, we assume that all generalized flat SDSIT$_{\pm}$ considered in this paper satisfy the  ``independently evolving'' constraint. Moreover, recall that we assume that for each transition $(q,g,\eta,q')$, 
+\begin{itemize}
+\item $g$ is of the form $cur\ o\ x $, where $cur$ denote the current data value, $x \in X$,  and $o \in \{=,\neq,<, \le, >, \ge\}$,
+%
+\item for each $x \in X$, if $\eta(x)$ is defined, then $\eta(x)=cur$ and  $g$ is not of the form $cur = x'$ with $x' \in X$. 
+\end{itemize}
+
+%$c \in \intnum$,  or $cur\ o\ c$
+
+%In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
+
+We start the analysis with paths and cycles.
+
+\subsection{Paths and cycles}
+
+Suppose that $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ is a path in $\Ss$. Suppose that the initial values of $x_1,\dots, x_k$ and $y_1,\dots, y_l$ are $d_1,\dots, d_k$ and $o_1,\dots,o_l$ respectively. Moreover, let $d_{k+1},\dots,d_{k+n}$ denote the $n$ data values in the path. Then the guards and the assignments in the path induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since all the guards are of the form $cur\ o\ x_j$ for $x_j \in X$, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_r$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots,k+n\}$ such that $\min(I_1) < \dots < \min(I_r)$. Then we know that $r \ge k$ and for each $j: 1 \le j \le k$, it holds that $\min(I_j)=j$.
+
+From the path, an assignment function $\chi$ with the domain $X \cup Y$ can be defined to describe the values of the data and output variables after traversing the path, such that 
+\begin{itemize}
+\item for each $x_j \in X$, $\chi(x_j) \in \{d_{\min(I_1)}, \dots, d_{\min(I_r)}\}$, 
+\item and for each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d_{\min(I_1)} + \dots + \beta_{j,r} d_{\min(I_r)}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``copyless'' and ``independently evolving'' constraint).
+\end{itemize}
+
+Next we consider cycles. Let $C = q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ be a path in $\Ss$ such that $q_n = q_0$.
+
+Then similar to the analysis of the paths above, an assignment function $\chi_1$ with the domain $X \cup Y$ can be defined to describe the values of the data and output variables after traversing the cycle for the first time,
+\begin{itemize}
+\item for each $x_j \in X$, $\chi_1(x_j) \in \{d_{\min(I_1)}, \dots, d_{\min(I_r)}\}$, 
+\item and for each $y_j \in Y$, $\chi_1(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^1_{\min(I_1)} + \dots + \beta_{j,r} d^1_{\min(I_r)}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$.
+\end{itemize}
+
+\begin{lemma}
+If the cycle can be traversed once with some initial values for data and output variables, then it can also be executed twice with the same initial values.
+\end{lemma}
+
+We define a graph $G_C$ as follows.
+\begin{itemize}
+\item The set of vertices is $\{1, \dots, k\}$.
+%
+\item The set of arcs is defined by the rules: 
+%\begin{itemize}
+%\item 
+For each $x_j \in X$ such that $\chi_1(x_j) = d_{\min(I_s)}$ and $1\le \min(I_s) \le k$, add an arc $(\min(I_s), j)$.
+%
+%\item 
+%For each pair of distinct indices $s,s'$, if the guards and assignments of the cycle imply that $d_{\min(I_s)} \neq d_{\min(I_{s'})}$, then add an arc $(\min(I_s), neq, \min(I_{s'}))$.
+%\end{itemize}
+\end{itemize}
+
+As a result of the constraints on the guards and assignments, we have the following result.
+
+\begin{proposition}
+The in-degree of out-degree of each vertex in $G_C$ is at most one.
+\end{proposition}
+
+\begin{proof}
+It is easy to observe that the in-degree of each vertex is at most one. When the current data value is stored into some data variable, the data value is not required to be equal to that stored in some other data variable. Therefore, the value of a data variable cannot be copied to some other data variable. From this, we deduce that the out-degree of each vertex is at most one.
+\end{proof}
+
+From the proposition, we know that each connected component of $G_C$ is either a single cycle, or a single path.
+
+Let $N$ be the least natural number satisfying the following conditions: $N$ is a common multiple of the length of all the cycles in $G_C$ and $N$ is no less than the length of all the simple paths in $G_C$.
+
+\smallskip
+
+The idea: It is sufficient to traverse the loop at most $N$ times.
+
+We illustrate the argument for this fact with the following example: There are six data variables, $x_1,\dots,x_5$ such that  $G_C$ comprises a cycle $x_1x_2x_3$ and a path $x_4 x_5$. Without loss of generality, we assume that $\chi_1(x_4)=d^1_{\min(I_6)}=d^1_6$. We will show that it is sufficient to traverse the loop for three times.
+
+Let $\chi_2$ be the assignment function that describes the values of the data and output variables after traversing the loop twice. Then for each $j: 1 \le j \le k$, $\chi_2(x_j)=d^2_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_2(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_1(y_j) + \beta_{j,1} d^2_{\min(I_1)} + \dots + \beta_{j,r} d^2_{\min(I_r)},\]
+where $d^2_{\min(I_1)}=d^2_1 = \chi_1(x_3)=d^1_3$, $d^2_{\min(I_2)}=d^2_2 = \chi_1(x_1)=d^1_1$, $d^2_{\min(I_3)}=d^2_3 = \chi_1(x_2)=d^1_2$, $d^2_{\min(I_4)}=d^2_4 = d^1_{\min(I_6)}=d^1_6$, and $d^2_{\min(I_5)}=\chi_1(x_4)=d^1_4$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_1(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_2(y_j) & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + \alpha^2_{j,1} o_j + (\alpha_{j,1} \beta_{j,1}) d^1_{\min(I_1)} +  \dots + (\alpha_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+& &  \beta_{j,1} d^1_3 + \beta_{j,2} d^1_1 + \beta_{j,3} d^1_2 + \beta_{j,4} d^1_6 + \beta_{j,5} d^1_4 + \beta_{j,6} d^2_{\min(I_6)} + \dots + \beta_{j,r} d^2_{\min(I_r)}\\
+& = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + (\alpha_{j,1})^2 o_j + (\alpha_{j,1} \beta_{j,1} + \beta_{j,2}) d^1_1 + (\alpha_{j,1}\beta_{j,2}+\beta_{j,3})d^1_2+\\
+& & (\alpha_{j,1}\beta_{j,3}+\beta_{j,1})d^1_3 +  (\alpha_{j,1}\beta_{j,4}+\beta_{j,5})d^1_4 + (\alpha_{j,1}\beta_{j,5})d^1_5 + (\alpha_{j,1}\beta_{j,6}+\beta_{j,4})d^1_6 + \\
+& & (\alpha_{j,1}\beta_{j,7}) d^1_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^1_{\min(I_r)} + \beta_{j,6} d^2_{\min(I_6)} + \dots + \beta_{j,r} d^2_{\min(I_r)}.
+\end{array}
+\] 
+
+Let $\chi_3$ be the assignment function that describes the values of the data and output variables after traversing the loop for the third time. Then for each $j: 1 \le j \le k$, $\chi_3(x_j)=d^3_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_3(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_2(y_j) + \beta_{j,1} d^3_{\min(I_1)} + \dots + \beta_{j,r} d^3_{\min(I_r)},\]
+where $d^3_{\min(I_1)}=d^3_1 = \chi_2(x_3)=d^2_3=d^1_2$, $d^3_{\min(I_2)}=d^3_2 = \chi_2(x_1)=d^2_1=d^1_3$, $d^3_{\min(I_3)}=d^3_3 = \chi_2(x_2)=d^2_2=d^1_1$, $d^3_{\min(I_4)}=d^3_4 = d^2_{\min(I_6)}=d^2_6$, and $d^3_{\min(I_5)}=\chi_2(x_4)=d^2_4=d^1_6$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_2(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_3(y_j) & = & 
+%
+%(\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}) + (\alpha_{j,1})^3 o_j + (\alpha^2_{j,1} \beta_{j,1}) d^1_{\min(I_1)} +  \dots + (\alpha^2_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+%& &  (\alpha_{j,1}\beta_{j,1}) d^1_3 + (\alpha_{j,1}\beta_{j,2}) d^1_1 + (\alpha_{j,1}\beta_{j,3}) d^1_2 + (\alpha_{j,1}\beta_{j,4}) d^1_6 + (\alpha_{j,1}\beta_{j,5}) d^1_4 + \\
+%& & (\alpha_{j,1}\beta_{j,6}) d^2_{\min(I_6)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+\beta_{j,1} d^1_2 + \beta_{j,2}  d^1_3 + \beta_{j,3} d^1_1 + \beta_{j,4} d^2_6 + \\
+%& & \beta_{j,5} d^1_6 + \beta_{j,6} d^3_{\min(I_6)} + \dots + \beta_{j,r} d^3_{\min(I_r)}\\
+%
+%& = & 
+(\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}) + \alpha^3_{j,1} o_j + (\alpha^2_{j,1} \beta_{j,1}+ \alpha_{j,1}\beta_{j,2} + \beta_{j,3} ) d^1_1 + \\
+& & (\alpha^2_{j,1} \beta_{j,2}+\alpha_{j,1}\beta_{j,3} + \beta_{j,1} ) d^1_2 + (\alpha^2_{j,1} \beta_{j,3} + \alpha_{j,1}\beta_{j,1} + \beta_{j,2}  ) d^1_3 + (\alpha^2_{j,1} \beta_{j,4}+\alpha_{j,1}\beta_{j,5}) d^1_4 +\\
+& & (\alpha^2_{j,1} \beta_{j,5}) d^1_5 + (\alpha^2_{j,1} \beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5})d^1_6 + (\alpha^2_{j,1} \beta_{j,7}) d^1_{\min(I_7)}+ \dots + (\alpha^2_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+& & (\alpha_{j,1}\beta_{j,6}+\beta_{j,4}) d^2_{6} + (\alpha_{j,1}\beta_{j,7}) d^2_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+  \\
+& &  \beta_{j,6} d^3_{\min(I_6)} + \dots + \beta_{j,r} d^3_{\min(I_r)}.
+\end{array}
+\] 
+
+Let $\chi_4$ be the assignment function that describes the values of the data and output variables after traversing the loop for the third time. Then for each $j: 1 \le j \le k$, $\chi_4(x_j)=d^4_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_4(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_3(y_j) + \beta_{j,1} d^4_{\min(I_1)} + \dots + \beta_{j,r} d^4_{\min(I_r)},\]
+where $d^4_{\min(I_1)}=d^4_1 = \chi_3(x_3)=d^3_3=d^1_1$, $d^4_{\min(I_2)}=d^4_2 = \chi_3(x_1)=d^3_1=d^1_2$, $d^4_{\min(I_3)}=d^4_3 = \chi_3(x_2)=d^3_2=d^1_3$, $d^4_{\min(I_4)}=d^4_4 = d^3_{\min(I_6)}=d^3_6$, and $d^4_{\min(I_5)}=\chi_3(x_4)=d^3_4=d^2_6$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_3(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_4(y_j) & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}+\alpha^3_{j,1} \alpha_{j,0}) + \alpha^4_{j,1}  o_j + (\alpha^3_{j,1} \beta_{j,1}+ \alpha^2_{j,1}\beta_{j,2} + \alpha_{j,1}\beta_{j,3} + \beta_{j,1}) d^1_1 + \\
+& & (\alpha^3_{j,1} \beta_{j,2}+\alpha^2_{j,1}\beta_{j,3} + \alpha_{j,1}\beta_{j,1} + \beta_{j,2}) d^1_2 + (\alpha^3_{j,1} \beta_{j,3} + \alpha^2_{j,1}\beta_{j,1} + \alpha_{j,1}\beta_{j,2} +\beta_{j,3}) d^1_3 + \\
+& & (\alpha^3_{j,1} \beta_{j,4}+\alpha^2_{j,1}\beta_{j,5}) d^1_4 + (\alpha^3_{j,1} \beta_{j,5}) d^1_5 + (\alpha^3_{j,1} \beta_{j,6}+\alpha^2_{j,1}\beta_{j,4}+\alpha_{j,1}\beta_{j,5})d^1_6 + \\
+& & (\alpha^3_{j,1} \beta_{j,7}) d^1_{\min(I_7)}+ \dots + (\alpha^3_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + 
+ (\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4} + \beta_{j,5}) d^2_{6} + \\
+ & & (\alpha^2_{j,1}\beta_{j,7}) d^2_{\min(I_7)} + \dots + (\alpha^2_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+  (\alpha_{j,1}\beta_{j,6}+\beta_{j,4}) d^3_{6} +  \\
+ & & (\alpha_{j,1}\beta_{j,7}) d^3_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^3_{\min(I_r)} + \beta_{j,6} d^4_{\min(I_6)} + \dots +  \beta_{j,r} d^4_{\min(I_r)}.
+\end{array}
+\] 
+
+Consider the coefficient of $o_j, d^1_5, d^1_{\min(I_7)},\dots,d^1_{\min(I_r)}$.
+\begin{itemize}
+\item $\alpha^4_{j,1}o_j = \alpha^2_{j,1}o_j$, $(\alpha^3_{j,1} \beta_{j,5}) d^1_5 = (\alpha_{j,1} \beta_{j,5}) d^1_5$,
+\item $(\alpha^3_{j,1} \beta_{j,7}) d^1_{\min(I_7)}= (\alpha_{j,1} \beta_{j,7}) d^1_{\min(I_7)}$, $\dots$, $(\alpha^3_{j,1} \beta_{j,r}) d^1_{\min(I_r)}= (\alpha_{j,1} \beta_{j,r}) d^1_{\min(I_r)}$.
+\end{itemize}
+Therefore, all these coefficients are the same as those in $\chi_2(y_j)$.
+
+Let us check the constant coefficient and the coefficients of $d^1_1,d^1_2,d^1_3,d^1_4,d^1_5$ and $d^1_6,d^2_6,\dots$.
+
+\begin{itemize}
+\item The constant coefficient and the coefficient of $d^1_1$, $d^1_2$, $d^1_3$ can be seen as integer counters.  
+
+\item The coefficient of $d^1_4$ is $\alpha_{j,1} \beta_{j,4}+\beta_{j,5}, \alpha_{j,1}(\alpha_{j,1} \beta_{j,4}+\beta_{j,5}), \alpha^2_{j,1}(\alpha_{j,1} \beta_{j,4}+\beta_{j,5}), \dots$.
+
+\item The coefficient of $d^1_5$ is $\beta_{j,5},\alpha_{j,1}\beta_{j,5}, \alpha^2_{j,1}\beta_{j,5},\alpha^3_{j,1}\beta_{j,5},\dots$.
+
+\item The coefficient of $d^1_6$ (resp. $d^2_6,d^3_6,\dots$) is $\beta_{j,6}, \alpha_{j,1}\beta_{j,6}+\beta_{j,4}, \alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}, \alpha_{j,1}(\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}),\alpha^2_{j,1}(\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}),\dots$.
+\end{itemize}
+Since $\alpha_{j,1} \in\{0,+1,-1\}$, the values of the coefficients of $d^1_4,d^1_5$ and $d^1_6,d^2_6,d^3_6,\dots$ are from a bounded domain.
+
+From this example, we get the following intuition.
+%
+\begin{itemize}
+\item For the data variables belonging to some cycle of $G_C$, they can be dealt with the same as the constant coefficients, that is, dealt with as integer counters.
+
+\item For the other data variables as well as those newly introduced data values, their coefficients are from a bounded domain and can be dealt with easily.
+\end{itemize}
+ 
 \subsection{The analysis of a lasso with independently evolving multiple output variables}
 
 Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a SDSIT$_{\pm}$. 
