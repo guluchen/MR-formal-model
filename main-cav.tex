@@ -120,15 +120,15 @@
 
 Map-Reduce is a popular programming model for data parallel computation. 
 In Map-Reduce, the \emph{reducer} produces an output from a list of inputs. Due the scheduling policy and the settings of machines, the input may arrive the reducers with different orders. The \emph{communtative problem} of reducers asks if the output of a reducer independent of the order of its inputs. The problem is in general undecidable due to Rice's theorem and thus is seemingly uninteresting. However, the Map-Reduce model is usually used for data analytics and thus requires very simple data and control flow. 
-By exploiting the simplicity of the required program flows, we propose a commutative decidable language for reducers.
+By exploiting the simplicity of the required program flows, we propose a simple programming language for reducers where the communtative problem can be decide by a reduction to the equivalence problem of \emph{streaming numerical transducer}. 
 We show that the language is expressive enough for common data analytics operations.
 \end{abstract}
 
 \section{Introduction}
 %What is Map-Reduce
-Map-Reduce is a very popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} takes a key-value pair as input and output a list of key-value pairs. The load balance mechanism of the Map-Reduce framework will process the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of the key and a list of values. The reducer reads the input list and output a key-value pair.
+Map-Reduce is a very popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. The load balance mechanism of the Map-Reduce framework processes the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of a key and a list of values. The reducer then iterates through the input list and output a key-value pair.
 
-
+For example, 
 
 %The communitativity problem
 
@@ -136,7 +136,7 @@ Map-Reduce is a very popular framework for data parallel computation. It has bee
 
 %data analytics
 
-%At a first glance, the commutativity problem for arbitrary reducers appears to be un- decidable by the Rice’s theorem. Yet reducers are seldom Turing machines in practice. Most real-world reducers simply iterate through their input list and compute their out- puts; they do not have complicated control or data flows. Therefore, one wonders if the commutativity problem for such reducers can be decided for practical purposes.
+%At a first glance, the commutativity problem for arbitrary reducers appears to be undecidable by the Rice’s theorem. Yet reducers are seldom Turing machines in practice. Most real-world reducers simply iterate through their input list and compute their out- puts; they do not have complicated control or data flows. Therefore, one wonders if the commutativity problem for such reducers can be decided for practical purposes.
 
 \cite{CHSW15}
 
