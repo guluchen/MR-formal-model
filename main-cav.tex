@@ -128,7 +128,8 @@ We show that the language is expressive enough for common data analytics operati
 %What is Map-Reduce
 Map-Reduce is a very popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. The load balance mechanism of the Map-Reduce framework processes the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of a key and a list of values. The reducer then iterates through the input list and output a key-value pair.
 
-For example, 
+To be more concrete, taking the ``word-counting'' Map-Reduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
+This results in the \emph{ communitativity problem}.
 
 %The communitativity problem
 
@@ -262,24 +263,24 @@ Then the commutativity of a given \SDSIT $\Tt$ is reduced to the equivalence of 
 The commutativity of \SDSIT is reduced to the equivalence of \SDSIT in linear time.
 \end{proposition}
 
-We then focus on the equivalence problem of generalized flat SDSIT$_{\pm}$.
+We then focus on the equivalence problem of generalized flat \SDSIT$_{\pm}$.
 
-A SDSIT$_{\pm}$ is called \emph{generalized flat} if each nontrivial SCC (strongly-connected component) of the transition graph is a collection of edge-disjoint simple cycles such that there is a unique state which is shared by each pair of distinct cycles in the collection.
+A \SDSIT$_{\pm}$ is called \emph{generalized flat} if each nontrivial SCC (strongly-connected component) of the transition graph is a collection of edge-disjoint simple cycles such that there is a unique state which is shared by each pair of distinct cycles in the collection.
 
-Let $\Ss_1$ and $\Ss_2$ be two generalized flat SDSIT$_{\pm}$.
+Let $\Ss_1$ and $\Ss_2$ be two generalized flat \SDSIT$_{\pm}$.
 
 \begin{proposition}\label{prop-equiv-reduce}
-The equivalence problem of two generalized flat SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat SDSIT$_{\pm}$.
+The equivalence problem of two generalized flat \SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat \SDSIT$_{\pm}$.
 \end{proposition}
 
-%Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
+%Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat \SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the \SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
 %\begin{quote}
 %\it the output variables in $Y_1$ are updated independently of those in $Y_2$: For each transition $((q_1,q_2),g,\eta,(q'_1,q'_2))$ in $\Ss$, for each $y_1 \in Y_1$(resp. $y_2 \in Y_2$), no variables from $Y_2$ (resp. $Y_1$) occurs in $\eta(y_1)$ (resp. $\eta(Y_2)$). \hfill ($\ast$)
 %\end{quote}
 
-%In the rest of this paper, we will assume that the SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
+%In the rest of this paper, we will assume that the \SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
 
-For simplicity, from now on, we assume that $K=1$, that is, there is at most one data value over each position, and we will omit the number $K$ in the definition of SDSIT$_{\pm}$.
+For simplicity, from now on, we assume that $K=1$, that is, there is at most one data value over each position, and we will omit the number $K$ in the definition of \SDSIT$_{\pm}$.
 
 
 Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a generalized flat SDSIT$_{\pm}$.  Suppose $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. In addition, we assume that all the output variables are \emph{independently evolving} in the sense that for each transition $(q, g, \eta, q')$, it holds that for each $y \in Y$, only $y$ can occur in $\eta(y)$ and no other output variables can occur in $\eta(y)$.  
@@ -293,7 +294,7 @@ From now on, we assume that all generalized flat SDSIT$_{\pm}$ considered in thi
 
 %$c \in \intnum$,  or $cur\ o\ c$
 
-%In the following, we focus on the non-zero reachability problem of generalized flat SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
+%In the following, we focus on the non-zero reachability problem of generalized flat \SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
 
 We start the analysis with paths and cycles.
 
