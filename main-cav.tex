@@ -158,6 +158,8 @@ The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} d
 
 \section{Preliminaries}
 
+For a mapping $\pi$, let $dom(\pi)$ and $rng(\pi)$ denote the domain and range of $\pi$.
+
 Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. We assume that $X$ contains a special variable $cur$, which is used to denote the current data value. Then a guard over $X$ is a formula defined by the rules, $g::= cur\ o\ c \mid cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. For an expression $e$, let $vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $X \cup Y$ is a partial function from $(X \setminus \{cur\}) \cup Y$ to $\Ee_{X \cup Y}$ (the set of arithmetic expressions over $X \cup Y$) such that for each $x \in dom(\eta) \cap X$, $\eta(x)=cur$. Note that the assignments to the special variable $cur$ are disallowed.
 
 A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, where $d_i \in \Ii$ for each $i$.
@@ -661,7 +663,184 @@ Therefore, in this case, the non-zero output reachability problem is reduced to 
 
 \subsection{Comparison with constants}
 
-In this subsection, we consider the situation that the guards may contain comparisons with constants.
+We now consider the situation that the guards include the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
+
+For this situation, we adapt the algorithm for a generalized lasso into Step I', II' and III' below.
+
+\smallskip
+
+\noindent {\bf Step I'}. Decide whether $\chi_0(O(q_m))$ is not identical to zero. If the answer is yes, then the decision procedure terminates and returns the answer $true$. Otherwise, the decision procedure continues.
+
+When decide whether $\chi_0(O(q_m))$ is not identical to zero, it is unsound to just consider the coefficients of $d^0_1,\dots,d^0_s$, since some of the data values may be integer constants as well. 
+
+From the analysis, we know that 
+\[
+\begin{array}{l c l }
+\chi_0(O(q_m)) & = & a_0 + a_1 \chi_0(x_1) + \dots + a_k \chi_0(x_k) + a'_1 \chi_0(y_1) + \dots a'_l \chi_0(y_l).\\
+& = & (a_0+a'_1 c_{0,1} + \dots + a'_l c_{0,l}) + \sum \limits_{j \not \in rng(\pi_0)}  (a'_1 c_{j,1}+\dots + a'_l c_{j,l}) d^0_j+\\
+& & \sum \limits_{j \in rng(\pi_0)} (a_{\pi_0^{-1}(j)}+ a'_1 c_{j,1}+\dots + a'_l c_{j,l}) d^0_j.
+\end{array}
+\]
+
+From the guards and assignments of the transitions in the handle, we know that some of $d^0_1,\dots,d^0_s$ are just integer constants. Let $J_0 \subseteq \{1,\dots,s\}$ denote the subset of indices for these data values. For $d^0_j$ such that $j \not \in J_0$, we know that either $d^0_j < c_{\min}$ or $d^0_j > c_{\max}$, since the SNT is assumed to be normalized.
+
+Then to decide whether $\chi_0(O(q_m))$ is identical to zero, we will first check whether the coefficient of $d^0_j$ in $\chi_0(O(q_m))$ for some $j \not \in J_0$ is non-zero. If this is the case, the return ``$true$''. Otherwise, $\chi_0(O(q_m))$ is in fact an integer constant, and we just check whether it is equal to zero. If it is not equal to zero, then return ``true''. Otherwise, we continue the procedure.
+
+For $b=1,2$, we know that $\chi_{b,1}(y_j) = \alpha_{b,(j,0)} + \alpha_{b,(j,1)} o_j + \beta_{b,(j,1)} d^0_{\pi_0(1)} + \dots + \beta_{b,(j,k)} d^0_{\pi_0(k)} + \gamma_{b,(j,1)} d^1_1 +\dots + \gamma_{b,(j,r_b)} d^1_{r_b}$.
+
+Moreover, from the guards and assignments in the transitions of the handle and $C_b$, we know that some of $d^0_{\pi_0(1)}, d^0_{\pi_0(k)}, d^1_1,\dots, d^1_{r_b}$ are integer constants. From this, we know that for the data values $d^0_1,\dots, d^0_s, d^1_1,\dots, d^1_{r_b}, \dots, d^{\ell_b}_1,\dots, d^{\ell_b}_{r_b}$ introduced when traversing $C_b$ for $\ell_b$ times, which ones are integer constants.
+
+\smallskip
+
+\noindent {\bf Step II'}. For $\chi_{(b,\ell_b)}(O(q_m))$, we then do the analysis for the coefficient of $d^0_{\pi_0(j')}$ that is not a constant, similar to that in Step II.  Moreover, we consider the sum of the constant coefficient and all the components $c\ d^{i}_{j'}$ in  $\chi_{(b,\ell_b)}(O(q_m))$ such that $d^i_{j'}$ is a constant, and do the analysis for it, similar to that for the constant coefficient in Step II.
+
+\smallskip
+
+\noindent {\bf Step III'}. We will do the same analysis as in Step III.
+
+
+\subsection{Generalized flat}
+
+We will illustrate the argument by the following scenario:  
+\begin{quote}
+$q_0\dots q_{m} (C_1,\dots,C_n) q'_0 \dots q'_{m'} (C'_1,\dots,C'_{n'})$ is a path scheme of the transducer, where each pair of $C_1,\dots,C_n$ share the unique common state $q_m$, $q'_0 = q_m$, and each pair of $C'_1,\dots,C'_{n'}$ share the common state $q'_{m'}$. Moreover, $O(q'_{m'})$ is defined and $O(q)$ is undefined for all the other states $q$.
+\end{quote}
+
+For simplicity, we assume that $n = n' = 2$.
+
+We will illustrate the argument for the situation that there are no comparisons with constants in the guards.
+
+For the handle $q_0 \dots q_m$, we can obtain a mapping $\chi_0$ to describe the value of the control and data variables after traversing the handle. Suppose for each $j: 1 \le j \le l$,  $\chi_0(y_j) = c_{0,j} + c_{1,j} d^0_1 + \dots + c_{s,j} d^0_s$. Moreover, we assume that there is an injective mapping $\pi_0$ such that for each $j: 1 \le j \le k$, $\chi_0(x_j) = d^0_{\pi_0(j)}$.
+
+Suppose that the mapping $\chi_{1,\ell_1}$ and $\chi_{2,\ell_2}$ to describe the values of the control and data variables after traversing the cycle $C_1$ and $C_2$ for $\ell_1$ and $\ell_2$ times are as in the analysis of generalized lasso above.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+ that is,
+\[
+\begin{array}{l c l}
+\chi_{(1,\ell_1)}(y_j)  & = & (\alpha_{1,(j,0)} + \alpha_{1,(j,1)} \alpha_{1,(j,0)}+ \dots +\alpha^{\ell_1-1}_{1,(j,1)} \alpha_{1,(j,0)}) + \alpha^{\ell_1}_{1,(j,1)} o_j + \\
+& & \sum \limits_{j' \in J_{1,1}} (\beta_{1,(j,j')}+\alpha_{1,(j,1)}\beta_{1,(j,j')} + \dots +\alpha^{\ell_1-1}_{1,(j,1)}  \beta_{1,(j,j')}) d^0_{\pi_0(j')} + \\
+%
+& & \sum \limits_{j' \in J_{1,2}} (\alpha^{\ell_1-1}_{1,(j,1)}\beta_{1,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{1,3}} (\alpha^{\ell_1-2}_{1,(j,1)}\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha^{\ell_1-1}_{1,(j,1)}\gamma_{1,(j,j')}) d^1_{j'} + \\
+%
+& & \sum \limits_{j' \in J_{1,4}} (\alpha^{\ell_1-1}_{1,(j,1)} \gamma_{1,(j,j')}) d^1_{j'} + \dots + \sum \limits_{j' \in J_{1,3}} (\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha_{1,(j,1)}\gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \\
+%
+& & \sum \limits_{j' \in J_{1,4}} (\alpha_{1,(j,1)} \gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \gamma_{1,(j, 1)} d^{\ell_1}_{1} + \dots + \gamma_{1,(j,r_1)} d^{\ell_1}_{r_1},
+\end{array} 
+\]
+and
+\[
+\begin{array}{l c l}
+\chi_{(2,\ell_2)}(y_j)  & = & (\alpha_{2,(j,0)} + \alpha_{2,(j,1)} \alpha_{2,(j,0)}+ \dots +\alpha^{\ell_2-1}_{2,(j,1)} \alpha_{2,(j,0)}) + \alpha^{\ell_2}_{2,(j,1)} o_j + \\
+%
+& & \sum \limits_{j' \in J_{2,1}} (\beta_{2,(j,j')}+\alpha_{2,(j,1)}\beta_{2,(j,j')} + \dots +\alpha^{\ell_2-1}_{2,(j,1)}  \beta_{2,(j,j')}) d^0_{\pi_0(j')} + \\
+%
+& & \sum \limits_{j' \in J_{2,2}} (\alpha^{\ell_2-1}_{2,(j,1)}\beta_{2,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{2,3}} (\alpha^{\ell_2-2}_{2,(j,1)}\beta_{2,(j, \pi^{-1}(j'+k))}+\\
+%
+& & \alpha^{\ell_2-1}_{2,(j,1)}\gamma_{2,(j,j')}) d^1_{j'} +  \sum \limits_{j' \in J_{2,4}} (\alpha^{\ell_2-1}_{2,(j,1)} \gamma_{2,(j,j')}) d^1_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \in J_{2,3}} (\beta_{2,(j, \pi^{-1}(j'+k))}+ \alpha_{2,(j,1)}\gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \\
+%
+& &  \sum \limits_{j' \in J_{2,4}} (\alpha_{2,(j,1)} \gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \gamma_{2,(j, 1)} d^{\ell_2}_{1} +  \dots + \gamma_{2,(j,r_2)} d^{\ell_2}_{r_2}.
+\end{array} 
+\]
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Moreover, suppose the initial values of the control variables are $d'_1,\dots,d'_k$ and the initial values of the data variables are $o'_1,\dots,o'_l$, then for the handle $q'_0 \dots q'_{m'}$, let $\chi'_0$ be the mapping to describe the values of the control and data variables after traversing the handle, 
+\[
+\chi'_0(y_j) = c'_{0,j} + c'_{1,j} (d^0_1)' + \dots + c'_{s',j} (d^0_{s'})'+c''_{0,j} o'_j + c''_{1,j} d'_1 + \dots c''_{k,j} d'_k,
+\] 
+where $(d^0_1)' ,\dots, (d^0_{s'})'$ are the data values introduced when traversing the handle. Let $\pi'_0: \{1,\dots,k\} \rightarrow \{1,\dots,k+s'\}$ be an injective mapping such that $\chi'_0(x_j) = d'_{j}$ if $\pi'_0(j) \le j$ (in this case $\pi'_0(j)=j$), and $\chi'_0(x_j) = (d^0_{\pi'_0(j)-k})'$ otherwise.
+
+
+Moreover, suppose $d''_1,\dots,d''_k$ are the initial values of the control variables and $o''_1,\dots,o''_l$ are the initial values of the data variables, then $\chi'_{1,\ell'_1}$ and $\chi'_{2,\ell'_2}$, which describe the values of the control and data variables after traversing the cycle $C'_1$ and $C'_2$ for $\ell_1$ and $\ell_2$ times respectively, are as follows, 
+%
+\[
+\begin{array}{l c l}
+\chi'_{(1,\ell'_1)}(y_j)  & = & (\alpha'_{1,(j,0)} + \alpha'_{1,(j,1)} \alpha'_{1,(j,0)}+ \dots +(\alpha'_{1,(j,1)})^{\ell'_1-1} \alpha'_{1,(j,0)}) + (\alpha'_{1,(j,1)})^{\ell'_1} o''_j + \\
+& & \sum \limits_{j' \in J'_{1,1}} (\beta'_{1,(j,j')}+\alpha'_{1,(j,1)}\beta'_{1,(j,j')} + \dots +(\alpha'_{1,(j,1)})^{\ell'_1-1}  \beta'_{1,(j,j')}) d''_{j'} + \\
+%
+& & \sum \limits_{j' \in J'_{1,2}} ( (\alpha'_{1,(j,1)})^{\ell'_1-1} \beta'_{1,(j,j')}) d''_{j'} +  \sum \limits_{j' \in J'_{1,3}} ( (\alpha'_{1,(j,1)})^{\ell'_1-2} \beta'_{1,(j, \pi^{-1}(j'+k))}+\\
+%
+& &  (\alpha'_{1,(j,1)})^{\ell'_1-1} \gamma'_{1,(j,j')}) (d^1_{j'})' +  \sum \limits_{j' \in J'_{1,4}} ( (\alpha'_{1,(j,1)})^{\ell'_1-1} \gamma'_{1,(j,j')}) (d^1_{j'})' + \dots +  \\
+%
+& & \sum \limits_{j' \in J'_{1,3}} (\beta'_{1,(j, \pi^{-1}(j'+k))}+\alpha'_{1,(j,1)}\gamma'_{1,(j,j')}) (d^{\ell'_1-1}_{j'})' +\\
+& & \sum \limits_{j' \in J'_{1,4}} (\alpha'_{1,(j,1)} \gamma'_{1,(j,j')}) (d^{\ell'_1-1}_{j'})' + \gamma'_{1,(j, 1)} (d^{\ell'_1}_{1})' + \dots + \gamma'_{1,(j,r_1)} (d^{\ell'_1}_{r'_1})',
+\end{array} 
+\]
+and
+\[
+\begin{array}{l c l}
+\chi'_{(2,\ell'_2)}(y_j)  & = & (\alpha'_{2,(j,0)} + \alpha'_{2,(j,1)} \alpha'_{2,(j,0)}+ \dots +(\alpha'_{2,(j,1)})^{\ell'_2-1} \alpha'_{2,(j,0)}) + (\alpha'_{2,(j,1)})^{\ell'_2} o''_j + \\
+& & \sum \limits_{j' \in J'_{2,1}} (\beta'_{2,(j,j')}+\alpha'_{2,(j,1)}\beta'_{2,(j,j')} + \dots +(\alpha'_{2,(j,1)})^{\ell'_2-1}  \beta'_{2,(j,j')}) d''_{j'} + \\
+%
+& & \sum \limits_{j' \in J'_{2,2}} ( (\alpha'_{2,(j,1)})^{\ell'_2-1} \beta'_{2,(j,j')}) d''_{j'} +  \sum \limits_{j' \in J'_{2,3}} ( (\alpha'_{2,(j,1)})^{\ell'_2-2} \beta'_{2,(j, \pi^{-1}(j'+k))}+\\
+%
+& &  (\alpha'_{2,(j,1)})^{\ell'_2-1} \gamma'_{2,(j,j')}) (d^2_{j'})' +  \sum \limits_{j' \in J'_{2,4}} ( (\alpha'_{2,(j,1)})^{\ell'_2-1} \gamma'_{2,(j,j')}) (d^2_{j'})' + \dots +  \\
+%
+& & \sum \limits_{j' \in J'_{2,3}} (\beta'_{2,(j, \pi^{-1}(j'+k))}+\alpha'_{2,(j,1)}\gamma'_{2,(j,j')}) (d^{\ell'_2-1}_{j'})' +\\
+& & \sum \limits_{j' \in J'_{2,4}} (\alpha'_{2,(j,1)} \gamma'_{2,(j,j')}) (d^{\ell'_2-1}_{j'})' + \gamma'_{2,(j, 1)} (d^{\ell'_2}_{1})' + \dots + \gamma'_{2,(j,r_1)} (d^{\ell'_2}_{r'_2})'.
+\end{array} 
+\]
+
+\noindent {\bf Step I''}. We can do the same analysis for the handle $q_0 \dots q_m$ as for generalized lasso.
+
+\smallskip 
+\noindent {\bf Step II''}. Let $\chi$ Consider
+\[
+\begin{array}{l c l}
+\chi'_{0}(O(q'_{m'})) & = & a_0 + a_1 \chi'_0(x_1) + \dots a_k \chi'_0(x_k) + \\
+& & a'_1 \chi'_0(y_1) + \dots + a'_l \chi'_0(y_l) \\
+&  = &  (a_0+\sum \limits_{1 \le j \le l} a'_j c'_{0,j}) + \sum \limits_{\pi'_0(j)=j} (a_j + \sum \limits_{1 \le j' \le l} a'_{j'} c''_{j,j'}) d'_j  + \\
+& & \sum \limits_{\pi'_0(j) \neq j} \sum \limits_{1 \le j' \le l} (a'_{j'} c''_{j,j'}) d'_j + \sum \limits_{1\le j \le l} (a'_{j} c''_{0,j}) o'_j + \\
+& & \sum \limits_{1 \le j \le s', j \in rng(\pi'_0)} (\sum \limits_{1 \le j' \le l} (a_{(\pi'_0)^{-1}(j)} + a'_{j'} c'_{j,j'})) (d^0_j)' +\\ & & \dots  + \sum \limits_{1 \le j \le s', j \not \in rng(\pi'_0)} (\sum \limits_{1 \le j' \le l} (a'_{j'} c'_{j,j'})) (d^0_j)'.
+\end{array}
+\] 
+
+Then we can think $q_m$ as a state with the output expression $O(q_m)=\chi'_{0}(O(q'_{m'}))$, where $d'_1,\dots,d'_k, o'_1,\dots, o'_l$ denote the values of the control and data variables. 
+
+Let $a''_0$ be the constant coefficient of $\chi'_{0}(O(q'_{m'}))$, $a''_1,\dots,a''_k,a'''_1,\dots,a'''_l$ be the coefficient of $d'_1,\dots,d'_k,o'_1,\dots,o'_l$ of $\chi'_{0}(O(q'_{m'}))$ respectively.
+
+Similarly to the analysis of generalized lassos, $\chi_{(b,\ell_b)}(O(q_m))$ is a linear combination of the variables $d^0_1,\dots, d^0_s$ and $d^1_1,\dots, d^1_{r_b}, \dots, d^{\ell_b}_1,\dots, d^{\ell_b}_{r_b}$. For each $j' \in J_{b,1}$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{(b,\ell_b)}(O(q_m))$ is 
+%
+\[a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\beta_{b,(j,j')}.\]
+%
+
+In general, for each $j' \in J_{1,1}$ and each cycle scheme $\schm=(1,\ell_1)(2,\ell_2) \dots (1+(t-1) \bmod 2,\ell_{t})$ (where $t \ge 1$) of $(C_1,C_2)$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{\schm}(O(q_m))$ includes the following expression as a component,
+%
+\[a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)}) (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')}. \ \ \  (\ast')\]
+
+Note that since $\alpha_{1,(j,1)},\alpha_{2,(j,1)} \in \{0,+1,-1\}$, the expression $(\ast')$ is of the form 
+\[a_{j'} + \sum \limits_{1 \le j \le l} a'_j  s_j (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')},\]
+where $s_j \in \{0,+1,-1\}$.
+
+The expression $(\ast')$ can be rewritten as $\mu_{\schm,(1,j')} \ell_1 + \nu_{\schm,(1,j')}$ for some integer constant $\mu_{\schm,(1,j')},\nu_{\schm,(1,j')}$ (possibly $\mu_{\schm,(1,j')}=0$). 
+
+If $\mu_{\schm,(1,j')} \neq 0$, then return ``$true$''. 
+
+Otherwise, for each cycle scheme $\schm'=(1,\ell'_1)(2,\ell'_2) \dots (1+(t'-1) \bmod 2,\ell'_{t'})$ (where $t' \ge 1$) of $(C'_1,C'_2)$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{\schm (q'_0 \dots q'_{m'})\schm'}(O(q'_{m'}))$ includes the following expression as a component,
+\[
+\begin{array}{l c l}
+a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)} (\alpha'_{1,(j,1)})^{\ell'_{1}} (\alpha'_{2,(j,1)})^{\ell'_{2}} \dots (\alpha'_{1,(j,1)})^{\ell'_{t'}}) \\
+\hspace{16mm} (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')}. \hspace{2cm}. (\ast'')
+\end{array}
+\]
+
+The a similar analysis can be applied to $(\ast'')$ by considering all the cycle shcemes of $(C'_1,C'_2)$.
+
+Moreover, we can apply a similar analysis for the cycle $C'_1,C'_2$ as for $C_1,C_2$, by using the output expressions $O(q'_{m'})$.
+
+If the procedure does not return yet, then we go to Step III''.
+
+\smallskip
+
+\noindent {\bf Step III''}. Similar to Step III, for the path scheme, we can simulate the updates of the coefficients of the data values for the data variables as well as the output expression by a $\intnum$-VAS.
 
 
 \section{Discussions}
