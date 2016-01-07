@@ -1,0 +1,485 @@
+
+
+\subsection{The analysis of a lasso with only one output variable for each transducer}
+
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a \SDSIT$_{\pm}$. Suppose $Y=Y_1 \cup Y_2$, $Y_1 \cap Y_2 = \emptyset$, $Y_1=\{y_1\}$ and $Y_2 = \{y_2\}$. We will do the analysis step by step.
+
+At first, we assume that $X=\emptyset$, thus all the guards in the transitions are trivial.
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=p_0 p_1 \dots p_m$, $p_0 = p_m=q_n$, $O(q_n)$ is defined and $O(p_j)$ is undefined for each $j \neq 0,m$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(p_j, g'_j, \eta'_j, p_{j+1})$ is the $j$-th transition in the handle. 
+
+We use $d_1,\dots,d_n$ to denote the $n$ data values for the handle.
+
+Then for $j=1,2$, an expression $e_{j}=\alpha_{j,0}+ \alpha_{j,1}d_1 + \dots \alpha_{j,n}d_n$ can be constructed to describe the value of $y_{j}$ after going through the handle, where the coefficients $\alpha_{j,0},\dots, \alpha_{j,n}$ are obtained from the transitions in the handle. Note here we ignore the special situations that the value of $y_{j}$ is undefined after going through the handle. Because of the ``copyless'' constraint, it holds that $\alpha_{j,1},\dots,\alpha_{j,n} \in \{0,+1,-1\}$.
+
+Let $\theta$ be the assignment function such that $\theta(y_1)=e_1$ and $\theta(y_2)=e_2$.
+
+Suppose $O(q_n)=a_0+a_1 y_{1} + a_2 y_2$. Then $\theta(O(q_n))$, that is, the expression obtained by replacing $y_1,y_2$ with $e_1,e_2$, is $a_0+a_1 e_{1} + a_2 e_2$, which can be rearranged into the following expression,
+\[
+(a_0 + \alpha_{1,0}+\alpha_{2,0}) + (a_1 \alpha_{1,1}+a_2 \alpha_{2,1}) d_1 + \dots + (a_1 \alpha_{1,n}+a_2 \alpha_{2,n}) d_n.
+\]
+Let $\mu_0,\dots,\mu_n$ denote the coefficients of the expression. 
+If $\mu_i \neq 0$ for some $i: 1 \le i \le n$, then we know that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Otherwise, we continue analyzing the loop. 
+
+Similarly to the handle, for each $j=1,2$, an expression $f_1 = \beta_{1,0} + \beta_{1,1} \theta(y_1) + \gamma_{1,1} d'_1 + \dots + \gamma_{1,m} d'_m$ can be constructed to describe the value of the variable $y_{1}$ after going through the loop, where $\theta(y_{1})$ denote the initial value of the output variable $y_1$ and $d'_1, \dots, d'_m$ denote the data values occurring in the loop. Similarly, an expression $f_2 = \beta_{2,0} + \beta_{2,1} \theta(y_2) + \gamma_{2,1} d'_1 + \dots + \gamma_{2,m} d'_m$ can be constructed for $y_2$. As a result of the ``copyless'' constraint again, we know that $\beta_{j,1}, \gamma_{j,1},\dots,\gamma_{j,m} \in \{0,+1,-1\}$ for $j=1,2$.
+
+Let $\chi$ be the assignment function such that $\chi(y_1)=f_1$ and $\chi(y_2)=f_2$.
+
+Then $\chi(O(q_n)) = a_0 + a_1 f_1 + a_2 f_2$ can be rearranged into the following expression,
+\[
+(a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} ) + (a_1 \beta_{1,1})\theta(y_1)+(a_2 \beta_{2,1} )\theta(y_2) + 
+ (a_1\gamma_{1,1} + a_2 \gamma_{2,1}) d'_1 + \dots + (a_1\gamma_{1,m} + a_2 \gamma_{2,m}) d'_m.
+\]
+
+
+If $a_1 \gamma_{1,i} +a_2 \gamma_{2,i} \neq 0$ for some $i: 1 \le i \le m$, then we are done.
+
+
+Otherwise, let $a'_0, a'_1,a'_2$ be the coefficients in the expression above, that is, $\chi(O(q_n))=a'_0 + a'_1 \theta(y_1)+ a'_2 \theta(y_2)$.
+
+By expanding the expressions $\theta(y_1)=e_1$ and $\theta(y_2)=e_2$ in $\chi(O(q_n))$, we get the following expression,
+
+\[
+(a'_0 + \alpha_{1,0}+\alpha_{2,0}) + (a'_1 \alpha_{1,1}+a'_2 \alpha_{2,1}) d_1 + \dots + (a'_1 \alpha_{1,n}+a'_2 \alpha_{2,n}) d_n.
+\]
+
+For each $i: 0 \le i \le n$, let $\mu'_i$ denote the $i$-th coefficient of the expression. 
+%
+Intuitively, $\theta(O(q_n)) = \mu_0 + \mu_1 d_1 + \dots + \mu_n d_n$ and $\chi(O(q_n)) = \mu'_0 + \mu'_1 d_1 + \dots \mu'_n d_n$.
+
+If $\mu'_i \neq 0$ for some $i: 0 \le i \le n$, then we are done. 
+
+Otherwise, we iterate the loop once more.  Then we get the output $a'_0 + a'_1 \chi(y_1)+ a'_2 \chi(y_2)$, which can be rearranged into
+\[
+ (a'_0 + a'_1 \beta_{1,0} + a'_2 \beta_{2,0} ) + (a'_1 \beta_{1,1})\theta(y_1)+(a'_2 \beta_{2,1} )\theta(y_2) + 
+ (a'_1\gamma_{1,1} + a'_2 \gamma_{2,1}) d'_1 + \dots + (a'_1\gamma_{1,m} + a'_2 \gamma_{2,m}) d'_m.
+\]
+
+By expanding the expressions $a'_0 = a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0}$, $a'_1=a_1 \beta_{1,1}$, $a'_2=a_2 \beta_{2,1}$, as well as $\theta(y_1)$ and $\theta(y_2)$, we get the following expression,
+\[
+\begin{array}{l}
+ (a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} + \alpha_{1,0} + \alpha_{2,0}) + \\
+ ((a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,1}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,1})d_1 + \\
+ \multicolumn{1}{c}{\dots} \\
+  ((a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,n}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,n})d_n \\
+ (a_1 \beta_{1,1}\gamma_{1,1} + a_2 \beta_{2,1} \gamma_{2,1}) d'_1 + 
+ \dots + (a_1 \beta_{1,1}\gamma_{1,m} + a_2 \beta_{2,1} \gamma_{2,m}) d'_m.
+\end{array}
+\]
+
+From the fact that $\mu_0=\mu_1 = \dots \mu_n =0$ and $\mu'_0=\mu'_1=\dots = \mu'_n=0$, we get the following equations, 
+\[
+\begin{array}{l c l}
+a_0 + \alpha_{1,0}+\alpha_{2,0} & = & 0,\\
+a_1 \alpha_{1,1} + a_2 \alpha_{2,1} & = & 0,\\
+\multicolumn{3}{c}{\dots}  \\
+a_1 \alpha_{1,n} + a_2 \alpha_{2,n} & = & 0, \\
+a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + \alpha_{1,0}+ \alpha_{2,0}  & =  & 0,\\
+a_1\beta_{1,1} \alpha_{1,1} + a_2 \beta_{2,1} \alpha_{2,1} & = & 0,\\
+\multicolumn{3}{c}{\dots}  \\
+a_1\beta_{1,1} \alpha_{1,n} + a_2 \beta_{2,1} \alpha_{2,n}  & = & 0.
+\end{array}
+\] 
+
+If $\beta_{1,1} \neq \beta_{2,1}$ and $a_1 \beta_{1,0} \neq 0$, then from $a_1 \beta_{1,0} + a_2 \beta_{2,0} =0$, we deduce that 
+\[a_0 + a_1 \beta_{1,0} + a_2 \beta_{2,0} + a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} + \alpha_{1,0} + \alpha_{2,0} = a_1 \beta_{1,1} \beta_{1,0} + a_2 \beta_{2,1} \beta_{2,0} \neq 0.\]
+In this case, we conclude that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Similarly, if $\beta_{1,1} \neq \beta_{2,1}$ and $a_1 \gamma_{1,i} \neq 0$ for some $i: 1 \le i \le m$, then from $a_1 \gamma_{1,i} + a_2 \gamma_{2,i} =0$, we deduce that 
+$(a_1 \beta_{1,1}\gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i}) \neq 0$. In this case, we also conclude that there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+In the following, we assume that $\beta_{1,1} = \beta_{2,1}$ or $a_1 \beta_{1,0} = 0$ or for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$.
+
+If $\beta_{1,1} = \beta_{2,1}$, then it is easy to see that $a'_0 + a'_1 \chi(y_1)+ a'_2 \chi(y_2) = 0$ and we can conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Therefore, in the following, we assume that $\beta_{1,1} \neq \beta_{2,1}$. Then $a_1 \beta_{1,0} = 0$ or for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$. 
+
+If $|\beta_{1,1}| =|\beta_{2,1}|$ and for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$, then we can conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+Therefore, in the following, we assume that $|\beta_{1,1}| \neq |\beta_{2,1}|$ or there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$. 
+\begin{enumerate}
+\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} = 0$, there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$,
+\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} = 0$, for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$,
+%\item $|\beta_{1,1}| \neq |\beta_{2,1}|$, $a_1 \beta_{1,0} \neq 0$, for each $i: 1 \le i \le m$, $a_1 \gamma_{1,i} = 0$,
+\item $|\beta_{1,1}| = |\beta_{2,1}|$ (but $\beta_{1,1} \neq \beta_{2,1}$), $a_1 \beta_{1,0} = 0$, there is $i: 1 \le i \le m$ such that $a_1 \gamma_{1,i} \neq 0$.
+\end{enumerate}
+
+For the first case above, we have $\beta_{1,1}=0$ and $\beta_{2,1} = \pm 1$, or vice versa. Then $a_1 \beta_{1,1} \gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i} \neq 0$. Therefore, we conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+For the second case above, we have $\beta_{1,1}=0$ and $\beta_{2,1} = \pm 1$, or vice versa. Then for each $i: 1 \le i \le n$, $(a_1 \beta_{1,1} \beta_{1,1})\alpha_{1,i}+(a_2 \beta_{2,1} \beta_{2,1} ) \alpha_{2,i} = a_2  \alpha_{2,i}$ or $a_1 \alpha_{1,i}$. If there is $i: 1 \le i \le n$ such that $a_1 \alpha_{1,i} \neq 0$, then we conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero. Otherwise, we conclude that there are no inputs $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+For the third case above, we have that $\beta_{1,1} = 1$ and $\beta_{2,1} =-1$ or vice versa. Then $a_1 \beta_{1,1}\gamma_{1,i} + a_2 \beta_{2,1} \gamma_{2,i} = 2a_1 \gamma_{1,i}$ or $-2a_1 \gamma_{1,i}$. We conclude that  there is an input $w$ such that the output of $\Ss$ on $w$ is nonzero.
+
+
+
+\section{Analysis of a lasso with multiple output variables}
+
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a \SDSIT$_{\pm}$. 
+
+We assume that $X=\emptyset$, thus all the guards in the transitions are trivial. Let $Y=\{y_1,\dots,y_l\}$.
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=p_0 p_1 \dots p_m$, $p_0 = p_m=q_n$, $O(q_n)$ is defined and $O(p_j)$ is undefined for each $j \neq 0,m$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(p_j, g'_j, \eta'_j, p_{j+1})$ is the $j$-th transition in the handle. 
+
+<<<<<<< HEAD
+We then focus on the equivalence problem of generalized flat \SDSIT$_{\pm}$.
+
+A \SDSIT$_{\pm}$ is called \emph{generalized flat} if each nontrivial SCC (strongly-connected component) of the transition graph is a collection of edge-disjoint simple cycles such that there is a unique state which is shared by each pair of distinct cycles in the collection.
+
+Let $\Ss_1$ and $\Ss_2$ be two generalized flat \SDSIT$_{\pm}$.
+
+\begin{proposition}\label{prop-equiv-reduce}
+The equivalence problem of two generalized flat \SDSIT$_{\pm}$ be reduced to the non-zero output problem of a generalized flat \SDSIT$_{\pm}$.
+\end{proposition}
+
+%Suppose $\Ss_1=(Q_1, K, X_1, Y_1, \delta_1, q_{0,1}, O_1)$ and $\Ss_1=(Q_2, K, X_2, Y_2, \delta_2, q_{0,2}, O_2)$ are two generalized flat \SDSIT$_{\pm}$. Without loss of generality, we assume that the state spaces (resp. the set of data variables, the set of output variables) of $\Ss_1$ and $\Ss_2$ are disjoint. Moreover, the \SDSIT$_{\pm}$ $\Ss$ constructed from $\Ss_1$ and $\SS_2$ (cf. Proposition~\ref{prop-equiv-reduce}), satisfies the following property: 
+%\begin{quote}
+%\it the output variables in $Y_1$ are updated independently of those in $Y_2$: For each transition $((q_1,q_2),g,\eta,(q'_1,q'_2))$ in $\Ss$, for each $y_1 \in Y_1$(resp. $y_2 \in Y_2$), no variables from $Y_2$ (resp. $Y_1$) occurs in $\eta(y_1)$ (resp. $\eta(Y_2)$). \hfill ($\ast$)
+%\end{quote}
+
+%In the rest of this paper, we will assume that the \SDSIT$_{\pm}$ $\Ss$ in the non-zero reachability problem satisfies that the set of output variables of $\Ss$ is $Y_1 \uplus Y_2$ and $Y_1,Y_2$ satisfy the constraint $(\ast)$.
+
+For simplicity, from now on, we assume that $K=1$, that is, there is at most one data value over each position, and we will omit the number $K$ in the definition of \SDSIT$_{\pm}$.
+=======
+In the following, we will illustrate that if only the non-zero output problem is concerned, then no matter what the initial values of the output variables are, it is sufficient to traverse the loop for a bounded number of times.
+
+%Suppose $O(q_n) = a_0 + a_1 y_1 + \dots + a_l y_l$. As a result of the ``copyless'' constraint, we know that $|a_1|, \dots, |a_l| \le 1$.
+
+Let us traverse the loop for the first time. Then for each $1 \le j_1 \le l$, an expression 
+\[f^1_{j_1} = \beta_{j_1,0} + \beta_{j_1,1} o_1 + \dots + \beta_{j_1,l} o_l + \gamma_{j_1,1} d^1_1 + \dots + \gamma_{j_1,m} d^1_m\] 
+can be constructed to describe the value of the variable $y_{j_1}$ after traversing the loop for the first time, where $o_1,\dots,o_l$ denote the initial value of the output variables and $d^1_1, \dots, d^1_m$ denote the data values introduced when traversing the loop for the first time. 
+
+As a result of the ``copyless'' constraint, we know that for each $i: 1 \le i \le l$, $|\beta_{1,i}|+\dots +|\beta_{l,i}| \le 1$.
+
+
+We then traverse the loop for the second time. Then for each $1 \le j_2 \le l$,  the resulting value of the variable $y_{j}$ is described by the expression $f^2_{j_2} = \beta_{j_2,0} + \beta_{j_2,1} f^1_1 + \dots + \beta_{j_2,l} f^1_l + \gamma_{j_2,1} d^2_1 + \dots + \gamma_{j_2,m} d^2_m$, where $d^2_1, \dots, d^2_m$ denote the data values introduced when traversing the loop for the second time. 
+
+By expanding the expressions $f^1_1,\dots, f^1_l$, we get the following expression for $f^2_{j_2}$ (where $1 \le j_2 \le l$),
+\[
+\begin{array}{l}
+f^2_{j_2} = (\beta_{j_2,0} + \sum \limits_{1 \le j_1 \le l} \beta_{j_2,j_1} \beta_{j_1, 0}) + (\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\beta_{j_1,1}) o_1 + \dots + (\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\beta_{j_1,l}) o_l +  \\
+(\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\gamma_{j_1,1}) d^1_1 +\dots + (\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\gamma_{j_1,m}) d^1_m  + \\
+\gamma_{j_2,1} d^2_1 + \dots + \gamma_{j_2,m} d^2_m.
+\end{array}
+\]
+>>>>>>> f2cb40ca9967a5ef6cc325a5ecf49fb6ef047542
+
+Note that because of the ``copyless'' constraint, we know that for each $i: 1 \le i \le l$, $|\beta_{1,i}|+ \dots |\beta_{l,i}| \le 1$, thus the absolute value of $\sum \limits_{1 \le j_1 \le l} \beta_{j_2,j_1} \beta_{j_1, i}$ is at most one. 
+
+We continue traversing the loop for the third time. Then for each $1 \le j_3 \le l$,  the resulting value of the variable $y_{j}$ is described by the expression $f^3_{j_3} = \beta_{j_3,0} + \beta_{j_3,1} f^2_1 + \dots + \beta_{j_3,l} f^2_l + \gamma_{j_3,1} d^3_1 + \dots + \gamma_{j_3,m} d^3_m$, where $d^3_1, \dots, d^3_m$ denote the data values introduced when traversing the loop for the third time. 
+
+By expanding the expressions $f^2_1,\dots,f^2_l$, we get the following expression for $f^3_{j_3}$ (where $1\le j_3 \le l$),
+\[
+\begin{array}{l}
+f^3_{j_3} = (\beta_{j_3,0} + \sum \limits_{1 \le j_2 \le l} \beta_{j_3,j_2} (\beta_{j_2,0} + \sum \limits_{1 \le j_1 \le l} \beta_{j_2,j_1} \beta_{j_1, 0})) +\\
+%
+ (\sum \limits_{1 \le j_2 \le l}\beta_{j_3,j_2}(\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\beta_{j_1,1})) o_1 + \dots + (\sum \limits_{1 \le j_2 \le l}\beta_{j_3,j_2}(\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\beta_{j_1,l})) o_l +  \\
+ %
+(\sum \limits_{1 \le j_2 \le l}\beta_{j_3, j_2}(\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\gamma_{j_1,1})) d^1_1 +\dots + (\sum \limits_{1 \le j_2 \le l}\beta_{j_3,j_2}(\sum \limits_{1 \le j_1 \le l}\beta_{j_2,j_1}\gamma_{j_1,m})) d^1_m  + \\
+(\sum \limits_{1 \le j_2 \le l}\beta_{j_3,j_2}\gamma_{j_2,1}) d^2_1 +\dots + (\sum \limits_{1 \le j_2 \le l}\beta_{j_3,j_2}\gamma_{j_2,m}) d^2_m  + \\
+\gamma_{j_3,1} d^3_1 + \dots + \gamma_{j_3,m} d^3_m.
+\end{array}
+\]
+
+<<<<<<< HEAD
+%In the following, we focus on the non-zero reachability problem of generalized flat \SDSIT$_{\pm}$ such that $|Y_1| = |Y_2|=1$. The more general case is open. \zhilin{See appendix for an incomplete analysis of a lasso in the general case}
+=======
+Note that because of the ``copyless'' constraint, we know that for each $i: 1 \le i \le l$, $|\beta_{1,i}|+ \dots |\beta_{l,i}| \le 1$, thus the absolute value of $\sum \limits_{1 \le j_1 \le l} \beta_{j_2,j_1} \beta_{j_1, i}$ is at most one. 
+>>>>>>> f2cb40ca9967a5ef6cc325a5ecf49fb6ef047542
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We illustrate the argument for this fact with the following example: There are six data variables, $x_1,\dots,x_5$ such that  $G_C$ comprises a cycle $x_1x_2x_3$ and a path $x_4 x_5$. Without loss of generality, we assume that $\chi_1(x_4)=d^1_{\min(I_6)}=d^1_6$. We will show that it is sufficient to traverse the loop for three times.
+
+Let $\chi_2$ be the assignment function that describes the values of the data and output variables after traversing the loop twice. Then for each $j: 1 \le j \le k$, $\chi_2(x_j)=d^2_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_2(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_1(y_j) + \beta_{j,1} d^2_{\min(I_1)} + \dots + \beta_{j,r} d^2_{\min(I_r)},\]
+where $d^2_{\min(I_1)}=d^2_1 = \chi_1(x_3)=d^1_3$, $d^2_{\min(I_2)}=d^2_2 = \chi_1(x_1)=d^1_1$, $d^2_{\min(I_3)}=d^2_3 = \chi_1(x_2)=d^1_2$, $d^2_{\min(I_4)}=d^2_4 = d^1_{\min(I_6)}=d^1_6$, and $d^2_{\min(I_5)}=\chi_1(x_4)=d^1_4$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_1(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_2(y_j) & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + \alpha^2_{j,1} o_j + (\alpha_{j,1} \beta_{j,1}) d^1_{\min(I_1)} +  \dots + (\alpha_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+& &  \beta_{j,1} d^1_3 + \beta_{j,2} d^1_1 + \beta_{j,3} d^1_2 + \beta_{j,4} d^1_6 + \beta_{j,5} d^1_4 + \beta_{j,6} d^2_{\min(I_6)} + \dots + \beta_{j,r} d^2_{\min(I_r)}\\
+& = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + (\alpha_{j,1})^2 o_j + (\alpha_{j,1} \beta_{j,1} + \beta_{j,2}) d^1_1 + (\alpha_{j,1}\beta_{j,2}+\beta_{j,3})d^1_2+\\
+& & (\alpha_{j,1}\beta_{j,3}+\beta_{j,1})d^1_3 +  (\alpha_{j,1}\beta_{j,4}+\beta_{j,5})d^1_4 + (\alpha_{j,1}\beta_{j,5})d^1_5 + (\alpha_{j,1}\beta_{j,6}+\beta_{j,4})d^1_6 + \\
+& & (\alpha_{j,1}\beta_{j,7}) d^1_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^1_{\min(I_r)} + \beta_{j,6} d^2_{\min(I_6)} + \dots + \beta_{j,r} d^2_{\min(I_r)}.
+\end{array}
+\] 
+
+Let $\chi_3$ be the assignment function that describes the values of the data and output variables after traversing the loop for the third time. Then for each $j: 1 \le j \le k$, $\chi_3(x_j)=d^3_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_3(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_2(y_j) + \beta_{j,1} d^3_{\min(I_1)} + \dots + \beta_{j,r} d^3_{\min(I_r)},\]
+where $d^3_{\min(I_1)}=d^3_1 = \chi_2(x_3)=d^2_3=d^1_2$, $d^3_{\min(I_2)}=d^3_2 = \chi_2(x_1)=d^2_1=d^1_3$, $d^3_{\min(I_3)}=d^3_3 = \chi_2(x_2)=d^2_2=d^1_1$, $d^3_{\min(I_4)}=d^3_4 = d^2_{\min(I_6)}=d^2_6$, and $d^3_{\min(I_5)}=\chi_2(x_4)=d^2_4=d^1_6$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_2(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_3(y_j) & = & 
+%
+%(\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}) + (\alpha_{j,1})^3 o_j + (\alpha^2_{j,1} \beta_{j,1}) d^1_{\min(I_1)} +  \dots + (\alpha^2_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+%& &  (\alpha_{j,1}\beta_{j,1}) d^1_3 + (\alpha_{j,1}\beta_{j,2}) d^1_1 + (\alpha_{j,1}\beta_{j,3}) d^1_2 + (\alpha_{j,1}\beta_{j,4}) d^1_6 + (\alpha_{j,1}\beta_{j,5}) d^1_4 + \\
+%& & (\alpha_{j,1}\beta_{j,6}) d^2_{\min(I_6)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+\beta_{j,1} d^1_2 + \beta_{j,2}  d^1_3 + \beta_{j,3} d^1_1 + \beta_{j,4} d^2_6 + \\
+%& & \beta_{j,5} d^1_6 + \beta_{j,6} d^3_{\min(I_6)} + \dots + \beta_{j,r} d^3_{\min(I_r)}\\
+%
+%& = & 
+(\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}) + \alpha^3_{j,1} o_j + (\alpha^2_{j,1} \beta_{j,1}+ \alpha_{j,1}\beta_{j,2} + \beta_{j,3} ) d^1_1 + \\
+& & (\alpha^2_{j,1} \beta_{j,2}+\alpha_{j,1}\beta_{j,3} + \beta_{j,1} ) d^1_2 + (\alpha^2_{j,1} \beta_{j,3} + \alpha_{j,1}\beta_{j,1} + \beta_{j,2}  ) d^1_3 + (\alpha^2_{j,1} \beta_{j,4}+\alpha_{j,1}\beta_{j,5}) d^1_4 +\\
+& & (\alpha^2_{j,1} \beta_{j,5}) d^1_5 + (\alpha^2_{j,1} \beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5})d^1_6 + (\alpha^2_{j,1} \beta_{j,7}) d^1_{\min(I_7)}+ \dots + (\alpha^2_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + \\
+& & (\alpha_{j,1}\beta_{j,6}+\beta_{j,4}) d^2_{6} + (\alpha_{j,1}\beta_{j,7}) d^2_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+  \\
+& &  \beta_{j,6} d^3_{\min(I_6)} + \dots + \beta_{j,r} d^3_{\min(I_r)}.
+\end{array}
+\] 
+
+Let $\chi_4$ be the assignment function that describes the values of the data and output variables after traversing the loop for the third time. Then for each $j: 1 \le j \le k$, $\chi_4(x_j)=d^4_j$, and for each $j: 1 \le j \le l$, 
+\[\chi_4(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_3(y_j) + \beta_{j,1} d^4_{\min(I_1)} + \dots + \beta_{j,r} d^4_{\min(I_r)},\]
+where $d^4_{\min(I_1)}=d^4_1 = \chi_3(x_3)=d^3_3=d^1_1$, $d^4_{\min(I_2)}=d^4_2 = \chi_3(x_1)=d^3_1=d^1_2$, $d^4_{\min(I_3)}=d^4_3 = \chi_3(x_2)=d^3_2=d^1_3$, $d^4_{\min(I_4)}=d^4_4 = d^3_{\min(I_6)}=d^3_6$, and $d^4_{\min(I_5)}=\chi_3(x_4)=d^3_4=d^2_6$.
+
+For each $j: 1 \le j \le l$, 
+by expanding the expression $\chi_3(y_j)$, we  get the following expression, 
+\[
+\begin{array}{l c l}
+\chi_4(y_j) & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \alpha^2_{j,1} \alpha_{j,0}+\alpha^3_{j,1} \alpha_{j,0}) + \alpha^4_{j,1}  o_j + (\alpha^3_{j,1} \beta_{j,1}+ \alpha^2_{j,1}\beta_{j,2} + \alpha_{j,1}\beta_{j,3} + \beta_{j,1}) d^1_1 + \\
+& & (\alpha^3_{j,1} \beta_{j,2}+\alpha^2_{j,1}\beta_{j,3} + \alpha_{j,1}\beta_{j,1} + \beta_{j,2}) d^1_2 + (\alpha^3_{j,1} \beta_{j,3} + \alpha^2_{j,1}\beta_{j,1} + \alpha_{j,1}\beta_{j,2} +\beta_{j,3}) d^1_3 + \\
+& & (\alpha^3_{j,1} \beta_{j,4}+\alpha^2_{j,1}\beta_{j,5}) d^1_4 + (\alpha^3_{j,1} \beta_{j,5}) d^1_5 + (\alpha^3_{j,1} \beta_{j,6}+\alpha^2_{j,1}\beta_{j,4}+\alpha_{j,1}\beta_{j,5})d^1_6 + \\
+& & (\alpha^3_{j,1} \beta_{j,7}) d^1_{\min(I_7)}+ \dots + (\alpha^3_{j,1} \beta_{j,r}) d^1_{\min(I_r)} + 
+ (\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4} + \beta_{j,5}) d^2_{6} + \\
+ & & (\alpha^2_{j,1}\beta_{j,7}) d^2_{\min(I_7)} + \dots + (\alpha^2_{j,1}\beta_{j,r}) d^2_{\min(I_r)}+  (\alpha_{j,1}\beta_{j,6}+\beta_{j,4}) d^3_{6} +  \\
+ & & (\alpha_{j,1}\beta_{j,7}) d^3_{\min(I_7)} + \dots + (\alpha_{j,1}\beta_{j,r}) d^3_{\min(I_r)} + \beta_{j,6} d^4_{\min(I_6)} + \dots +  \beta_{j,r} d^4_{\min(I_r)}.
+\end{array}
+\] 
+
+Consider the coefficient of $o_j, d^1_5, d^1_{\min(I_7)},\dots,d^1_{\min(I_r)}$.
+\begin{itemize}
+\item $\alpha^4_{j,1}o_j = \alpha^2_{j,1}o_j$, $(\alpha^3_{j,1} \beta_{j,5}) d^1_5 = (\alpha_{j,1} \beta_{j,5}) d^1_5$,
+\item $(\alpha^3_{j,1} \beta_{j,7}) d^1_{\min(I_7)}= (\alpha_{j,1} \beta_{j,7}) d^1_{\min(I_7)}$, $\dots$, $(\alpha^3_{j,1} \beta_{j,r}) d^1_{\min(I_r)}= (\alpha_{j,1} \beta_{j,r}) d^1_{\min(I_r)}$.
+\end{itemize}
+Therefore, all these coefficients are the same as those in $\chi_2(y_j)$.
+
+Let us check the constant coefficient and the coefficients of $d^1_1,d^1_2,d^1_3,d^1_4,d^1_5$ and $d^1_6,d^2_6,\dots$.
+
+\begin{itemize}
+\item The constant coefficient and the coefficient of $d^1_1$, $d^1_2$, $d^1_3$ can be seen as integer counters.  
+
+\item The coefficient of $d^1_4$ is $\alpha_{j,1} \beta_{j,4}+\beta_{j,5}, \alpha_{j,1}(\alpha_{j,1} \beta_{j,4}+\beta_{j,5}), \alpha^2_{j,1}(\alpha_{j,1} \beta_{j,4}+\beta_{j,5}), \dots$.
+
+\item The coefficient of $d^1_5$ is $\beta_{j,5},\alpha_{j,1}\beta_{j,5}, \alpha^2_{j,1}\beta_{j,5},\alpha^3_{j,1}\beta_{j,5},\dots$.
+
+\item The coefficient of $d^1_6$ (resp. $d^2_6,d^3_6,\dots$) is $\beta_{j,6}, \alpha_{j,1}\beta_{j,6}+\beta_{j,4}, \alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}, \alpha_{j,1}(\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}),\alpha^2_{j,1}(\alpha^2_{j,1}\beta_{j,6}+\alpha_{j,1}\beta_{j,4}+\beta_{j,5}),\dots$.
+\end{itemize}
+Since $\alpha_{j,1} \in\{0,+1,-1\}$, the values of the coefficients of $d^1_4,d^1_5$ and $d^1_6,d^2_6,d^3_6,\dots$ are from a bounded domain.
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{The analysis of a lasso with independently evolving multiple output variables}
+
+Let $\Ss=(Q, X, Y, \delta, q_0, O)$ be a \SDSIT$_{\pm}$. 
+
+We assume that $X=\emptyset$, thus all the guards in the transitions are trivial. Let $Y=\{y_1,\dots,y_l\}$. In addition, we assume that all the output variable are \emph{independently evolving} in the sense that for each transition $(q,g, \eta, q')$, it holds that for each $y \in Y$, only $y$ can occur in $\eta(y)$ and no other output variables can occur in $\eta(y)$. 
+
+Suppose $q_0 q_1 \dots q_n C$ is a lasso where $C=p_0 p_1 \dots p_m$, $p_0 = p_m=q_n$, $O(q_n)$ is defined and $O(p_j)$ is undefined for each $j \neq 0,m$. $q_0 \dots q_n$ is called the handle of the lasso and $C$ is called the loop of the lasso. For each $i: 0 \le i < n$, $(q_i, g_i, \eta_i, q_{i+1})$ is the $i$-th transition in the handle, and for each $j: 0 \le j < m$, $(p_j, g'_j, \eta'_j, p_{j+1})$ is the $j$-th transition in the handle. 
+
+In the following, we will illustrate that if only the non-zero output problem is concerned, then no matter what the initial values of the output variables are, it is sufficient to traverse the loop for a bounded number of times.
+
+%Suppose $O(q_n) = a_0 + a_1 y_1 + \dots + a_l y_l$. As a result of the ``copyless'' constraint, we know that $|a_1|, \dots, |a_l| \le 1$.
+
+Let us traverse the loop for the first time. Then for each $1 \le j \le l$, an expression 
+\[f^1_{j} = \beta_{j,0} + \beta_{j} o_{j} + \gamma_{j,1} d^1_1 + \dots + \gamma_{j,m} d^1_m\] 
+can be constructed to describe the value of the variable $y_{j}$ after traversing the loop for the first time, where $o_1,\dots,o_l$ denote the initial value of the output variables and $d^1_1, \dots, d^1_m$ denote the data values introduced when traversing the loop for the first time. Note that as a result of ``independently evolving'' constraint, for each $j: 1 \le j \le l$, $f^1_{j}$ contains only $o_{j}$ and no other output variables. Moreover, because of ``copyless'' constraint, $\beta_j \in \{0,+1,-1\}$.
+
+Suppose $O(q_n)=a_0 + a_1 o_1 + \dots a_l o_l$. 
+
+Let $\chi_1$ be the assignment $\chi_1(y_j)=f^1_j$ for each $j: 1\le j \le l$.
+Then $\chi_1(O(q_n)) = a_0+ a_1 f^1_1 + \dots a_l f^1_l$ is the following expression,
+\[
+(a_0 + \sum \limits_{1 \le j \le l} (a_j\beta_{j,0})) +  (a_1 \beta_1) o_1 + \dots + (a_l \beta_l) o_l + (\sum \limits_{1 \le j \le l} a_j \gamma_{j,1}) d^1_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \gamma_{j,m}) d^1_m.
+\]
+
+If $(\sum \limits_{1 \le j \le l} a_j \gamma_{j,i}) \neq 0$ for some $i: 1 \le i \le m$, then there is an input $w$ such that the output of $\Ss$ over $w$ is non-zero. Therefore, in the following, we assume that $(\sum \limits_{1 \le j \le l} a_j \gamma_{j,i}) = 0$ for each $i: 1 \le i \le m$.
+
+We then traverse the loop for the second time. Then for each $1 \le j \le l$,  the resulting value of the variable $y_{j}$ is described by the expression $f^2_{j} = \beta_{j,0} + \beta_{j} f^1_{j} + \gamma_{j,1} d^2_1 + \dots + \gamma_{j,m} d^2_m$, where $d^2_1, \dots, d^2_m$ denote the data values introduced when traversing the loop for the second time. 
+
+By expanding the expressions $f^1_1,\dots, f^1_l$, we get the following expression for $f^2_{j}$ (where $1 \le j \le l$),
+\[
+%\begin{array}{l}
+f^2_{j} = (\beta_{j,0} + \beta_{j} \beta_{j,0}) + (\beta_{j})^2 o_{j} +
+%\\
+(\beta_{j}\gamma_{j,1}) d^1_1 +\dots + (\beta_{j}\gamma_{j,m}) d^1_m  + 
+%\\
+\gamma_{j,1} d^2_1 + \dots + \gamma_{j,m} d^2_m.
+%\end{array}
+\]
+
+Let $\chi_2$ be the assignment $\chi_2(y_j)=f^2_j$ for each $j: 1\le j \le l$.
+Then $\chi_2(O(q_n)) = a_0+ a_1 f^2_1 + \dots a_l f^2_l$ is the following expression,
+\[
+\begin{array}{l}
+(a_0 + \sum \limits_{1 \le j \le l} a_j (\beta_{j,0} + \beta_{j} \beta_{j,0})) +  (a_1 (\beta_1)^2) o_1 + \dots + (a_l (\beta_l)^2) o_l + \\
+ (\sum \limits_{1 \le j \le l} a_j \beta_{j}\gamma_{j,1}) d^1_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \beta_{j}\gamma_{j,m}) d^1_m + \\
+(\sum \limits_{1 \le j \le l} a_j \gamma_{j,1}) d^2_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \gamma_{j,m}) d^2_m.
+\end{array}
+\]
+
+If $(\sum \limits_{1 \le j \le l} a_j \beta_j\gamma_{j,i}) \neq 0$ for some $i: 1 \le i \le m$, then there is an input $w$ such that the output of $\Ss$ over $w$ is non-zero. Therefore, in the following, we assume that $(\sum \limits_{1 \le j \le l} a_j \beta_j\gamma_{j,i}) = 0$ for each $i: 1 \le i \le m$.
+
+
+We continue traversing the loop for the third time. Then for each $1 \le j \le l$,  the resulting value of the variable $y_{j}$ is described by the expression $f^3_{j} = \beta_{j,0} + \beta_{j} f^2_j  + \gamma_{j,1} d^3_1 + \dots + \gamma_{j,m} d^3_m$, where $d^3_1, \dots, d^3_m$ denote the data values introduced when traversing the loop for the third time. 
+
+By expanding the expressions $f^2_1,\dots,f^2_l$, we get the following expression for $f^3_{j}$ (where $1\le j \le l$),
+\[
+\begin{array}{l}
+f^3_{j} = (\beta_{j,0} + \beta_{j} \beta_{j,0} + (\beta_j)^2 \beta_{j,0}) + (\beta_{j})^3 o_{j} +
+%\\
+((\beta_{j})^2\gamma_{j,1}) d^1_1 +\dots + ((\beta_{j})^2\gamma_{j,m}) d^1_m  + \\
+%\\
+(\beta_j \gamma_{j,1}) d^2_1 + \dots + (\beta_j \gamma_{j,m}) d^2_m + \gamma_{j,1} d^3_1 + \dots + \gamma_{j,m} d^3_m.
+\end{array}
+\]
+
+Let $\chi_3$ be the assignment $\chi_3(y_j)=f^3_j$ for each $j: 1\le j \le l$.
+Then $\chi_3(O(q_n)) = a_0+ a_1 f^3_1 + \dots a_l f^3_l$ is the following expression,
+\[
+\begin{array}{l}
+(a_0 + \sum \limits_{1 \le j \le l} a_j (\beta_{j,0} + \beta_{j} \beta_{j,0} + (\beta_j)^2 \beta_{j,0})) +  (a_1 (\beta_1)^3) o_1 + \dots + (a_l (\beta_l)^3) o_l + \\
+ (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^2\gamma_{j,1}) d^1_1 + \dots + (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^2\gamma_{j,m}) d^1_m + \\
+(\sum \limits_{1 \le j \le l} a_j \beta_j \gamma_{j,1}) d^2_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \beta_j \gamma_{j,m}) d^2_m \\
+(\sum \limits_{1 \le j \le l} a_j \gamma_{j,1}) d^3_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \gamma_{j,m}) d^3_m. 
+\end{array}
+\]
+
+Since for each $j: 1 \le j \le l$, $\beta_j \in \{0,+1,-1\}$, we know that for each $j: 1 \le j \le l$, $(\beta_j)^3=\beta_j$. Therefore, $(a_1 (\beta_1)^3) o_1 + \dots + (a_l (\beta_l)^3) o_l = (a_1 \beta_1) o_1 + \dots + (a_l \beta_l) o_l$.
+
+If $(\sum \limits_{1 \le j \le l} a_j (\beta_j)^2\gamma_{j,i}) \neq 0$ for some $i: 1 \le i \le m$, then there is an input $w$ such that the output of $\Ss$ over $w$ is non-zero. Therefore, in the following, we assume that $(\sum \limits_{1 \le j \le l} a_j (\beta_j)^2\gamma_{j,i}) = 0$ for each $i: 1 \le i \le m$.
+
+
+We continue traversing the loop for the fourth time. Then for each $1 \le j \le l$, the resulting value of the variable $y_j$ is described by the expression 
+\[
+\begin{array}{l}
+f^4_{j} = (\beta_{j,0} + \beta_{j} \beta_{j,0} + (\beta_j)^2 \beta_{j,0}+(\beta_j)^3 \beta_{j,0}) + (\beta_{j})^4 o_{j} +
+\\
+((\beta_{j})^3\gamma_{j,1}) d^1_1 +\dots + ((\beta_{j})^3 \gamma_{j,m}) d^1_m  + 
+((\beta_{j})^2\gamma_{j,1}) d^2_1 +\dots + ((\beta_{j})^2 \gamma_{j,m}) d^2_m \\
+(\beta_j \gamma_{j,1}) d^3_1 + \dots + (\beta_j \gamma_{j,m}) d^3_m + \gamma_{j,1} d^4_1 + \dots + \gamma_{j,m} d^4_m.
+\end{array}
+\]
+
+Let $\chi_4$ be the assignment $\chi_4(y_j)=f^4_j$ for each $j: 1\le j \le l$.
+Then $\chi_4(O(q_n)) = a_0+ a_1 f^4_1 + \dots a_l f^4_l$ is the following expression,
+\[
+\begin{array}{l}
+(a_0 + \sum \limits_{1 \le j \le l} a_j (\beta_{j,0} + \beta_{j} \beta_{j,0} + (\beta_j)^2 \beta_{j,0} + (\beta_j)^3 \beta_{j,0})) +  (a_1 (\beta_1)^4) o_1 + \dots + (a_l (\beta_l)^4) o_l + \\
+ (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^3\gamma_{j,1}) d^1_1 + \dots + (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^3\gamma_{j,m}) d^1_m + \\
+ (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^2\gamma_{j,1}) d^2_1 + \dots + (\sum \limits_{1 \le j \le l} a_j (\beta_{j})^2\gamma_{j,m}) d^2_m + \\
+(\sum \limits_{1 \le j \le l} a_j \beta_j \gamma_{j,1}) d^3_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \beta_j \gamma_{j,m}) d^3_m \\
+(\sum \limits_{1 \le j \le l} a_j \gamma_{j,1}) d^4_1 + \dots + (\sum \limits_{1 \le j \le l} a_j \gamma_{j,m}) d^4_m. 
+\end{array}
+\]
+
+Since for each $j: 1\le j \le l$, $(\beta_j)^3=\beta_j$, we deduce that $(\sum \limits_{1 \le j \le l} a_j (\beta_{j})^3\gamma_{j,i}) = (\sum \limits_{1 \le j \le l} a_j \beta_{j} \gamma_{j,i}) =0$ for each $i: 1\le i \le m$.
+
+Since $\beta_j \in \{0,+1,-1\}$, we know that for each $j: 1\le j \le l$, $(\beta_j)^4=(\beta_j)^2$. Therefore, $(a_1 (\beta_1)^4) o_1 + \dots + (a_l (\beta_l)^4) o_l=(a_1 (\beta_1)^2) o_1 + \dots + (a_l (\beta_l)^2) o_l$.
+
+Therefore, if the constant coefficient is ignored, then it is sufficient to traverse the loop for \emph{three times}.
+
+For the consideration of the constant coefficient, let us assume that for each $j: 1 \le j \le l$, 
+$o_j = \alpha_{j,0} + \alpha_{j,1} d_1+ \dots + \alpha_{j,n}d_n$, where $d_1,\dots,d_n$ are the data values introduced in the handle.
+
+Then the constant coefficient after traversing the loop for $r$ times ($r \ge 1$) is described by the following expression,
+\[a_0 + \sum \limits_{1 \le j \le l} a_j (\beta_{j,0} + \beta_{j} \beta_{j,0} + \dots + (\beta_j)^{r-1} \beta_{j,0} + (\beta_j)^r \alpha_{j,0}).\]
+
+Since for each $j: 1 \le j \le l$, $\beta_j \in \{0,+1,-1\}$, we know that 
+\begin{itemize}
+\item if if $\beta_j=0$, then $\beta_{j,0} + \beta_{j} \beta_{j,0} + \dots + (\beta_j)^{r-1} \beta_{j,0} + (\beta_j)^r \alpha_{j,0}=\beta_{j,0}$,
+%
+\item if $\beta_j=1$, then $\beta_{j,0} + \beta_{j} \beta_{j,0} + \dots + (\beta_j)^{r-1} \beta_{j,0} + (\beta_j)^r \alpha_{j,0}=r\beta_{j,0} + \alpha_{j,0}$,
+%
+\item if $\beta_j = -1$ and $r$ is odd, then $\beta_{j,0} + \beta_{j} \beta_{j,0} + \dots + (\beta_j)^{r-1} \beta_{j,0} + (\beta_j)^r \alpha_{j,0}= \beta_{j,0} - \alpha_{j,0}$,
+
+\item if $\beta_j = -1$ and $r$ is even, then $\beta_{j,0} + \beta_{j} \beta_{j,0} + \dots + (\beta_j)^{r-1} \beta_{j,0} + (\beta_j)^r \alpha_{j,0}= 2\beta_{j,0} + \alpha_{j,0}$.
+\end{itemize}
+
+Therefore, the non-zero output problem is reduced to the following problem: 
+\begin{quote}
+\it Given an expression of the form $c_0+c_1 r$, where $c_0 ,c_1$ are constants, and $r$ is a variable ranging over natural numbers, decide whether there exists $r$ such that $c_0+ c_1 r$ is non-zero. 
+\end{quote}
+
+\zhilin{I stopped here}
+
+
+
+\subsection{Flat transducer with independently evolving output variables}
+
+Let $\Ss=(Q, K, X, Y, \delta, q_0, O)$ be a \SDSIT$_{\pm}$. Suppose $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. For simplicity, we assume that $K = 1$, that is, each position holds one data value.
+
+A path scheme is a path in the SCC graph, which corresponds to a sequence of SCCs in the transition graph such that for each pair of consecutive SCCs in the sequence, say $C_1$ and $C_2$, there is an edge from $C_1$ to $C_2$.
+
+Let us fix a path scheme, say $C_0 \dots C_n$.
+
+For simplicity, let us start with the easy case that for each $i: 0 \le i < n$, $C_i$ is a single state and $C_n$ contains more than one node, that is, $C_0 \dots C_n$ is $q_0 \dots q_{n-1} q_n (C^1_n,\dots,C^m_n)$, where $C^1_{n},\dots, C^m_n$ are the collection of simple cycles in $C_n$ which share a unique state $q_{n}$. Moreover, we assume that $O(q_n)$ is defined and $O$ is undefined in each of the other states of $C_n$.
+
+Without loss of generality, assume that each state in $C_0 \dots C_n$ is reachable. It is known that the state reachability problem of flat register automata is PSPACE-complete (\cite{DL09}). 
+
+%Recall that we assume that $\Ss$ is copyless.
+
+We show by induction that for each $i: 1 \le i \le n$ and each variable $x_j$ (resp. $y_j$), an arithmetic expression $e_{i,x_j}$ (resp. $e_{i,y_j}$) corresponding to $x_j$(resp. $y_j$) after going through the state sequence $q_0 \dots q_i$ can be constructed. Let $(q_{i}, 1, g_{i}, \eta_{i}, q_{i+1})$ be the $i$-th transition for each $i: 0 \le i < n$.
+
+For each $j: 1 \le j \le k$, if $\eta_1(x_j)=p_1$, then $e_{1,x_j}=d_1$, otherwise, $e_{1,x_j}=\bot$.
+
+For each $j: 1 \le j \le l$, $e_{1,y_j} = (\eta_{1,y_j}[d_1/p_1])$. 
+
+For each $i: 1 < i \le n$, 
+\begin{itemize}
+\item for each $j: 1 \le j \le k$, $e_{i,x_j}=d_i$ if $\eta_i(x_j)=p_1$, and $e_{i,x_j}=e_{i-1,x_j}$ otherwise,
+%
+\item for each $j: 1 \le j \le l$, $e_{i,y_j} = \theta_i(\eta_i(y_j))$, where $\theta_i(x_{j'})=e_{i-1,x_{j'}}$ and $\theta_i(y_{j'})=e_{i-1, y_{j'}}$, and $\theta_i(p_1)=d_i$.
+\end{itemize}
+
+Then for each $j$, $e_{n,y_j} = c_{0,j} + c_{1,j} d_1 + \dots + c_{n,j} d_n$, where $c_{0,j},\dots, c_{n,j}$ are integer constants.
+
+\smallskip
+
+\noindent {\bf Step 1}: Decide whether $\theta_{n+1}(O(q_n))$ is not identical to zero (it is easy to do so, just check the coefficients of $d_1,\dots,d_n$), where $\theta_{n+1}(x_j)=e_{n,x_j}$ and $\theta_{n+1}(y_j)=e_{n,y_j}$. If the answer is yes, then we are done. Otherwise, we will continue checking the cycles of $C_n$.
+
+Similarly, for each cycle $C^i_n = q'_0 q'_1 \dots q'_{l_i}$ such that $q'_0 = q'_{l_i}=q_n$, we can construct expressions $e'_{i,x_j}$ and $e'_{i,y_j}$ where the variables $x_1,\dots,x_k,y_1,\dots,y_l$ and the data value variables $d'_1,\dots,d'_{l_i}$ occur. Note that $x_1,\dots,x_k,y_1,\dots,y_l$ denote the values of these variables before executing the transitions in the cycle.
+
+\smallskip
+
+\noindent {\bf Step 2}: Iterate the following procedure for $i = 1, \dots, m$.
+\begin{enumerate}
+\item Consider $\theta'_i(O(q_n))$, where $\theta'_i(x_j)=e'_{i,x_j}$ and $\theta'_i(y_j)=e'_{i,y_j}$. 
+%
+\item If there is $j: 1 \le j \le l_i$ such that the coefficient of $d'_j$ in $\theta'_i(O(q_n))$ is nonzero, then we are done. 
+\end{enumerate}
+
+\smallskip
+
+\noindent {\bf Step 3}: Let $\theta''_0=\theta_{n+1}$ and $\theta''_i = \theta''_{i-1}(\theta'_i)$ for $i = 1, \dots, m$.  Continue iterating the following procedure for $i = 1, \dots, m$:   If in $\theta''_i(O(q_n))$, the constant coefficient or the coefficient of some $d_{i'}$ for some $i': 1 \le i' \le n$ is nonzero, then we are done. 
+
+\zhilin{These three steps are basically what I thought. But Step 3 is incorrect. Since we may need iterate over a cycle for multiple times to reach nonzero output. For some special cases, e.g. difference constraints or octagon constraints, we can use Presburger formula to summarize the effect of a cycle}.
+
+\zhilin{My current feeling is that the problem is indeed more difficult than what we thought. Therefore, let us focus on the problem at present. We will try to work for CAV. If in the end we do not work out a submittable version, then we will target another conference.}
+
+\subsection{Generalized flat transducer with independently evolving output variables}
