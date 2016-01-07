@@ -120,8 +120,8 @@
 
 \begin{abstract}
 
-Map-Reduce is a popular programming model for data parallel computation. 
-In Map-Reduce, the \emph{reducer} produces an output from a list of inputs. Due the scheduling policy and the settings of machines, the input may arrive the reducers with different orders. The \emph{commutative problem} of reducers asks if the output of a reducer independent of the order of its inputs. The problem is in general undecidable due to Rice's theorem and thus is seemingly uninteresting. However, the Map-Reduce model is usually used for data analytics and thus requires very simple data and control flow. 
+MapReduce is a popular programming model for data parallel computation. 
+In MapReduce, the \emph{reducer} produces an output from a list of inputs. Due the scheduling policy and the settings of machines, the input may arrive the reducers with different orders. The \emph{commutative problem} of reducers asks if the output of a reducer independent of the order of its inputs. The problem is in general undecidable due to Rice's theorem and thus is seemingly uninteresting. However, the MapReduce model is usually used for data analytics and thus requires very simple data and control flow. 
 By exploiting the simplicity of the required program flows, we propose a simple programming language for reducers where the commutative problem can be decide by a reduction to the equivalence problem of \emph{streaming numerical transducer}. 
 We show that the language is expressive enough for common data analytics operations.
 \end{abstract}
@@ -130,18 +130,18 @@ We show that the language is expressive enough for common data analytics operati
 %What is Map-Reduce
 Map-Reduce is a  popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. The load balance mechanism of the Map-Reduce framework processes the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of a key and a list of values. The reducer then iterates through the input list and output a key-value pair.
 
-To be more concrete, taking the ``word-counting'' Map-Reduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
+To be more concrete, taking the ``word-counting'' MapReduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
 This results in the \emph{commutativity problem}.
 
 %The communitativity problem
-We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their Map-Reducer platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
+We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their MapReducer platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
 Moreover, having the commutativity property makes program testing easier. It is hard to reproduce a bug if the reducer under test is non-commutative. 
 
 %The reason for studying syntatical restrictions 
 The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers are seldom Turing machines. They are usually used for data analytics and have very simple control structures. Many of them just iterate through the input list and compute the output with very simple operations.
 We want to study if the commutative problem of real-world reducers are decidable.
 
-A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where they allow only loops that iterate though the input list (c.f. Figure~\ref{language}). They show that the commutative problem of programs written by such a simple language is undecidable by a reduction to the satisfiability problem of Diophantine equation. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
+A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where the only loop structure allowed is an iteration over the input list and it is not allowed to reset the iterator to the list head (c.f. Figure~\ref{fig:language}). They show that the commutative problem of programs written by such a simple language is undecidable by a reduction from the satisfiability problem of Diophantine equations. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
 
 \begin{figure}
 	\centering
@@ -151,7 +151,7 @@ A simple programming language of reducers over integers has been considered in~\
 		$g \in Guard$&$\equiv$&$cur() > v \mid cur()= v \mid v>c \mid v=c \mid \neg g \mid g\wedge g$\\
 		$e \in Expressions$&$\equiv$&$c\mid v \mid e+e \mid e\times e \mid e - e$\\
 		$ s \in Statements$&$\equiv$&$v := e\mid s;s\mid \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}\mid \mbox{return }e\mid $\\
-		&&$\mbox{while(}cur()\neq end() \mbox{)\{} s;\mbox{\}}\mid init()\mid next()$		
+		&&$\mbox{while(}cur()\neq end() \mbox{)\{} s;\mbox{\}}\mid next()$		
 	\end{tabular}
 	\label{fig:language}
 	\caption{A Simple Programming Language for Reducers}
@@ -176,14 +176,19 @@ Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables r
 A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, where $d_i \in \Ii$ for each $i$.
 
 \section{Language For Integer Reducers}
-In this section we discuss the rationale behind the design of the programming language for reducers in which the commutativity problem is decidable. 
-First, we characteristic the essential subset of the programming language  in Figure~\ref{fig:language} that is sufficient for common data analytics operations. We show that the commutative problem of this subset is still undecidable, by a reduction from perti-net with zero test~\cite{petri}. Then we show that by partitioning the roles of variables into control and data, the commutative problem becomes decidable.
+We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
+We focus on a language that only allow to iterate though the input list once. Later we will show an extension that allows the reset of list iterators.
 
-We will use the language in Figure~\ref{fig:language} to describe reducers. 
-
-We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (the cases \texttt{avg} and \texttt{MAD}) or assigns a new value (the case {\texttt max\_abs}) to the variable storing the aggregated result.
+We now investigate a subset of the programming language in Figure~\ref{fig:language} where multiplication between two different variables is not allowed. In such case, the reduction from the satisfiability of Diophantine equations no longer works. 
 
 
+We show that the commutative problem of this subset is still undecidable, by a reduction from perti-net with zero test~\cite{petri}. Then we show that by partitioning the roles of variables into control and data, the commutative problem becomes decidable.
+
+We will use the language in Figure~\ref{fig:language} to describe reducers. The language can be used for programs that iterate through the input list only once. 
+
+We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the cases \texttt{avg} and \texttt{MAD}) or assigns a new value (like the case {\texttt max\_abs}) to the variable storing the aggregated result. 
+
+Before finish reading the input list, the 
 \begin{figure}
 	\centering
 	\lstset{language=C,
@@ -245,7 +250,7 @@ int MAD() {
  mad:=0;
  while(cur()$\neq$end()){
   if(cur()<avg){
-   mad=mad-(cur()-avg);
+   mad=mad+(avg-cur());
   }else{
    mad=mad+(cur()-avg);
   }
