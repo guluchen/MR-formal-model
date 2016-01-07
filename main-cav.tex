@@ -3,7 +3,7 @@
 \usepackage{latexsym}
 \usepackage{setspace}
 \usepackage{cancel}
-
+\usepackage{listings}
 \usepackage{graphicx}
 \usepackage{appendix}
 \usepackage{amssymb}
@@ -131,37 +131,138 @@ We show that the language is expressive enough for common data analytics operati
 Map-Reduce is a  popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. The load balance mechanism of the Map-Reduce framework processes the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of a key and a list of values. The reducer then iterates through the input list and output a key-value pair.
 
 To be more concrete, taking the ``word-counting'' Map-Reduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
-This results in the \emph{ commutativity problem}.
+This results in the \emph{commutativity problem}.
 
 %The communitativity problem
 We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their Map-Reducer platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
 Moreover, having the commutativity property makes program testing easier. It is hard to reproduce a bug if the reducer under test is non-commutative. 
 
 %The reason for studying syntatical restrictions 
-The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers  are seldom Turing machines. They are usually used for data analytics and have very simple control structures and data types. Many of them just iterate through the input list and compute the output with very simple operations.
+The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers are seldom Turing machines. They are usually used for data analytics and have very simple control structures. Many of them just iterate through the input list and compute the output with very simple operations.
 We want to study if the commutative problem of real-world reducers are decidable.
 
-A simple programming language of reducers has been considered in~\cite{CHSW15}, where they allow only loops that iterate though the input list\hide{(c.f. Figure~\ref{language})}. They show that the commutative problem of even such a simple language is undecidable by a reduction to the satisfiability problem of Diophantine equation. In a scrutiny, the language is still too expressive for typical data analytics programs. For example, it allows multiplications of variables, which is a key element for the undecidable proof. 
+A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where they allow only loops that iterate though the input list (c.f. Figure~\ref{language}). They show that the commutative problem of programs written by such a simple language is undecidable by a reduction to the satisfiability problem of Diophantine equation. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
 
-In this paper, we propose a formalism named \emph{streaming numerical transducers (SNT)}, which is expressive enough to cover a huge percentage of data analytics reducer programs. We show that the equivalence and commutative problem of SNTs are decidable. Moreover, SNTs can be composed to form a commutative/equivalence proof of programs that read the input list multiple times.
-Essentially, SNTs combine the features of register automata~\cite{XX} and counter automata~\cite{XX} with restrictions on the structure of the transition systems and the syntax.
-The separation of data and control variables (inspired by~\cite{RP11}) and the requirement of independent variable evolving enables the decision problems of SNTs to be decidable. 
+\begin{figure}
+	\centering
+	\begin{tabular}{rcl}
+		$c \in \mathbb{Z}$&&\\	
+		$v \in Var$&$\equiv$&$x \mid y \mid z \mid cur()\mid \ldots$\\
+		$g \in Guard$&$\equiv$&$cur() > v \mid cur()= v \mid v>c \mid v=c \mid \neg g \mid g\wedge g$\\
+		$e \in Expressions$&$\equiv$&$c\mid v \mid e+e \mid e\times e \mid e - e$\\
+		$ s \in Statements$&$\equiv$&$v := e\mid s;s\mid \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}\mid \mbox{return }e\mid $\\
+		&&$\mbox{while(}cur()\neq end() \mbox{)\{} s;\mbox{\}}\mid init()\mid next()$		
+	\end{tabular}
+	\label{fig:language}
+	\caption{A Simple Programming Language for Reducers}
+\end{figure}
+
+By observing the behavioral pattern of reducer programs for data analytics, we characterize the essential components in a programming language for reducers. However, we found that even only with the essential parts of the language, the commutativity problem is still undecidable. 
+Inspired by~\cite{RP11}, we found that the commutativity problem becomes decidable if we partition variables into \emph{control variables} and \emph{data variables}. Data variables cannot be used in transition guards and control variables can store only elements in the input list (e.g., it is not allowed to store the sum of two variables in a control variable). 
 We believe such concepts provide good insights for reducer programming language design.
+
+We define a formalism named \emph{streaming numerical transducers (SNT)} and use it to create a decision procedure for the reducer commutative problem.
+SNTs combine the features of register automata~\cite{XX} and vector addition system with states (VASS)~\cite{YY} with restrictions on the structure of the transition systems.
+We show that the equivalence, commutative, and non-zeroness problems of generalized flat SNTs are decidable.
+Moreover, SNTs can be composed to form a commutative/equivalence proof of reducer programs that read the input list multiple times.
+On theoretical point of view, the study of deterministic SNT is
+interesting on its own right. It is tightly related to both register automata and integer VASS and the decidability of its decision problems are seemingly non-trivial. 
 
 The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} describes design of the streaming numerical transducer model, including the formal definition, the rationale behind the model design, and the types of data analytics reducer programs it can express. Section~\ref{sec:decision} discusses the decision problems and the procedure for solving the problems.
 
-\hide{
-\begin{figure}
-	
-	\caption{A Simple Programming Language for Reducers}
-\end{figure}}
-
-\section{Preliminaries}
-
+\section{Preliminary}
 Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. We assume that $X$ contains a special variable $cur$, which is used to denote the current data value. Then a guard over $X$ is a formula defined by the rules, $g::= cur\ o\ c \mid cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. For an expression $e$, let $vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $X \cup Y$ is a partial function from $(X \setminus \{cur\}) \cup Y$ to $\Ee_{X \cup Y}$ (the set of arithmetic expressions over $X \cup Y$) such that for each $x \in dom(\eta) \cap X$, $\eta(x)=cur$. Note that the assignments to the special variable $cur$ are disallowed.
 
 A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, where $d_i \in \Ii$ for each $i$.
 
+\section{Language For Integer Reducers}
+In this section we discuss the rationale behind the design of the programming language for reducers in which the commutativity problem is decidable. 
+First, we characteristic the essential subset of the programming language  in Figure~\ref{fig:language} that is sufficient for common data analytics operations. We show that the commutative problem of this subset is still undecidable, by a reduction from perti-net with zero test~\cite{petri}. Then we show that by partitioning the roles of variables into control and data, the commutative problem becomes decidable.
+
+We will use the language in Figure~\ref{fig:language} to describe reducers. 
+
+We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (the cases \texttt{avg} and \texttt{MAD}) or assigns a new value (the case {\texttt max\_abs}) to the variable storing the aggregated result.
+
+
+\begin{figure}
+	\centering
+	\lstset{language=C,
+		basicstyle=\ttfamily\scriptsize}
+	\begin{tabular}{|c|c|c|}
+\hline
+		\begin{minipage}[t]{0.28\textwidth}
+			(a)
+			\begin{lstlisting}[mathescape=true]
+int max_abs() {
+ if(cur()>0){
+   max:=cur();
+ }else{
+   max:= -cur();
+ }
+ next();
+ while(cur()$\neq$end()){
+  if(cur()>0){
+   if(cur()>max){
+    max:=cur();
+   }
+  }else{
+   if(-cur()>max){
+    max:=-cur();
+   }  
+   next();
+  }
+  return max;
+}
+			\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.28\textwidth}
+			(b)
+			\begin{lstlisting}[mathescape=true]
+int avg() {
+ sum:=cur();
+ cnt:=0;
+ next();
+ while(cur()$\neq$end()){
+  sum:=sum+cur();
+  cnt+=cnt+1;
+  next();
+ };
+ return sum/cnt;
+}
+			\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.29\textwidth}
+		(c)
+			\begin{lstlisting}[mathescape=true]
+int MAD() {
+ ...
+ // repeat the body  
+ // of (b) to compute
+ // sum and cnt
+ 
+ init();
+ avg:= sum/cnt;
+ mad:=0;
+ while(cur()$\neq$end()){
+  if(cur()<avg){
+   mad=mad-(cur()-avg);
+  }else{
+   mad=mad+(cur()-avg);
+  }
+  next();
+ }
+ return mad/cnt;
+}
+			\end{lstlisting}
+		\end{minipage}\\
+\hline		
+	\end{tabular}
+	\label{fig:examples}
+	\caption{Examples of Reducers Performing Data Analytics Operations: (a)Maximal Absolute Value (b)Average (c)Mean Absolute Deviation}
+\end{figure}
+
+
+\section{Streaming Numerical Transducers}
 A streaming numerical transducer (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ such that 
 \begin{itemize}
 \item $Q$ is a finite set of states,
@@ -277,15 +378,7 @@ From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial tim
 
 Therefore, the equivalence problem of SNTs is reduced to the non-zero output reachability problem of SNTs.
 
-\section{Closure properties}
-
-Boolean operations.
-
-Union, intersection, complement
-
-composition: It seems that \SDSIT are not closed under composition, similar to that of streaming transducers.
-
-\section{Decision problems}
+\section{Decision Problems for SNTs}
 
 In this section, we consider the non-zero output problem of SNT$_{\pm}$. Recall that we assume that the SNTs are deterministic, copyless, independently evolving and generalized flat.
 
