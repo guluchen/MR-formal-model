@@ -98,6 +98,28 @@
 
 \newcommand\intnum{{\mathbb{Z} }}
 
+\newcommand\cur{\mathsf{cur}}
+
+\newcommand\vars{\mathsf{vars}}
+
+\newcommand\dom{\mathsf{dom}}
+
+\newcommand\rng{\mathsf{rng}}
+
+\newcommand\ltrue{\mathsf{true}}
+
+\newcommand\false{\mathsf{true}}
+
+\newcommand\avg{\mathrm{avg}}
+
+\newcommand\maxv{\mathsf{max}}
+
+\newcommand\sumv{\mathsf{sum}}
+
+\newcommand\cntv{\mathsf{cnt}}
+
+\newcommand\defval{\mathsf{DEF}}
+
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
 \newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
@@ -170,12 +192,19 @@ interesting on its own right. It is tightly related to both register automata an
 
 The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} describes design of the streaming numerical transducer model, including the formal definition, the rationale behind the model design, and the types of data analytics reducer programs it can express. Section~\ref{sec:decision} discusses the decision problems and the procedure for solving the problems.
 
-\section{Preliminary}
-For a mapping $\pi$, let $dom(\pi)$ and $rng(\pi)$ denote the domain and range of $\pi$.
-Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. We assume that $X$ contains a special variable $cur$, which is used to denote the current data value. Then a guard over $X$ is a formula defined by the rules, $g::= cur\ o\ c \mid cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e \mid e * e \mid e / e$, where $y \in Y$ and $c$ is a constant over $\Ii$. For an expression $e$, let $vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $X \cup Y$ is a partial function from $(X \setminus \{cur\}) \cup Y$ to $\Ee_{X \cup Y}$ (the set of arithmetic expressions over $X \cup Y$) such that for each $x \in dom(\eta) \cap X$, $\eta(x)=cur$. Note that the assignments to the special variable $cur$ are disallowed.
-A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, where $d_i \in \Ii$ for each $i$.
+\section{Preliminaries}
+%
+For a function or partial function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the domain and range of $\pi$ respectively.
 
-\section{Language For Integer Reducers}
+Let $\intnum$ denote the set of integers and $\bot \not \in \intnum$ be a special value to denote the undefinedness of the values of some variables. Let $X$ denote a finite set of variables ranging over $\intnum \cup \{\bot\}$. Moreover, we use another special variable $\cur$ (to define the current data value). A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. Let $Y$ be another set of variables over $\intnum$. An \emph{arithmetic expression} over $X \cup Y \cup \{\cur\}$ is defined by the following rules, $e::= \cur \mid x \mid y \mid c \mid e + e \mid e - e$, where $x \in X$, $y \in Y$, and $c$ is a constant over $\intnum$. For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_{X \cup Y \cup \{\cur\}}$ denote the set of arithmetic expressions over $X \cup Y \cup \{\cur\}$. An assignment $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X \cup Y \cup \{\cur\}}$ such that for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$. 
+
+A \emph{valuation} $\rho$ of $X \cup Y \cup \{\cur\}$ is a function from $X \cup Y \cup \{\cur\}$ to $\intnum \cup \{\bot\}$. Let $\rho$ be valuation, $g$ be a guard, and $e \in \Ee_{X \cup Y \cup \{\cur\}}$. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in (X \cup \{\cur\}) \cap \vars(g)$, $\rho(z) \neq \bot$, and the evaluation of $g$ under $\rho$ results in the value $\ltrue$. Moreover, the value of $e$ under $\rho$, denoted by $\rho(e)$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$. In particular, if $\rho(z)=\bot$ for some $z \in \vars(e)$, then $\rho(e)=\bot$. 
+
+A data word $w$ is a sequence of integer values $d_1\dots d_n$ such that $d_i \in \intnum$ for each $i$.
+
+\zhilin{I restrict the expressions $e$ to contain only $\pm$.}
+
+\section{Language For Integer Reducers}\label{sec-mr-prog}
 We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
 We focus on a language that only allow to iterate though the input list once. Later we will show an extension that allows the reset of list iterators.
 
@@ -267,121 +296,226 @@ int MAD() {
 \end{figure}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%streaming numerical transducer%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Streaming Numerical Transducers}
-A streaming numerical transducer (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ such that 
+
+In this section, we introduce streaming numerical transducers, whose inputs are data words and outputs are integer values. Over a data word, a streaming numerical transducer scans the data word from left to right, records some information by using control and data variables, and outputs a data value when it arrives at the right end of the data word. We will use streaming numerical transducers to decide the commutativity problem of the MapReduce programs defined in Section~\ref{sec-mr-prog}.
+
+A \emph{streaming numerical transducer} (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ such that 
 \begin{itemize}
 \item $Q$ is a finite set of states,
-%\item $K \in \Nn$ is the maximum number of data values in each position, 
-\item $X$ is a finite set of control variables which is used to store some data values that have been met,
-\item $Y$ is a finite set of data variables, which is used to aggregate some information for the output,
-\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X$ (note that the variables from $Y$ do not occur in $g$), $\eta$ is an assignment for $X \cup Y$, 
-%\zhilin{I am wondering whether we should add constraints e.g. $p_1 > 5$, which is not available in the original definition of streaming transducer}\lei{Constraints like $x > p_1$ is also not allowed? For me, it makes more sense to include such constraints.}
+%
+\item $X$ is a finite set of control variables to store some data values that have been met,
+%
+\item $Y$ is a finite set of data variables to aggregate some information for the output,
+%
+\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X$ (note that the variables from $Y$ do not occur in $g$), and $\eta$ is an assignment for $X \cup Y$, 
+%
 \item $q_0 \in Q$ is the initial state,
-\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{(X \setminus \{cur\}) \cup Y}$.
+%
+\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.
+\end{itemize}
+Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
+\begin{description}
+\item [1 (Deterministic).] For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
+%
+\item [2 (Generalized flat).] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a collection of cycles that share a unique state.
+%
+\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
+%
+\item[4 (Copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in $\eta(y)$ (This means that $\eta(y)$ does not contain the expressions of the form $y+y$).
+%
+\end{description}
+
+For a transition $(q,g,\eta,q') \in \delta$, we usually write it as $q \xrightarrow{(g,\eta)} q'$, in a more intuitive way.
+
+The semantics of a SNT $\Ss$  is defined as follows: A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(x)=\bot$ and $\rho_0(y)=\bot$ for each $x \in X$ and $y \in Y$. Over a data word $w=d_1 \dots d_n$, a \emph{run} of $\Ss$ over $w$ is a sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i: 1 \le i \le n$, $\rho_{i-1}[d_i/\cur]  \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows,
+\begin{itemize}
+\item for each $x \in X$, if $ x \in \dom(\eta_i)$, then $\rho_i(x)=d_i$, otherwise, $\rho_i(x)=\rho_{i-1}(x)$,
+%
+\item for each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=(\rho_{i-1}[d_i/\cur])(\eta_i(y))$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$,
+\end{itemize}
+where $\rho_{i-1}[d_i/\cur]$ is the extension of $\rho_{i-1}$ by assigning $d_i$ to $\cur$. We will call $(q_n,\rho_n)$ as the \emph{final configuration} of the run.
+
+We would like to remark that for each data word $w$, there is at most one run of $\Ss$ over $w$, since $\Ss$ is deterministic. 
+
+Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by $O_{\Ss}(w)$, is $\rho_n(O(q_n))$. Otherwise, $O_{\Ss}(w)$ is $\bot$.
+
+\begin{example}[SNT for max and sum]
+The SNT to define the maximum of the integers occurring in a data word is given by $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$  such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \eta_\bot, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function that assigns $\cur$ to $\maxv$, and $\eta_\bot$ denotes the assignment function of the empty domain. The SNT to define the sum of the integers occurring in a data word is given by $\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that $\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and $O(q_1)=\sumv$. 
+\end{example}
+
+
+
+%\begin{example}[Example inspired by Pagerank]
+%The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
+%\end{example}
+
+
+We introduce a concept of ``well-behaved'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-behaved} if for each sequence of transitions of $\Ss$, say $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, and each $i: 0 \le i \le n$, it holds that for each $y \in Y \cap \dom(\eta_i)$ and for each variable $z$ occurring in $\eta_i(y)$, we have $z \in \defval_{i-1}$, where $\defval_0,\dots,\defval_n$ are defined as follows,
+\begin{itemize}
+\item $\defval_0 =\emptyset$,
+%
+\item for $i: 0 < i \le n$, $\defval_i$  is constructed from $\defval_{i-1}$ as follows: 
+\begin{itemize}
+\item initially, let $\defval_i = \defval_{i-1} \cup (X \cap \dom(\eta_i))$,  
+\item for each $y \in Y \cap \dom(\eta_i)$ such that for each variable $z$ occurring in $\eta_i(y)$, it holds that $z \in \defval_{i-1}$, add $y$ into $\defval_i$.
+\end{itemize}
 \end{itemize}
 
-%A SNT $\Ss$ is said to be \emph{generalized flat} if each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a collection of cycles that they share a unique state.
+\zhilin{the definition of well-behavedness should be checked.}
 
-In this paper, we restrict our attention to SNTs $\Ss$ satisfying the following constraints.
-\begin{description}
-\item [1 (deterministic).] For every pair of distinct tuples $(q, g_1, \eta_1,q'_1), (q, g_2,\eta_2,q'_2) \in \delta$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
-%
-\item[2 (copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in the collection of expressions $\{\eta(y') \mid y' \in Y\}$.
-%
-\item[3 (independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
-%
-\item [4 (generalized flat).] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a collection of cycles that they share a unique state.
-\end{description}
-Note that the ``copyless'' constraint forbids the use of the expressions of the form $y+y$ in the transitions.
 
-The semantics of a SNT $\Ss$  is given by a transduction as follows: A configuration of $\Ss$ is a pair $(q,\beta)$, where $q \in Q$ and $\beta$ is a valuation of $X \cup Y$, that is, a partial function from $X \cup Y$ to $\Ii$. When reading a data word $w=d_1 \dots d_n$, $\Ss$ runs over $w$ from left to right. Let $(q, \beta)$ be the configuration of $\Ss$ reached after running over $w$, then the output of $\Ss$ is $\beta(O(q))$, if $O(q)$ is defined and $vars(O(q)) \subseteq dom(\beta)$, and the output is undefined otherwise.
+From now on, we assume that all SNTs are well-behaved.
 
-A SNT $\Ss$ is said to be a SNT$_\pm$ if all the expressions occurring in $\Ss$ use only $+,-$, but not $\ast,/$.
 
-\begin{example}[Max, average]
-The max transducer over sequences of integers is given by the transitions $(q_0, 1, x < p_1, x:=p_1, q_0)$, where $x:= p_1$ assigns $p_1$ to $x$, and $(q_0, 1, x \ge p_1 , \emptyset, q_0)$, and the output function $O(q_0)=x$. The average transducer over sequences of integers is given by the transition $(q_0, 1, true, (sum:=sum + p_1, len := len +1), q_0)$, and $O(q_0)=sum / len$. 
-\end{example}
 
-\begin{example}[Example inspired by Pagerank]
-The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
-\end{example}
 
-We focus on the following decision problems of SNT.
+
+We focus on the following three decision problems of SNTs in this paper, the commutativity problem, the equivalence problem, and the non-zero output problem.
 \begin{description}
 \item[(Commutativity).] Given a SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, the output of $\Ss$ over $w$ is equal to that of $\Ss$ over $w'$.
 %
-\item[(Equivalence).] Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, the output of $\Ss_1$ on $w$ is defined iff that of $\Ss_2$ on $w$ is defined, moreover, if the outputs of $\Ss_1$ and $\Ss_2$ are defined, then the output of $\Ss_1$ is equal to that of $\Ss_2$.
+\item[(Equivalence).] Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $O_{\Ss_1}(w)=O_{\Ss_2}(w)$.
 %
-\item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that the output of $\Ss$ on $w$ is non-zero. 
+\item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that $O_{\Ss}(w) \neq \bot$ and $O_{\Ss}(w)$ is non-zero. 
 \end{description}
+In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output problem.
 
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-\yfc{can we describe the following Triangle-counting algorithm using the model?}
-\zhilin{Could you describe how to implement the algorithm in MapReduce framework?}
-\yfc{this is based on the sample code in Spark, I found antoher sample code in Hadoop, maybe fits the model better, check https://github.com/vertica/Graph-Analytics----Triangle-Counting/blob/master/src/com/vertica/mr/graphs/TriangleCounter.java}
-
-\zhilin{I will describe my understanding of the algorithm in the following} 
-
-The task comprises of three MapReduce jobs. 
-\begin{description}
-\item[Job1] Map: Filter out the pairs $(v1,v2)$ such that $v1 > v2$. Reduce: on the input $(v, w_1 \dots w_k)$ (where $v < w_i$ for each $i$), output the list $((v,w_1),0), \dots, ((v,w_k),0), ((w_1,w_2),1), \dots, ((w_{k-1},w_k),1)$.
-\item[Job2] Map: Identity function. Reduce: on the input $((v1,v2),i_1 ... i_k)$, if $i_j=0$ for some $j$, then output $(1, i_1+...i_k)$, otherwise, output $(1,0)$.
-\item[Job3] Map: Identity function. Reduce: on the input $(1,n_1 \dots n_k)$, ouput $((n_1+\dots + n_k),null)$.
-\end{description}
-
-\zhilin{The most challenging one is Job1. The reducer in Job1 need output each distinct pair $((w_i, w_j),1)$ for a list $w_1 \dots w_n$. For this transduction, at first we need extend the transducer to output a list of $(key, value)$ pairs, instead of a single $(key,value)$ pair. Moreover, the relatively complex transduction from lists to lists seems exceeding the capability of streaming transducers.}
-
-\newcommand{\numTri}[1]{\triangle_{#1}}
-Let $G = (V, E)$ be an undirected graph without self-loops or multiple
-edges. For $u, v \in V$, $\{ u, v \} \in E$ denotes that $u$ and $v$
-are adjacent. A  \emph{triangle} in $G$ is formed by $u, v, w \in V$ with $\{ u, v \},
-\{ u, w \}, \{ v, w \} \in E$. 
-We want to count the number of triangles in a given graph.
-
-Suppose that the graph is described as a list of edges.
-
-For each edge $\{ u, v \} \in E$, the algorithm sends the sets $\{ u \}$
-and $\{ v \}$ to $v$ and $u$ respectively. If several messages are
-sent to a vertex, they are merged by unions.
-\yfc{So maybe we need to also support the data type ``set''}
-
-After this operation, we get a list of pairs $(u, U)$, where $u \in V$ and $U$ is the set $\{ v : \{ u, v \} \in E \}$.
-
-Then for each edge $\{ u, w \} \in E$, again we send the size of the set $| U \cap W |$ to both $u$ and $w$, where $U$ and $W$ are
-the set of vertices adjacent to $u$ and $v$ respectively. 
-\yfc{This is difficult in our model. We need to first traverse E (the first input list) and then get the corresponding set U and W from the 2nd list. Then count the size of their intersection. Maybe can be implemented in a slightly different way.}
-
-Observe that for every $s \in U \cap W$, we have $\{ s, u \}, \{ s, w \}, \{ u, w
-\} \in E$. Let $\numTri{\{u, v\}}$ denote the number of triangles
-containing the edge $\{ u, w \}$. Then $\numTri{\{u, w\}}$ is sent to
-both $u$ and $w$. If several messages are sent to $w$, they are merged
-by summation. After this operation we get a list of pairs $(u, \sum_{\{ u, w \} \in E} \numTri{\{u, w\}})$.
-
-Now consider a vertex $v$ in a triangle of $u, v, w$. The triangle is
-counted in both $\numTri{\{ u, v \}}$ and $\numTri{\{ w, v \}}$. Hence
-we need to divide the the number by 2 to get the number of triangles containing $v$. }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-Consider the permutation $\tau_2$ and $\tau_n$ in \cite{CHSW15}. We can define two streaming data string transducers $\Ss$ and $\Ss'$ (note that $\Ss'$ is independent from $n$)  for $\tau_2$ and $\tau_n$. Then the commutativity of a given SNT $\Tt$ is reduced to the equivalence of $\Tt$ and $\Ss \circ \Tt$ as well as the equivalence of $\Tt$ and $\Ss'\circ \Tt$. Note that an equivalent SNT can be defined for $\Ss \circ \Tt$ and $\Ss' \circ \Tt$ respectively.
-
-\begin{proposition}
-The commutativity of SNTs is reduced to the equivalence of SNTs in linear time. 
+\begin{proposition}\label{prop-snt-cmm-to-eqv}
+The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}
 
-\begin{proposition}
-From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ is not equivalent to $\Ss_2$ iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
+\begin{proof}
+Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is a SNT. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
+\begin{itemize}
+\item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$, that is, the data word obtained from $w$ by swapping the first two data values.
+%
+\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving first data value to the end. 
+\end{itemize}
+The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
+
+\smallskip
+
+\noindent {\it The construction of $\Ss_1$}.
+
+Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$ as follows: When reading $d_2$ in $w$, the data variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
+
+Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, the following constraints are satisfied,
+\begin{itemize}
+\item $g_1$ does not contain any variable from $X$,
+%
+\item for each variable $x \in X$ such that $x$ occurs in $g_2$, it holds that $x \in \dom(\eta_1)$,
+%
+\item after these two transitions, the values of all the variables from $\dom(\eta_1) \cup \dom(\eta_2)$ are defined, more specifically, for each $y \in Y \cap \dom(\eta_2)$ and each $z \in \vars(\eta_2(y))$, it holds that $z \in \dom(\eta_1)$.
+\end{itemize}
+
+Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{0},q'_1\}, X \cup \{x'\}, Y, \delta_1, q'_{0}, O_1)$ such that 
+\begin{itemize}
+\item $O_1(q'_0)$ and $O_1(q'_1)$ are undefined, and for each $q \in Q$, $O_1(q)=O(q)$,
+%
+\item $\delta_1$ is constructed from $\delta$ as follows,
+\begin{itemize}
+\item each element of $\delta$ is an element of $\delta_1$,
+%
+\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose $X \cap \dom(\eta_1)=\{x_1,\dots,x_k\}$, for each $y \in Y \cap \dom(\eta_1)$, $\eta_1(y)=a_{1,y} + b_{1,y}\cur$, and for each $y \in Y \cap \dom(\eta_2)$, 
+\[\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,0} y + c_{y,1} x_1 + \dots + c_{y,k} x_k,\] 
+or 
+\[
+\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,1} x_1 + \dots + c_{y,k} x_k.
+\]
+Then $\eta'_1, g', \eta'_2$ are defined as follows.
+\begin{itemize}
+\item $\eta'_1(x')=\cur$, for each $x \in X \cap \dom(\eta_2)$, $\eta'_1(x)=\cur$, and for all the other variables $z$ from $X \cup Y$, $\eta'_1(z)$ is undefined.
+%
+\item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X$ with $\cur$.
+%
+\item For each $x \in X$, if $x \in \dom(\eta_2)$, then $\eta'_2(x)$ is undefined, otherwise, if $x \in \dom(\eta_1)$, then $\eta'_2(x)=\cur$, otherwise, $\eta'_2(x)$ is undefined.
+%
+\item For each $y \in Y$, if $y \in \dom(\eta_2)$, then 
+\[
+\begin{array}{l c l}
+\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,0} (a_{1,y} + b_{1,y}\cur) + c_{y,1} \cur + \dots + c_{y,k} \cur \\
+& = & (a_{2,y} + c_{y,0} a_{1,y}) + b_{2,y} x' + (c_{y,0} b_{1,y}  + c_{y,1} + \dots + c_{y,k} )\cur,
+\end{array}
+\]
+or 
+\[
+\begin{array}{l c l}
+\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,1} \cur + \dots + c_{y,k} \cur \\
+& = & a_{2,y} + b_{2,y} x' + (c_{y,1} + \dots + c_{y,k} )\cur.
+\end{array}
+\]
+%
+Otherwise, if $y \in \dom(\eta_1)$, then $\eta'_2(y)= a_{1,y} + b_{1,y} \cur$. Otherwise, $\eta'_2(y)$ is undefined.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+It is easy to see that the size of $\Ss_1$ is polynomial with respect to the size of $\Ss$.
+
+\smallskip
+
+\noindent {\it The construction of $\Ss_2$}.
+
+Intuitively, over a data word $w=d_1\dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reaching the end of $w$, $\Ss_2$ outputs immediately by using $x'$ to represent $d_1$ and simulating the last transition of $\Ss$ over $d_2 \dots d_n d_1$. In order to simulate \emph{deterministically} the last transition of $\Ss$ over $d_2 \dots d_n d_1$ when reading the end of $w$ (since SNTs are required to be deterministic), we need record in the states of $\Ss_2$ the relationship between $d_1$ and all the values stored in the control variables. This implies an exponential blow-up of the size of $\Ss_2$ with respect to $\Ss$.
+
+Let $c_{\max}$ and $c_{\min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$.
+
+Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (Q', Y, \delta_2, q'_{0}, O_2)$, where $O',\delta_2,O_2$ are defined as follows. 
+\begin{itemize}
+\item $Q' = \{q_0\} \cup \left(\left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where $[c_{\min},c_{\max}]= \{c \in \intnum \mid c_{\min} \le c \le c_{\max} \}$.
+%
+\item $\delta_2$ is defined as follows, 
+\begin{itemize}
+\item for each $c \in [c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
+%
+\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that the guard $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, then $\delta_2$ contains the following three transitions, 
+$((q,(c,o)), g \wedge \cur = x', \eta, (q',(c,o'_1)))$, $((q,(c,o)), g \wedge \cur< x', \eta, (q',(c,o'_2)))$, and $((q,(c,o)), g \wedge \cur > x', \eta, (q',(c,o'_3)))$, 
+where 
+for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) = \ =$, $o'_2(x)=\ >$, and $o'_3(x) =\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) = o(x)$.
+\end{itemize}
+%
+\item $O_2$ is defined as follows: For each $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(\bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, suppose 
+\[O(q')=a+b_1 x_1 + \dots + b_k x_k + c_1 y_1 + \dots + c_l y_l,\]
+where $x_1,\dots,x_k$ (resp. $y_1,\dots,y_l$) are pairwise distinct variables from $X$ (resp. $Y$),
+then let
+\[O_2((q,(c,o)))=a+b_1 \eta'(x_1) + \dots + b_k \eta'(x_k) + c_1 \eta'(y_1) + \dots + c_l \eta'(y_l),\]
+where for each $z \in \dom(\eta)$, $\eta'(z)=\eta(z)$, and for all the other variables $z' \in X \cup Y$, $\eta'(z')=z'$.  \\
+Note that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint.
+\end{itemize}
+%
+Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
+\qed
+\end{proof}
+
+The equivalence problem of SNTs can be further reduced to the non-zero output reachability problem of SNTs.
+
+\begin{proposition}\label{prop-snt-eqv-to-nzero}
+From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
 \end{proposition}
 
-Therefore, the equivalence problem of SNTs is reduced to the non-zero output reachability problem of SNTs.
+\begin{proof}
+Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
+
+Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
+\begin{itemize}
+\item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$ and $(q_2,g_2,\eta_2,q'_2) \in \delta_2$,
+%
+\item for each $(q_1,q_2) \in Q_1 \times Q_2$, 
+\begin{itemize}
+\item if $O_1(q_1)$ is defined and $O_2(q_2)$ is undefined or vice versa, then $O((q_1,q_2))=1$, 
+\item otherwise, if both $O_1(q_1)$ and $O_2(q_2)$ are defined, then $O((q_1,q_2))=O_1(q_1) - O_2(q_2)$, 
+\item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
+\end{itemize}
+\end{itemize}
+It is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.
+\end{proof}
 
 \section{Decision Problems for SNTs}
 
