@@ -301,7 +301,7 @@ int MAD() {
 %%%%%%%%%%%%streaming numerical transducer%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Streaming Numerical Transducers}
+\section{Streaming Numerical Transducers}\label{sec-snt}
 
 In this section, we introduce streaming numerical transducers, whose inputs are data words and outputs are integer values. Over a data word, a streaming numerical transducer scans the data word from left to right, records some information by using control and data variables, and outputs a data value when it arrives at the right end of the data word. We will use streaming numerical transducers to decide the commutativity problem of the MapReduce programs defined in Section~\ref{sec-mr-prog}.
 
@@ -356,22 +356,32 @@ The SNT to define the maximum of the integers occurring in a data word is given 
 %\end{example}
 
 
-We introduce a concept of ``well-behaved'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-behaved} if for each sequence of transitions of $\Ss$, say $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, and each $i: 0 \le i \le n$, it holds that for each $y \in Y \cap \dom(\eta_i)$ and for each variable $z$ occurring in $\eta_i(y)$, we have $z \in \defval_{i-1}$, where $\defval_0,\dots,\defval_n$ are defined as follows,
+We introduce a concept of ``well-defined'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-defined} if for each data word $w=d_1\dots d_n$ and each run of $\Ss$ over $w$, say  $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, let $(q_0,\rho_0),\dots,(q_n,\rho_n)$ be the resulting sequence of configurations, then the following conditions hold: for each $i: 1 \le i \le n$ and each $z \in X \cup Y$ occurring in $(g_i,\eta_i)$, we have $\rho_{i-1}(z) \neq \bot$, moreover, if $O(q_n)$ is defined, then for each variable $z$ occurring in $O(q_n)$, we have $\rho_{n}(z) \neq \bot$.
+
+From now on, we assume that all SNTs are well-defined. Otherwise, we can construct an equivalent well-defined SNT $\Ss'=(Q', X,Y, \delta', (q_0,\emptyset), O')$, where 
 \begin{itemize}
-\item $\defval_0 =\emptyset$,
+\item $Q' = Q \times 2^X$,
 %
-\item for $i: 0 < i \le n$, $\defval_i$  is constructed from $\defval_{i-1}$ as follows: 
-\begin{itemize}
-\item initially, let $\defval_i = \defval_{i-1} \cup (X \cap \dom(\eta_i))$,  
-\item for each $y \in Y \cap \dom(\eta_i)$ such that for each variable $z$ occurring in $\eta_i(y)$, it holds that $z \in \defval_{i-1}$, add $y$ into $\defval_i$.
-\end{itemize}
-\end{itemize}
+\item $\delta'$ comprises the tuples $((q,Z),g,\eta,(q', Z'))$ such that $(q,g,\eta,q') \in \delta$ and $Z' = Z \cup (X \cap \dom(\eta)) \cup \{y \in Y \cap \dom(\eta) \mid \vars(\eta(y)) \subseteq Z \cup \{\cur\}\}$ (intuitively, suppose that the values of the variables from $Z$ are defined before a transition $(q,g,\eta,q')$, then $Z'$ is the set of variables whose values are defined after applying the transition),
+%
+\item for each $(q,Z) \in Q'$, if $O(q)$ is defined and $\vars(O(q)) \subseteq Z$, then $O'((q,Z))=O(q)$, otherwise, $O((q,Z))$ is undefined.
+\end{itemize} 
 
-\zhilin{the definition of well-behavedness should be checked.}
+Note that if a SNT $\Ss$ is well-defined, then for each data word $w$, if the run of $\Ss$ over a data word $w$ reaches a state $q$ and $O(q)$ is defined, then the output of $\Ss$ over $w$ is defined.
 
-
-From now on, we assume that all SNTs are well-behaved.
-
+%We first compute a fixed point $\defval$ inductively as follows. 
+%\begin{enumerate}
+%\item Initially, let $\defval_0=\{(q_0,\emptyset)\}$.
+%
+%\item For each $i > 0$, compute $\defval_i$ from $\defval_{i-1}$ as follows,
+%\begin{itemize}
+%\item each element of $\defval_{i-1}$ is an element of $\defval_i$, 
+%
+%\item for each $(q,Z) \in \defval_{i-1}$ and each transition $(q,g,\eta,q') \in \delta$,  let $Z' = Z \cup (X \cap \dom(\eta)) \cup \{y \in Y \cap \dom(\eta) \mid \vars(\eta(y)) \subseteq Z \cup \{\cur\}\}$, put $(q',Z')$ into $\defval_i$.
+%\end{itemize}
+%
+%\item If $\defval_{i-1}=\defval_i$, then the computation stops, otherwise, let $i:=i+1$ and the computation continues.
+%\end{enumerate}
 
 
 
@@ -392,130 +402,11 @@ In the following, we show that the commutativity problem can be reduced to the e
 The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}
 
-\begin{proof}
-Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is a SNT. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
-\begin{itemize}
-\item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$, that is, the data word obtained from $w$ by swapping the first two data values.
-%
-\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving first data value to the end. 
-\end{itemize}
-The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
-
-\smallskip
-
-\noindent {\it The construction of $\Ss_1$}.
-
-Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$ as follows: When reading $d_2$ in $w$, the data variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
-
-Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, the following constraints are satisfied,
-\begin{itemize}
-\item $g_1$ does not contain any variable from $X$,
-%
-\item for each variable $x \in X$ such that $x$ occurs in $g_2$, it holds that $x \in \dom(\eta_1)$,
-%
-\item after these two transitions, the values of all the variables from $\dom(\eta_1) \cup \dom(\eta_2)$ are defined, more specifically, for each $y \in Y \cap \dom(\eta_2)$ and each $z \in \vars(\eta_2(y))$, it holds that $z \in \dom(\eta_1)$.
-\end{itemize}
-
-Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{0},q'_1\}, X \cup \{x'\}, Y, \delta_1, q'_{0}, O_1)$ such that 
-\begin{itemize}
-\item $O_1(q'_0)$ and $O_1(q'_1)$ are undefined, and for each $q \in Q$, $O_1(q)=O(q)$,
-%
-\item $\delta_1$ is constructed from $\delta$ as follows,
-\begin{itemize}
-\item each element of $\delta$ is an element of $\delta_1$,
-%
-\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose $X \cap \dom(\eta_1)=\{x_1,\dots,x_k\}$, for each $y \in Y \cap \dom(\eta_1)$, $\eta_1(y)=a_{1,y} + b_{1,y}\cur$, and for each $y \in Y \cap \dom(\eta_2)$, 
-\[\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,0} y + c_{y,1} x_1 + \dots + c_{y,k} x_k,\] 
-or 
-\[
-\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,1} x_1 + \dots + c_{y,k} x_k.
-\]
-Then $\eta'_1, g', \eta'_2$ are defined as follows.
-\begin{itemize}
-\item $\eta'_1(x')=\cur$, for each $x \in X \cap \dom(\eta_2)$, $\eta'_1(x)=\cur$, and for all the other variables $z$ from $X \cup Y$, $\eta'_1(z)$ is undefined.
-%
-\item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X$ with $\cur$.
-%
-\item For each $x \in X$, if $x \in \dom(\eta_2)$, then $\eta'_2(x)$ is undefined, otherwise, if $x \in \dom(\eta_1)$, then $\eta'_2(x)=\cur$, otherwise, $\eta'_2(x)$ is undefined.
-%
-\item For each $y \in Y$, if $y \in \dom(\eta_2)$, then 
-\[
-\begin{array}{l c l}
-\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,0} (a_{1,y} + b_{1,y}\cur) + c_{y,1} \cur + \dots + c_{y,k} \cur \\
-& = & (a_{2,y} + c_{y,0} a_{1,y}) + b_{2,y} x' + (c_{y,0} b_{1,y}  + c_{y,1} + \dots + c_{y,k} )\cur,
-\end{array}
-\]
-or 
-\[
-\begin{array}{l c l}
-\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,1} \cur + \dots + c_{y,k} \cur \\
-& = & a_{2,y} + b_{2,y} x' + (c_{y,1} + \dots + c_{y,k} )\cur.
-\end{array}
-\]
-%
-Otherwise, if $y \in \dom(\eta_1)$, then $\eta'_2(y)= a_{1,y} + b_{1,y} \cur$. Otherwise, $\eta'_2(y)$ is undefined.
-\end{itemize}
-\end{itemize}
-\end{itemize}
-It is easy to see that the size of $\Ss_1$ is polynomial with respect to the size of $\Ss$.
-
-\smallskip
-
-\noindent {\it The construction of $\Ss_2$}.
-
-Intuitively, over a data word $w=d_1\dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reaching the end of $w$, $\Ss_2$ outputs immediately by using $x'$ to represent $d_1$ and simulating the last transition of $\Ss$ over $d_2 \dots d_n d_1$. In order to simulate \emph{deterministically} the last transition of $\Ss$ over $d_2 \dots d_n d_1$ when reading the end of $w$ (since SNTs are required to be deterministic), we need record in the states of $\Ss_2$ the relationship between $d_1$ and all the values stored in the control variables. This implies an exponential blow-up of the size of $\Ss_2$ with respect to $\Ss$.
-
-Let $c_{\max}$ and $c_{\min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$.
-
-Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (Q', Y, \delta_2, q'_{0}, O_2)$, where $O',\delta_2,O_2$ are defined as follows. 
-\begin{itemize}
-\item $Q' = \{q_0\} \cup \left(\left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where $[c_{\min},c_{\max}]= \{c \in \intnum \mid c_{\min} \le c \le c_{\max} \}$.
-%
-\item $\delta_2$ is defined as follows, 
-\begin{itemize}
-\item for each $c \in [c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
-%
-\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that the guard $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, then $\delta_2$ contains the following three transitions, 
-$((q,(c,o)), g \wedge \cur = x', \eta, (q',(c,o'_1)))$, $((q,(c,o)), g \wedge \cur< x', \eta, (q',(c,o'_2)))$, and $((q,(c,o)), g \wedge \cur > x', \eta, (q',(c,o'_3)))$, 
-where 
-for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) = \ =$, $o'_2(x)=\ >$, and $o'_3(x) =\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) = o(x)$.
-\end{itemize}
-%
-\item $O_2$ is defined as follows: For each $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(\bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, suppose 
-\[O(q')=a+b_1 x_1 + \dots + b_k x_k + c_1 y_1 + \dots + c_l y_l,\]
-where $x_1,\dots,x_k$ (resp. $y_1,\dots,y_l$) are pairwise distinct variables from $X$ (resp. $Y$),
-then let
-\[O_2((q,(c,o)))=a+b_1 \eta'(x_1) + \dots + b_k \eta'(x_k) + c_1 \eta'(y_1) + \dots + c_l \eta'(y_l),\]
-where for each $z \in \dom(\eta)$, $\eta'(z)=\eta(z)$, and for all the other variables $z' \in X \cup Y$, $\eta'(z')=z'$.  \\
-Note that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint.
-\end{itemize}
-%
-Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
-\qed
-\end{proof}
-
 The equivalence problem of SNTs can be further reduced to the non-zero output reachability problem of SNTs.
 
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
 From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
 \end{proposition}
-
-\begin{proof}
-Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
-
-Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
-\begin{itemize}
-\item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$ and $(q_2,g_2,\eta_2,q'_2) \in \delta_2$,
-%
-\item for each $(q_1,q_2) \in Q_1 \times Q_2$, 
-\begin{itemize}
-\item if $O_1(q_1)$ is defined and $O_2(q_2)$ is undefined or vice versa, then $O((q_1,q_2))=1$, 
-\item otherwise, if both $O_1(q_1)$ and $O_2(q_2)$ are defined, then $O((q_1,q_2))=O_1(q_1) - O_2(q_2)$, 
-\item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
-\end{itemize}
-\end{itemize}
-It is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.
-\end{proof}
 
 \section{Decision Problems for SNTs}
 
@@ -1081,8 +972,139 @@ From the analysis of the commutativity of reducers in \cite{XZZ+14}, the commuta
 \bibliography{data}
 
 
+\newpage
+
 \begin{appendix}
 
+\section{Proofs in Section~\ref{sec-snt}}
+
+\noindent {\bf Proposition~\ref{prop-snt-cmm-to-eqv}}. 
+\emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time}.
+
+\begin{proof}
+Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is a SNT. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
+\begin{itemize}
+\item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$, that is, the data word obtained from $w$ by swapping the first two data values.
+%
+\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving first data value to the end. 
+\end{itemize}
+The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
+
+\smallskip
+
+\noindent {\it The construction of $\Ss_1$}.
+
+Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$ as follows: When reading $d_2$ in $w$, the data variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
+
+Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, the following constraints are satisfied,
+\begin{itemize}
+\item $g_1$ does not contain any variable from $X$,
+%
+\item for each variable $x \in X$ such that $x$ occurs in $g_2$, it holds that $x \in \dom(\eta_1)$,
+%
+\item after these two transitions, the values of all the variables from $\dom(\eta_1) \cup \dom(\eta_2)$ are defined, more specifically, for each $y \in Y \cap \dom(\eta_2)$ and each $z \in \vars(\eta_2(y))$, it holds that $z \in \dom(\eta_1)$.
+\end{itemize}
+
+Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{0},q'_1\}, X \cup \{x'\}, Y, \delta_1, q'_{0}, O_1)$ such that 
+\begin{itemize}
+\item $O_1(q'_0)$ and $O_1(q'_1)$ are undefined, and for each $q \in Q$, $O_1(q)=O(q)$,
+%
+\item $\delta_1$ is constructed from $\delta$ as follows,
+\begin{itemize}
+\item each element of $\delta$ is an element of $\delta_1$,
+%
+\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose $X \cap \dom(\eta_1)=\{x_1,\dots,x_k\}$, for each $y \in Y \cap \dom(\eta_1)$, $\eta_1(y)=a_{1,y} + b_{1,y}\cur$, and for each $y \in Y \cap \dom(\eta_2)$, 
+\[\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,0} y + c_{y,1} x_1 + \dots + c_{y,k} x_k,\] 
+or 
+\[
+\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,1} x_1 + \dots + c_{y,k} x_k.
+\]
+Then $\eta'_1, g', \eta'_2$ are defined as follows.
+\begin{itemize}
+\item $\eta'_1(x')=\cur$, for each $x \in X \cap \dom(\eta_2)$, $\eta'_1(x)=\cur$, and for all the other variables $z$ from $X \cup Y$, $\eta'_1(z)$ is undefined.
+%
+\item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X$ with $\cur$.
+%
+\item For each $x \in X$, if $x \in \dom(\eta_2)$, then $\eta'_2(x)$ is undefined, otherwise, if $x \in \dom(\eta_1)$, then $\eta'_2(x)=\cur$, otherwise, $\eta'_2(x)$ is undefined.
+%
+\item For each $y \in Y$, if $y \in \dom(\eta_2)$, then 
+\[
+\begin{array}{l c l}
+\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,0} (a_{1,y} + b_{1,y}\cur) + c_{y,1} \cur + \dots + c_{y,k} \cur \\
+& = & (a_{2,y} + c_{y,0} a_{1,y}) + b_{2,y} x' + (c_{y,0} b_{1,y}  + c_{y,1} + \dots + c_{y,k} )\cur,
+\end{array}
+\]
+or 
+\[
+\begin{array}{l c l}
+\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,1} \cur + \dots + c_{y,k} \cur \\
+& = & a_{2,y} + b_{2,y} x' + (c_{y,1} + \dots + c_{y,k} )\cur.
+\end{array}
+\]
+%
+Otherwise, if $y \in \dom(\eta_1)$, then $\eta'_2(y)= a_{1,y} + b_{1,y} \cur$. Otherwise, $\eta'_2(y)$ is undefined.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+It is easy to see that the size of $\Ss_1$ is polynomial with respect to the size of $\Ss$.
+
+\smallskip
+
+\noindent {\it The construction of $\Ss_2$}.
+
+Intuitively, over a data word $w=d_1\dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reaching the end of $w$, $\Ss_2$ outputs immediately by using $x'$ to represent $d_1$ and simulating the last transition of $\Ss$ over $d_2 \dots d_n d_1$. In order to simulate \emph{deterministically} the last transition of $\Ss$ over $d_2 \dots d_n d_1$ when reading the end of $w$ (since SNTs are required to be deterministic), we need record in the states of $\Ss_2$ the relationship between $d_1$ and all the values stored in the control variables. This implies an exponential blow-up of the size of $\Ss_2$ with respect to $\Ss$.
+
+Let $c_{\max}$ and $c_{\min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$.
+
+Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (Q', Y, \delta_2, q'_{0}, O_2)$, where $O',\delta_2,O_2$ are defined as follows. 
+\begin{itemize}
+\item $Q' = \{q_0\} \cup \left(\left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where $[c_{\min},c_{\max}]= \{c \in \intnum \mid c_{\min} \le c \le c_{\max} \}$.
+%
+\item $\delta_2$ is defined as follows, 
+\begin{itemize}
+\item for each $c \in [c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
+%
+\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that the guard $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, then $\delta_2$ contains the following three transitions, 
+$((q,(c,o)), g \wedge \cur = x', \eta, (q',(c,o'_1)))$, $((q,(c,o)), g \wedge \cur< x', \eta, (q',(c,o'_2)))$, and $((q,(c,o)), g \wedge \cur > x', \eta, (q',(c,o'_3)))$, 
+where 
+for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) = \ =$, $o'_2(x)=\ >$, and $o'_3(x) =\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) = o(x)$.
+\end{itemize}
+%
+\item $O_2$ is defined as follows: For each $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(\bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, suppose 
+\[O(q')=a+b_1 x_1 + \dots + b_k x_k + c_1 y_1 + \dots + c_l y_l,\]
+where $x_1,\dots,x_k$ (resp. $y_1,\dots,y_l$) are pairwise distinct variables from $X$ (resp. $Y$),
+then let
+\[O_2((q,(c,o)))=a+b_1 \eta'(x_1) + \dots + b_k \eta'(x_k) + c_1 \eta'(y_1) + \dots + c_l \eta'(y_l),\]
+where for each $z \in \dom(\eta)$, $\eta'(z)=\eta(z)$, and for all the other variables $z' \in X \cup Y$, $\eta'(z')=z'$.  \\
+Note that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint.
+\end{itemize}
+%
+Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
+\qed
+\end{proof}
+
+
+\noindent {\bf Proposition \ref{prop-snt-eqv-to-nzero}}.
+\emph{From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero.}
+
+\begin{proof}
+Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
+
+Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
+\begin{itemize}
+\item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$ and $(q_2,g_2,\eta_2,q'_2) \in \delta_2$,
+%
+\item for each $(q_1,q_2) \in Q_1 \times Q_2$, 
+\begin{itemize}
+\item if $O_1(q_1)$ is defined and $O_2(q_2)$ is undefined or vice versa, then $O((q_1,q_2))=1$, 
+%
+\item otherwise, if both $O_1(q_1)$ and $O_2(q_2)$ are defined, then $O((q_1,q_2))=O_1(q_1) - O_2(q_2)$, 
+%
+\item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
+\end{itemize}
+\end{itemize}
+From the aforementioned construction and the assumption that $\Ss$ is well-defined, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.\qed
+\end{proof}
 
 
 \end{appendix}
