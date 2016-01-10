@@ -349,7 +349,9 @@ Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with t
 The SNT to define the maximum of the integers occurring in a data word is given by $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$  such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \eta_\bot, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function that assigns $\cur$ to $\maxv$, and $\eta_\bot$ denotes the assignment function of the empty domain. The SNT to define the sum of the integers occurring in a data word is given by $\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that $\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and $O(q_1)=\sumv$. 
 \end{example}
 
-
+\begin{proposition}\label{prop-mrprog-to-snt}
+For each MapReduce program XX, an equivalent SNT can be constructed. \zhilin{to be cleaned, once the definition of MR programs fixed}
+\end{proposition}
 
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
@@ -394,8 +396,7 @@ We focus on the following three decision problems of SNTs in this paper, the com
 %
 \item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that $O_{\Ss}(w) \neq \bot$ and $O_{\Ss}(w)$ is non-zero. 
 \end{description}
-In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output problem.
-
+In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output reachability problem.
 
 
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
