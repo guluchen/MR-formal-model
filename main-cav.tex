@@ -465,28 +465,6 @@ The values of the control and data variables after traversing the path $P$ are s
 \end{itemize}
 \end{proposition}
 
-\begin{proof}
-We show by an induction that for each $i: 1 \le i \le n$ and each variable $x_j \in X$ (resp. $y_j \in Y$), an expression $e_{i,x_j}$ (resp. $e_{i,y_j}$) can be constructed to describe the value of $x_j$(resp. $y_j$) after going through the first $i$ transitions of the path. 
-%
-\begin{itemize}
-\item Let $\theta_0$ be an assignment such that for each $x_j \in X$ (resp. $y_j \in Y$), $\theta_0(x_j)=d^{(0)}_j$ (resp. $\theta_0(y_j)=o_j$), moreover, $\theta_0(\cur)=d^{(1)}_1$.
-%
-%\item For each $x_j \in X$, if $x_j \in \dom(\eta_1)$, then $e_{1,x_j}=d^{(1)}_1$, otherwise, $e_{1,x_j}=d^{(0)}_j$. For each $y_j \in Y$, if $y_j \in \dom(\eta_1)$, then $e_{1,y_j} = \theta_0(\eta_{1}(y_j))$,
-%otherwise, $e_{1,y_j}=o_j$. 
-%
-\item Let $i: 1 \le i \le n$. 
-\begin{itemize}
-\item For each $x_j \in X$, if $x_j \in \dom(\eta_i)$, then $e_{i,x_j}=\theta_{i-1}(\cur)$, otherwise, $e_{i,x_j}=\theta_{i-1}(x_j)$.
-%
-\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then $e_{i,y_j} = \theta_{i-1}(\eta_i(y_j))$, otherwise, $e_{i,y_j}=\theta_{i-1}(y_j)$.
-%
-\item For each $x_{j} \in X$ (resp. $y_j \in Y$), $\theta_i(x_{j})=e_{i,x_{j}}$ (resp. $\theta_i(y_{j})=e_{i, y_{j}}$). If $i < n$, then $\theta_i(\cur)=d^{(1)}_{s}$, where $1\le s \le r$ and $k+i + 1 \in I_s$, otherwise, $\theta_i(\cur)=\bot$.
-\end{itemize}
-\end{itemize}
-Then the function $\chi$ can be defined as the restriction of $\theta_n$ to $X \cup Y$.
-\qed
-\end{proof}
-
 Suppose $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(1,1)}_1,\dots,d^{(1,1)}_{r_1}, d^{(2,1)}_1,\dots,d^{(2,1)}_{r_2}\}$ are a set of pairwise distinct variables from $\intvars$. For $b=1,2$, let 
 \[\Zz_b=\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(b,1)}_1,\dots,d^{(b,1)}_{r_b}\},\] and $\chi_b$ be a function from $X \cup Y$ to $\Ee_{\mathcal{Z}_b}$. Then the \emph{composition} of $\chi_1$ and $\chi_2$, denoted by $\chi_1 \circ \chi_2$, is defined as follows: Let $\chi'_1$ be a function with the domain $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l\}$ such that for each $j: 1 \le j \le k$ (resp. $j: 1 \le j \le l$), $\chi'_1(d^{(0)}_j)=\chi_1(x_j)$ (resp. $\chi'_1(o_j)=\chi_1(y_j)$). Then
 \begin{itemize}
@@ -521,134 +499,123 @@ for each $y_j \in Y$,
 \medskip
 & & \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2} \\
 %
-& =  & (\alpha^{(2)}_{j,0}+\alpha^{(2)}_{j,1} \alpha^{(1)}_{j,0})+ (\alpha^{(2)}_{j,0}\alpha^{(1)}_{j,0}) o_j + \\
+& =  & (\alpha^{(2)}_{j,0}+\alpha^{(2)}_{j,1} \alpha^{(1)}_{j,0})+ (\alpha^{(2)}_{j,1}\alpha^{(1)}_{j,0}) o_j + \\
 %
-& & \sum \limits_{j' \le k, \pi_1(j')=j'} (\alpha^{(2)}_{j,0} \beta^{(1)}_{j,j'} + \beta^{(2)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_1(j') \neq j'} (\alpha^{(2)}_{j,0} \beta^{(1)}_{j,j'}) d^{(0)}_{j'}  \\
-& & + \sum \limits_{j' > k, j' \in \rng(\pi_1)} (\alpha^{(2)}_{j,0} \gamma^{(1)}_{j,j'} + \beta^{(2)}_{j,\pi^{-1}(j')}) d^{(1,1)}_{j'} +\\
+& & \sum \limits_{j' \le k, \pi_1(j')=j'} (\beta^{(2)}_{j,j'}+\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_1(j') \neq j'} (\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'}  \\
 %
-& & \sum \limits_{j' > k, j' \not \in \rng(\pi_1)} (\alpha^{(2)}_{j,0} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} + 
+& & + \sum \limits_{j' \le r_1, j' + k \in \rng(\pi_1)} (\beta^{(2)}_{j,\pi_1^{-1}(j'+k)}+\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} +\\
+%
+& & \sum \limits_{j' \le r_1, j' + k \not \in \rng(\pi_1)} (\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} + 
  \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2}.
 \end{array}
 \] 
 
-\zhilin{I stopped here. The rest to be cleaned.}
+In the following, for each path $P=C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we provide an analysis of the computation of $\Ss$ on $P$.
 
-XXX: the analysis of a single cycle next.
+Suppose that $C$ is a cycle in $\Ss$, that is, a path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that $q_n = q_0$.  
 
-Suppose that $C=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ is a path in $\Ss$ such that $q_n = q_0$.  
-
-Suppose the initial values of the $k$ control variables are $d_1,\dots, d_k$ and the $n$ data values introduced when traversing the cycle once are $d_{k+1},\dots,d_{k+n}$ (These data values may repeat). Then the guards and the assignments in the cycle induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since $\Ss$ is normalized, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_{k+r}$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots, k+n\}$ such that $\min(I_1) < \dots < \min(I_{k+r})$. Then for each $j: 1 \le j \le k$, $\min(I_j)=j$.
-
-In the following, for $\ell =1,2,\dots$, we will define the assignment function $\chi_\ell$ with the domain $X \cup Y$ to describe the values of the control and data variables after traversing the cycle for $i$ times. 
-
-Suppose the initial values of the $k$ control variables are $d^0_1,\dots,d^0_k$. Moreover, suppose that the $r$ data values $d^1_{1},\dots,d^1_{r}$ are introduced when traversing the cycle for the first time, with one data value for each of $I_{1},\dots,I_{r}$. 
+Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{(C,1)}_{1},\dots,d^{(C,1)}_{r_C}$ are introduced when traversing the cycle for the first time. 
 In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
 
-The assignment function $\chi_1$ is of the following form,
+From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be constructed to summarize the computation of $\Ss$ on $C$.
 \begin{itemize}
-\item there is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi_1(x_j)=d^0_{j}$, otherwise, $\chi_1(x_j)=d^1_{\pi(j)-k}$,
+\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
 % 
-\item for each $y_j \in Y$, $\chi_1(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^0_1 + \dots + \beta_{j,k} d^0_k + \gamma_{j,1} d^1_1 +\dots + \gamma_{j,r} d^1_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``copyless'' and ``independently evolving'' constraint).
+\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1,-1\}$.
 \end{itemize}
 
-Let $J_1$ be set of indices $j$ such that $\pi(j)= j$ and $J_2 = \{1,\dots,k\} \setminus J_1$. Intuitively, the values of the variables from $J_1$ are  unchanged after traversing the cycle once, and the values of the variables from  $J_2$ are changed. Then $(J_1,J_2)$ forms a partition of $\{1,\dots,k\}$. Moreover, let $J_3=\{\pi(j)-k \mid j \in J_2\}$ and $J_4 = \{1,\dots,r\} \setminus J_3$. Then $(J_3,J_4)$ forms a partition of $\{1,\dots,r\}$.
+\begin{proposition}\label{prop-sum-cycle}
+Suppose $P=C^{\ell}$ such that $\ell \ge 2$. Then the function $\chi^{(C)}_{\ell}$ to summarize the computation of $\Ss$ on $P$ is defined as follows,
+\[
+\begin{array}{l c l}
+\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0}+ \dots +(\alpha^{(C)}_{j,1})^{\ell-1} \alpha^{(C)}_{j,0}) + (\alpha^{(C)}_{j,1})^\ell o_j + \\
+& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1}\beta^{(C)}_{j,j'} + \dots +(\alpha^{(C)}_{j,1})^{\ell-1}  \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \\
+%
+& & \sum \limits_{j'\le k, \pi_C(j') \neq j'} ((\alpha^{(C)}_{j,1})^{\ell-1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( (\alpha^{(C)}_{j,1})^{\ell-2} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +(\alpha^{(C)}_{j,1})^{\ell-1}\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} ((\alpha^{(C)}_{j,1})^{\ell-1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1}\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C},
+\end{array} 
+\]
+where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$
+ are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
+\end{proposition}
 
-Let $d^2_{1},\dots,d^2_{r}$ be the data values introduced when traversing the cycle for the second time. Then $\chi_2$ is defined as follows,
+From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1,-1\}$, for $\ell \ge 2$, we deduce the following facts.
 \begin{itemize}
-\item for each $j \in J_1$, $\chi_2(x_j)=\chi_1(x_j)=d^0_j$, and for each $j \in J_2$, $\chi_2(x_j) =d^2_{\pi(j)-k}$, 
-%
-\item for each $y_j \in Y$, $\chi_2(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_1(y_j) + \beta_{j,1} \chi_1(x_1) + \dots + \beta_{j,k} \chi_1(x_k) + \gamma_{j,1} d^2_1 +\dots + \gamma_{j,r} d^2_{r}$.
-\end{itemize}
-
-By expanding the expressions $\chi_1(y_j), \chi_1(x_1),\dots,\chi_1(x_k)$, we get the following expression,
+\item If $\alpha^{(C)}_{j,1}=0$, then
 \[
 \begin{array}{l c l}
-\chi_2(y_j)  & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + \alpha^2_{j,1} o_j + (\alpha_{j,1} \beta_{j,1}) d^0_{1} +\dots + (\alpha_{j,1}\beta_{j,k}) d^0_{k} + \\
-& & (\alpha_{j,1} \gamma_{j,1}) d^1_1 + \dots (\alpha_{j,1} \gamma_{j,r}) d^1_r + \sum \limits_{j' \in J_1} \beta_{j,j'} d^0_{j'} + \sum \limits_{j' \in J_2} \beta_{j,j'} d^1_{\pi(j')-k} + \\
-& &  \gamma_{j,1} d^2_1 + \dots + \gamma_{j,r} d^2_{r}\\
-& = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}) + \alpha^2_{j,1} o_j + \sum \limits_{j' \in J_1} (\beta_{j,j'} + \alpha_{j,1}  \beta_{j,j'}) d^0_{j'} + \sum \limits_{j' \in J_2} (\alpha_{j,1}\beta_{j,j'}) d^0_{j'} +\\
-& &  \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}+\alpha_{j,1}\gamma_{j,j'}) d^1_{j'} + \sum \limits_{j' \in J_4} (\alpha_{j,1} \gamma_{j,j'}) d^1_{j'} +\\
-& & \gamma_{j, 1} d^2_{1} + \dots + \gamma_{j,r} d^2_{r}.
+\chi^{(C)}_{\ell}(y_j)  & = & \alpha^{(C)}_{j,0} +  \sum \limits_{j' \le k, \pi_C(j')=j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +
+\\
+\smallskip
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} d^{(C,\ell-1)}_{j'} + \\
+& & \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
-
-Let $d^3_{1},\dots,d^3_{r}$ be the data values introduced when traversing the cycle for the third time. Then $\chi_3$ is defined as follows, 
-\begin{itemize}
-\item for each $j \in J_1$, $\chi_3(x_j)=\chi_2(x_j)=d^0_j$, and for each $j \in J_2$, $\chi_3(x_j) =d^3_{\pi(j)-k}$, 
-%
-\item for each $y_j \in Y$, $\chi_3(y_j) = \alpha_{j,0} + \alpha_{j,1} \chi_2(y_j) + \beta_{j,1} \chi_2(x_1) + \dots + \beta_{j,k} \chi_2(x_k) + \gamma_{j,1} d^3_{1} + \dots + \gamma_{j,r} d^3_{r}$.
-\end{itemize}
-
-By expanding the expressions $\chi_2(y_j), \chi_2(x_1),\dots,\chi_2(x_k)$, we get the following expression,
+\item If $\alpha^{(C)}_{j,1}=+1$, then 
 \[
 \begin{array}{l c l}
-\chi_3(y_j)  & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+\alpha^2_{j,1} \alpha_{j,0}) + \alpha^3_{j,1} o_j + \sum \limits_{j' \in J_1} (\beta_{j,j'}+\alpha_{j,1}\beta_{j,j'} + \alpha^2_{j,1}  \beta_{j,j'}) d^0_{j'} + \\
-& & \sum \limits_{j' \in J_2} (\alpha^2_{j,1}\beta_{j,j'}) d^0_{j'} +  \sum \limits_{j' \in J_3} (\alpha_{j,1}\beta_{j, \pi^{-1}(j'+k)}+\alpha^2_{j,1}\gamma_{j,j'}) d^1_{j'} + \sum \limits_{j' \in J_4} (\alpha^2_{j,1} \gamma_{j,j'}) d^1_{j'} +\\
-& & \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}+\alpha_{j,1}\gamma_{j,j'}) d^2_{j'} + \sum \limits_{j' \in J_4} (\alpha_{j,1} \gamma_{j,j'}) d^2_{j'} +\\
-& & \gamma_{j, 1} d^3_{1} + \dots + \gamma_{j,r} d^3_{r}.
-\end{array} 
-\]
-
-In general, for $\ell \ge 2$, we have the following expression,
-\[
-\begin{array}{l c l}
-\chi_\ell(y_j)  & = & (\alpha_{j,0} + \alpha_{j,1} \alpha_{j,0}+ \dots +\alpha^{\ell-1}_{j,1} \alpha_{j,0}) + \alpha^\ell_{j,1} o_j + \\
-& & \sum \limits_{j' \in J_1} (\beta_{j,j'}+\alpha_{j,1}\beta_{j,j'} + \dots +\alpha^{\ell-1}_{j,1}  \beta_{j,j'}) d^0_{j'} + \\
+\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} \ell) + o_j +   \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'} \ell) d^{(0)}_{j'} + \sum \limits_{j'\le k, \pi_C(j') \neq j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
 %
-& & \sum \limits_{j' \in J_2} (\alpha^{\ell-1}_{j,1}\beta_{j,j'}) d^0_{j'} +  \sum \limits_{j' \in J_3} (\alpha^{\ell-2}_{j,1}\beta_{j, \pi^{-1}(j'+k)}+\alpha^{\ell-1}_{j,1}\gamma_{j,j'}) d^1_{j'} + \\
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)} + \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
 %
-& & \sum \limits_{j' \in J_4} (\alpha^{\ell-1}_{j,1} \gamma_{j,j'}) d^1_{j'} + \dots + \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}+\alpha_{j,1}\gamma_{j,j'}) d^{\ell-1}_{j'} + \\
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,1)}_{j'} + \dots + \\
 %
-& & \sum \limits_{j' \in J_4} (\alpha_{j,1} \gamma_{j,j'}) d^{\ell-1}_{j'} + \gamma_{j, 1} d^\ell_{1} + \dots + \gamma_{j,r} d^\ell_{r}.
-\end{array} 
-\]
-
-Since $\alpha_{j,1} \in \{0,+1,-1\}$, for $\ell \ge 4$, we observe the following fact.
-\begin{itemize}
-\item If $\alpha_{j,1}=0$, then
-\[\chi_\ell(y_j)=\alpha_{j,0}+ \sum \limits_{j' \in J_1} \beta_{j,j'} d^0_{j'}+ \sum \limits_{j' \in J_3} \beta_{j, \pi^{-1}(j'+k)} d^{\ell-1}_{j'} +\gamma_{j, 1} d^\ell_{1} + \dots + \gamma_{j,r} d^\ell_{r}.\]
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
 %
-\item If $\alpha_{j,1}=+1$, then 
-\[
-\begin{array}{l c l}
-\chi_\ell(y_j)  & = & (\alpha_{j,0}\ell) + o_j +  \sum \limits_{j' \in J_1} (\beta_{j,j'} \ell) d^0_{j'} + \sum \limits_{j' \in J_2} \beta_{j,j'} d^0_{j'} + \\
-& &   \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}+\gamma_{j,j'}) d^1_{j'} +  \sum \limits_{j' \in J_4} \gamma_{j,j'} d^1_{j'} + \dots  \\
-& &  \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}+ \gamma_{j,j'}) d^{\ell-1}_{j'} +  \sum \limits_{j' \in J_4} \gamma_{j,j'} d^{\ell-1}_{j'} + \\
-& & \gamma_{j, 1} d^\ell_{1} + \dots + \gamma_{j,r} d^\ell_{r}.
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
 %
-\item If $\alpha_{j,1}=-1$ and $\ell$ is even, then
+\item If $\alpha^{(C)}_{j,1}=-1$ and $\ell$ is even, then
 \[
 \begin{array}{l c l}
-\chi_\ell(y_j)  & = & o_j +  \sum \limits_{j' \in J_2} (-\beta_{j,j'}) d^0_{j'} +  \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)} - \gamma_{j,j'}) d^1_{j'} + \sum \limits_{j' \in J_4} (-\gamma_{j,j'}) d^1_{j'} + \\
-& &  \sum \limits_{j' \in J_3} (-\beta_{j, \pi^{-1}(j'+k)}+ \gamma_{j,j'}) d^2_{j'} +   \sum \limits_{j' \in J_4} \gamma_{j,j'} d^2_{j'} + \dots + \\
-& & \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)} - \gamma_{j,j'}) d^{\ell-1}_{j'} +  \sum \limits_{j' \in J_4} (- \gamma_{j,j'}) d^{\ell-1}_{j'} + \\
-& & \gamma_{j, 1} d^\ell_{1} + \dots + \gamma_{j,r} d^\ell_{r}.
+\chi^{(C)}_{\ell}(y_j)  & = &  o_j + \sum \limits_{j'\le k, \pi_C(j') \neq j'} (-\beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} - \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
 \item If $\alpha_{j,1}=-1$ and $\ell$ is odd, then
 \[
 \begin{array}{l c l}
-\chi_\ell(y_j)  & = & \alpha_{j,0}  - o_j +  \sum \limits_{j' \in J_1} \beta_{j,j'} d^0_{j'} +  \sum \limits_{j' \in J_2} \beta_{j,j'} d^0_{j'} +  \\
-& & \sum \limits_{j' \in J_3} (-\beta_{j, \pi^{-1}(j'+k)}+\gamma_{j,j'}) d^1_{j'} + \sum \limits_{j' \in J_4} (\gamma_{j,j'}) d^1_{j'} + \\
-& &  \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)} - \gamma_{j,j'}) d^2_{j'} +  \sum \limits_{j' \in J_4} (-\gamma_{j,j'}) d^2_{j'} + \dots + \\
-& & \sum \limits_{j' \in J_3} (\beta_{j, \pi^{-1}(j'+k)}-\gamma_{j,j'}) d^{\ell-1}_{j'} +  \sum \limits_{j' \in J_4} (-\gamma_{j,j'}) d^{\ell-1}_{j'} + \\
-& & \gamma_{j, 1} d^\ell_{1} + \dots + \gamma_{j,r} d^\ell_{r}.
+\smallskip
+\chi^{(C)}_{\ell}(y_j)  & = &  \alpha^{(C)}_{j,0} - o_j + \sum \limits_{j' \le k, \pi_C(j')=j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \sum \limits_{j'\le k, \pi_C(j') \neq j'}  \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( -\beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
 \end{itemize}
-
-From the analysis above, we know that in $\chi_\ell(y_j)$, 
+%
+From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
 \begin{itemize}
-\item the coefficient of $o_j$ is from $\{0,+1,-1\}$, 
+\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, or $0$, 
 %
-\item the constant coefficient is either $\alpha_{j,0}$, or $\alpha_{j,0} \ell$, or $0$, 
+\item the coefficient of $o_j$ is $0$, or $1$, or $-1$, 
 %
-\item for each data value $d^0_{j'}$, the coefficient of $d^0_{j'}$ is either $\pm \beta_{j,j'}$, or $0$, or $\beta_{j,j'} \ell$,
+\item for each data value $d^0_{j'}$, the coefficient of $d^0_{j'}$ is either $\pm \beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
 %
-\item for each data value $d^i_{j'}$ with $i > 0$, the coefficient of $d^i_{j'}$ is either $0$, or $\beta_{j, \pi^{-1}(j'+k)}$, or $\beta_{j, \pi^{-1}(j'+k)}+\gamma_{j,j'}$, or $\pm \gamma_{j,j'}$, or $\pm(\beta_{j, \pi^{-1}(j'+k)}-\gamma_{j,j'})$.
+\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\pm \gamma^{(C)}_{j,j'}$, or $\pm(\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'})$.
 \end{itemize}
+
+\zhilin{I stopped here. The rest to be cleaned}
 
 \subsection{Decision procedure for generalized lassos}
 
@@ -1181,6 +1148,82 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 To be done.
 \qed
 \end{proof}
+
+
+\noindent {\bf Proposition~\ref{prop-sum-path}}.
+{\it The values of the control and data variables after traversing the path $P$ are specified by a function $\chi$ satisfying the following conditions.
+\begin{itemize}
+\item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
+% 
+\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving'' and the ``copyless'' constraint).
+\end{itemize}
+}
+
+\begin{proof}
+We show by an induction that for each $i: 1 \le i \le n$ and each variable $x_j \in X$ (resp. $y_j \in Y$), an expression $e_{i,x_j}$ (resp. $e_{i,y_j}$) can be constructed to describe the value of $x_j$(resp. $y_j$) after going through the first $i$ transitions of the path. 
+%
+\begin{itemize}
+\item Let $\theta_0$ be an assignment such that for each $x_j \in X$ (resp. $y_j \in Y$), $\theta_0(x_j)=d^{(0)}_j$ (resp. $\theta_0(y_j)=o_j$), moreover, $\theta_0(\cur)=d^{(1)}_1$.
+%
+%\item For each $x_j \in X$, if $x_j \in \dom(\eta_1)$, then $e_{1,x_j}=d^{(1)}_1$, otherwise, $e_{1,x_j}=d^{(0)}_j$. For each $y_j \in Y$, if $y_j \in \dom(\eta_1)$, then $e_{1,y_j} = \theta_0(\eta_{1}(y_j))$,
+%otherwise, $e_{1,y_j}=o_j$. 
+%
+\item Let $i: 1 \le i \le n$. 
+\begin{itemize}
+\item For each $x_j \in X$, if $x_j \in \dom(\eta_i)$, then $e_{i,x_j}=\theta_{i-1}(\cur)$, otherwise, $e_{i,x_j}=\theta_{i-1}(x_j)$.
+%
+\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then $e_{i,y_j} = \theta_{i-1}(\eta_i(y_j))$, otherwise, $e_{i,y_j}=\theta_{i-1}(y_j)$.
+%
+\item For each $x_{j} \in X$ (resp. $y_j \in Y$), $\theta_i(x_{j})=e_{i,x_{j}}$ (resp. $\theta_i(y_{j})=e_{i, y_{j}}$). If $i < n$, then $\theta_i(\cur)=d^{(1)}_{s}$, where $1\le s \le r$ and $k+i + 1 \in I_s$, otherwise, $\theta_i(\cur)=\bot$.
+\end{itemize}
+\end{itemize}
+Then the function $\chi$ can be defined as the restriction of $\theta_n$ to $X \cup Y$.
+\qed
+\end{proof}
+
+
+\noindent {\bf Proposition~\ref{prop-sum-cycle}}.
+{\it Suppose $P=C^{\ell}$ such that $\ell \ge 2$. Then the function $\chi^{(C)}_{\ell}$ to summarize the computation of $\Ss$ on $P$ is defined as follows,
+\[
+\begin{array}{l c l}
+\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0}+ \dots +(\alpha^{(C)}_{j,1})^{\ell-1} \alpha^{(C)}_{j,0}) + (\alpha^{(C)}_{j,1})^\ell o_j + \\
+& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1}\beta^{(C)}_{j,j'} + \dots +(\alpha^{(C)}_{j,1})^{\ell-1}  \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \\
+%
+& & \sum \limits_{j'\le k, \pi_C(j') \neq j'} ((\alpha^{(C)}_{j,1})^{\ell-1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( (\alpha^{(C)}_{j,1})^{\ell-2} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +(\alpha^{(C)}_{j,1})^{\ell-1}\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} ((\alpha^{(C)}_{j,1})^{\ell-1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1}\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C},
+\end{array} 
+\]
+where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$
+ are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
+}
+%
+\begin{proof}
+Let $d^{(C,2)}_{1},\dots,d^{(C,2)}_{r_C}$ be the data values introduced when traversing the cycle for the second time. Then from Corollary~\ref{cor-comp-two-paths}, we know that $\chi^{(C)}_2 = \chi_{C} \circ \chi_C$ is defined as follows: For each $y_j \in Y$,
+\[
+\begin{array}{l c l}
+\smallskip
+\chi^{(C)}_2(y_j) & =  & (\alpha^{(C)}_{j,0}+\alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0})+ (\alpha^{(C)}_{j,1})^2 o_j + \\
+%
+\smallskip
+& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_C(j') \neq j'} (\alpha^{(C)}_{j,1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'}  \\
+%
+& & + \sum \limits_{j' \le r_C, j' + k \in \rng(\pi_C)} (\beta^{(C)}_{j,\pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} +\\
+%
+& & \sum \limits_{j' \le r_C, j' + k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + 
+ \gamma^{(C)}_{j,1} d^{(C,2)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,2)}_{r_C}.
+\end{array}
+\] 
+For $\ell > 3$, let $d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$ be the data values introduced when traversing the cycle for the $\ell$-th time. Then from Corollary~\ref{cor-comp-two-paths}, the fact $\chi^{(C)}_\ell = \chi_C \circ \chi^{(C)}_{\ell-1}$, and the induction hypothesis, we can show that $\chi^{(C)}_\ell$ is of the desired form.
+\qed
+\end{proof}
+
 
 \end{appendix}
 
