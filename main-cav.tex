@@ -411,6 +411,8 @@ The equivalence problem of SNTs can be further reduced to the non-zero output re
 From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
 \end{proposition}
 
+
+
 \section{Decision procedure for the non-zero output reachability problem}\label{sec-dec-snt}
 
 In this section, we present a decision procedure for the non-zero output reachability problem of SNTs. 
@@ -419,7 +421,7 @@ We first assume that the guards of the transitions do not contain the comparison
 \begin{enumerate}
 \item  We first show how to summarize the computations over paths and cycles. 
 %
-\item We present an algorithm to decide the non-zero output reachability problem for the situation that the transition graph of the given SNT  is a generalized lasso.
+\item We present an algorithm to decide the non-zero output reachability problem for the situation that the transition graph of the given SNT  is a generalized lasso. A \emph{generalized lasso} is an extension of lasso where the cycle is replaced by a collection of cycles such that there is a state $q$ which is the unique common state of each pair of distinct cycles.
 %
 \item We demonstrate how to extend the algorithm to the more general situation that the transition graph of the given SNT is generalized flat.
 \end{enumerate}
@@ -447,7 +449,7 @@ In the rest of this section, we fix a (normalized) SNT $\Ss = (Q,X,Y,\delta,q_0,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Summarization of the computations of paths and cycles}
+\subsection{Summarization of the computations on paths and cycles}
 
 Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in $\Ss$ (not necessarily starting from the initial state). 
 
@@ -615,197 +617,119 @@ From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$,
 \item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\pm \gamma^{(C)}_{j,j'}$, or $\pm(\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'})$.
 \end{itemize}
 
-\zhilin{I stopped here. The rest to be cleaned}
 
 \subsection{Decision procedure for generalized lassos}
 
-In this subsection, we present a decision algorithm for a generalized lasso, that is, the transition graph comprises a handle $q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + a'_1 y_1 + \dots + a'_l y_l$ and $O(q)$ is undefined for all the other states $q$.
+In this subsection, we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lasso. 
 
-In the following, we will illustrate the argument for the case $n=2$, that is, there are only two cycles.
+Suppose the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
 
-
-\smallskip
-
-\noindent {\bf Step I}. Decide whether $\chi_0(O(q_m))$ is not identical to zero (it is easy to do so, just check the coefficients of $d^0_1, \dots, d^0_s$). If the answer is yes, then the decision procedure terminates and returns the answer $true$. Otherwise, the decision procedure continues.
-
-\smallskip
-
-For the cycle $C_b$ (where $b=1,2$), the assignment function $\chi_{b,\ell}$ can be defined to describe the values of the control and output variables after traversing the cycle $C_b$ for $\ell$ times.
-
-Suppose that for $b=1,2$, the initial values of the $k$ control variables are $d^0_{\pi_0(1)},\dots,d^0_{\pi_0(k)}$. Moreover, suppose that the $r_b$ data values $d^1_{1}, \dots, d^1_{r_b}$ are introduced when traversing the cycle for the first time, with one data value for each of $I_{1},\dots,I_{r_b}$. 
-In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
-
-Then for $b=1,2$, the assignment function $\chi_{b,1}$ is of the following form,
+From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
 \begin{itemize}
-\item there is an injective mapping $\pi_b: \{1,\dots,k\} \rightarrow \{1,\dots, k+r_b\}$ such that for each $x_j \in X$, if $\pi_b(j) \le k$, then $\pi_b(j)=j$ and $\chi_{b,1}(x_j)=d^0_{\pi_0(j)}$, otherwise, $\chi_{b,1}(x_j)=d^1_{\pi_b(j)-k}$,
+\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi(j)-k}$.
 % 
-\item for each $y_j \in Y$, $\chi_{b,1}(y_j) = \alpha_{b,(j,0)} + \alpha_{b,(j,1)} o_j + \beta_{b,(j,1)} d^0_{\pi_0(1)} + \dots + \beta_{b,(j,k)} d^0_{\pi_0(k)} + \gamma_{b,(j,1)} d^1_1 +\dots + \gamma_{b,(j,r_b)} d^1_{r_b}$ such that $\alpha_{b,(j,1)} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$.
 \end{itemize}
 
-Let $J_{b,1}$ be set of indices $j \in \{1,\dots,k+r_b\}$ such that $\pi_b(j)= j$ and $J_{b,2} = \{1,\dots,k\} \setminus J_{b,1}$. Intuitively, the values of the variables from $J_1$ are  unchanged after traversing the cycle once, and the values of the variables from  $J_{b,2}$ are changed. Then $(J_{b,1}, J_{b,2})$ forms a partition of $\{1,\dots,k\}$. Moreover, let $J_{b,3}=\{\pi_b(j)-k \mid j \in J_{b,2}\}$ and $J_{b,4} = \{1,\dots,r_b\} \setminus J_{b,3}$. Then $(J_{b,3}, J_{b,4})$ forms a partition of $\{1,\dots,r_b\}$.
+Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
 
-We will present the argument for the situation that $J_{1,1} \cap J_{2,1} \neq \emptyset$, $J_{1,1} \setminus J_{2,1} \neq \emptyset$, and $J_{2,1} \setminus J_{1,1} \neq \emptyset$.
+A \emph{cycle scheme} $\schm$ is a path $H C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by traversing $H$ first, then iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Corollary~\ref{cor-comp-two-paths}, we know that a function $\chi_{\schm}$ can be constructed by composing $\chi_{H}, \chi^{(C_{i_1})}_{\ell_1},\dots,\chi^{(C_{i_t})}_{\ell_t}$, to summarize the computation of $\Ss$ on $\schm$.
 
-A \emph{cycle scheme} $\schm$ is a sequence $\schm=(1,\ell_1) (2, \ell_2 ) \dots (((m-1) \bmod 2)+1, \ell_m)$ such that $\ell_1,\dots, \ell_m \ge 1$. The number $m$ is called the length of the cycle scheme $\schm$. In principle, for each cycle scheme $\schm$, the expressions $\chi_{\schm}(y_j)$ can be defined to describe the values of $y_j$ after traversing the cycles according to $\schm$.
-
-%\begin{proposition}\label{prop-mult-cycle}
-%From a cycle scheme $\schm=(1,\ell_1) (2, \ell_2 ) \dots (((m-1) \bmod 2)+1, \ell_m)$, for each $j: 1 \le j \le l$, an expression $\chi_{\schm}(y_j)$ can be constructed from $\chi_{(1,\ell_1)}(y_j),\dots,\chi_{(((m-1) \bmod 2)+1, \ell_m)}(y_j)$ by collecting all the data variables therein and some linear combinations of their coefficients.
-%\end{proposition}
-
-In the following, we first show how to construct the expressions $\chi_{(1,\ell_1)(2,\ell_2)}$ for a cycle scheme $(1,\ell_1)(2,\ell_2)$ such that $\ell_1,\ell_2 \ge 2$, to describe the values of the control and data variables after traversing $C_1$ for $\ell_1$ times and $C_2$ for $\ell_2$ times.
-
-At first, from the analysis of cycles, we know that
+\begin{proposition}\label{prop-cycle-schm}
+Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the following expression occurs in $\chi_{\schm}(O(q_m))$,
 \[
-\begin{array}{l c l}
-\chi_{(1,\ell_1)}(y_j)  & = & (\alpha_{1,(j,0)} + \alpha_{1,(j,1)} \alpha_{1,(j,0)}+ \dots +\alpha^{\ell_1-1}_{1,(j,1)} \alpha_{1,(j,0)}) + \alpha^{\ell_1}_{1,(j,1)} o_j + \\
-& & \sum \limits_{j' \in J_{1,1}} (\beta_{1,(j,j')}+\alpha_{1,(j,1)}\beta_{1,(j,j')} + \dots +\alpha^{\ell_1-1}_{1,(j,1)}  \beta_{1,(j,j')}) d^0_{\pi_0(j')} + \\
-%
-& & \sum \limits_{j' \in J_{1,2}} (\alpha^{\ell_1-1}_{1,(j,1)}\beta_{1,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{1,3}} (\alpha^{\ell_1-2}_{1,(j,1)}\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha^{\ell_1-1}_{1,(j,1)}\gamma_{1,(j,j')}) d^1_{j'} + \\
-%
-& & \sum \limits_{j' \in J_{1,4}} (\alpha^{\ell_1-1}_{1,(j,1)} \gamma_{1,(j,j')}) d^1_{j'} + \dots + \sum \limits_{j' \in J_{1,3}} (\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha_{1,(j,1)}\gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \\
-%
-& & \sum \limits_{j' \in J_{1,4}} (\alpha_{1,(j,1)} \gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \gamma_{1,(j, 1)} d^{\ell_1}_{1} + \dots + \gamma_{1,(j,r_1)} d^{\ell_1}_{r_1},
-\end{array} 
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. 
 \]
-and
+\end{proposition}
+
+\begin{proof}
+At first,  let us check $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$.
 \[
 \begin{array}{l c l}
-\chi_{(2,\ell_2)}(y_j)  & = & (\alpha_{2,(j,0)} + \alpha_{2,(j,1)} \alpha_{2,(j,0)}+ \dots +\alpha^{\ell_2-1}_{2,(j,1)} \alpha_{2,(j,0)}) + \alpha^{\ell_2}_{2,(j,1)} o_j + \\
-%
-& & \sum \limits_{j' \in J_{2,1}} (\beta_{2,(j,j')}+\alpha_{2,(j,1)}\beta_{2,(j,j')} + \dots +\alpha^{\ell_2-1}_{2,(j,1)}  \beta_{2,(j,j')}) d^0_{\pi_0(j')} + \\
-%
-& & \sum \limits_{j' \in J_{2,2}} (\alpha^{\ell_2-1}_{2,(j,1)}\beta_{2,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{2,3}} (\alpha^{\ell_2-2}_{2,(j,1)}\beta_{2,(j, \pi^{-1}(j'+k))}+\\
-%
-& & \alpha^{\ell_2-1}_{2,(j,1)}\gamma_{2,(j,j')}) d^1_{j'} +  \sum \limits_{j' \in J_{2,4}} (\alpha^{\ell_2-1}_{2,(j,1)} \gamma_{2,(j,j')}) d^1_{j'} + \dots + \\
-%
-& & \sum \limits_{j' \in J_{2,3}} (\beta_{2,(j, \pi^{-1}(j'+k))}+ \alpha_{2,(j,1)}\gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \\
-%
-& &  \sum \limits_{j' \in J_{2,4}} (\alpha_{2,(j,1)} \gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \gamma_{2,(j, 1)} d^{\ell_2}_{1} +  \dots + \gamma_{2,(j,r_2)} d^{\ell_2}_{r_2}.
-\end{array} 
-\]
-
-The coefficients of $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ can be obtained those of $\chi_{(1,\ell_1)}(y_j)$ and $\chi_{(2,\ell_2)}(y_j)$ as follows: For each $i: 1 \le i \le \ell_1$ and $j': 1 \le j' \le r_1$, let $d^i_{j'}$ denote the data values introduced when traversing $C_1$, and for each  $i: 1 \le i \le \ell_2$ and $j': 1 \le j' \le r_2$, let $d^{i}_{(1, \ell_1),j'}$ denote the data values introduced when traversing $C_2$ for $\ell_2$ times (after traversing $C_1$ for $\ell_1$ times).
-\begin{itemize}
-\item The coefficient of $o_j$ in $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\theta_1\theta_2$, where $\theta_1$ and $\theta_2$ are the coefficient of $o_j$ in $\chi_{(1,\ell_1)}(y_j)$ and $\chi_{(2,\ell_2)}(y_j)$ respectively.
-%
-\item The constant coefficient of $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\alpha^{\ell_2}_{2,(j,1)} \theta_1 + \theta_2$, where $\theta_1,\theta_2$ are the constant coefficient of $\chi_{(1,\ell_1)}(y_j)$ and $\chi_{(2,\ell_2)}(y_j)$ respectively.
-%
-\item For each $j': 1 \le j' \le k$, suppose $\chi_{(1,\ell_1)}(x_{j'})=d^{i}_{j'}$, then the coefficient of $d^{i}_{j'}$ in $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\alpha^{\ell_2}_{2,(j,1)} \theta_1 + \theta_2$, where $\theta_1,\theta_2$ are the  coefficient of $d^i_{j'}$ in $\chi_{(1,\ell_1)}(y_j)$ and $\chi_{(2,\ell_2)}(y_j)$ respectively.  
-%
-%\item For $j' \in J_{1,2}$, the coefficient of $d^{\ell_1}_{\pi_1(j')-k}$ in $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\alpha^{\ell_2}_{2,(j,1)} \theta_1 + \theta_2$, where $\theta_1$ is the  coefficient of $d^{\ell_1}_{\pi_1(j')-k}$ in $\chi_{(1,\ell_1)}(y_j)$ and $\theta_2$ is the coefficient of $d^0_{j'}$ in $\chi_{(2,\ell_2)}(y_j)$.
-%
-\item For each pair $(i,j')$ such that $d^i_{j'} \not \in \{\chi_{(1,\ell_1)}(x_{j''}) \mid 1 \le j'' \le k\}$, the coefficient of $d^{i}_{j'}$ in $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\alpha^{\ell_2}_{2,(j,1)} \theta$, where $\theta$ is the  coefficient of $d^{i}_{j'}$ in $\chi_{(1,\ell_1)}(y_j)$.
-%
-\item For each pair $(i,j')$ such that $1 \le i \le \ell_2$ and $j' \in J_{2,3} \cup J_{2,4}$, the coefficient of $d^{i}_{(1, \ell_1),j'}$ in $\chi_{(1,\ell_1)(2,\ell_2)}(y_j)$ is $\theta$, where $\theta$ is the  coefficient of $d^{i}_{j'}$ in $\chi_{(2,\ell_2)}(y_j)$, where $d^{i}_{(1, \ell_1),j'}$ is the data variable corresponding to $d^{i}_{j'}$ in $\chi_{(2,\ell_2)}(y_j)$, decorated with $(1,\ell_1)$.
-\end{itemize}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-More specifically, 
-\[
-\begin{array}{l c l}
-\chi_{(1,\ell_1)(2,\ell_2)}(y_j)  & = & (\alpha_{2,(j,0)} + \alpha_{2,(j,1)} \alpha_{2,(j,0)}+ \dots +\alpha^{\ell_2-1}_{2,(j,1)} \alpha_{2,(j,0)} + \\
-%
-& & \alpha^{\ell_2}_{2,(j,1)} (\alpha_{1,(j,0)} + \alpha_{1,(j,1)} \alpha_{1,(j,0)}+ \dots +\alpha^{\ell_1-1}_{1,(j,1)} \alpha_{1,(j,0)}) ) + \alpha^{\ell_1}_{1,(j,1)} \alpha^{\ell_2}_{2,(j,1)} o_j + \\
-%
-& & \sum \limits_{j' \in J_{1,1} \cap J_{2,1}} (\alpha^{\ell_2}_{2,(j,1)} (\beta_{1,(j,j')}+\alpha_{1,(j,1)}\beta_{1,(j,j')} + \dots +\alpha^{\ell_1-1}_{1,(j,1)}  \beta_{1,(j,j')}) + \\
-%
-& & (\beta_{2,(j,j')}+\alpha_{2,(j,1)}\beta_{2,(j,j')} + \dots +\alpha^{\ell_2-1}_{2,(j,1)}  \beta_{2,(j,j')})) d^0_{j'}  + \\
-%
-& & \sum \limits_{j' \in J_{1,2} \cap J_{2,1}} (\alpha^{\ell_2}_{2,(j,1)} \gamma_{1,(j,\pi_1(j')-k)} + \beta_{2,(j,j')}+\alpha_{2,(j,1)}\beta_{2,(j,j')} + \dots + \\
-%
-& & \alpha^{\ell_2-1}_{2,(j,1)}  \beta_{2,(j,j')}) d^{\ell_1}_{\pi_1(j')-k} + \\
-%
-& & \sum \limits_{j' \in J_{1,1} \cap J_{2,2}}  (\alpha^{\ell_2}_{2,(j,1)} (\beta_{1,(j,j')}+\alpha_{1,(j,1)}\beta_{1,(j,j')} + \dots +\alpha^{\ell_1-1}_{1,(j,1)}  \beta_{1,(j,j')})+ \\
-& & \alpha^{\ell_2-1}_{2,(j,1)}\beta_{2,(j,j')}) d^0_{j'} +\\
-%
-& & \sum \limits_{j' \in J_{1,2} \cap J_{2,2}}  (\alpha^{\ell_2}_{2,(j,1)} \gamma_{1,(j,\pi_1(j')-k)}+ \alpha^{\ell_2-1}_{2,(j,1)}\beta_{2,(j,j')}) d^{\ell_1}_{\pi_1(j')-k}  +\\
-%
-& & \sum \limits_{j' \in J_{1,3}} (\alpha^{\ell_2}_{2,(j,1)}(\alpha^{\ell_1-2}_{1,(j,1)}\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha^{\ell_1-1}_{1,(j,1)}\gamma_{1,(j,j')})) d^1_{j'} + \\
-%
-& & \sum \limits_{j' \in J_{1,4}} (\alpha^{\ell_2}_{2,(j,1)}(\alpha^{\ell_1-1}_{1,(j,1)} \gamma_{1,(j,j')})) d^1_{j'} + \dots + \\
-%
-& & \sum \limits_{j' \in J_{1,3}} (\alpha^{\ell_2}_{2,(j,1)}(\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha_{1,(j,1)}\gamma_{1,(j,j')})) d^{\ell_1-1}_{j'} + \\
-%
-& & \sum \limits_{j' \in J_{1,4}} (\alpha^{\ell_2}_{2,(j,1)}(\alpha_{1,(j,1)} \gamma_{1,(j,j')})) d^{\ell_1-1}_{j'} + \\
-%
-& & \sum \limits_{j'+k \not \in \pi_1(J_{1,2})} (\alpha^{\ell_2}_{2,(j,1)} \gamma_{1,(j, j')}) d^{\ell_1}_{j'}+ \\
-%
-& & \sum \limits_{j' \in J_{2,3}} (\alpha^{\ell_2-2}_{2,(j,1)}\beta_{2,(j, \pi^{-1}(j'+k))}+ \alpha^{\ell_2-1}_{2,(j,1)}\gamma_{2,(j,j')}) d^1_{(1,\ell_1),j'} +  \\
-%
-& & \sum \limits_{j' \in J_{2,4}} (\alpha^{\ell_2-1}_{2,(j,1)} \gamma_{2,(j,j')}) d^1_{(1,\ell_1),j'} + \dots + \\
-%
-& & \sum \limits_{j' \in J_{2,3}} (\beta_{2,(j, \pi^{-1}(j'+k))}+ \alpha_{2,(j,1)}\gamma_{2,(j,j')}) d^{\ell_2-1}_{(1,\ell_1), j'} + \\
-%
-& &  \sum \limits_{j' \in J_{2,4}} (\alpha_{2,(j,1)} \gamma_{2,(j,j')}) d^{\ell_2-1}_{(1,\ell_1), j'} + \gamma_{2,(j, 1)} d^{\ell_2}_{(1,\ell_1), 1} +  \dots + \gamma_{2,(j,r_2)} d^{\ell_2}_{(1,\ell_1), r_2}.
-\end{array} 
-\]
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\smallskip
-
-\noindent {\bf Step II}. For $b=1,2$, let 
-\[
-\begin{array}{l c l}
-\chi_{(b,\ell_b)}(O(q_m)) & = & a_0 + a_1 \chi_{(b,\ell_b)}(x_1) + \dots a_k \chi_{(b,\ell_b)}(x_k) + \\
-& & a'_1 \chi_{(b,\ell_b)}(y_1) + \dots + a'_l \chi_{(b,\ell_b)}(y_l).
+\chi^{(C_{i_1})}_{\ell_1}(O(q_m)) & = & a_0 + a_1 \chi^{(C_{i_1})}_{\ell_1}(x_1) + \dots a_k \chi^{(C_{i_1})}_{\ell_1}(x_k) + \\
+& & b_1 \chi^{(C_{i_1})}_{\ell_1}(y_1) + \dots + b_l \chi^{(C_{i_1})}_{\ell_1}(y_l).
 \end{array}
 \] 
 
-Then $\chi_{(b,\ell_b)}(O(q_m))$ is a linear combination of the variables $d^0_1,\dots, d^0_s$ and $d^1_1,\dots, d^1_{r_b}, \dots, d^{\ell_b}_1,\dots, d^{\ell_b}_{r_b}$.
+Then $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is a linear combination of the variables $d^{(0)}_1,\dots, d^{(0)}_{r_H}$ and $d^{(C_{i_1},1)}_1,\dots, d^{(C_{i_1},1)}_{r_{C_{i_1}}}, \dots, d^{(C_{i_1},\ell_1)}_1,\dots, d^{(C_{i_1},\ell_1)}_{r_{C_{i_1}}}$.
 
-For each $j' \in J_{b,1}$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{(b,\ell_b)}(O(q_m))$ is 
+For each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is 
 
-\[a_{j'} + \sum \limits_{1 \le j \le l} a'_j (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\beta_{b,(j,j')}.\]
-
-In general, for each $j' \in J_{1,1}$ and each cycle scheme $\schm=(1,\ell_1)(2,\ell_2) \dots (1+(t-1) \bmod 2,\ell_{t})$ (where $t \ge 1$), the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{\schm}(O(q_m))$ includes the following expression as a component,
+\[a_{j'} + \sum \limits_{1 \le j \le l} b_j \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}.\]
 %
-\[a_{j'} + \sum \limits_{1 \le j \le l} a'_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)}) (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')}. \ \ \  (\ast)\]
-
-Note that since $\alpha_{1,(j,1)},\alpha_{2,(j,1)} \in \{0,+1,-1\}$, the expression $(\ast)$ is of the form 
-\[a_{j'} + \sum \limits_{1 \le j \le l} a'_j  s_j (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')},\]
-where $s_j \in \{0,+1,-1\}$.
-
-The expression $(\ast)$ can be rewritten as $\mu_{\schm,(1,j')} \ell_1 + \nu_{\schm,(1,j')}$ for some integer constant $\mu_{\schm,(1,j')},\nu_{\schm,(1,j')}$ (possibly $\mu_{\schm,(1,j')}=0$). 
-
-If there are a cycle scheme $\schm$ starting from $C_1$  and $j' \in J_{1,1}$ such that $\mu_{\schm,(1,j')} \neq 0$, then return $true$. Note that in this case, we can let $\ell_1$ and $d^0_{\pi_0(j')}$ sufficiently large so that $(\mu_{\schm,(1,j')} \ell_1 + \nu_{\schm,(1,j')})d^0_{\pi_0(j')}$ dominates $\chi_{\schm}(O(q_m))$ and $\chi_{\schm}(O(q_m))$ becomes non-zero. We would like to remark that although there are infinitely many cycle schemes $\schm$, the constants $\mu_{\schm,(1,j')}$ can only have values from a bounded domain. Therefore, it is decidable whether there exist such a desired cycle scheme $\schm$ starting from $C_1$ and $j' \in J_{1,1}$.
-
-The similar discussion can be applied to $C_2$ and $J_{2,1}$.
-
-If there are no desired cycle schemes $\schm$ and $j'$ for $C_1$ and $J_{1,1}$, as well as for  $C_2$ and $J_{2,1}$, then the decision procedure continues.
-
-The constant coefficient in $\chi_{(b,\ell_b)}(O(q_m))$ is 
-
-\[a_0 + \sum \limits_{1 \le j \le l} a'_j (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\alpha_{b,(j,0)}.\]
-
-In general, for each cycle scheme $\schm=(1,\ell_1)(2,\ell_2) \dots (1+(t-1) \bmod 2,\ell_{t})$ (where $t \ge 1$), the constant coefficient in $\chi_{\schm}(O(q_m))$ includes the following expression as a component,
 %
-\[a_0 + \sum \limits_{1 \le j \le l} a'_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)}) (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\alpha_{b,(j,0)}. \ \ \  (\ast\ast)\]
+For each $j: 1 \le j \le l$, $\chi_{\schm}(y_j)$ contains the following expression 
+\[\left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'} d^{(0)}_{\pi_H(j')-k}.\]
 
-Note that since $\alpha_{1,(j,1)},\alpha_{2,(j,1)} \in \{0,+1,-1\}$, the expression $(\ast\ast)$ is of the form 
-\[a_0 + \sum \limits_{1 \le j \le l} a'_j  s'_j (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\alpha_{b,(j,0)},\]
-where $s'_j \in \{0,+1,-1\}$.
+Since 
+\[
+\chi_{\schm}(O(q_m)) = a_0 + a_1 \chi_{\schm}(x_1) + \dots a_k \chi_{\schm}(x_k) + b_1 \chi_{\schm}(y_1) + \dots + b_l \chi_{\schm}(y_l),
+\] 
+it is not hard to see that $\chi_\schm(O(q_m))$ contains the expression,
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. 
+\]
+\qed
+\end{proof}
 
-The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(1,0)} \ell_1 + \nu_{\schm,(1,0)}$ for some integer constant $\mu_{\schm,(1,0)},\nu_{\schm, (1,0)}$ (possibly $\mu_{\schm,(1,0)}=0$). 
+We are ready to present the decision procedure.
 
-If there are a cycle scheme $\schm$ starting from $C_1$ such that $\mu_{\schm,(1,0)} \neq 0$, then return $true$. Note that in this case, we can let $\ell_1$ sufficiently large so that $\mu_{\schm,(1,0)} \ell_1 + \nu_{\schm,(1,0)}$ dominates $\chi_{\schm}(O(q_m))$ and $\chi_{\schm}(O(q_m))$ becomes non-zero. We would like to remark that although there are infinitely many cycle schemes $\schm$, the constants $\mu_{\schm,(1,0)}$ can only have values from a bounded domain. Therefore, it is decidable whether there exist such a desired cycle scheme $\schm$ starting from $C_1$.
+\smallskip
 
-A similar discussion for the constant coefficient can be applied to the cycle schemes starting from $C_2$.
+\noindent {\bf Step I}. Decide whether $\chi_H(O(q_m))$ is not identical to zero (it is easy to do so, just check the coefficients of $d^{(0)}_1, \dots, d^{(0)}_{r_H}$). If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
 
-If the decision procedure has not returned yet, then we go to Step III. 
+\smallskip
+
+\noindent {\bf Step II}. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, from Proposition~\ref{prop-cycle-schm}, we know that $\chi_{\schm}(O(q_m))$ contains the following expression,
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. \ \ \  (\ast)
+\]
+Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1,-1\}$, the expression $(\ast)$ is of the form 
+\[
+a_{j'} + \sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
+\]
+where $s_{\schm,j} \in \{0,+1,-1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
+
+For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j'$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2,\dots,\ell_t \le 2$, 
+%
+\item $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
+\end{itemize}
+then return $\ltrue$.
+
+If the decision procedure has not return yet, then go to Step III. \qed
+
+\smallskip
+
+Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, we can let $d^{(0)}_{\pi_H(j')-k} \neq 0$, and let $\ell_1$ sufficiently large, so that $(\mu_{\schm,(i_1,j')} \ell_1 + \nu_{\schm,(i_1,j')})d^{(0)}_{\pi_H(j')-k}$ dominates $\chi_{\schm}(O(q_m))$, and  $\chi_{\schm}(O(q_m))$ becomes non-zero. 
+
+We would like to remark that although in Step II, we do not consider all the cycle schemes, the set of cycle schemes chosen in Step II does exhaust all the possible values of $s_{\schm,j}$ when $\schm$ varies.
+
+
+\zhilin{I stopped here}.
 
 \smallskip
 
 \noindent {\bf Step III}. For each cycle scheme $\schm=(1,\ell_1) (2,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$ or $\schm=(2,\ell_1) (1,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$, we can ignore all the expressions of the form $c\ \ell_1,\dots, c\ \ell_m$ (where $c$ is an integer constant) in $\chi_{\schm}(y_j)$, since these expressions will disappear for sure in $\chi_{\schm}(O(q_m))$, according to the analysis above. From this observation, we can show that the constant coefficient as well as the coefficients for $d^0_{\pi_0(j')}$ with $j' \in J_{1,1} \cap J_{2,1}$ in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ can be calculated by a $\intnum$-VAS (cf. \cite{HH14}), that is, an integer vector addition system. Moreover, all the other coefficients in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ are from a bounded domain, no matter how long the scheme $\schm$ is.  
 
 Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, that is, given an index $i$, decide whether a vector $\vec{z}$ where $z_i$ is non-zero can be reached.  It is not hard to see that the non-zero reachability problem of $\intnum$-VAS can be reduced to the coverability problem of $\intnum$-VAS. From the fact that the coverability of $\intnum$-VAS is NP-complete (\cite{HH14}),  we conclude that the non-zero output reachability of SNS$\pm$ whose transition graph is a generalized lasso is decidable.
+
 
 
 \subsection{Decision procedure for SNTs}
