@@ -224,18 +224,22 @@ We focus on a language that only allow to iterate though the input list once. La
 	\caption{A Simple Programming Language for Reducers. Here $x_1,x_2,x\in X$ are control variables, $y\in Y$ is a data variable, $\mbox{UFLIA}(S)$ is a quantifier free linear integer arithmetic formula with uninterpreted function over variables in $S$, and $c\in \mathbb{Z}$.}
 \end{figure}
 
-To be more concrete, we focus on the programming language in Figure~\ref{fig:language}. In the language, we allowed only 
+To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
+The main feature of the language is that we partition the variables into two sets: \emph{control variables} and \emph{data variables}.
+The former are used for guiding the program flow and the latter used for storing aggregated results.
+To be more specific, the control variables can store only values occurred in the input and can be used either in guard or arithmetic expressions.
+The data variables can store the results obtained from an arithmetic expression, but cannot be used either in guards or arithmetic expressions.
 
- where multiplication between two different variables is not allowed. In such case, the reduction from the satisfiability of Diophantine equations no longer works. 
+Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems such as for this language is still undecidable, by a reduction from the reachability problem of perti-net with zero test~\cite{petri}.
+Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables. The transitions are described by the loop body: each loop iteration makes a petri-net transition. 
+The non-determinism in transitions is expressed by branching over the input. 
+The guards in transitions are expressed by branching over the variables, respectively (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of perti-net with zero test can be reduced to reachability problem in the programming language.
 
+Notice that in the programming language, we allow only either adds or assigns a new value to data variables ($y := e$ and $y := y+e$). We argue that this is sufficient for reducers performing data analytics operations.
+In Figure~\ref{fig:examples} we demonstrate a few simple examples of . Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
 
-We show that the commutative problem of this subset is still undecidable, by a reduction from perti-net with zero test~\cite{petri}. Then we show that by partitioning the roles of variables into control and data, the commutative problem becomes decidable.
+The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a binary function and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function in fold operations. We argue that this is enough to describe this is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages.
 
-We will use the language in Figure~\ref{fig:language} to describe reducers. The language can be used for programs that iterate through the input list only once. 
-
-We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. 
-
-Before finish reading the input list, the 
 \begin{figure}
 	\centering
 	\lstset{language=C,
