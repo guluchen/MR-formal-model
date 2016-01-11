@@ -134,15 +134,15 @@ To be more concrete, taking the ``word-counting'' MapReduce program as an exampl
 This results in the \emph{commutativity problem}.
 
 %The communitativity problem
-We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their MapReducer platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
+We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their MapReduce platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
 Moreover, having the commutativity property makes program testing easier. It is hard to reproduce a bug if the reducer under test is non-commutative. 
 
 %The reason for studying syntatical restrictions 
 The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers are seldom Turing machines. They are usually used for data analytics and have very simple control structures. Many of them just iterate through the input list and compute the output with very simple operations.
 We want to study if the commutative problem of real-world reducers are decidable.
 
-A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where the only loop structure allowed is an iteration over the input list and it is not allowed to reset the iterator to the list head (c.f. Figure~\ref{fig:language}). They show that the commutative problem of programs written by such a simple language is undecidable by a reduction from the satisfiability problem of Diophantine equations. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
-
+A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where the only loop structure allowed is an iteration over the input list and it is not allowed to reset the iterator to the list head. They show that the commutative problem of programs written by such a simple language is undecidable by a reduction from the satisfiability problem of Diophantine equations. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
+\hide{
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
@@ -156,8 +156,9 @@ A simple programming language of reducers over integers has been considered in~\
 	\label{fig:language}
 	\caption{A Simple Programming Language for Reducers}
 \end{figure}
+}
 
-By observing the behavioral pattern of reducer programs for data analytics, we characterize the essential components in a programming language for reducers. However, we found that even only with the essential parts of the language, the commutativity problem is still undecidable. 
+By observing the behavioral pattern of reducer programs for data analytics, we characterize the essential components in a programming language for reducers. %However, we found that even only with the essential parts of the language, the commutativity problem is still undecidable. 
 Inspired by~\cite{RP11}, we found that the commutativity problem becomes decidable if we partition variables into \emph{control variables} and \emph{data variables}. Data variables cannot be used in transition guards and control variables can store only elements in the input list (e.g., it is not allowed to store the sum of two variables in a control variable). 
 We believe such concepts provide good insights for reducer programming language design.
 
@@ -179,14 +180,29 @@ A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, wh
 We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
 We focus on a language that only allow to iterate though the input list once. Later we will show an extension that allows the reset of list iterators.
 
-We now investigate a subset of the programming language in Figure~\ref{fig:language} where multiplication between two different variables is not allowed. In such case, the reduction from the satisfiability of Diophantine equations no longer works. 
+\begin{figure}
+	\centering
+	\begin{tabular}{rcl}
+		$g,g_1,g_2 \in Guard$&$\equiv$&$ cur()>x \mid cur()=x \mid x>c \mid x=c \mid \neg g \mid g_1\wedge g_2$\\
+		$e,e_1,e_2 \in Expressions$&$\equiv$&$cur()\mid c\mid x\mid e_1+e_2  \mid e_1 - e_2$\\
+		$ s_1,s_2,s_3 \in Statements$&$\equiv$&$y := e\mid y := y+e\mid x:=cur()\mid x_1:=x_2\mid s_1;s_2\mid next()\mid $\\
+		&& $ \mbox{return UFLIA}(X\cup Y)\mid \mbox{if(} g \mbox{)then\{} s_1;\mbox{\}else\{}s_2;\mbox{\}}$\\
+		$ Programs$&$\equiv$&$(s_1;)^*\mbox{while(}cur()\neq end() \mbox{)\{} s_2;\mbox{\}}(;s_3)^*$		
+	\end{tabular}
+	\label{fig:language}
+	\caption{A Simple Programming Language for Reducers. Here $x_1,x_2,x\in X$ are control variables, $y\in Y$ is a data variable, $\mbox{UFLIA}(S)$ is a quantifier free linear integer arithmetic formula with uninterpreted function over variables in $S$, and $c\in \mathbb{Z}$.}
+\end{figure}
+
+To be more concrete, we focus on the programming language in Figure~\ref{fig:language}. In the language, we allowed only 
+
+ where multiplication between two different variables is not allowed. In such case, the reduction from the satisfiability of Diophantine equations no longer works. 
 
 
 We show that the commutative problem of this subset is still undecidable, by a reduction from perti-net with zero test~\cite{petri}. Then we show that by partitioning the roles of variables into control and data, the commutative problem becomes decidable.
 
 We will use the language in Figure~\ref{fig:language} to describe reducers. The language can be used for programs that iterate through the input list only once. 
 
-We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the cases \texttt{avg} and \texttt{MAD}) or assigns a new value (like the case {\texttt max\_abs}) to the variable storing the aggregated result. 
+We demonstrate in Figure~\ref{fig:examples} a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. 
 
 Before finish reading the input list, the 
 \begin{figure}
@@ -237,33 +253,37 @@ int avg() {
 			\end{lstlisting}
 		\end{minipage}&
 		\begin{minipage}[t]{0.29\textwidth}
-		(c)
-			\begin{lstlisting}[mathescape=true]
-int MAD() {
- ...
- // repeat the body  
- // of (b) to compute
- // sum and cnt
- 
- init();
- avg:= sum/cnt;
- mad:=0;
+		(c) 
+	\begin{lstlisting}[mathescape=true]
+int 2nd_largest() {
+ a:=cur();
+ b:=cur();
+ next();
+ if(cur()>a){
+  a:=cur();
+ }else{
+  b:=cur();
+ }
+ next();
  while(cur()$\neq$end()){
-  if(cur()<avg){
-   mad=mad+(avg-cur());
+  if(cur()>a){
+   b:=a;
+   a:=cur();
   }else{
-   mad=mad+(cur()-avg);
+   if(cur()>b){
+    b:=cur();
+   }   
   }
   next();
  }
- return mad/cnt;
+ return b;
 }
-			\end{lstlisting}
+	\end{lstlisting}		
 		\end{minipage}\\
 \hline		
 	\end{tabular}
 	\label{fig:examples}
-	\caption{Examples of Reducers Performing Data Analytics Operations: (a)Maximal Absolute Value (b)Average (c)Mean Absolute Deviation}
+	\caption{Examples of Reducers Performing Data Analytics Operations}
 \end{figure}
 
 
@@ -939,6 +959,29 @@ If the procedure does not return yet, then we go to Step III''.
 \noindent {\bf Step III''}. Similar to Step III, for the path scheme, we can simulate the updates of the coefficients of the data values for the data variables as well as the output expression by a $\intnum$-VAS.
 
 \section{Case Studies}
+
+	\begin{lstlisting}[mathescape=true]
+	int MAD() {
+	...
+	// repeat the body  
+	// of (b) to compute
+	// sum and cnt
+	
+	init();
+	avg:= sum/cnt;
+	mad:=0;
+	while(cur()$\neq$end()){
+	if(cur()<avg){
+	mad=mad+(avg-cur());
+	}else{
+	mad=mad+(cur()-avg);
+	}
+	next();
+	}
+	return mad/cnt;
+	}
+	\end{lstlisting}
+	
 \section{Discussions}
 
 From the analysis of the commutativity of reducers in \cite{XZZ+14}, the commutativity of a reducer in a sequential composition oa map-reduce jobs may depend on some implicit data properties guaranteed by the preceding map-reduce jobs. Therefore, to analyze the commutativity of a reducer in a sequential composition of map-reduce jobs, we may need model both mappers and reducers and do a backward analysis.
