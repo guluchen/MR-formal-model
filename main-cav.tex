@@ -199,7 +199,7 @@ The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} d
 %
 For a function or partial function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the domain and range of $\pi$ respectively.
 
-Let $\intnum$ denote the set of integers and $\bot \not \in \intnum$ be a special value to denote the undefinedness of the values of some variables. In this paper, we assume that all the variables range over $\intnum \cup \{\bot\}$. Let $\intvars$ be an infinite set of variables. Moreover, let $X,Y$ denote another two finite sets of variables ranging over $\intnum \cup \{\bot\}$ such that $\intvars \cap X =\intvars \cap Y = X \cap Y = \emptyset$. We also use another special variable $\cur \not \in \intvars \cup X \cup Y$ (to denote the current data value). A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. An \emph{arithmetic expression} $e$ is defined by the following rules, $e::=  z \mid c \mid e + e \mid e - e$, where $z \in \intvars \cup X \cup Y \cup \{\cur\}$, and $c$ is a constant over $\intnum$. For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee$ denote the set of all arithmetic expressions. Let $e$ be an expression and $\eta$ be a partial function from $\intvars \cup X \cup Y \cup \{\cur\}$ to $\Ee$ such that $\vars(e) \subseteq \dom(\eta)$. Then we use $\eta(e)$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)$ with $\eta(z)$. An \emph{assignment} $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X \cup Y \cup \{\cur\}}$ such that for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$. 
+Let $\intnum$ denote the set of integers and $\bot \not \in \intnum$ be a special value to denote the undefinedness of the values of some variables. In this paper, we assume that all the variables range over $\intnum \cup \{\bot\}$. Let $\intvars$ be an infinite set of variables. Moreover, let $X,Y$ denote another two finite sets of variables ranging over $\intnum \cup \{\bot\}$ such that $\intvars \cap X =\intvars \cap Y = X \cap Y = \emptyset$. We also use another special variable $\cur \not \in \intvars \cup X \cup Y$ (to denote the current data value). A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. An \emph{arithmetic expression} $e$ is defined by the following rules, $e::=  z \mid c \mid e + e \mid e - e$, where $z \in \intvars \cup X \cup Y \cup \{\cur\}$, and $c$ is a constant over $\intnum$. For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee$ denote the set of all arithmetic expressions. Let $e$ be an expression and $\eta$ be a partial function from $\intvars \cup X \cup Y \cup \{\cur\}$ to $\Ee$ such that $\vars(e) \subseteq \dom(\eta)$. Then we use $\eta(e)$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)$ with $\eta(z)$. An \emph{assignment} $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X \cup Y \cup \{\cur\}}$ such that for each $x \in X \cap \dom(\eta)$, $\eta(x) = \cur$ or $x'$ for some $x' \in X$. \zhilin{I changed the definition of assignment to allow copy between control variables.}
 
 A \emph{valuation} $\rho$ of $X \cup Y \cup \{\cur\}$ is a function from $X \cup Y \cup \{\cur\}$ to $\intnum \cup \{\bot\}$. Let $\rho$ be valuation, $g$ be a guard, and $e \in \Ee_{X \cup Y \cup \{\cur\}}$. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in (X \cup \{\cur\}) \cap \vars(g)$, $\rho(z) \neq \bot$, and the evaluation of $g$ under $\rho$ results in the value $\ltrue$. Moreover, the value of $e$ under $\rho$, denoted by $\rho(e)$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$. Note that here by convention it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum \setminus \{0\}$.
 
@@ -351,9 +351,9 @@ Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 %
 \item [2 (Generalized flat).] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a collection of cycles that share a unique state.
 %
-\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
+%\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
 %
-\item[4 (Copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in $\eta(y)$ (This means that $\eta(y)$ does not contain the expressions of the form $y+y$).
+\item[3 (Independently evolving and copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y \cap \dom(\eta)$, either $\vars(\eta(y)) \subseteq X \cup \{\cur\}$ or $\eta(y)=y+e$ for some expression $e$ such that $\vars(e) \subseteq X \cup \{\cur\}$. \zhilin{I forbid the assignments $\eta(y)=-y+e$.}
 %
 \end{description}
 
@@ -487,7 +487,7 @@ The values of the control and data variables after traversing the path $P$ are s
 \begin{itemize}
 \item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving'' and the ``copyless'' constraint).
+\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 \end{proposition}
 
@@ -509,7 +509,7 @@ From Proposition~\ref{prop-sum-path}, for $b=1,2$, we assume that $\chi_b$ is de
 \begin{itemize}
 \item There is an injective mapping $\pi_b: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_b(j) \le k$, then $\pi_b(j)=j$ and $\chi_b(x_j)=d^{(0)}_{j}$, otherwise, $\chi_b(x_j)=d^{(b,1)}_{\pi_b(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1\}$.
 \end{itemize}
 
 Then
@@ -547,7 +547,7 @@ From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be co
 \begin{itemize}
 \item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1\}$.
 \end{itemize}
 
 \begin{proposition}\label{prop-sum-cycle}
@@ -572,7 +572,7 @@ where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,
  are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
 \end{proposition}
 
-From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1,-1\}$, for $\ell \ge 2$, we deduce the following facts.
+From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1\}$, for $\ell \ge 2$, we deduce the following facts.
 \begin{itemize}
 \item If $\alpha^{(C)}_{j,1}=0$, then
 \[
@@ -584,7 +584,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 & & \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
-\item If $\alpha^{(C)}_{j,1}=+1$, then 
+\item If $\alpha^{(C)}_{j,1}=1$, then 
 \[
 \begin{array}{l c l}
 \chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} \ell) + o_j +   \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'} \ell) d^{(0)}_{j'} + \sum \limits_{j'\le k, \pi_C(j') \neq j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
@@ -599,6 +599,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 \end{array} 
 \]
 %
+\hide{
 \item If $\alpha^{(C)}_{j,1}=-1$ and $\ell$ is even, then
 \[
 \begin{array}{l c l}
@@ -628,17 +629,18 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 & & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
+}
 \end{itemize}
 %
 From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
 \begin{itemize}
-\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, or $0$, 
+\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, 
 %
-\item the coefficient of $o_j$ is $0$, or $1$, or $-1$, 
+\item the coefficient of $o_j$ is $0$, or $1$, 
 %
-\item for each data value $d^0_{j'}$, the coefficient of $d^0_{j'}$ is either $\pm \beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
+\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
 %
-\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\pm \gamma^{(C)}_{j,j'}$, or $\pm(\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'})$.
+\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
 \end{itemize}
 
 
@@ -723,11 +725,11 @@ b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{
 \end{array}
 \right) d^{(0)}_{\pi_H(j')-k}. \ \ \  (\ast)
 \]
-Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1,-1\}$, the expression $(\ast)$ is of the form 
+Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1\}$, the expression $(\ast)$ is of the form 
 \[
 a_{j'} + \sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
 \]
-where $s_{\schm,j} \in \{0,+1,-1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
+where $s_{\schm,j} \in \{0,+1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
 
 For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j'$ such that 
 \begin{itemize}
@@ -750,8 +752,85 @@ We would like to remark that although in Step II, we do not consider all the cyc
 
 \noindent {\bf Claim}. 
 {\it 
-Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})', \dots, \chi^{(\Cc_{i_t})}_{\ell_t})'$. Then there is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
+\begin{enumerate}
+\item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+%
+\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain, no matter whatever $\schm$ is.
+\end{enumerate}
 }
+
+\begin{proof}
+Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
+
+We prove the second fact in the following. We illustrate the argument for $t=2$. 
+Let $y_j \in Y$. 
+
+\zhilin{the rest to be cleaned}
+
+If $\alpha^{(C_{i_1})}_{j,1} = 0$ and $\alpha^{(C_{i_2})}_{j,1} = 0$, then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $\alpha^{(C_{i_2})}_{j,0} + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_2})}_{j,0}$,
+%
+%
+\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $\beta^{(C_{i_2})}_{j,j'} + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_2})}_{j,j'}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} $,
+%
+\item for $j': 1 \le j' \le r_{C_{i_2}}, j'+k \in \rng(\pi_{C_{i_2}})$, the coefficient of $d^{C_{i_2},\ell_2-1}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_2}}(j'+k)}$,
+%
+\item for $j': 1 \le j' \le r_{C_{i_2}}$, the coefficient of $d^{C_{i_2},\ell_2}_{j'}$ is $\gamma^{(C_{i_2})}_{j, j'}$,
+%
+\item all the other coefficients are zero.
+\end{itemize}
+
+If $\alpha^{(C_{i_1})}_{j,1} = 0$ and $\alpha^{(C_{i_2})}_{j,1} = 1$, then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $0 + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_1})}_{j,0}$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$, the constant coefficient of $\chi^{(C_{i_2})}_{\ell_2}(y_j)$, is removed),
+%
+\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $0 + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ is removed),
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
+%
+\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
+\end{itemize}
+
+If $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 0$, then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $ \alpha^{(C_{i_2})}_{j,0} + \alpha^{(C_{i_2})}_{j,1} 0 = \alpha^{(C_{i_2})}_{j,0}$ (here $\alpha^{(C_{i_1})}_{j,0} \ell_1$, the constant coefficient of $\chi^{(C_{i_1})}_{\ell_1}(y_j)$, is removed),
+%
+\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $\beta^{(C_{i_2})}_{j, j'}  + \alpha^{(C_{i_2})}_{j,1} 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = 0$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
+%
+\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
+\end{itemize}
+
+
+If $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$, then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $0 + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_1})}_{j,0}$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$, the constant coefficient of $\chi^{(C_{i_2})}_{\ell_2}(y_j)$, is removed),
+%
+\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $0 + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ is removed),
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+%
+\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
+%
+\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
+\end{itemize}
+ 
+\end{proof}
 
 \medskip
 
@@ -1146,7 +1225,7 @@ To be done.
 \begin{itemize}
 \item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving'' and the ``copyless'' constraint).
+\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 }
 
