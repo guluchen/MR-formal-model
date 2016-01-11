@@ -31,7 +31,7 @@
 
 \def\arr#1{\stackrel{#1}{\longrightarrow}}
 
-\def\Aa{{\mathscr{A} }}
+\def\Aa{{\mathcal{A} }}
 
 \def\Bb{{\mathscr{B} }}
 
@@ -110,7 +110,7 @@
 
 \newcommand\ltrue{\mathsf{true}}
 
-\newcommand\false{\mathsf{true}}
+\newcommand\lfalse{\mathsf{false}}
 
 \newcommand\avg{\mathrm{avg}}
 
@@ -746,13 +746,34 @@ Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{
 We would like to remark that although in Step II, we do not consider all the cycle schemes, the set of cycle schemes chosen in Step II does exhaust all the possible values of $s_{\schm,j}$ when $\schm$ varies.
 
 
-\zhilin{I stopped here}.
+\medskip
 
-\smallskip
+\noindent {\bf Claim}. 
+{\it 
+Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})', \dots, \chi^{(\Cc_{i_t})}_{\ell_t})'$. Then there is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+}
 
-\noindent {\bf Step III}. For each cycle scheme $\schm=(1,\ell_1) (2,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$ or $\schm=(2,\ell_1) (1,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$, we can ignore all the expressions of the form $c\ \ell_1,\dots, c\ \ell_m$ (where $c$ is an integer constant) in $\chi_{\schm}(y_j)$, since these expressions will disappear for sure in $\chi_{\schm}(O(q_m))$, according to the analysis above. From this observation, we can show that the constant coefficient as well as the coefficients for $d^0_{\pi_0(j')}$ with $j' \in J_{1,1} \cap J_{2,1}$ in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ can be calculated by a $\intnum$-VAS (cf. \cite{HH14}), that is, an integer vector addition system. Moreover, all the other coefficients in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ are from a bounded domain, no matter how long the scheme $\schm$ is.  
+\medskip
 
-Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, that is, given an index $i$, decide whether a vector $\vec{z}$ where $z_i$ is non-zero can be reached.  It is not hard to see that the non-zero reachability problem of $\intnum$-VAS can be reduced to the coverability problem of $\intnum$-VAS. From the fact that the coverability of $\intnum$-VAS is NP-complete (\cite{HH14}),  we conclude that the non-zero output reachability of SNS$\pm$ whose transition graph is a generalized lasso is decidable.
+\noindent {\bf Step III}. At first, it is not hard to observe that there is a set of integers $D$ of bounded size such that all the coefficients in $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ for $1 \le s \le t$ and $y_j \in Y$ are from $D$, no matter whatever the cycle scheme $\schm$ is.
+From this observation, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
+
+\begin{proposition}
+The non-zero reachability problem of $\intnum$-VASS is in NP.
+\end{proposition}
+
+\begin{proof}
+The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
+
+ 
+
+ From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
+\end{proof}
+
+
+Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
+
+
 
 
 
