@@ -1,3 +1,54 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+\yfc{can we describe the following Triangle-counting algorithm using the model?}
+\zhilin{Could you describe how to implement the algorithm in MapReduce framework?}
+\yfc{this is based on the sample code in Spark, I found antoher sample code in Hadoop, maybe fits the model better, check https://github.com/vertica/Graph-Analytics----Triangle-Counting/blob/master/src/com/vertica/mr/graphs/TriangleCounter.java}
+
+\zhilin{I will describe my understanding of the algorithm in the following} 
+
+The task comprises of three MapReduce jobs. 
+\begin{description}
+\item[Job1] Map: Filter out the pairs $(v1,v2)$ such that $v1 > v2$. Reduce: on the input $(v, w_1 \dots w_k)$ (where $v < w_i$ for each $i$), output the list $((v,w_1),0), \dots, ((v,w_k),0), ((w_1,w_2),1), \dots, ((w_{k-1},w_k),1)$.
+\item[Job2] Map: Identity function. Reduce: on the input $((v1,v2),i_1 ... i_k)$, if $i_j=0$ for some $j$, then output $(1, i_1+...i_k)$, otherwise, output $(1,0)$.
+\item[Job3] Map: Identity function. Reduce: on the input $(1,n_1 \dots n_k)$, ouput $((n_1+\dots + n_k),null)$.
+\end{description}
+
+\zhilin{The most challenging one is Job1. The reducer in Job1 need output each distinct pair $((w_i, w_j),1)$ for a list $w_1 \dots w_n$. For this transduction, at first we need extend the transducer to output a list of $(key, value)$ pairs, instead of a single $(key,value)$ pair. Moreover, the relatively complex transduction from lists to lists seems exceeding the capability of streaming transducers.}
+
+\newcommand{\numTri}[1]{\triangle_{#1}}
+Let $G = (V, E)$ be an undirected graph without self-loops or multiple
+edges. For $u, v \in V$, $\{ u, v \} \in E$ denotes that $u$ and $v$
+are adjacent. A  \emph{triangle} in $G$ is formed by $u, v, w \in V$ with $\{ u, v \},
+\{ u, w \}, \{ v, w \} \in E$. 
+We want to count the number of triangles in a given graph.
+
+Suppose that the graph is described as a list of edges.
+
+For each edge $\{ u, v \} \in E$, the algorithm sends the sets $\{ u \}$
+and $\{ v \}$ to $v$ and $u$ respectively. If several messages are
+sent to a vertex, they are merged by unions.
+\yfc{So maybe we need to also support the data type ``set''}
+
+After this operation, we get a list of pairs $(u, U)$, where $u \in V$ and $U$ is the set $\{ v : \{ u, v \} \in E \}$.
+
+Then for each edge $\{ u, w \} \in E$, again we send the size of the set $| U \cap W |$ to both $u$ and $w$, where $U$ and $W$ are
+the set of vertices adjacent to $u$ and $v$ respectively. 
+\yfc{This is difficult in our model. We need to first traverse E (the first input list) and then get the corresponding set U and W from the 2nd list. Then count the size of their intersection. Maybe can be implemented in a slightly different way.}
+
+Observe that for every $s \in U \cap W$, we have $\{ s, u \}, \{ s, w \}, \{ u, w
+\} \in E$. Let $\numTri{\{u, v\}}$ denote the number of triangles
+containing the edge $\{ u, w \}$. Then $\numTri{\{u, w\}}$ is sent to
+both $u$ and $w$. If several messages are sent to $w$, they are merged
+by summation. After this operation we get a list of pairs $(u, \sum_{\{ u, w \} \in E} \numTri{\{u, w\}})$.
+
+Now consider a vertex $v$ in a triangle of $u, v, w$. The triangle is
+counted in both $\numTri{\{ u, v \}}$ and $\numTri{\{ w, v \}}$. Hence
+we need to divide the the number by 2 to get the number of triangles containing $v$. }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{The analysis of a lasso with only one output variable for each transducer}
