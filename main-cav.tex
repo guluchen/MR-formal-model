@@ -235,10 +235,17 @@ Intuitively, variables are used for remembering the number of tokens in each pla
 The non-determinism in transitions is expressed by branching over the input. 
 The guards in transitions are expressed by branching over the variables, respectively (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of perti-net with zero test can be reduced to reachability problem in the programming language.
 
+
 Notice that in the programming language, we allow only either adds or assigns a new value to data variables ($y := e$ and $y := y+e$). We argue that this is sufficient for reducers performing data analytics operations.
 In Figure~\ref{fig:examples} we demonstrate a few simple examples of . Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
 
 The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a binary function and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function in fold operations. We argue that this is enough to describe this is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages.
+
+One may argue that allowing only add and substrate is too restrictive for data analytics. For many cases with multiplication and subtractions, we can model them using \emph{uninterpreted functions}. For example, in Figure~\ref{fig:examples}(b), we can model the subtraction in the return expression using uninterpreted functions.
+
+ and obtain a sound procedure for verifying commutativity. 
+
+//to be continue, explain the UFLIA thing at the end of the programming language.
 
 \begin{figure}
 	\centering
