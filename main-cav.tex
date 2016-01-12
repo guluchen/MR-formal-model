@@ -652,9 +652,9 @@ Suppose the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ a
 
 From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
 \begin{itemize}
-\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi(j)-k}$.
+\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
 % 
-\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$. Since the initial value of the control variable $y_j$ is $o_j=\bot$, we assume that $\alpha^{(H)}_{j,1}=0$, without loss of generality.
 \end{itemize}
 
 Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
@@ -756,103 +756,64 @@ Suppose the decision procedure has not returned yet after Step II. For each cycl
 \begin{enumerate}
 \item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
 %
-\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain, no matter whatever $\schm$ is.
+\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain $D$, no matter whatever $\schm$ is. Moreover a finite state automaton $\Aa$ can be constructed from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record the evolvement of these coefficients  in the cycle schemes.
 \end{enumerate}
 }
 
 \begin{proof}
 Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
 
-We prove the second fact in the following. We illustrate the argument for $t=2$. 
-Let $y_j \in Y$. 
+We prove the second fact in the following. We exemplify the proof for $t=2$. 
+For each $y_j \in Y$, we will illustrate the argument for the situation that $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$.
 
-\zhilin{the rest to be cleaned}
-
-If $\alpha^{(C_{i_1})}_{j,1} = 0$ and $\alpha^{(C_{i_2})}_{j,1} = 0$, then in $\chi'_\schm(y_j)$,
+Suppose $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$. Then in $\chi'_\schm(y_j)$,
 \begin{itemize}
-\item the constant coefficient is $\alpha^{(C_{i_2})}_{j,0} + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_2})}_{j,0}$,
+\item the constant coefficient is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\  0 = 0$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$ and $\alpha^{(C_{i_1})}_{j,0} \ell_1$ are removed),
 %
+%\item the coefficient of $o_j$ is $1$,
 %
-\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $\beta^{(C_{i_2})}_{j,j'} + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_2})}_{j,j'}$,
+\item for each $j' \le r_{H}$ such that $j' \not \in \{\pi_H(j'')-k \mid 1 \le j'' \le k\}$, the coefficient of $d^{(0)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(H)}_{j'} = \gamma^{(H)}_{j'}$,
 %
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} $,
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') = j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = 0$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ and $\beta^{(C_{i_1})}_{j,j'} \ell_1$ are removed),
 %
-\item for $j': 1 \le j' \le r_{C_{i_2}}, j'+k \in \rng(\pi_{C_{i_2}})$, the coefficient of $d^{C_{i_2},\ell_2-1}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_2}}(j'+k)}$,
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $\beta^{(C_{i_2})}_{j,j'} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
 %
-\item for $j': 1 \le j' \le r_{C_{i_2}}$, the coefficient of $d^{C_{i_2},\ell_2}_{j'}$ is $\gamma^{(C_{i_2})}_{j, j'}$,
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$,
 %
-\item all the other coefficients are zero.
-\end{itemize}
-
-If $\alpha^{(C_{i_1})}_{j,1} = 0$ and $\alpha^{(C_{i_2})}_{j,1} = 1$, then in $\chi'_\schm(y_j)$,
-\begin{itemize}
-\item the constant coefficient is $0 + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_1})}_{j,0}$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$, the constant coefficient of $\chi^{(C_{i_2})}_{\ell_2}(y_j)$, is removed),
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} (\beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}) = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}$,
 %
-\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $0 + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ is removed),
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is the expression $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
 %
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k))=\pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} \ell_2$ is removed),
 %
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k)) \neq \pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'}$ $=$ $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$ $+$ $\gamma^{(C_{i_1})}_{j,j'}$,
 %
-\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
+\item for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
 %
-\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
-\end{itemize}
-
-If $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 0$, then in $\chi'_\schm(y_j)$,
-\begin{itemize}
-\item the constant coefficient is $ \alpha^{(C_{i_2})}_{j,0} + \alpha^{(C_{i_2})}_{j,1} 0 = \alpha^{(C_{i_2})}_{j,0}$ (here $\alpha^{(C_{i_1})}_{j,0} \ell_1$, the constant coefficient of $\chi^{(C_{i_1})}_{\ell_1}(y_j)$, is removed),
-%
-\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $\beta^{(C_{i_2})}_{j, j'}  + \alpha^{(C_{i_2})}_{j,1} 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = 0$,
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
-%
-\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
-\end{itemize}
-
-
-If $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$, then in $\chi'_\schm(y_j)$,
-\begin{itemize}
-\item the constant coefficient is $0 + \alpha^{(C_{i_2})}_{j,1}  \alpha^{(C_{i_1})}_{j,0} = \alpha^{(C_{i_1})}_{j,0}$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$, the constant coefficient of $\chi^{(C_{i_2})}_{\ell_2}(y_j)$, is removed),
-%
-\item for $j': j' \le k, \pi_{C_{i_1}}(j') = j'$, the coefficient of $d^{(0)}_{j'}$ is $0 + \alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ is removed),
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1-1)}_{j'}$ is the expression $\alpha^{(C_{i_2})}_{j,1} \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$,
-%
-\item for $j': j' \le r_{C_{i_1}}, j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\alpha^{(C_{i_2})}_{j,1}  \gamma^{(C_{i_2})}_{j,j'} = \gamma^{(C_{i_2})}_{j,j'}$,
-%
-\item all the other coefficients are either those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ or zero.
-\end{itemize}
- 
+\item all the other coefficients are those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ for the data values introduced in $C^{\ell_2}_{i_2}$.
+\end{itemize} 
+From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'$ with $(\chi^{C_{i_2}}_{\ell_2})'$, given a $j': j' \le r_{C_{i_1}}$, the coefficients of all the data values $d^{(C_{i_1},i)}_{j'}$ for $i: 1 \le i < \ell_1$ are the same. Moreover, they will keep the same even we keep composing with $(\chi^{C_{i_3}}_{\ell_3})'$, $(\chi^{C_{i_4}}_{\ell_4})'$, and so on. Therefore, we only need record one copy of these coefficients and there are only a bounded number of coefficients to remember.  Then we can construct a finite state automaton $\Aa$ from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record these coefficients in the states and simulate the evolvement of these coefficients.\qed
 \end{proof}
 
-\medskip
+\medskip 
 
-\noindent {\bf Step III}. At first, it is not hard to observe that there is a set of integers $D$ of bounded size such that all the coefficients in $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ for $1 \le s \le t$ and $y_j \in Y$ are from $D$, no matter whatever the cycle scheme $\schm$ is.
-From this observation, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
-
-\begin{proposition}
-The non-zero reachability problem of $\intnum$-VASS is in NP.
-\end{proposition}
-
-\begin{proof}
-The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
-
- 
-
- From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
-\end{proof}
+\noindent {\bf Step III}. For each state $\chi$ of $\Aa$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
 
 
-Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
+%From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
 
-
+%\begin{proposition}
+%The non-zero reachability problem of $\intnum$-VASS is in NP.
+%\end{proposition}
+%
+%\begin{proof}
+%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
+%
+% From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
+%\end{proof}
+%
+%
+%Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
 
 
 
