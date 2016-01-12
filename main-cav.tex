@@ -31,7 +31,7 @@
 
 \def\arr#1{\stackrel{#1}{\longrightarrow}}
 
-\def\Aa{{\mathscr{A} }}
+\def\Aa{{\mathcal{A} }}
 
 \def\Bb{{\mathscr{B} }}
 
@@ -110,7 +110,7 @@
 
 \newcommand\ltrue{\mathsf{true}}
 
-\newcommand\false{\mathsf{true}}
+\newcommand\lfalse{\mathsf{false}}
 
 \newcommand\avg{\mathrm{avg}}
 
@@ -351,6 +351,12 @@ int 2nd_largest() {
 
 In this section, we introduce streaming numerical transducers, whose inputs are data words and outputs are integer values. Over a data word, a streaming numerical transducer scans the data word from left to right, records some information by using control and data variables, and outputs a data value when it arrives at the right end of the data word. We will use streaming numerical transducers to decide the commutativity problem of the MapReduce programs defined in Section~\ref{sec-mr-prog}.
 
+We first give definitions of notations used in this section.
+Let $\intvars$ be an infinite set of variables. Moreover, let $X,Y$ denote another two finite sets of variables ranging over $\intnum \cup \{\bot\}$ such that $\intvars \cap X =\intvars \cap Y = X \cap Y = \emptyset$. We also use another special variable $\cur \not \in \intvars \cup X \cup Y$ (to denote the current data value). 
+A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. 
+We assume in this section expressions are over $\intvars \cup X \cup Y \cup \{\cur\}$.
+\yfc{I moved from section 2 definitions that are only used in SNT. I left only general definition there}
+
 A \emph{streaming numerical transducer} (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ such that 
 \begin{itemize}
 \item $Q$ is a finite set of states,
@@ -371,9 +377,9 @@ Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 %
 \item [2 (Generalized flat).] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a collection of cycles that share a unique state.
 %
-\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
+%\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
 %
-\item[4 (Copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $y$ appears at most once in $\eta(y)$ (This means that $\eta(y)$ does not contain the expressions of the form $y+y$).
+\item[3 (Independently evolving and copyless).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y \cap \dom(\eta)$, either $\vars(\eta(y)) \subseteq X \cup \{\cur\}$ or $\eta(y)=y+e$ for some expression $e$ such that $\vars(e) \subseteq X \cup \{\cur\}$. \zhilin{I forbid the assignments $\eta(y)=-y+e$.}
 %
 \end{description}
 
@@ -507,7 +513,7 @@ The values of the control and data variables after traversing the path $P$ are s
 \begin{itemize}
 \item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving'' and the ``copyless'' constraint).
+\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 \end{proposition}
 
@@ -529,7 +535,7 @@ From Proposition~\ref{prop-sum-path}, for $b=1,2$, we assume that $\chi_b$ is de
 \begin{itemize}
 \item There is an injective mapping $\pi_b: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_b(j) \le k$, then $\pi_b(j)=j$ and $\chi_b(x_j)=d^{(0)}_{j}$, otherwise, $\chi_b(x_j)=d^{(b,1)}_{\pi_b(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1\}$.
 \end{itemize}
 
 Then
@@ -567,7 +573,7 @@ From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be co
 \begin{itemize}
 \item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1\}$.
 \end{itemize}
 
 \begin{proposition}\label{prop-sum-cycle}
@@ -592,7 +598,7 @@ where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,
  are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
 \end{proposition}
 
-From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1,-1\}$, for $\ell \ge 2$, we deduce the following facts.
+From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1\}$, for $\ell \ge 2$, we deduce the following facts.
 \begin{itemize}
 \item If $\alpha^{(C)}_{j,1}=0$, then
 \[
@@ -604,7 +610,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 & & \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
-\item If $\alpha^{(C)}_{j,1}=+1$, then 
+\item If $\alpha^{(C)}_{j,1}=1$, then 
 \[
 \begin{array}{l c l}
 \chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} \ell) + o_j +   \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'} \ell) d^{(0)}_{j'} + \sum \limits_{j'\le k, \pi_C(j') \neq j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
@@ -619,6 +625,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 \end{array} 
 \]
 %
+\hide{
 \item If $\alpha^{(C)}_{j,1}=-1$ and $\ell$ is even, then
 \[
 \begin{array}{l c l}
@@ -648,17 +655,18 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 & & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
 \end{array} 
 \]
+}
 \end{itemize}
 %
 From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
 \begin{itemize}
-\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, or $0$, 
+\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, 
 %
-\item the coefficient of $o_j$ is $0$, or $1$, or $-1$, 
+\item the coefficient of $o_j$ is $0$, or $1$, 
 %
-\item for each data value $d^0_{j'}$, the coefficient of $d^0_{j'}$ is either $\pm \beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
+\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
 %
-\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\pm \gamma^{(C)}_{j,j'}$, or $\pm(\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'})$.
+\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
 \end{itemize}
 
 
@@ -670,9 +678,9 @@ Suppose the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ a
 
 From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
 \begin{itemize}
-\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi(j)-k}$.
+\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
 % 
-\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$.
+\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$. Since the initial value of the control variable $y_j$ is $o_j=\bot$, we assume that $\alpha^{(H)}_{j,1}=0$, without loss of generality.
 \end{itemize}
 
 Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
@@ -743,11 +751,11 @@ b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{
 \end{array}
 \right) d^{(0)}_{\pi_H(j')-k}. \ \ \  (\ast)
 \]
-Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1,-1\}$, the expression $(\ast)$ is of the form 
+Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1\}$, the expression $(\ast)$ is of the form 
 \[
 a_{j'} + \sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
 \]
-where $s_{\schm,j} \in \{0,+1,-1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
+where $s_{\schm,j} \in \{0,+1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
 
 For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j'$ such that 
 \begin{itemize}
@@ -766,13 +774,72 @@ Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{
 We would like to remark that although in Step II, we do not consider all the cycle schemes, the set of cycle schemes chosen in Step II does exhaust all the possible values of $s_{\schm,j}$ when $\schm$ varies.
 
 
-\zhilin{I stopped here}.
+\medskip
 
-\smallskip
+\noindent {\bf Claim}. 
+{\it 
+Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
+\begin{enumerate}
+\item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+%
+\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain $D$, no matter whatever $\schm$ is. Moreover a finite state automaton $\Aa$ can be constructed from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record the evolvement of these coefficients  in the cycle schemes.
+\end{enumerate}
+}
 
-\noindent {\bf Step III}. For each cycle scheme $\schm=(1,\ell_1) (2,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$ or $\schm=(2,\ell_1) (1,\ell_2) \dots (1+ (t-1) \bmod 2,\ell_t)$, we can ignore all the expressions of the form $c\ \ell_1,\dots, c\ \ell_m$ (where $c$ is an integer constant) in $\chi_{\schm}(y_j)$, since these expressions will disappear for sure in $\chi_{\schm}(O(q_m))$, according to the analysis above. From this observation, we can show that the constant coefficient as well as the coefficients for $d^0_{\pi_0(j')}$ with $j' \in J_{1,1} \cap J_{2,1}$ in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ can be calculated by a $\intnum$-VAS (cf. \cite{HH14}), that is, an integer vector addition system. Moreover, all the other coefficients in $\chi_{\schm}(y_1),\dots,\chi_{\schm}(y_l), \chi_{\schm}(O(q_m))$ are from a bounded domain, no matter how long the scheme $\schm$ is.  
+\begin{proof}
+Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
 
-Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, that is, given an index $i$, decide whether a vector $\vec{z}$ where $z_i$ is non-zero can be reached.  It is not hard to see that the non-zero reachability problem of $\intnum$-VAS can be reduced to the coverability problem of $\intnum$-VAS. From the fact that the coverability of $\intnum$-VAS is NP-complete (\cite{HH14}),  we conclude that the non-zero output reachability of SNS$\pm$ whose transition graph is a generalized lasso is decidable.
+We prove the second fact in the following. We exemplify the proof for $t=2$. 
+For each $y_j \in Y$, we will illustrate the argument for the situation that $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$.
+
+Suppose $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$. Then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\  0 = 0$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$ and $\alpha^{(C_{i_1})}_{j,0} \ell_1$ are removed),
+%
+%\item the coefficient of $o_j$ is $1$,
+%
+\item for each $j' \le r_{H}$ such that $j' \not \in \{\pi_H(j'')-k \mid 1 \le j'' \le k\}$, the coefficient of $d^{(0)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(H)}_{j'} = \gamma^{(H)}_{j'}$,
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') = j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = 0$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ and $\beta^{(C_{i_1})}_{j,j'} \ell_1$ are removed),
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $\beta^{(C_{i_2})}_{j,j'} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$,
+%
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} (\beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}) = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is the expression $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k))=\pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} \ell_2$ is removed),
+%
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k)) \neq \pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'}$ $=$ $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$ $+$ $\gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item all the other coefficients are those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ for the data values introduced in $C^{\ell_2}_{i_2}$.
+\end{itemize} 
+From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'$ with $(\chi^{C_{i_2}}_{\ell_2})'$, given a $j': j' \le r_{C_{i_1}}$, the coefficients of all the data values $d^{(C_{i_1},i)}_{j'}$ for $i: 1 \le i < \ell_1$ are the same. Moreover, they will keep the same even we keep composing with $(\chi^{C_{i_3}}_{\ell_3})'$, $(\chi^{C_{i_4}}_{\ell_4})'$, and so on. Therefore, we only need record one copy of these coefficients and there are only a bounded number of coefficients to remember.  Then we can construct a finite state automaton $\Aa$ from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record these coefficients in the states and simulate the evolvement of these coefficients.\qed
+\end{proof}
+
+\medskip 
+
+\noindent {\bf Step III}. For each state $\chi$ of $\Aa$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
+
+
+%From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
+
+%\begin{proposition}
+%The non-zero reachability problem of $\intnum$-VASS is in NP.
+%\end{proposition}
+%
+%\begin{proof}
+%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
+%
+% From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
+%\end{proof}
+%
+%
+%Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
 
 
 
@@ -1145,7 +1212,7 @@ To be done.
 \begin{itemize}
 \item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving'' and the ``copyless'' constraint).
+\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 }
 
