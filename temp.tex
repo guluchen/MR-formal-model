@@ -797,3 +797,107 @@ If $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 0$, then in $\
 
 
 
+Suppose that the mapping $\chi_{1,\ell_1}$ and $\chi_{2,\ell_2}$ to describe the values of the control and data variables after traversing the cycle $C_1$ and $C_2$ for $\ell_1$ and $\ell_2$ times are as in the analysis of generalized lasso above.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+ that is,
+\[
+\begin{array}{l c l}
+\chi_{(1,\ell_1)}(y_j)  & = & (\alpha_{1,(j,0)} + \alpha_{1,(j,1)} \alpha_{1,(j,0)}+ \dots +\alpha^{\ell_1-1}_{1,(j,1)} \alpha_{1,(j,0)}) + \alpha^{\ell_1}_{1,(j,1)} o_j + \\
+& & \sum \limits_{j' \in J_{1,1}} (\beta_{1,(j,j')}+\alpha_{1,(j,1)}\beta_{1,(j,j')} + \dots +\alpha^{\ell_1-1}_{1,(j,1)}  \beta_{1,(j,j')}) d^0_{\pi_0(j')} + \\
+%
+& & \sum \limits_{j' \in J_{1,2}} (\alpha^{\ell_1-1}_{1,(j,1)}\beta_{1,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{1,3}} (\alpha^{\ell_1-2}_{1,(j,1)}\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha^{\ell_1-1}_{1,(j,1)}\gamma_{1,(j,j')}) d^1_{j'} + \\
+%
+& & \sum \limits_{j' \in J_{1,4}} (\alpha^{\ell_1-1}_{1,(j,1)} \gamma_{1,(j,j')}) d^1_{j'} + \dots + \sum \limits_{j' \in J_{1,3}} (\beta_{1,(j, \pi^{-1}(j'+k))}+\alpha_{1,(j,1)}\gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \\
+%
+& & \sum \limits_{j' \in J_{1,4}} (\alpha_{1,(j,1)} \gamma_{1,(j,j')}) d^{\ell_1-1}_{j'} + \gamma_{1,(j, 1)} d^{\ell_1}_{1} + \dots + \gamma_{1,(j,r_1)} d^{\ell_1}_{r_1},
+\end{array} 
+\]
+and
+\[
+\begin{array}{l c l}
+\chi_{(2,\ell_2)}(y_j)  & = & (\alpha_{2,(j,0)} + \alpha_{2,(j,1)} \alpha_{2,(j,0)}+ \dots +\alpha^{\ell_2-1}_{2,(j,1)} \alpha_{2,(j,0)}) + \alpha^{\ell_2}_{2,(j,1)} o_j + \\
+%
+& & \sum \limits_{j' \in J_{2,1}} (\beta_{2,(j,j')}+\alpha_{2,(j,1)}\beta_{2,(j,j')} + \dots +\alpha^{\ell_2-1}_{2,(j,1)}  \beta_{2,(j,j')}) d^0_{\pi_0(j')} + \\
+%
+& & \sum \limits_{j' \in J_{2,2}} (\alpha^{\ell_2-1}_{2,(j,1)}\beta_{2,(j,j')}) d^0_{\pi_0(j')} +  \sum \limits_{j' \in J_{2,3}} (\alpha^{\ell_2-2}_{2,(j,1)}\beta_{2,(j, \pi^{-1}(j'+k))}+\\
+%
+& & \alpha^{\ell_2-1}_{2,(j,1)}\gamma_{2,(j,j')}) d^1_{j'} +  \sum \limits_{j' \in J_{2,4}} (\alpha^{\ell_2-1}_{2,(j,1)} \gamma_{2,(j,j')}) d^1_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \in J_{2,3}} (\beta_{2,(j, \pi^{-1}(j'+k))}+ \alpha_{2,(j,1)}\gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \\
+%
+& &  \sum \limits_{j' \in J_{2,4}} (\alpha_{2,(j,1)} \gamma_{2,(j,j')}) d^{\ell_2-1}_{j'} + \gamma_{2,(j, 1)} d^{\ell_2}_{1} +  \dots + \gamma_{2,(j,r_2)} d^{\ell_2}_{r_2}.
+\end{array} 
+\]
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+Moreover, suppose $d''_1,\dots,d''_k$ are the initial values of the control variables and $o''_1,\dots,o''_l$ are the initial values of the data variables, then $\chi'_{1,\ell'_1}$ and $\chi'_{2,\ell'_2}$, which describe the values of the control and data variables after traversing the cycle $C'_1$ and $C'_2$ for $\ell_1$ and $\ell_2$ times respectively, are as follows, 
+%
+\[
+\begin{array}{l c l}
+\chi'_{(1,\ell'_1)}(y_j)  & = & (\alpha'_{1,(j,0)} + \alpha'_{1,(j,1)} \alpha'_{1,(j,0)}+ \dots +(\alpha'_{1,(j,1)})^{\ell'_1-1} \alpha'_{1,(j,0)}) + (\alpha'_{1,(j,1)})^{\ell'_1} o''_j + \\
+& & \sum \limits_{j' \in J'_{1,1}} (\beta'_{1,(j,j')}+\alpha'_{1,(j,1)}\beta'_{1,(j,j')} + \dots +(\alpha'_{1,(j,1)})^{\ell'_1-1}  \beta'_{1,(j,j')}) d''_{j'} + \\
+%
+& & \sum \limits_{j' \in J'_{1,2}} ( (\alpha'_{1,(j,1)})^{\ell'_1-1} \beta'_{1,(j,j')}) d''_{j'} +  \sum \limits_{j' \in J'_{1,3}} ( (\alpha'_{1,(j,1)})^{\ell'_1-2} \beta'_{1,(j, \pi^{-1}(j'+k))}+\\
+%
+& &  (\alpha'_{1,(j,1)})^{\ell'_1-1} \gamma'_{1,(j,j')}) (d^1_{j'})' +  \sum \limits_{j' \in J'_{1,4}} ( (\alpha'_{1,(j,1)})^{\ell'_1-1} \gamma'_{1,(j,j')}) (d^1_{j'})' + \dots +  \\
+%
+& & \sum \limits_{j' \in J'_{1,3}} (\beta'_{1,(j, \pi^{-1}(j'+k))}+\alpha'_{1,(j,1)}\gamma'_{1,(j,j')}) (d^{\ell'_1-1}_{j'})' +\\
+& & \sum \limits_{j' \in J'_{1,4}} (\alpha'_{1,(j,1)} \gamma'_{1,(j,j')}) (d^{\ell'_1-1}_{j'})' + \gamma'_{1,(j, 1)} (d^{\ell'_1}_{1})' + \dots + \gamma'_{1,(j,r_1)} (d^{\ell'_1}_{r'_1})',
+\end{array} 
+\]
+and
+\[
+\begin{array}{l c l}
+\chi'_{(2,\ell'_2)}(y_j)  & = & (\alpha'_{2,(j,0)} + \alpha'_{2,(j,1)} \alpha'_{2,(j,0)}+ \dots +(\alpha'_{2,(j,1)})^{\ell'_2-1} \alpha'_{2,(j,0)}) + (\alpha'_{2,(j,1)})^{\ell'_2} o''_j + \\
+& & \sum \limits_{j' \in J'_{2,1}} (\beta'_{2,(j,j')}+\alpha'_{2,(j,1)}\beta'_{2,(j,j')} + \dots +(\alpha'_{2,(j,1)})^{\ell'_2-1}  \beta'_{2,(j,j')}) d''_{j'} + \\
+%
+& & \sum \limits_{j' \in J'_{2,2}} ( (\alpha'_{2,(j,1)})^{\ell'_2-1} \beta'_{2,(j,j')}) d''_{j'} +  \sum \limits_{j' \in J'_{2,3}} ( (\alpha'_{2,(j,1)})^{\ell'_2-2} \beta'_{2,(j, \pi^{-1}(j'+k))}+\\
+%
+& &  (\alpha'_{2,(j,1)})^{\ell'_2-1} \gamma'_{2,(j,j')}) (d^2_{j'})' +  \sum \limits_{j' \in J'_{2,4}} ( (\alpha'_{2,(j,1)})^{\ell'_2-1} \gamma'_{2,(j,j')}) (d^2_{j'})' + \dots +  \\
+%
+& & \sum \limits_{j' \in J'_{2,3}} (\beta'_{2,(j, \pi^{-1}(j'+k))}+\alpha'_{2,(j,1)}\gamma'_{2,(j,j')}) (d^{\ell'_2-1}_{j'})' +\\
+& & \sum \limits_{j' \in J'_{2,4}} (\alpha'_{2,(j,1)} \gamma'_{2,(j,j')}) (d^{\ell'_2-1}_{j'})' + \gamma'_{2,(j, 1)} (d^{\ell'_2}_{1})' + \dots + \gamma'_{2,(j,r_1)} (d^{\ell'_2}_{r'_2})'.
+\end{array} 
+\]
+
+
+
+Similarly to the analysis of generalized lassos, $\chi_{(b,\ell_b)}(O(q_m))$ is a linear combination of the variables $d^0_1,\dots, d^0_s$ and $d^1_1,\dots, d^1_{r_b}, \dots, d^{\ell_b}_1,\dots, d^{\ell_b}_{r_b}$. For each $j' \in J_{b,1}$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{(b,\ell_b)}(O(q_m))$ is 
+%
+\[a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (1+\alpha_{b,(j,1)} + \dots +\alpha^{\ell_b-1}_{b,(j,1)})\beta_{b,(j,j')}.\]
+%
+
+In general, for each $j' \in J_{1,1}$ and each cycle scheme $\schm=(1,\ell_1)(2,\ell_2) \dots (1+(t-1) \bmod 2,\ell_{t})$ (where $t \ge 1$) of $(C_1,C_2)$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{\schm}(O(q_m))$ includes the following expression as a component,
+%
+\[a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)}) (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')}. \ \ \  (\ast')\]
+
+Note that since $\alpha_{1,(j,1)},\alpha_{2,(j,1)} \in \{0,+1,-1\}$, the expression $(\ast')$ is of the form 
+\[a_{j'} + \sum \limits_{1 \le j \le l} a'_j  s_j (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')},\]
+where $s_j \in \{0,+1,-1\}$.
+
+The expression $(\ast')$ can be rewritten as $\mu_{\schm,(1,j')} \ell_1 + \nu_{\schm,(1,j')}$ for some integer constant $\mu_{\schm,(1,j')},\nu_{\schm,(1,j')}$ (possibly $\mu_{\schm,(1,j')}=0$). 
+
+If $\mu_{\schm,(1,j')} \neq 0$, then return ``$true$''. 
+
+Otherwise, for each cycle scheme $\schm'=(1,\ell'_1)(2,\ell'_2) \dots (1+(t'-1) \bmod 2,\ell'_{t'})$ (where $t' \ge 1$) of $(C'_1,C'_2)$, the coefficient of $d^0_{\pi_0(j')}$ in $\chi_{\schm (q'_0 \dots q'_{m'})\schm'}(O(q'_{m'}))$ includes the following expression as a component,
+\[
+\begin{array}{l c l}
+a''_{j'} + \sum \limits_{1 \le j \le l} a'''_j (\alpha^{\ell_2}_{2,(j,1)} \dots \alpha^{\ell_t}_{1,(j,1)} (\alpha'_{1,(j,1)})^{\ell'_{1}} (\alpha'_{2,(j,1)})^{\ell'_{2}} \dots (\alpha'_{1,(j,1)})^{\ell'_{t'}}) \\
+\hspace{16mm} (1+\alpha_{1,(j,1)} + \dots +\alpha^{\ell_1-1}_{1,(j,1)})\beta_{1,(j,j')}. \hspace{2cm}. (\ast'')
+\end{array}
+\]
+
+The a similar analysis can be applied to $(\ast'')$ by considering all the cycle shcemes of $(C'_1,C'_2)$.
+
+Moreover, we can apply a similar analysis for the cycle $C'_1,C'_2$ as for $C_1,C_2$, by using the output expressions $O(q'_{m'})$.
+
+If the procedure does not return yet, then we go to Step III''.
