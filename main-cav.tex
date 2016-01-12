@@ -102,6 +102,10 @@
 \newcommand\next{\mathsf{next}}
 \newcommand\hasNext{\mathsf{hasNext}}
 
+\newcommand\head{\mathsf{head}}
+\newcommand\tail{\mathsf{tail}}
+
+
 \newcommand\vars{\mathsf{vars}}
 
 \newcommand\intvars{\mathcal{X}}
@@ -233,12 +237,12 @@ We focus on a language that only allow to iterate though the input list once. La
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e\mid x:=\cur \mid x:=x\mid s;s\mid \next \mid $\\
+        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x':=x\mid s;s\mid \next \mid $\\
 		&& $ \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}$\\
 		$ Programs$&$\equiv$&$(s;)^*\mbox{do\{} s;\mbox{\}while(}\hasNext\mbox{)}\mbox{return }(r)$		
 	\end{tabular}
 	\label{fig:language}
-	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $e\in \Ee_{X}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X \cup Y}^k$, and $c\in \mathbb{Z}$.}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X\setminus \{\cur\}$, $e\in \Ee_{X}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X \cup Y}^k$, and $c\in \mathbb{Z}$.}
 \end{figure}
 
 To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
@@ -259,8 +263,21 @@ In Figure~\ref{fig:examples} we demonstrate a few simple examples of . Observe t
 
 The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a binary function and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function in fold operations. We argue that this is enough to describe this is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages.
 
-Formally, the semantics of the programming language can ge defined as a graph
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X\cup Y$ such that $\rho(\cur)=\head(l)$. The initial node is $(p_0, l_0, \rho_0)$, where $l_0$ is the initial input list, $\rho_0(\cur)=\head(l_0)$, and $\rho_0(v)=\bot$ for $v\neq \cur$.
 
+$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq y$ and $\rho'(y) = \sub{e}{\rho}$.
+
+$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq y$ and $\rho'(y) = \sub{y+e}{\rho}$.
+
+$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq \cur$ and $\rho'(\cur) = \head(l)$.
+
+$(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq x'$ and $\rho'(x') = \rho(x)$.
+
+$(\mbox{do\{} s;next();s'\mbox{\}while(}\hasNext\mbox{)}\mbox{return }(r), l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq x'$ and $\rho'(x') = \rho(x)$.
+
+%      \mid y \addeq e \mid x':=x\mid s;s\mid \next \mid $\\
+%        && $ \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}$
+        
 
 One may argue that allowing only add and substrate is too restrictive for data analytics. For many cases with multiplication and subtractions, we can model them as a tuple and still have a sound verification procedure. For example, in Figure~\ref{fig:examples}(b), we can model the division in the return expression as a 2-tuple and obtain a sound procedure for verifying commutativity. 
 
