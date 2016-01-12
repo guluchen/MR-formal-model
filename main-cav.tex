@@ -104,6 +104,9 @@
 
 \newcommand\head{\mathsf{head}}
 \newcommand\tail{\mathsf{tail}}
+\newcommand{\loopL}[1]{\mbox{loop\{} #1\mbox{\}}}
+\newcommand{\ite}[3]{\mbox{if(} #1 \mbox{)then\{} #2\mbox{\}else\{}#3\mbox{\}}}
+
 
 
 \newcommand\vars{\mathsf{vars}}
@@ -176,21 +179,6 @@ The reducer commutative problem in general is undecidable by Rice's theorem. How
 We want to study if the commutative problem of real-world reducers are decidable.
 
 A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where the only loop structure allowed is an iteration over the input list and it is not allowed to reset the iterator to the list head. They show that the commutative problem of programs written by such a simple language is undecidable by a reduction from the satisfiability problem of Diophantine equations. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
-\hide{
-\begin{figure}
-	\centering
-	\begin{tabular}{rcl}
-		$c \in \mathbb{Z}$&&\\	
-		$v \in Var$&$\equiv$&$x \mid y \mid z \mid cur()\mid \ldots$\\
-		$g \in Guard$&$\equiv$&$cur() > v \mid cur()= v \mid v>c \mid v=c \mid \neg g \mid g\wedge g$\\
-		$e \in Expressions$&$\equiv$&$c\mid v \mid e+e \mid e\times e \mid e - e$\\
-		$ s \in Statements$&$\equiv$&$v := e\mid s;s\mid \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}\mid \mbox{return }e\mid $\\
-		&&$\mbox{while(}cur()\neq end() \mbox{)\{} s;\mbox{\}}\mid next()$		
-	\end{tabular}
-	\label{fig:language}
-	\caption{A Simple Programming Language for Reducers}
-\end{figure}
-}
 
 By observing the behavioral pattern of reducer programs for data analytics, we characterize the essential components in a programming language for reducers. %However, we found that even only with the essential parts of the language, the commutativity problem is still undecidable. 
 Inspired by~\cite{RP11}, we found that the commutativity problem becomes decidable if we partition variables into \emph{control variables} and \emph{data variables}. Data variables cannot be used in transition guards and control variables can store only elements in the input list (e.g., it is not allowed to store the sum of two variables in a control variable). 
@@ -219,6 +207,8 @@ In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables}
 A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. 
 Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in Z \cap \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
 
+\yfc{define list, permutation, $\head$, $\tail$, concat, etc.}
+
 \hide{
 ==========backup
 
@@ -237,9 +227,8 @@ We focus on a language that only allow to iterate though the input list once. La
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x':=x\mid s;s\mid \next \mid $\\
-		&& $ \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}$\\
-		$ Programs$&$\equiv$&$(s;)^*\mbox{do\{} s;\mbox{\}while(}\hasNext\mbox{)}\mbox{return }(r)$		
+        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x':=x\mid s;s\mid \next \mid \ite{g}{s;}{s;}$\\
+		$ p\in Programs$&$\equiv$&$(s;)^*\loopL{s;};\mbox{return }r$		
 	\end{tabular}
 	\label{fig:language}
 	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X\setminus \{\cur\}$, $e\in \Ee_{X}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X \cup Y}^k$, and $c\in \mathbb{Z}$.}
@@ -263,21 +252,40 @@ In Figure~\ref{fig:examples} we demonstrate a few simple examples of . Observe t
 
 The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a binary function and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function in fold operations. We argue that this is enough to describe this is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages.
 
-Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X\cup Y$ such that $\rho(\cur)=\head(l)$. The initial node is $(p_0, l_0, \rho_0)$, where $l_0$ is the initial input list, $\rho_0(\cur)=\head(l_0)$, and $\rho_0(v)=\bot$ for $v\neq \cur$.
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X\cup Y$ such that $\rho(\cur)=\head(l)$. Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$, and $\rho_l(v)=\bot$ for $v\neq \cur$.
+The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{is an input list}\}$.
+We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{return }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, the function $p$ is well-defined. 
 
+\begin{figure}
+	\centering
 $(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq y$ and $\rho'(y) = \sub{e}{\rho}$.
 
 $(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq y$ and $\rho'(y) = \sub{y+e}{\rho}$.
 
-$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq \cur$ and $\rho'(\cur) = \head(l)$.
+$(\ite{g}{s_1;}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$, if $\sub{g}{\rho} =\ltrue$.
+
+$(\ite{g}{s_1;}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$, if $\sub{g}{\rho} =\lfalse$.
+
+$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $\tail(l)\neq \bot$.
 
 $(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq x'$ and $\rho'(x') = \rho(x)$.
 
-$(\mbox{do\{} s;next();s'\mbox{\}while(}\hasNext\mbox{)}\mbox{return }(r), l, \rho) \longrightarrow (p, l, \rho')$, where $\rho'(z) =\rho(z)$ for $z\neq x'$ and $\rho'(x') = \rho(x)$.
+$(\loopL{s;}\mbox{return }r, l, \rho) \longrightarrow (s;\loopL{s;}\mbox{return }r, l, \rho)$.
+
+$(\loopL{s;}\mbox{return }r, \emptyset, \rho) \longrightarrow (\mbox{return }r,  \emptyset, \rho)$.
+	\label{fig:semantics}
+	\caption{The Semantics of the Programming Language}
+\end{figure}
 
 %      \mid y \addeq e \mid x':=x\mid s;s\mid \next \mid $\\
 %        && $ \mbox{if(} g \mbox{)then\{} s;\mbox{\}else\{}s;\mbox{\}}$
         
+We are interested in the following two decision problems:
+\begin{itemize}
+	\item (Commutativity) Given a program $p$, does it exist a list $l$ and its permutation of $l'$ such that $p(l) \neq p(l')$.
+	\item (Equivalence) Given two programs $p,p'$, does it exist a list $l$ such that $p(l)\neq p(l')$.
+\end{itemize}
+
 
 One may argue that allowing only add and substrate is too restrictive for data analytics. For many cases with multiplication and subtractions, we can model them as a tuple and still have a sound verification procedure. For example, in Figure~\ref{fig:examples}(b), we can model the division in the return expression as a 2-tuple and obtain a sound procedure for verifying commutativity. 
 
