@@ -121,6 +121,8 @@
 \newcommand\cntv{\mathsf{cnt}}
 
 \newcommand\defval{\mathsf{DEF}}
+\newcommand{\sub}[2]{#1|_{#2}}
+
 
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
@@ -197,19 +199,30 @@ The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} d
 
 \section{Preliminaries}
 %
-For a function or partial function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the domain and range of $\pi$ respectively.
+Let $\intnum$ be the set of integers and $\bot \not \in \intnum$ be 
+the undefined value. By convention, it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum \setminus \{0\}$.
+In this paper, we assume that all variables range over $\intnum \cup \{\bot\}$.  
 
-Let $\intnum$ denote the set of integers and $\bot \not \in \intnum$ be a special value to denote the undefinedness of the values of some variables. In this paper, we assume that all the variables range over $\intnum \cup \{\bot\}$. Let $\intvars$ be an infinite set of variables. Moreover, let $X,Y$ denote another two finite sets of variables ranging over $\intnum \cup \{\bot\}$ such that $\intvars \cap X =\intvars \cap Y = X \cap Y = \emptyset$. We also use another special variable $\cur \not \in \intvars \cup X \cup Y$ (to denote the current data value). A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. An \emph{arithmetic expression} $e$ is defined by the following rules, $e::=  z \mid c \mid e + e \mid e - e$, where $z \in \intvars \cup X \cup Y \cup \{\cur\}$, and $c$ is a constant over $\intnum$. For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee$ denote the set of all arithmetic expressions. Let $e$ be an expression and $\eta$ be a partial function from $\intvars \cup X \cup Y \cup \{\cur\}$ to $\Ee$ such that $\vars(e) \subseteq \dom(\eta)$. Then we use $\eta(e)$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)$ with $\eta(z)$. An \emph{assignment} $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X \cup Y \cup \{\cur\}}$ such that for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$. 
+For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the domain  and range of $\pi$ respectively. 
+An \emph{expression} $e$ over variables $Z$ is defined by the following rules, $e\equiv  z \mid c \mid e + e \mid e - e$, where $z \in Z$ and $c\in \intnum$. 
+For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to $\Ee$. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\sub{e}{\eta}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$.
 
-A \emph{valuation} $\rho$ of $X \cup Y \cup \{\cur\}$ is a function from $X \cup Y \cup \{\cur\}$ to $\intnum \cup \{\bot\}$. Let $\rho$ be valuation, $g$ be a guard, and $e \in \Ee_{X \cup Y \cup \{\cur\}}$. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in (X \cup \{\cur\}) \cap \vars(g)$, $\rho(z) \neq \bot$, and the evaluation of $g$ under $\rho$ results in the value $\ltrue$. Moreover, the value of $e$ under $\rho$, denoted by $\rho(e)$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$. Note that here by convention it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum \setminus \{0\}$.
+A \emph{guard} over variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in Z \cap \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
+
+\hide{
+==========backup
+
+Moreover, let $X,Y$ denote another two finite sets of variables ranging over $\intnum \cup \{\bot\}$ such that $\intvars \cap X =\intvars \cap Y = X \cap Y = \emptyset$. We also use another special variable $\cur \not \in \intvars \cup X \cup Y$ (to denote the current data value). A \emph{guard} over $X \cup \{\cur\}$ is a formula defined by the following rules, $g::= \ltrue \mid \cur\ o\ c \mid \cur\ o\ x \mid g \wedge g$, where $o \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. An \emph{arithmetic expression} $e$ is defined by the following rules, $e::=  z \mid c \mid e + e \mid e - e$, where $z \in \intvars \cup X \cup Y \cup \{\cur\}$, and $c$ is a constant over $\intnum$. For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee$ denote the set of all arithmetic expressions. Let $e$ be an expression and $\eta$ be a partial function from $\intvars \cup X \cup Y \cup \{\cur\}$ to $\Ee$ such that $\vars(e) \subseteq \dom(\eta)$. Then we use $\eta(e)$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)$ with $\eta(z)$. An \emph{assignment} $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X \cup Y \cup \{\cur\}}$ such that for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$. 
+
+A \emph{valuation} $\rho$ of $X \cup Y \cup \{\cur\}$ is a function from $X \cup Y \cup \{\cur\}$ to $\intnum \cup \{\bot\}$. Let $\rho$ be valuation, $g$ be a guard, and $e \in \Ee_{X \cup Y \cup \{\cur\}}$. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in (X \cup \{\cur\}) \cap \vars(g)$, $\rho(z) \neq \bot$, and the evaluation of $g$ under $\rho$ results in the value $\ltrue$. Moreover, the value of $e$ under $\rho$, denoted by $\rho(e)$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$. 
 
 A data word $w$ is a sequence of integer values $d_1\dots d_n$ such that $d_i \in \intnum$ for each $i$.
-
-\zhilin{I restrict the expressions $e$ to contain only $\pm$.}
-
+}
 \section{Language For Integer Reducers}\label{sec-mr-prog}
 We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
 We focus on a language that only allow to iterate though the input list once. Later we will show an extension that allows the reset of list iterators.
+
+
 
 \begin{figure}
 	\centering
