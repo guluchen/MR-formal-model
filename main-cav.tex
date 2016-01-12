@@ -688,7 +688,7 @@ Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_
 A \emph{cycle scheme} $\schm$ is a path $H C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by traversing $H$ first, then iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Corollary~\ref{cor-comp-two-paths}, we know that a function $\chi_{\schm}$ can be constructed by composing $\chi_{H}, \chi^{(C_{i_1})}_{\ell_1},\dots,\chi^{(C_{i_t})}_{\ell_t}$, to summarize the computation of $\Ss$ on $\schm$.
 
 \begin{proposition}\label{prop-cycle-schm}
-Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the following expression occurs in $\chi_{\schm}(O(q_m))$,
+Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, $\chi_{\schm}(O(q_m))$ contains the following expression,
 \[
 \left(\sum \limits_{1 \le j \le l} 
 \begin{array}{l}
@@ -696,6 +696,15 @@ b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{
 \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
 \end{array}
 \right) d^{(0)}_{\pi_H(j')-k}. 
+\]
+Moreover, the constant coefficient of $\chi_\schm(O(q_m))$ contains the following expression,
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0}.
+%\end{array}
 \]
 \end{proposition}
 
@@ -731,6 +740,7 @@ b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{
 \end{array}
 \right) d^{(0)}_{\pi_H(j')-k}. 
 \]
+The argument for the constant coefficient is similar.
 \qed
 \end{proof}
 
@@ -753,7 +763,7 @@ b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{
 \]
 Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1\}$, the expression $(\ast)$ is of the form 
 \[
-a_{j'} + \sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
+\sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
 \]
 where $s_{\schm,j} \in \{0,+1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
 
@@ -765,11 +775,27 @@ For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\e
 \end{itemize}
 then return $\ltrue$.
 
+Similarly, if there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
+$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+and $\mu_{\schm,(i_1,0)} \neq 0$, 
+%
+then return $\ltrue$, where $\mu_{\schm,(i_1,0)}$ is obtained from 
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%\end{array}
+\]
+similarly to $\mu_{\schm,(i_1,j')}$ above.
+
 If the decision procedure has not return yet, then go to Step III. \qed
 
 \smallskip
 
-Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, we can let $d^{(0)}_{\pi_H(j')-k} \neq 0$, and let $\ell_1$ sufficiently large, so that $(\mu_{\schm,(i_1,j')} \ell_1 + \nu_{\schm,(i_1,j')})d^{(0)}_{\pi_H(j')-k}$ dominates $\chi_{\schm}(O(q_m))$, and  $\chi_{\schm}(O(q_m))$ becomes non-zero. 
+Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, we can let $d^{(0)}_{\pi_H(j')-k} \neq 0$, and let $\ell_1$ sufficiently large, so that $(\mu_{\schm,(i_1,j')} \ell_1 + \nu_{\schm,(i_1,j')})d^{(0)}_{\pi_H(j')-k}$ dominates $\chi_{\schm}(O(q_m))$, and  $\chi_{\schm}(O(q_m))$ becomes non-zero. Similarly for $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$.
 
 We would like to remark that although in Step II, we do not consider all the cycle schemes, the set of cycle schemes chosen in Step II does exhaust all the possible values of $s_{\schm,j}$ when $\schm$ varies.
 
@@ -877,10 +903,10 @@ Then we can adapt the output function $O$ and set $O(q_m) = a'_0 + a'_1 x_1 + \d
 
 \smallskip
 
-\noindent {\bf Step I'}. By using the output expression $O(q_m)$, we can do the same analysis for the handle $H$ as for generalized lassos.
+\noindent {\bf Step I$'$}. By using the output expression $O(q_m)$, we can do the same analysis for the handle $H$ as for generalized lassos.
 
 \smallskip 
-\noindent {\bf Step II'}. At first, by using $O(q_m)$, we do the following computation, similarly to Step II: For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm$ of the form  
+\noindent {\bf Step II$'$}. At first, by using $O(q_m)$, we do the following computation, similarly to Step II: For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm$  
 $HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}
 $
 or 
@@ -903,7 +929,9 @@ Then by using $O(q'_{m'})$, we do the following: For each $i'_1: 1 \le i'_1 \le 
 \end{itemize}
 then return $\ltrue$. 
 
-If the decision procedure has not return yet, then go to Step III'. \qed
+Similarly, we can apply an analysis for the constant coefficient to $\chi_\schm(O(q_m))$. 
+
+If the decision procedure has not return yet, then go to Step III$'$. \qed
 
 \smallskip
 
@@ -911,47 +939,114 @@ Similarly to the generalized lassos, we can construct a finite state automaton $
 
 \smallskip 
 
-\noindent {\bf Step III'}. For each final state $\chi'$ of $\Aa'$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi'(O(q'_{m'}))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
+\noindent {\bf Step III$'$}. For each final state $\chi'$ of $\Aa'$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi'(O(q'_{m'}))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
 
-\zhilin{I stopped here}
 
 \subsection{Comparisons with constants in guards}
 
-We now consider the situation that the guards include the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
+We now consider the situation that the guards contain the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
 
-For this situation, we adapt the algorithm for a generalized lasso into Step I', II' and III' below.
+We illustrate the argument for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below.
+
+Let $q_0 \dots q_m C_1 \dots C_n$ be a generalized lasso and $O(q_m)=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
 
 \smallskip
 
-\noindent {\bf Step I'}. Decide whether $\chi_0(O(q_m))$ is not identical to zero. If the answer is yes, then the decision procedure terminates and returns the answer $true$. Otherwise, the decision procedure continues.
-
-When decide whether $\chi_0(O(q_m))$ is not identical to zero, it is unsound to just consider the coefficients of $d^0_1,\dots,d^0_s$, since some of the data values may be integer constants as well. 
-
-From the analysis, we know that 
+\noindent {\bf Step I$''$}. Let
 \[
 \begin{array}{l c l }
-\chi_0(O(q_m)) & = & a_0 + a_1 \chi_0(x_1) + \dots + a_k \chi_0(x_k) + a'_1 \chi_0(y_1) + \dots a'_l \chi_0(y_l).\\
-& = & (a_0+a'_1 c_{0,1} + \dots + a'_l c_{0,l}) + \sum \limits_{j \not \in rng(\pi_0)}  (a'_1 c_{j,1}+\dots + a'_l c_{j,l}) d^0_j+\\
-& & \sum \limits_{j \in rng(\pi_0)} (a_{\pi_0^{-1}(j)}+ a'_1 c_{j,1}+\dots + a'_l c_{j,l}) d^0_j.
+\chi_H(O(q_m)) & = & a_0 + a_1 \chi_H(x_1) + \dots + a_k \chi_H(x_k) + b_1 \chi_H(y_1) + \dots b_l \chi_H(y_l) \\
+& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
+& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
+\\
+& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
 \end{array}
 \]
+From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{(H)}_j$ for some $c_{\min}\le c^{(H)}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
 
-From the guards and assignments of the transitions in the handle, we know that some of $d^0_1,\dots,d^0_s$ are just integer constants. Let $J_0 \subseteq \{1,\dots,s\}$ denote the subset of indices for these data values. For $d^0_j$ such that $j \not \in J_0$, we know that either $d^0_j < c_{\min}$ or $d^0_j > c_{\max}$, since the SNT is assumed to be normalized.
+For each $j \not \in J_H$, decide whether the coefficient of $d^{(0)}_j$ in $\chi_H(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$. 
 
-Then to decide whether $\chi_0(O(q_m))$ is identical to zero, we will first check whether the coefficient of $d^0_j$ in $\chi_0(O(q_m))$ for some $j \not \in J_0$ is non-zero. If this is the case, the return ``$true$''. Otherwise, $\chi_0(O(q_m))$ is in fact an integer constant, and we just check whether it is equal to zero. If it is not equal to zero, then return ``true''. Otherwise, we continue the procedure.
+If the algorithm has not return yet, we substitute the data variables $d^{(0)}_j$ for $j \in J_H$ with the integer constants. Then $\chi_H(O(q_m))$ becomes an integer constant $c_H$. If $c_H \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$. \qed
 
-For $b=1,2$, we know that $\chi_{b,1}(y_j) = \alpha_{b,(j,0)} + \alpha_{b,(j,1)} o_j + \beta_{b,(j,1)} d^0_{\pi_0(1)} + \dots + \beta_{b,(j,k)} d^0_{\pi_0(k)} + \gamma_{b,(j,1)} d^1_1 +\dots + \gamma_{b,(j,r_b)} d^1_{r_b}$.
+\medskip
 
-Moreover, from the guards and assignments in the transitions of the handle and $C_b$, we know that some of $d^0_{\pi_0(1)}, d^0_{\pi_0(k)}, d^1_1,\dots, d^1_{r_b}$ are integer constants. From this, we know that for the data values $d^0_1,\dots, d^0_s, d^1_1,\dots, d^1_{r_b}, \dots, d^{\ell_b}_1,\dots, d^{\ell_b}_{r_b}$ introduced when traversing $C_b$ for $\ell_b$ times, which ones are integer constants.
+For each $i_1: 1 \le i_1 \le n$, let $J_{C_{i_1}}$ denote the indices $j': 1 \le j' \le l$ such that there is $c^{C_{i_1}}_{j'}$ satisfying that $c_{\min} \le c^{C_{i_1}}_{j'} \le c_{\max}$, and for each $i: 1 \le i \le \ell_1$, $d^{(C_{i_1},i)}_{j'}=c^{C_{i_1}}_{j'}$ in $\chi^{(C_{i_1})}_{\ell_1}$. 
 
-\smallskip
+For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%\end{array}
+\]
+the expressions 
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) c^{(H)}_{\pi_H(j')-k}
+\]
+such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left((\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i-1} \beta^{(C_{i_1})}_{j,\pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $1 \le i < \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \in \rng(\pi_{C_{i_1}})$,\\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)  \left( (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+%\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $i: 1 \le i \le \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \not \in \rng(\pi_{C_{i_1}})$.
 
-\noindent {\bf Step II'}. For $\chi_{(b,\ell_b)}(O(q_m))$, we then do the analysis for the coefficient of $d^0_{\pi_0(j')}$ that is not a constant, similar to that in Step II.  Moreover, we consider the sum of the constant coefficient and all the components $c\ d^{i}_{j'}$ in  $\chi_{(b,\ell_b)}(O(q_m))$ such that $d^i_{j'}$ is a constant, and do the analysis for it, similar to that for the constant coefficient in Step II.
+Then $c_{\schm,i_1}$ can be rewritten as $\mu_{\schm, (i_1,0)} \ell_1 + \nu_{\schm, (i_1,0)}$ for constants $\mu_{\schm, (i_1,0)},\nu_{\schm, (i_1,0)}$.
 
-\smallskip
+\medskip
 
-\noindent {\bf Step III'}. We will do the same analysis as in Step III.
+\noindent {\bf Step II$''$}. For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j' \le k$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+\item $\pi_H(j')-k \not \in J_H$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
+\end{itemize}
+then return $\ltrue$.
 
+If there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
+$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+and $\mu_{\schm,(i_1,0)} \neq 0$, 
+%
+then return $\ltrue$. 
+
+If the decision procedure has not return yet, then go to Step III$''$. \qed
+
+\medskip
+
+If after Step II, the algorithm has not return yet, then after removing the terms involving $c\ \ell_1,\dots, c\ \ell_t$, a finite state automaton $\Aa$ can be constructed to simulate the evolvement of the coefficients of the non-constant data variables, and the sum of the constant coefficients and all the terms involving the data variables which are integer constants. 
+
+\medskip
+
+
+
+\noindent {\bf Step III$''$}. For each final state $\chi$ of $\Aa$, do the following.
+\begin{itemize}
+\item Check whether the coefficient of some non-constant data variable in $\chi(O(q_m))$ is nonzero, if the answer is yes, then return $\ltrue$.
+%
+\item Otherwise, check whether the number obtained from $\chi(O(q_m))$ by replacing the remaining data variables with the corresponding integer constants, is nonzero. If the answer is yes, then return $\ltrue$. 
+\end{itemize}
+Finally, return $\lfalse$ and the algorithm terminates.
 
 
 
