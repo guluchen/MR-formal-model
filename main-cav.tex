@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usepackage{appendix}
 \usepackage{amssymb}
-%\usepackage{dsfont}
+\usepackage{stmaryrd}
 \usepackage{amsmath}
 %\usepackage{amsthm}
 %\usepackage{cancel}
@@ -131,8 +131,8 @@
 \newcommand\addeq{+\!\!=}
 
 \newcommand\defval{\mathsf{DEF}}
-\newcommand{\sub}[2]{#1|_{#2}}
-
+\newcommand{\sub}[2]{\mathsf{sub}_{#2}(#1)}
+\newcommand{\eval}[2]{\llbracket#1\rrbracket_{#2}}
 
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
@@ -204,13 +204,14 @@ In this paper, we assume that all variables range over $\intnum \cup \{\bot\}$.
 
 For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  and \emph{range} of $\pi$, respectively. 
 An \emph{expression} $e$ over variables $Z$ is defined by the following rules, $e\equiv  z \mid c \mid e + e \mid e - e$, where $z \in Z$ and $c\in \intnum$. 
-For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\sub{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
+For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
+For a valuation $\rho$, we define its extension $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$.
 
-In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the control variable $\cur \in X$ to store the data value that is currently being processed in the input list.
-A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c\in \intnum$. 
+In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
+A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X^+$, and $c\in \intnum$. 
 Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
 
-Let $\interval{n} = \{ 1, 2, \ldots, n \}$. A \emph{permutation} on
+Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
 $\interval{n}$. The set of
 permutations on $\interval{n}$ is denoted by $S_n$.
@@ -226,6 +227,7 @@ $\pi_n(1)=2,\pi_n(2)=3,\ldots,\pi_n(n)=1, \pi_n(k)=k$, for $k>n$.
 
 A \emph{list $w$} is a sequence of integer values $d_1\ldots d_n$ such that $d_i \in \intnum$ for each $i$.
 We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the \emph{head}, \emph{tail}, and \emph{length} of $w$, respectively.
+We use $\emptyset$ to denote an empty list.
 Given two lists $w,w'$, we use $w.w'$ to denote their concatenation.
 Under the context of a transducer, we use the alternative name \emph{data word} to refer to a list.
 Given a list $l=d_1\ldots d_n$ and a permutation $\sigma \in S_n$, we lift the permutation function to list by defining $\sigma(l)=d_{\pi(1)} \ldots d_{\pi(n)}$.
@@ -240,11 +242,11 @@ We focus on a language that only allow to iterate though the input list once. La
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x':=x\mid s;s\mid \next \mid \ite{g}{s}{s}$\\
+        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x:=x'\mid s;s\mid \next \mid \ite{g}{s}{s}$\\
 		$ p\in Programs$&$\equiv$&$\loopL{s};\mbox{ret }r \mid s;p$		
 	\end{tabular}
 	\label{fig:language}
-	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X\setminus \{\cur\}$, $e\in \Ee_{X}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X \cup Y}^k$, and $c\in \mathbb{Z}$.}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X^+ \cup Y}^k$, and $c\in \mathbb{Z}$.}
 \end{figure}
 
 To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
@@ -324,7 +326,7 @@ avg{
 	\label{fig:examples}
 \end{figure}
 
-Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X$ to data variables. 
+Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
 We argue that this is sufficient for reducers performing data analytics operations.
 In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
 
@@ -345,12 +347,12 @@ The observation is actually not a big surprise. The \emph{reduce} operation in M
 	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{y+e}{\rho}$\\
 	
 	$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$&
-	$\sub{g}{\rho} =\ltrue$\\
+	$\eval{g}{\rho} =\ltrue$\\
 	
-	$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$& $\sub{g}{\rho} =\lfalse$\\
+	$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$& $\eval{g}{\rho} =\lfalse$\\
 	 
 	$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$&
-	$\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $\tail(l)\neq \bot$\\
+	$\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $l\neq \emptyset$\\
 	
 	$(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$&
 	$\rho'(z) =\rho(z)$ for $z\neq x'$, $\rho'(x') = \rho(x)$\\
@@ -366,7 +368,7 @@ The observation is actually not a big surprise. The \emph{reduce} operation in M
 	\label{fig:semantics}
 \end{figure}
 
-Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X\cup Y$ such that $\rho(\cur)=\head(l)$. Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$, and $\rho_l(v)=\bot$ for $v\neq \cur$.
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(l)$. Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$, and $\rho_l(v)=\bot$ for $v\neq \cur$.
 The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
 We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, the function $p$ is well-defined. 
 
@@ -399,11 +401,11 @@ A \emph{streaming numerical transducer} (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta
 %
 \item $Y$ is a finite set of data variables to aggregate information for the output,
 %
-\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X$ (note that the variables from $Y$ do not occur in $g$), and $\eta$ is an assignment for $X \cup Y$, 
+\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (note that the variables from $Y$ do not occur in $g$), and $\eta$ is an assignment for $X^+ \cup Y$, 
 %
 \item $q_0 \in Q$ is the initial state,
 %
-\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.
+\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X^+ \cup Y}$.
 \end{itemize}
 Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 \begin{description}
@@ -413,7 +415,7 @@ Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 %
 %\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
 %
-\item[3 (Independently evolving and copyless).] For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X$.
+\item[3 (Independently evolving and copyless).] For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
 %
 \end{description}
 
@@ -452,7 +454,7 @@ From now on, we assume that all SNTs are well-defined. Otherwise, we can constru
 \item $\delta'$ comprises the tuples $((q,Z),g,\eta,(q', Z'))$ such that $(q,g,\eta,q') \in \delta$ and $Z' = Z \cup (X \cap \dom(\eta)) \cup \{y \in Y \cap \dom(\eta) \mid \vars(\eta(y)) \subseteq Z \cup \{\cur\}\}$ (intuitively, suppose that the values of the variables from $Z$ are defined before a transition $(q,g,\eta,q')$, then $Z'$ is the set of variables whose values are defined after applying the transition),
 %
 \item for each $(q,Z) \in Q'$, if $O(q)$ is defined and $\vars(O(q)) \subseteq Z$, then $O'((q,Z))=O(q)$, otherwise, $O((q,Z))$ is undefined.
-\end{itemize} 
+\end{itemize}
 
 Note that if a SNT $\Ss$ is well-defined, then for each data word $w$, if the run of $\Ss$ over a data word $w$ reaches a state $q$ and $O(q)$ is defined, then the output of $\Ss$ over $w$ is defined.
 
