@@ -159,20 +159,23 @@
 
 MapReduce is a popular programming model for data parallel computation. 
 In MapReduce, the \emph{reducer} produces an output from a list of inputs. Due the scheduling policy and the settings of machines, the input may arrive the reducers with different orders. The \emph{commutative problem} of reducers asks if the output of a reducer independent of the order of its inputs. The problem is in general undecidable due to Rice's theorem and thus is seemingly uninteresting. However, the MapReduce model is usually used for data analytics and thus requires very simple data and control flow. 
-By exploiting the simplicity of the required program flows, we propose a simple programming language for reducers where the commutative problem can be decide by a reduction to the equivalence problem of \emph{streaming numerical transducer}. 
-We show that the language is expressive enough for common data analytics operations.
+By exploiting the simplicity, we propose a simple programming language for reducers where the commutative problem can be decide by a reduction to the equivalence problem of \emph{streaming numerical transducers} (SNTs). 
+%We show that the language is expressive enough for common data analytics operations.
 \end{abstract}
 
 \section{Introduction}
 %What is Map-Reduce
-Map-Reduce is a  popular framework for data parallel computation. It has been adopt in various widely used cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. The load balance mechanism of the Map-Reduce framework processes the key-value pairs and sends the pairs with the same key to the same \emph{reducer}, in the form of a key and a list of values. The reducer then iterates through the input list and output a key-value pair.
+MapReduce is a  popular framework for data parallel computation. It has been adopt in various cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. 
+The load balance mechanism of the Map-Reduce framework reorganizes the key-value pairs $(k, v_1), (k,v_2)\ldots(k,v_n)$ with the same key $k$ to a pair $(k,l)$, where $l$ is a list of values $v_1,v_2,\ldots,v_n$, and sends $(k,l)$ to a \emph{reducer}. The reducer then iterates through the list and output a key-value pair.
 
 To be more concrete, taking the ``word-counting'' MapReduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
 This results in the \emph{commutativity problem}.
 
 %The communitativity problem
-We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that XX\% of the reducers submit to their MapReduce platform are non-commutative. Among them, YY\% are confirmed as correctness bug by the programmers who wrote them. So we know that non-commutativity is a good indicator for errors in the programs. 
-Moreover, having the commutativity property makes program testing easier. It is hard to reproduce a bug if the reducer under test is non-commutative. 
+We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that 58\% of the 507 reducers submit to their MapReduce platform are non-commutative. 
+Those reducers already went through serious code review, testing, and experiments with real data for more than three months. Still, among them 5 reducers containing very subtle bugs caused by non-commutativity (confirmed by the programmers). 
+So we know that non-commutativity is a good indicator for potential program errors. 
+Moreover, having the commutativity property makes reproducing a bug found by program testing easier.
 
 %The reason for studying syntatical restrictions 
 The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers are seldom Turing machines. They are usually used for data analytics and have very simple control structures. Many of them just iterate through the input list and compute the output with very simple operations.
@@ -186,26 +189,26 @@ We believe such concepts provide good insights for reducer programming language 
 
 We define a formalism named \emph{streaming numerical transducers (SNT)} and use it to create a decision procedure for the reducer commutative problem.
 SNTs combine the features of register automata~\cite{XX} and vector addition system with states (VASS)~\cite{YY} with restrictions on the structure of the transition systems.
-We show that the equivalence, commutative, and non-zeroness problems of generalized flat SNTs are decidable.
+We show that the equivalence, commutative, and non-zeroness problems of SNTs are decidable.
 Moreover, SNTs can be composed to form a commutative/equivalence proof of reducer programs that read the input list multiple times.
 On theoretical point of view, the study of deterministic SNT is
-interesting on its own right. It is tightly related to both register automata and integer VASS and the decidability of its decision problems are seemingly non-trivial. 
+interesting on its own right. It is tightly related to both register automata and integer VASS and the decidability of its decision problems is seemingly non-trivial. 
 
 The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} describes design of the streaming numerical transducer model, including the formal definition, the rationale behind the model design, and the types of data analytics reducer programs it can express. Section~\ref{sec:decision} discusses the decision problems and the procedure for solving the problems.
 
 \section{Preliminaries}
 %
 Let $\intnum$,  $\intnum^+$ be the set of integers, positive integers, respectively, and $\bot \not \in \intnum$ be 
-the undefined value. By convention, it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum \setminus \{0\}$.
+the undefined value. By convention, it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum^+$.
 In this paper, we assume that all variables range over $\intnum \cup \{\bot\}$.  
 
-For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the domain  and range of $\pi$ respectively. 
+For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  and \emph{range} of $\pi$, respectively. 
 An \emph{expression} $e$ over variables $Z$ is defined by the following rules, $e\equiv  z \mid c \mid e + e \mid e - e$, where $z \in Z$ and $c\in \intnum$. 
-For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\sub{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ with $\rho(z)$.
+For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\sub{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
 
-In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and {data variables}, respectively. We use the control variable $\cur \in X$ to store the data value that is currently being processed in the input list.
-A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c$ is a constant over $\intnum$. 
-Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in Z \cap \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
+In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the control variable $\cur \in X$ to store the data value that is currently being processed in the input list.
+A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c\in \intnum$. 
+Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
 
 Let $\interval{n} = \{ 1, 2, \ldots, n \}$. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
@@ -213,7 +216,7 @@ $\interval{n}$. The set of
 permutations on $\interval{n}$ is denoted by $S_n$.
 
 Define the two functions $\pi_2$ and $\pi_n$ as follows : $\pi_2(1)=2,\pi_2(2)=1,\pi_2(k)=k$, for $k>2$ and
-$\pi_n(1)=2,\pi_2(2)=3,\ldots,\pi_2(n)=1, \pi_2(k)=k$, for $k>n$.
+$\pi_n(1)=2,\pi_n(2)=3,\ldots,\pi_n(n)=1, \pi_n(k)=k$, for $k>n$.
 
 \begin{theorem}[\cite{algebra}]
 	For every permutation $\sigma \in S_n$, $\sigma$ is equal to a
@@ -222,7 +225,7 @@ $\pi_n(1)=2,\pi_2(2)=3,\ldots,\pi_2(n)=1, \pi_2(k)=k$, for $k>n$.
 \end{theorem}
 
 A \emph{list $w$} is a sequence of integer values $d_1\ldots d_n$ such that $d_i \in \intnum$ for each $i$.
-We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the head, tail, and length of $w$, respectively.
+We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the \emph{head}, \emph{tail}, and \emph{length} of $w$, respectively.
 Given two lists $w,w'$, we use $w.w'$ to denote their concatenation.
 Under the context of a transducer, we use the alternative name \emph{data word} to refer to a list.
 Given a list $l=d_1\ldots d_n$ and a permutation $\sigma \in S_n$, we lift the permutation function to list by defining $\sigma(l)=d_{\pi(1)} \ldots d_{\pi(n)}$.
@@ -250,10 +253,10 @@ The former are used for guiding the program flow and the latter used for storing
 To be more specific, the control variables can store only values occurred in the input and can be used either in guard or arithmetic expressions.
 The data variables can store the results obtained from an arithmetic expression, but cannot be used either in guards or arithmetic expressions.
 
-Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems such as for this language is still undecidable, by a reduction from the reachability problem of perti-net with zero test~\cite{petri}.
-Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables in the loop body: each loop iteration makes a petri-net transition. 
+Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems for this language are still undecidable, by a reduction from the reachability problem of Perti-net with zero test~\cite{petri}.
+Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables in the loop body: each loop iteration makes a Petri-net transition. 
 The non-determinism in transitions is expressed by branching over the input. 
-The guards in transitions are expressed by branching over the variables, respectively (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of perti-net with zero test can be reduced to reachability problem in the programming language.
+The guards in transitions are expressed by branching over the variables (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of Perti-net with zero test can be reduced to reachability problem in the programming language.
 
 
 \begin{figure}
@@ -262,29 +265,25 @@ The guards in transitions are expressed by branching over the variables, respect
 		basicstyle=\ttfamily\scriptsize}
 	\begin{tabular}{|c|c|c|}
 		\hline
-		\begin{minipage}[t]{0.28\textwidth}
+		\begin{minipage}[t]{0.39\textwidth}
 			(a)
 			\begin{lstlisting}[mathescape=true]
 max_abs {
- if $\cur$>0
-  max:=$\cur$
- else
-  max:= -$\cur$
+ if $\cur$>0 then max:=$\cur$
+ else max:= -$\cur$;
  $\next$;
  loop{
-  if $\cur$>0
-   if $\cur$>max
-    max:=$\cur$;
-  else
-   if -$\cur$>max
-    max:=-$\cur$;;
+  if $\cur$>0 then
+   if $\cur$>max then max:=$\cur$
+  else 
+   if -$\cur$>max then max:=-$\cur$;;
   $\next$;  
  } 
  ret max;
 }
 	\end{lstlisting}
 		\end{minipage}&
-		\begin{minipage}[t]{0.28\textwidth}
+		\begin{minipage}[t]{0.22\textwidth}
 			(b)
 			\begin{lstlisting}[mathescape=true]
 avg{
@@ -300,25 +299,19 @@ avg{
 }
 			\end{lstlisting}
 		\end{minipage}&
-		\begin{minipage}[t]{0.29\textwidth}
+		\begin{minipage}[t]{0.35\textwidth}
 			(c) 
 			\begin{lstlisting}[mathescape=true]
 2nd_largest {
  a:=$\cur$;
  b:=$\cur$;
  $\next$;
- if $\cur$>a
-  a:=$\cur$
- else
-  b:=$\cur$;
+ if $\cur$>a then a:=$\cur$
+ else b:=$\cur$;
  $\next$;
  loop{
-  if $\cur$>a 
-   b:=a;
-   a:=$\cur$
-  else
-   if $\cur$>b
-    b:=$\cur$;;
+  if $\cur$>a then b:=a;a:=$\cur$
+  else if $\cur$>b then b:=$\cur$;;
   $\next$;
  }
  ret b;
@@ -331,11 +324,11 @@ avg{
 	\label{fig:examples}
 \end{figure}
 
-Notice that in the programming language, we allow only either adds ($\addeq$) or assigns ($:=$) a new value to data variables. 
+Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X$ to data variables. 
 We argue that this is sufficient for reducers performing data analytics operations.
-In Figure~\ref{fig:examples} we demonstrate a few simple examples of . Observe that all of them follow the same behavioral pattern: the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple: it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
+In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
 
-The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a binary function and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function in fold operations. We argue that this is enough to describe this is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages. One the other hand, we language is more flexible than fold operation in the sense that we have full control of what to do while iterate through the list (similar to Hadoop~\cite{Hadoop}).
+The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the list (similar to Hadoop~\cite{Hadoop}).
 
 \begin{figure}
 \hspace{-0.7cm}
@@ -374,8 +367,8 @@ The observation is actually not a big surprise. The \emph{reduce} operation in M
 \end{figure}
 
 Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X\cup Y$ such that $\rho(\cur)=\head(l)$. Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$, and $\rho_l(v)=\bot$ for $v\neq \cur$.
-The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{is an input list}\}$.
-We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{return }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, the function $p$ is well-defined. 
+The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
+We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, the function $p$ is well-defined. 
 
 We are interested in the following two decision problems:
 \begin{itemize}
@@ -383,7 +376,7 @@ We are interested in the following two decision problems:
 	\item Equivalence: given programs $p,p'$, is it true that for all list $l$, $p(l)=p(l')$?
 \end{itemize}
 
-One may argue that allowing only addition and subtraction is too restrictive for data analytics. For cases with multiplication and division at the return point, e.g., \texttt{avg} in Figure~\ref{fig:examples}(b), we can model them as a \emph{uninterpreted $k$-ary function}  (modeled as a tuple in our language) and still have a sound procedure for the two decision problems. 
+One may argue that allowing only addition and subtraction is too restrictive for data analytics. For cases with multiplication and division at the return point, e.g., \texttt{avg} in Figure~\ref{fig:examples}(b), we can model them as an \emph{uninterpreted $k$-ary function}  (modeled as a tuple in our language) and still have a sound procedure for the decision problems. 
 
 
 
