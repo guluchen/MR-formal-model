@@ -138,6 +138,22 @@
 \newcommand{\sub}[2]{\mathsf{sub}_{#2}(#1)}
 \newcommand{\eval}[2]{\llbracket#1\rrbracket_{#2}}
 
+% The macros for the data variables.
+\newcommand{\vard}{\mathfrak{d}}
+\newcommand{\vare}{\mathfrak{e}}
+\newcommand{\varf}{\mathfrak{f}}
+\newcommand{\varo}{\mathfrak{o}}
+\newcommand{\varx}{\mathfrak{x}}
+\newcommand{\vary}{\mathfrak{y}}
+
+% The macros for the data variables.
+\newcommand{\csta}{\alpha}
+\newcommand{\cstb}{\beta}
+\newcommand{\cstc}{\gamma}
+\newcommand{\cste}{\varepsilon}
+\newcommand{\cstl}{\lambda}
+\newcommand{\cstm}{\mu}
+\newcommand{\cstn}{\nu}
 
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
@@ -478,16 +494,16 @@ We focus on the following three decision problems of SNTs in this paper, the com
 %
 \item[(Equivalence).] Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $O_{\Ss_1}(w)=O_{\Ss_2}(w)$.
 %
-\item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that $O_{\Ss}(w) \neq \bot$ and $O_{\Ss}(w)$ is non-zero. 
+\item[(Non-zero output).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that $O_{\Ss}(w) \neq \bot$ and $O_{\Ss}(w)$ is non-zero. 
 \end{description}
-In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output reachability problem.
+In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output problem.
 
 
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
 The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}
 
-The equivalence problem of SNTs can be further reduced to the non-zero output reachability problem of SNTs.
+The equivalence problem of SNTs can be further reduced to the non-zero output problem of SNTs.
 
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
 From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
@@ -510,7 +526,7 @@ We first assume that the guards of the transitions do not contain the comparison
 \begin{enumerate}
 	\item  We first show how to summarize the computations over paths and cycles. 
 	%
-	\item We present an algorithm to decide the non-zero output reachability problem for the situation that the transition graph of the given SNT  is a generalized lasso. A \emph{generalized lasso} is an extension of lasso where the cycle is replaced by a collection of cycles such that there is a state $q$ which is the unique common state of each pair of distinct cycles.
+	\item We present an algorithm to decide the non-zero output problem for the situation that the transition graph of the given SNT  is a generalized lasso. A \emph{generalized lasso} is an extension of lasso where the cycle is replaced by a collection of cycles such that there is a state $q$ which is the unique common state of each pair of distinct cycles.
 	%
 	\item We demonstrate how to extend the algorithm to the more general situation that the transition graph of the given SNT is generalized flat.
 \end{enumerate}
@@ -534,15 +550,15 @@ A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the followin
 
 From now on, we assume that all SNTs are normalized. 
 
-\section{Decision procedure for the non-zero output reachability problem}\label{sec-dec-snt}
+\section{Decision procedure for the non-zero output problem}\label{sec-dec-snt}
 
-In this section, we present a decision procedure for the non-zero output reachability problem of SNTs.  In the rest of this section, we fix a (normalized) SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Moreover, in the next three subsections, we assume that the guards of the transitions of $\Ss$ contain no comparisons with constants. In the last subsection, we will consider the more general situation. 
+Our goal in this section is to present a decision procedure for the non-zero output problem of normalized SNTs.  In the following, we fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. We illustrate the main ideas of the decision procedure for the situation that the guards in the transitions are constant-free, that is, the guards contain no comparisons with constants. The discussions of the more general situation are migrated to the appendix. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Summarization of the computations on paths and cycles}
 
-Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in $\Ss$ (not necessarily starting from the initial state). 
+Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in $\Ss$. 
 
 Suppose that the initial values of the $k$ control variables are represented by $d_1,\dots, d_k$ and the $n$ data values met when traversing the path are represented by $d_{k+1},\dots,d_{k+n}$ (these data values may repeat). Then the guards and the assignments in the path induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since $\Ss$ is normalized, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_{k+r}$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots, k+n\}$ such that $\min(I_1) < \dots < \min(I_{k+r})$. Then for each $j: 1 \le j \le k$, $\min(I_j)=j$.
 
@@ -554,7 +570,7 @@ The values of the control and data variables after traversing the path $P$ are s
 \begin{itemize}
 \item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
+\item For each $y_j \in Y$, $\chi(y_j) = \cste_{j} + \cstl_j \varo_j + \csta_{j,1} \vard^{(0)}_1 + \dots + \csta_{j,k} \vard^{(0)}_k + \cstb_{j,1} \vare^{(1)}_1 +\dots + \cstb_{j,r} \vare^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 \end{proposition}
 
@@ -1013,111 +1029,6 @@ Similarly to the generalized lassos, we can construct a finite state automaton $
 \noindent {\bf Step III$'$}. For each final state $\chi'$ of $\Aa'$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi'(O(q'_{m'}))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
 
 
-\subsection{Comparisons with constants in guards}
-
-We now consider the situation that the guards contain the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
-
-We illustrate the argument for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below.
-
-Let $q_0 \dots q_m C_1 \dots C_n$ be a generalized lasso and $O(q_m)=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
-
-\smallskip
-
-\noindent {\bf Step I$''$}. Let
-\[
-\begin{array}{l c l }
-\chi_H(O(q_m)) & = & a_0 + a_1 \chi_H(x_1) + \dots + a_k \chi_H(x_k) + b_1 \chi_H(y_1) + \dots b_l \chi_H(y_l) \\
-& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
-& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
-\\
-& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
-\end{array}
-\]
-From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{(H)}_j$ for some $c_{\min}\le c^{(H)}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
-
-For each $j \not \in J_H$, decide whether the coefficient of $d^{(0)}_j$ in $\chi_H(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$. 
-
-If the algorithm has not return yet, we substitute the data variables $d^{(0)}_j$ for $j \in J_H$ with the integer constants. Then $\chi_H(O(q_m))$ becomes an integer constant $c_H$. If $c_H \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$. \qed
-
-\medskip
-
-For each $i_1: 1 \le i_1 \le n$, let $J_{C_{i_1}}$ denote the indices $j': 1 \le j' \le l$ such that there is $c^{C_{i_1}}_{j'}$ satisfying that $c_{\min} \le c^{C_{i_1}}_{j'} \le c_{\max}$, and for each $i: 1 \le i \le \ell_1$, $d^{(C_{i_1},i)}_{j'}=c^{C_{i_1}}_{j'}$ in $\chi^{(C_{i_1})}_{\ell_1}$. 
-
-For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
-\[
-\sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
-%\\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
-%\end{array}
-\]
-the expressions 
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
-\end{array}
-\right) c^{(H)}_{\pi_H(j')-k}
-\]
-such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
-the expressions
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left((\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i-1} \beta^{(C_{i_1})}_{j,\pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
-\end{array}
-\right) c^{(C_{i_1})}_{j'},
-\]
-such that $1 \le i < \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \in \rng(\pi_{C_{i_1}})$,\\
-the expressions
-\[
-\left(\sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)  \left( (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
-%\end{array}
-\right) c^{(C_{i_1})}_{j'},
-\]
-such that $i: 1 \le i \le \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \not \in \rng(\pi_{C_{i_1}})$.
-
-Then $c_{\schm,i_1}$ can be rewritten as $\mu_{\schm, (i_1,0)} \ell_1 + \nu_{\schm, (i_1,0)}$ for constants $\mu_{\schm, (i_1,0)},\nu_{\schm, (i_1,0)}$.
-
-\medskip
-
-\noindent {\bf Step II$''$}. For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j' \le k$ such that 
-\begin{itemize}
-\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
-%
-\item $\pi_H(j')-k \not \in J_H$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
-\end{itemize}
-then return $\ltrue$.
-
-If there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
-$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
-%
-and $\mu_{\schm,(i_1,0)} \neq 0$, 
-%
-then return $\ltrue$. 
-
-If the decision procedure has not return yet, then go to Step III$''$. \qed
-
-\medskip
-
-If after Step II, the algorithm has not return yet, then after removing the terms involving $c\ \ell_1,\dots, c\ \ell_t$, a finite state automaton $\Aa$ can be constructed to simulate the evolvement of the coefficients of the non-constant data variables, and the sum of the constant coefficients and all the terms involving the data variables which are integer constants. 
-
-\medskip
-
-
-
-\noindent {\bf Step III$''$}. For each final state $\chi$ of $\Aa$, do the following.
-\begin{itemize}
-\item Check whether the coefficient of some non-constant data variable in $\chi(O(q_m))$ is nonzero, if the answer is yes, then return $\ltrue$.
-%
-\item Otherwise, check whether the number obtained from $\chi(O(q_m))$ by replacing the remaining data variables with the corresponding integer constants, is nonzero. If the answer is yes, then return $\ltrue$. 
-\end{itemize}
-Finally, return $\lfalse$ and the algorithm terminates.
 
 
 
@@ -1314,6 +1225,11 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 \end{algorithm}
 We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
 The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
+
+
+
+
+
 \section{Proofs in Section~\ref{sec-dec-snt}}
 
 
@@ -1401,6 +1317,117 @@ Let $d^{(C,2)}_{1},\dots,d^{(C,2)}_{r_C}$ be the data values introduced when tra
 For $\ell > 3$, let $d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$ be the data values introduced when traversing the cycle for the $\ell$-th time. Then from Corollary~\ref{cor-comp-two-paths}, the fact $\chi^{(C)}_\ell = \chi_C \circ \chi^{(C)}_{\ell-1}$, and the induction hypothesis, we can show that $\chi^{(C)}_\ell$ is of the desired form.
 \qed
 \end{proof}
+
+
+
+
+
+\subsection{Comparisons with constants in guards}
+
+We now consider the situation that the guards contain the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
+
+We illustrate the argument for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below.
+
+Let $q_0 \dots q_m C_1 \dots C_n$ be a generalized lasso and $O(q_m)=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
+
+\smallskip
+
+\noindent {\bf Step I$''$}. Let
+\[
+\begin{array}{l c l }
+\chi_H(O(q_m)) & = & a_0 + a_1 \chi_H(x_1) + \dots + a_k \chi_H(x_k) + b_1 \chi_H(y_1) + \dots b_l \chi_H(y_l) \\
+& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
+& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
+\\
+& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
+\end{array}
+\]
+From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{(H)}_j$ for some $c_{\min}\le c^{(H)}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
+
+For each $j \not \in J_H$, decide whether the coefficient of $d^{(0)}_j$ in $\chi_H(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$. 
+
+If the algorithm has not return yet, we substitute the data variables $d^{(0)}_j$ for $j \in J_H$ with the integer constants. Then $\chi_H(O(q_m))$ becomes an integer constant $c_H$. If $c_H \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$. \qed
+
+\medskip
+
+For each $i_1: 1 \le i_1 \le n$, let $J_{C_{i_1}}$ denote the indices $j': 1 \le j' \le l$ such that there is $c^{C_{i_1}}_{j'}$ satisfying that $c_{\min} \le c^{C_{i_1}}_{j'} \le c_{\max}$, and for each $i: 1 \le i \le \ell_1$, $d^{(C_{i_1},i)}_{j'}=c^{C_{i_1}}_{j'}$ in $\chi^{(C_{i_1})}_{\ell_1}$. 
+
+For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%\end{array}
+\]
+the expressions 
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) c^{(H)}_{\pi_H(j')-k}
+\]
+such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left((\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i-1} \beta^{(C_{i_1})}_{j,\pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $1 \le i < \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \in \rng(\pi_{C_{i_1}})$,\\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)  \left( (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+%\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $i: 1 \le i \le \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \not \in \rng(\pi_{C_{i_1}})$.
+
+Then $c_{\schm,i_1}$ can be rewritten as $\mu_{\schm, (i_1,0)} \ell_1 + \nu_{\schm, (i_1,0)}$ for constants $\mu_{\schm, (i_1,0)},\nu_{\schm, (i_1,0)}$.
+
+\medskip
+
+\noindent {\bf Step II$''$}. For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j' \le k$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+\item $\pi_H(j')-k \not \in J_H$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
+\end{itemize}
+then return $\ltrue$.
+
+If there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
+$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+and $\mu_{\schm,(i_1,0)} \neq 0$, 
+%
+then return $\ltrue$. 
+
+If the decision procedure has not return yet, then go to Step III$''$. \qed
+
+\medskip
+
+If after Step II, the algorithm has not return yet, then after removing the terms involving $c\ \ell_1,\dots, c\ \ell_t$, a finite state automaton $\Aa$ can be constructed to simulate the evolvement of the coefficients of the non-constant data variables, and the sum of the constant coefficients and all the terms involving the data variables which are integer constants. 
+
+\medskip
+
+
+
+\noindent {\bf Step III$''$}. For each final state $\chi$ of $\Aa$, do the following.
+\begin{itemize}
+\item Check whether the coefficient of some non-constant data variable in $\chi(O(q_m))$ is nonzero, if the answer is yes, then return $\ltrue$.
+%
+\item Otherwise, check whether the number obtained from $\chi(O(q_m))$ by replacing the remaining data variables with the corresponding integer constants, is nonzero. If the answer is yes, then return $\ltrue$. 
+\end{itemize}
+Finally, return $\lfalse$ and the algorithm terminates.
+
 
 
 
