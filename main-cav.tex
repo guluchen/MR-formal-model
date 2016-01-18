@@ -9,7 +9,10 @@
 \usepackage{amssymb}
 \usepackage{stmaryrd}
 \usepackage{amsmath}
-%\usepackage{amsthm}
+\usepackage{leftidx}
+\usepackage{mathtools}
+\usepackage[linesnumbered,noend]{algorithm2e}
+
 %\usepackage{cancel}
 %\usepackage{verbatim}
 %\usepackage{chngpage}
@@ -437,9 +440,37 @@ The SNT to define the maximum of the integers occurring in a data word is given 
 \end{example}
 
 \begin{proposition}\label{prop-mrprog-to-snt}
-For each MapReduce program XX, an equivalent SNT can be constructed. \zhilin{to be cleaned, once the definition of MR programs fixed}
+For each reducer program $p$, an equivalent SNT $\Ss$ (w.r.t. the commutativity and equivalence problems) can be constructed.
 \end{proposition}
 
+The main difference between $p$ and $\Ss$ is that several transitions in the semantic graph of $P$ correspond to one transition in $\Ss$. A SNT reads one input symbol in one transition while a reducer program moves to the next input only when a $\next$ statement is encountered. Based on this observation, we give a work-list algorithm translating a program $P$ to an SNT $\Ss$ in algorithm~\ref{fig:reducer2SNT}.
+
+\begin{algorithm}[H]
+%  \SetAlgoLine
+  \KwData{A reducer program $p$}
+  $Q=\{q_0\}, \delta=\emptyset, O=\emptyset$, $\mathsf{toState}(p) =q_0$, $\mathsf{toVisit}=\{(\mathsf{toState}(p),p,\ltrue,\emptyset)\}$\;
+  \While{$\mathsf{toVisit}\neq \emptyset$}{
+    remove $(q,p,g,\eta)$ from $\mathsf{toVisit}$\;
+	    \Switch{$p$}{
+	    	\lCase{$y := e;p'$,$y \addeq e;p'$,$x'=x;p'$: }{add $(q,p',g,\eta[e/y])$, $(q,p',g,\eta[(y+e)/y])$, $(q,p',g,\eta[x'/x])$ to $\mathsf{toVisit}$, respectively}
+	    	\lCase{$\ite{g'}{s_1}{s_2};p'$: }{add both $(q,s_1;p',g\wedge g',\eta)$ and $(q,s_2;p',g\wedge \neg g',\eta)$ to $\mathsf{toVisit}$}
+	    	\lCase{$\loopL{s;}\mbox{ret }r$: }{add both $(q,s;\loopL{s;}\mbox{ret }r,g,\eta)$ and $(q,\mbox{ret }r, g,\eta)$ to $\mathsf{toVisit}$}
+	    	\lCase{$\next;p'$: }{\label{alg:next}
+	    		\uIf{$\mathsf{toState}(p') \not\in Q$}{add $(\mathsf{toState}(p'),p',\ltrue,\emptyset)$ to $\mathsf{toVisit}$ and add $\mathsf{toState}(p')$ to $Q$}
+	    		add $(q, \mathsf{toState}(p'),g,\eta)$ to $\delta$
+	    		}
+	    	\lCase{$\mbox{ret }r: $}{\label{alg:output}
+				add a fresh state $q_r$ to $Q$, 
+	    		add $(q, q_r,g,\eta)$ to $\delta$, and $O:=O[r/q_r]$}
+	    }
+    }
+    \Return $(Q,X,Y,\delta, \mathsf{toState}(p),O)$\;
+    
+	\caption{Translate a Reducer Program to a SNT}
+	\label{fig:reducer2SNT}
+\end{algorithm}
+We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
+The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
 %\end{example}
@@ -551,6 +582,36 @@ The values of the control and data variables after traversing the path $P$ are s
 \item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
 \end{itemize}
 \end{proposition}
+
+\yfc{\\
+	
+$^P_3 d^{y_j}_{j'}$	
+
+$d^{P,y_j,3}_{{\pi^P}^{-1}(j')}$
+$d(P,y_j,3)_{{\pi(P)}^{-1}(j')}$
+$^P_3{\mathfrak{d}^j_{j'}}$
+$\prescript{P}{3}{\mathfrak{d}^j_{j'}}$
+\newcommand\va{\mathfrak{a}}
+\newcommand\vb{\mathfrak{b}}
+\newcommand\vd{\mathfrak{d}}
+
+
+	
+\begin{proposition}\label{prop-sum-path}
+	The values of the control and data variables after traversing the path $P$ are specified by a function $\chi^P$ satisfying the following conditions.
+	\begin{itemize}
+		\item There is an injective mapping $\pi^P: \{1,\dots,k\} \rightarrow \{1,\dots, k+r_P\}$ such that for each $x_j \in X$, if $\pi^P(j) \le k$, then $\pi^P(j)=j$ and $\chi^P(x_j)=\vb_{j}$, otherwise, $\chi(x_j)=\vd_{\pi^P(j)-k}$.
+		% 
+		\item For each $y_j \in Y$, $\chi^P(y_j) = {c}^P + a^P\va^P + b^{P,y_j}_{1} \vb^P_1 + \dots + b^{P,y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_P} \vd_{r_P}$ for such that $a \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
+		
+		\item test for cycles: $\chi^{C^3}(y_j) = {c}^{C^3} + a^{C^3}\va^{C^3} + b^{{C^3},y_j}_{1} \vb^{C^3}_1 + \dots + b^{{C^3},y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_C} \vd_{r_C}$
+	\end{itemize}
+\end{proposition}	
+
+
+
+}
+
 
 Suppose $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(1,1)}_1,\dots,d^{(1,1)}_{r_1}, d^{(2,1)}_1,\dots,d^{(2,1)}_{r_2}\}$ are a set of pairwise distinct variables from $\intvars$. For $b=1,2$, let 
 \[\Zz_b=\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(b,1)}_1,\dots,d^{(b,1)}_{r_b}\},\] and $\chi_b$ be a function from $X \cup Y$ to $\Ee_{\mathcal{Z}_b}$. Then the \emph{composition} of $\chi_1$ and $\chi_2$, denoted by $\chi_1 \circ \chi_2$, is defined as follows: Let $\chi'_1$ be a function with the domain $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l\}$ such that for each $j: 1 \le j \le k$ (resp. $j: 1 \le j \le l$), $\chi'_1(d^{(0)}_j)=\chi_1(x_j)$ (resp. $\chi'_1(o_j)=\chi_1(y_j)$). Then
