@@ -339,7 +339,7 @@ In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers pe
 The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the list (similar to Hadoop~\cite{Hadoop}).
 
 \begin{figure}
-\hspace{-0.7cm}
+\hspace{-0.4cm}
 	\scalebox{0.9}{
 	\begin{tabular}{|l|l|}
     \hline
@@ -396,10 +396,10 @@ One may argue that allowing only addition and subtraction is too restrictive for
 
 \section{Streaming Numerical Transducers}\label{sec-def-snt}
 
-In this section, we introduce streaming numerical transducers, whose inputs are data words and outputs are integer values. Over a data word, a streaming numerical transducer scans the data word from left to right, records some information by using control and data variables, and outputs a data value when it arrives at the right end of the data word. We will use streaming numerical transducers to decide the commutativity problem of the MapReduce programs defined in Section~\ref{sec-mr-prog}.
+In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. Over a data word, a SNT scans the data word from left to right, records and computes information using control and data variables, and outputs a data value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the Reduce programs defined in Section~\ref{sec-mr-prog}.
 
 
-A \emph{streaming numerical transducer} (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where 
+A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where 
 \begin{itemize}
 \item $Q$ is a finite set of states,
 %
@@ -426,17 +426,17 @@ Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 \end{description}
 
 We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience. 
-The semantics of a SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(x)=\bot$ and $\rho_0(y)=\bot$ for each $x \in X$ and $y \in Y$. Over a data word $w=d_1 \dots d_n$, a \emph{run} of $\Ss$ over $w$ is a sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i: 1 \le i \le n$, $\rho_{i-1}[d_i/\cur]  \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows,
+The semantics of a SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(x)=\bot$ and $\rho_0(y)=\bot$ for each $x \in X$ and $y \in Y$. A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
+a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i: 1 \le i \le n$, $\rho_{i-1}[d_i/\cur]  \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows,
 \begin{itemize}
 \item for each $x \in X$, if $ x \in \dom(\eta_i)$, then $\rho_i(x)=d_i$, otherwise, $\rho_i(x)=\rho_{i-1}(x)$,
 %
 \item for each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=(\rho_{i-1}[d_i/\cur])(\eta_i(y))$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$,
 \end{itemize}
-where $\rho_{i-1}[d_i/\cur]$ is the extension of $\rho_{i-1}$ by assigning $d_i$ to $\cur$. We will call $(q_n,\rho_n)$ as the \emph{final configuration} of the run.
-
+We will call $(q_n,\rho_n)$ as the \emph{final configuration} of the run.
 We would like to remark that for each data word $w$, there is at most one run of $\Ss$ over $w$, since $\Ss$ is deterministic. 
 
-Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by $O_{\Ss}(w)$, is $\rho_n(O(q_n))$. Otherwise, $O_{\Ss}(w)$ is $\bot$.
+Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
 
 \begin{example}[SNT for max and sum]
 The SNT to define the maximum of the integers occurring in a data word is given by $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$  such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \eta_\bot, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function that assigns $\cur$ to $\maxv$, and $\eta_\bot$ denotes the assignment function of the empty domain. The SNT to define the sum of the integers occurring in a data word is given by $\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that $\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and $O(q_1)=\sumv$. 
@@ -446,51 +446,14 @@ The SNT to define the maximum of the integers occurring in a data word is given 
 For each reducer program $p$, an equivalent SNT $\Ss$ (w.r.t. the commutativity and equivalence problems) can be constructed.
 \end{proposition}
 
-The main difference between $p$ and $\Ss$ is that several transitions in the semantic graph of $P$ correspond to one transition in $\Ss$. A SNT reads one input symbol in one transition while a reducer program moves to the next input only when a $\next$ statement is encountered. Based on this observation, we give a work-list algorithm translating a program $P$ to an SNT $\Ss$ in algorithm~\ref{fig:reducer2SNT}.
+The main difference between $p$ and $\Ss$ is that several transitions in the semantic graph of $P$ correspond to one transition in $\Ss$. A reducer program moves to the next input only when a $\next$ statement is encountered while a SNT reads one input symbol in one transition. Based on this observation, we give a work-list algorithm translating a program $P$ to an SNT $\Ss$ in algorithm~\ref{fig:reducer2SNT} the appendix.
 
-\begin{algorithm}[H]
-%  \SetAlgoLine
-  \KwData{A reducer program $p$}
-  $Q=\{q_0\}, \delta=\emptyset, O=\emptyset$, $\mathsf{toState}(p) =q_0$, $\mathsf{toVisit}=\{(\mathsf{toState}(p),p,\ltrue,\emptyset)\}$\;
-  \While{$\mathsf{toVisit}\neq \emptyset$}{
-    remove $(q,p,g,\eta)$ from $\mathsf{toVisit}$\;
-	    \Switch{$p$}{
-	    	\lCase{$y := e;p'$,$y \addeq e;p'$,$x'=x;p'$: }{add $(q,p',g,\eta[e/y])$, $(q,p',g,\eta[(y+e)/y])$, $(q,p',g,\eta[x'/x])$ to $\mathsf{toVisit}$, respectively}
-	    	\lCase{$\ite{g'}{s_1}{s_2};p'$: }{add both $(q,s_1;p',g\wedge g',\eta)$ and $(q,s_2;p',g\wedge \neg g',\eta)$ to $\mathsf{toVisit}$}
-	    	\lCase{$\loopL{s;}\mbox{ret }r$: }{add both $(q,s;\loopL{s;}\mbox{ret }r,g,\eta)$ and $(q,\mbox{ret }r, g,\eta)$ to $\mathsf{toVisit}$}
-	    	\lCase{$\next;p'$: }{\label{alg:next}
-	    		\uIf{$\mathsf{toState}(p') \not\in Q$}{add $(\mathsf{toState}(p'),p',\ltrue,\emptyset)$ to $\mathsf{toVisit}$ and add $\mathsf{toState}(p')$ to $Q$}
-	    		add $(q, \mathsf{toState}(p'),g,\eta)$ to $\delta$
-	    		}
-	    	\lCase{$\mbox{ret }r: $}{\label{alg:output}
-				add a fresh state $q_r$ to $Q$, 
-	    		add $(q, q_r,g,\eta)$ to $\delta$, and $O:=O[r/q_r]$}
-	    }
-    }
-    \Return $(Q,X,Y,\delta, \mathsf{toState}(p),O)$\;
-    
-	\caption{Translate a Reducer Program to a SNT}
-	\label{fig:reducer2SNT}
-\end{algorithm}
-We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
-The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
+
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
 %\end{example}
 
 
-We introduce a concept of ``well-defined'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-defined} if for each data word $w=d_1\dots d_n$ and each run of $\Ss$ over $w$, say  $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, let $(q_0,\rho_0),\dots,(q_n,\rho_n)$ be the resulting sequence of configurations, then the following conditions hold: for each $i: 1 \le i \le n$ and each $z \in X \cup Y$ occurring in $(g_i,\eta_i)$, we have $\rho_{i-1}(z) \neq \bot$, moreover, if $O(q_n)$ is defined, then for each variable $z$ occurring in $O(q_n)$, we have $\rho_{n}(z) \neq \bot$.
-
-From now on, we assume that all SNTs are well-defined. Otherwise, we can construct an equivalent well-defined SNT $\Ss'=(Q', X,Y, \delta', (q_0,\emptyset), O')$, where 
-\begin{itemize}
-\item $Q' = Q \times 2^X$,
-%
-\item $\delta'$ comprises the tuples $((q,Z),g,\eta,(q', Z'))$ such that $(q,g,\eta,q') \in \delta$ and $Z' = Z \cup (X \cap \dom(\eta)) \cup \{y \in Y \cap \dom(\eta) \mid \vars(\eta(y)) \subseteq Z \cup \{\cur\}\}$ (intuitively, suppose that the values of the variables from $Z$ are defined before a transition $(q,g,\eta,q')$, then $Z'$ is the set of variables whose values are defined after applying the transition),
-%
-\item for each $(q,Z) \in Q'$, if $O(q)$ is defined and $\vars(O(q)) \subseteq Z$, then $O'((q,Z))=O(q)$, otherwise, $O((q,Z))$ is undefined.
-\end{itemize}
-
-Note that if a SNT $\Ss$ is well-defined, then for each data word $w$, if the run of $\Ss$ over a data word $w$ reaches a state $q$ and $O(q)$ is defined, then the output of $\Ss$ over $w$ is defined.
 
 %We first compute a fixed point $\defval$ inductively as follows. 
 %\begin{enumerate}
@@ -530,19 +493,26 @@ The equivalence problem of SNTs can be further reduced to the non-zero output re
 From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
 \end{proposition}
 
+We introduce a concept of ``well-defined'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-defined} if for each data word $w=d_1\dots d_n$ and each run of $\Ss$ over $w$, say  $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, let $(q_0,\rho_0),\dots,(q_n,\rho_n)$ be the resulting sequence of configurations, then the following conditions hold: for each $i: 1 \le i \le n$ and each $z \in X \cup Y$ occurring in $(g_i,\eta_i)$, we have $\rho_{i-1}(z) \neq \bot$, moreover, if $O(q_n)$ is defined, then for each variable $z$ occurring in $O(q_n)$, we have $\rho_{n}(z) \neq \bot$.
 
+From now on, we assume that all SNTs are well-defined. Otherwise, we can construct an equivalent well-defined SNT $\Ss'=(Q', X,Y, \delta', (q_0,\emptyset), O')$, where 
+\begin{itemize}
+	\item $Q' = Q \times 2^X$,
+	%
+	\item $\delta'$ comprises the tuples $((q,Z),g,\eta,(q', Z'))$ such that $(q,g,\eta,q') \in \delta$ and $Z' = Z \cup (X \cap \dom(\eta)) \cup \{y \in Y \cap \dom(\eta) \mid \vars(\eta(y)) \subseteq Z \cup \{\cur\}\}$ (intuitively, suppose that the values of the variables from $Z$ are defined before a transition $(q,g,\eta,q')$, then $Z'$ is the set of variables whose values are defined after applying the transition),
+	%
+	\item for each $(q,Z) \in Q'$, if $O(q)$ is defined and $\vars(O(q)) \subseteq Z$, then $O'((q,Z))=O(q)$, otherwise, $O((q,Z))$ is undefined.
+\end{itemize}
 
-\section{Decision procedure for the non-zero output reachability problem}\label{sec-dec-snt}
-
-In this section, we present a decision procedure for the non-zero output reachability problem of SNTs. 
+Note that if a SNT $\Ss$ is well-defined, then for each data word $w$, if the run of $\Ss$ over a data word $w$ reaches a state $q$ and $O(q)$ is defined, then the output of $\Ss$ over $w$ is defined.
 
 We first assume that the guards of the transitions do not contain the comparisons with integer constants and illustrate the main ideas of the decision procedure as follows.
 \begin{enumerate}
-\item  We first show how to summarize the computations over paths and cycles. 
-%
-\item We present an algorithm to decide the non-zero output reachability problem for the situation that the transition graph of the given SNT  is a generalized lasso. A \emph{generalized lasso} is an extension of lasso where the cycle is replaced by a collection of cycles such that there is a state $q$ which is the unique common state of each pair of distinct cycles.
-%
-\item We demonstrate how to extend the algorithm to the more general situation that the transition graph of the given SNT is generalized flat.
+	\item  We first show how to summarize the computations over paths and cycles. 
+	%
+	\item We present an algorithm to decide the non-zero output reachability problem for the situation that the transition graph of the given SNT  is a generalized lasso. A \emph{generalized lasso} is an extension of lasso where the cycle is replaced by a collection of cycles such that there is a state $q$ which is the unique common state of each pair of distinct cycles.
+	%
+	\item We demonstrate how to extend the algorithm to the more general situation that the transition graph of the given SNT is generalized flat.
 \end{enumerate}
 Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.
 
@@ -552,19 +522,21 @@ Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote 
 
 A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following two constraints are satisfied.
 \begin{itemize}
-\item For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge \limits_{x \in X} \cur \neq x$.  Intuitively, when the current data value is stored into some control variable, it is required that the data value is distinct from all the data values that have already been stored in the control variables.
-%
-\item For each $(q, g, \eta, q') \in \delta$, the guard $g$ includes one of the following formulae as a conjunct: $\cur < c_{min}$, or $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$.
+	\item For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge \limits_{x \in X} \cur \neq x$.  Intuitively, when the current data value is stored into some control variable, it is required that the data value is distinct from all the data values that have already been stored in the control variables.
+	%
+	\item For each $(q, g, \eta, q') \in \delta$, the guard $g$ includes one of the following formulae as a conjunct: $\cur < c_{min}$, or $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$.
 \end{itemize}
 
 
 \begin{proposition}\label{prop-snt-norm}
-From each SNT, an equivalent normalized SNT can be constructed in exponential time. 
+	From each SNT, an equivalent normalized SNT can be constructed in exponential time. 
 \end{proposition}
 
 From now on, we assume that all SNTs are normalized. 
 
-In the rest of this section, we fix a (normalized) SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Moreover, in the next three subsections, we assume that the guards of the transitions of $\Ss$ contain no comparisons with constants. In the last subsection, we will consider the more general situation. 
+\section{Decision procedure for the non-zero output reachability problem}\label{sec-dec-snt}
+
+In this section, we present a decision procedure for the non-zero output reachability problem of SNTs.  In the rest of this section, we fix a (normalized) SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Moreover, in the next three subsections, we assume that the guards of the transitions of $\Ss$ contain no comparisons with constants. In the last subsection, we will consider the more general situation. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -586,7 +558,7 @@ The values of the control and data variables after traversing the path $P$ are s
 \end{itemize}
 \end{proposition}
 
-\yfc{\\
+\hide{\\
 	
 $^P_3 d^{y_j}_{j'}$	
 
@@ -1315,7 +1287,33 @@ Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifica
 From the aforementioned construction and the assumption that $\Ss$ is well-defined, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.\qed
 \end{proof}
 
-
+\section{Translate a Reducer Program to a SNT}
+\begin{algorithm}[H]
+	%  \SetAlgoLine
+	\KwData{A reducer program $p$}
+	$Q=\{q_0\}, \delta=\emptyset, O=\emptyset$, $\mathsf{toState}(p) =q_0$, $\mathsf{toVisit}=\{(\mathsf{toState}(p),p,\ltrue,\emptyset)\}$\;
+	\While{$\mathsf{toVisit}\neq \emptyset$}{
+		remove $(q,p,g,\eta)$ from $\mathsf{toVisit}$\;
+		\Switch{$p$}{
+			\lCase{$y := e;p'$,$y \addeq e;p'$,$x'=x;p'$: }{add $(q,p',g,\eta[e/y])$, $(q,p',g,\eta[(y+e)/y])$, $(q,p',g,\eta[x'/x])$ to $\mathsf{toVisit}$, respectively}
+			\lCase{$\ite{g'}{s_1}{s_2};p'$: }{add both $(q,s_1;p',g\wedge g',\eta)$ and $(q,s_2;p',g\wedge \neg g',\eta)$ to $\mathsf{toVisit}$}
+			\lCase{$\loopL{s;}\mbox{ret }r$: }{add both $(q,s;\loopL{s;}\mbox{ret }r,g,\eta)$ and $(q,\mbox{ret }r, g,\eta)$ to $\mathsf{toVisit}$}
+			\lCase{$\next;p'$: }{\label{alg:next}
+				\uIf{$\mathsf{toState}(p') \not\in Q$}{add $(\mathsf{toState}(p'),p',\ltrue,\emptyset)$ to $\mathsf{toVisit}$ and add $\mathsf{toState}(p')$ to $Q$}
+				add $(q, \mathsf{toState}(p'),g,\eta)$ to $\delta$
+			}
+			\lCase{$\mbox{ret }r: $}{\label{alg:output}
+				add a fresh state $q_r$ to $Q$, 
+				add $(q, q_r,g,\eta)$ to $\delta$, and $O:=O[r/q_r]$}
+		}
+	}
+	\Return $(Q,X,Y,\delta, \mathsf{toState}(p),O)$\;
+	
+	\caption{Translate a Reducer Program to a SNT}
+	\label{fig:reducer2SNT}
+\end{algorithm}
+We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
+The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
 \section{Proofs in Section~\ref{sec-dec-snt}}
 
 
@@ -1403,6 +1401,7 @@ Let $d^{(C,2)}_{1},\dots,d^{(C,2)}_{r_C}$ be the data values introduced when tra
 For $\ell > 3$, let $d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$ be the data values introduced when traversing the cycle for the $\ell$-th time. Then from Corollary~\ref{cor-comp-two-paths}, the fact $\chi^{(C)}_\ell = \chi_C \circ \chi^{(C)}_{\ell-1}$, and the induction hypothesis, we can show that $\chi^{(C)}_\ell$ is of the desired form.
 \qed
 \end{proof}
+
 
 
 \end{appendix}
