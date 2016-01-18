@@ -134,8 +134,10 @@
 \newcommand\addeq{+\!\!=}
 
 \newcommand\defval{\mathsf{DEF}}
+
 \newcommand{\sub}[2]{\mathsf{sub}_{#2}(#1)}
 \newcommand{\eval}[2]{\llbracket#1\rrbracket_{#2}}
+
 
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
@@ -207,6 +209,7 @@ In this paper, we assume that all variables range over $\intnum \cup \{\bot\}$.
 
 For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  and \emph{range} of $\pi$, respectively. 
 An \emph{expression} $e$ over variables $Z$ is defined by the following rules, $e\equiv  z \mid c \mid e + e \mid e - e$, where $z \in Z$ and $c\in \intnum$. 
+
 For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
 For a valuation $\rho$, we define its extension $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$.
 
@@ -344,7 +347,7 @@ The observation is actually not a big surprise. The \emph{reduce} operation in M
 	Side Condition\\
     \hline
 	$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$&
-	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{e}{\rho}$\\
+	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{\rho}{e}$\\
 	
 	$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$&
 	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{y+e}{\rho}$\\
