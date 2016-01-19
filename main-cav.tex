@@ -379,10 +379,10 @@ The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input li
 We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, the function $p$ is well-defined. 
 
 We are interested in the following two decision problems:
-\begin{itemize}
-	\item Commutativity: given a program $p$, is it true that for all list $l$ and its permutation $l'$, $p(l) = p(l')$.
-	\item Equivalence: given programs $p,p'$, is it true that for all list $l$, $p(l)=p(l')$?
-\end{itemize}
+\begin{description}
+	\item [Commutativity:] given a program $p$, decide whether for each list $l$ and its permutation $l'$, $p(l) = p(l')$.
+	\item [Equivalence:] given programs $p,p'$, decide whether for each list $l$, $p(l)=p(l')$.
+\end{description}
 
 One may argue that allowing only addition and subtraction is too restrictive for data analytics. For cases with multiplication and division at the return point, e.g., \texttt{avg} in Figure~\ref{fig:examples}(b), we can model them as an \emph{uninterpreted $k$-ary function}  (modeled as a tuple in our language) and still have a sound procedure for the decision problems. 
 
@@ -415,13 +415,13 @@ A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where
 \end{itemize}
 Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 \begin{description}
-\item [1 (Deterministic).] For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable.
+\item [Deterministic:] For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable.
 %
-\item [2 (Generalized flat).] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a state or a set of cycles sharing a unique state.
+\item [Generalized flat:] Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a state or a set of cycles sharing a unique state.
 %
 %\item[3 (Independently evolving).] For each $(q, g, \eta, q') \in \delta$ and each $y \in Y$, $\eta(y)$ contains no variables $y' \in Y$ such that $y' \neq y$.
 %
-\item[3 (Independently evolving and copyless).] For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
+\item[Independently evolving and copyless:] For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
 %
 \end{description}
 
@@ -438,10 +438,12 @@ We would like to remark that for each data word $w$, there is at most one run of
 
 Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
 
-\begin{example}[SNT for max and sum]
-The SNT to define the maximum of the integers occurring in a data word is given by $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$  such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \eta_\bot, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function that assigns $\cur$ to $\maxv$, and $\eta_\bot$ denotes the assignment function of the empty domain. The SNT to define the sum of the integers occurring in a data word is given by $\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that $\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and $O(q_1)=\sumv$. 
+\begin{example}[SNT for max]
+$\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \eta_\bot, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function that assigns $\cur$ to $\maxv$ and $\eta_\bot$ denotes the assignment function of the empty domain.
 \end{example}
-
+\begin{example}[SNT for sum]
+$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that $\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and $O(q_1)=\sumv$. 
+\end{example}
 \begin{proposition}\label{prop-mrprog-to-snt}
 For each reducer program $p$, an equivalent SNT $\Ss$ (w.r.t. the commutativity and equivalence problems) can be constructed.
 \end{proposition}
@@ -472,25 +474,21 @@ The main difference between $p$ and $\Ss$ is that several transitions in the sem
 
 
 
-We focus on the following three decision problems of SNTs in this paper, the commutativity problem, the equivalence problem, and the non-zero output problem.
+We focus on three decision problems of SNTs:
 \begin{description}
-\item[(Commutativity).] Given a SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, the output of $\Ss$ over $w$ is equal to that of $\Ss$ over $w'$.
+\item[Commutativity:] Given a SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, $\Ss(w)=\Ss(w')$.
 %
-\item[(Equivalence).] Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $O_{\Ss_1}(w)=O_{\Ss_2}(w)$.
+\item[Equivalence:] Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $\Ss_1(w)=\Ss_2(w)$.
 %
-\item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that $O_{\Ss}(w) \neq \bot$ and $O_{\Ss}(w)$ is non-zero. 
+\item[Non-zero output reachability:] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is a data word $w$ such that $\Ss(w)\notin \{\bot, 0\}$. 
 \end{description}
-In the following, we show that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output reachability problem.
-
+The following propositions state that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output reachability problem.
 
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
 The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}
-
-The equivalence problem of SNTs can be further reduced to the non-zero output reachability problem of SNTs.
-
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
-From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
+From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero. 
 \end{proposition}
 
 We introduce a concept of ``well-defined'' for SNTs. Let $\Ss=(Q,X,Y,\delta,q_0,O)$ be an SNT. Then $\Ss$ is said to be \emph{well-defined} if for each data word $w=d_1\dots d_n$ and each run of $\Ss$ over $w$, say  $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{g_n,\eta_n} q_n$, let $(q_0,\rho_0),\dots,(q_n,\rho_n)$ be the resulting sequence of configurations, then the following conditions hold: for each $i: 1 \le i \le n$ and each $z \in X \cup Y$ occurring in $(g_i,\eta_i)$, we have $\rho_{i-1}(z) \neq \bot$, moreover, if $O(q_n)$ is defined, then for each variable $z$ occurring in $O(q_n)$, we have $\rho_{n}(z) \neq \bot$.
@@ -532,7 +530,6 @@ A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the followin
 	From each SNT, an equivalent normalized SNT can be constructed in exponential time. 
 \end{proposition}
 
-From now on, we assume that all SNTs are normalized. 
 
 \section{Decision procedure for the non-zero output reachability problem}\label{sec-dec-snt}
 
