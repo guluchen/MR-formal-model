@@ -219,13 +219,13 @@ The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} d
 
 \section{Preliminaries}
 %
-Let $\intnum$,  $\intnum^+$ be the set of integers, positive integers, respectively and $\bot \not \in \intnum$ be  the undefined value.% By convention, it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum^+$.
+Let $\intnum$,  $\intnum^+$ be the set of integers, positive integers, respectively and $\bot \not \in \intnum$ be  the undefined value. % By convention, it is assumed that $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum^+$.
 In this paper, we assume that all variables range over $\intnum$.% \cup \{\bot\}$.  
 
 For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  and \emph{range} of $\pi$, respectively. 
 An \emph{expression} $e$ over the set of variables $Z$ is defined by the following rules, $e\equiv  c \mid  c z \mid (e + e) \mid (e - e)$, where $z \in Z$ and $c\in \intnum$.  As a result of the commutativity of $+$, without loss of generality, we assume that all expressions $e$ in this paper are of the form $c_1 z_1 + \dots c_n z_n$, where $c_1,\dots,c_n \in \intnum$ and $z_1,\dots,z_n \in Z$. % \zhilin{I changed a bit the definition of expressions here} 
 
-For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum \cup \{\bot\}$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
+For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
 For a function $\rho$, we define the function $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$.
 
 In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
@@ -236,8 +236,7 @@ Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
 $\interval{n}$. The set of
 permutations on $\interval{n}$ is denoted by $S_n$.
-
-Define the two functions $\pi_2$ and $\pi_n$ as follows : $\pi_2(1)=2,\pi_2(2)=1,\pi_2(k)=k$, for $k>2$ and
+\hide{Define the two functions $\pi_2$ and $\pi_n$ as follows : $\pi_2(1)=2,\pi_2(2)=1,\pi_2(k)=k$, for $k>2$ and
 $\pi_n(1)=2,\pi_n(2)=3,\ldots,\pi_n(n)=1, \pi_n(k)=k$, for $k>n$.
 
 \begin{theorem}[\cite{algebra}]
@@ -245,13 +244,13 @@ $\pi_n(1)=2,\pi_n(2)=3,\ldots,\pi_n(n)=1, \pi_n(k)=k$, for $k>n$.
 	composition of $\tau_2$ and $\tau_n$.
 	\label{theorem:symmetric-basis}
 \end{theorem}
-
+}
 A \emph{list $w$} is a sequence of integer values $d_1\ldots d_n$ such that $d_i \in \intnum$ for each $i$.
 We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the \emph{head}, \emph{tail}, and \emph{length} of $w$, respectively.
 We use $\emptyset$ to denote an empty list.
 Given two lists $w,w'$, we use $w.w'$ to denote their concatenation.
 Under the context of a transducer, we use the alternative name \emph{data word} to refer to a list.
-Given a list $l=d_1\ldots d_n$ and a permutation $\sigma \in S_n$, we lift $\sigma$ to list by defining $\sigma(l)=d_{\pi(1)} \ldots d_{\pi(n)}$.
+Given a list $l=d_1\ldots d_n$ and $\sigma \in S_n$, we lift $\sigma$ to list by defining $\sigma(l)=d_{\pi(1)} \ldots d_{\pi(n)}$ and call $\sigma(l)$ a permutation of $l$.
 
  
 \section{Language For Integer Reducers}\label{sec-mr-prog}
@@ -524,22 +523,22 @@ Note that if a SNT $\Ss$ is well-defined, then for each data word $w$, if the ru
 %%% we dont need the well defineness of SNT anymore!!
 }
 
-At first, we normalize the SNTs in order to facilitate the presentation of the decision procedure.
 
+We \emph{normalize} the SNTs in order to facilitate the presentation of the decision procedure.
 Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions of $\Ss$. 
 
-A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following two constraints are satisfied.
+A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be normalized if the following two constraints are satisfied.
 \begin{itemize}
-	\item For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge \limits_{x \in X} \cur \neq x$.  Intuitively, when the current data value is stored into some control variable, it is required that the data value is distinct from all the data values that have already been stored in the control variables.
+	\item For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value is stored into some control variable, it is required that the data value is distinct from all the data values that have already been stored in the control variables.
 	%
-	\item For each $(q, g, \eta, q') \in \delta$, the guard $g$ includes one of the following formulae as a conjunct: $\cur < c_{min}$, or $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$.
+	\item For each $(q, g, \eta, q') \in \delta$, the guard $g$ is partitioned to the set of guards $\{g\wedge e \mid e\in\{\cur < c_{min}, \cur = c$ for $c_{min} \le c \le c_{max},\cur > c_{max}\}  \}$.
 \end{itemize}
 
 
 \begin{proposition}\label{prop-snt-norm}
-	From each SNT, an equivalent normalized SNT can be constructed in exponential time. 
+	From each SNT, an equivalent normalized SNT can be constructed in time exponential to the number of control variables. 
 \end{proposition}
-
+Intuitively, the construction used states to remember the equivalence relation between control variables and modify the assignments accordingly.
 
 \section{Decision procedure for the non-zero output problem}\label{sec-dec-snt}
 
