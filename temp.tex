@@ -1,3 +1,76 @@
+
+In order to get a better understanding of the relationship between $(\chi_1 \circ \chi_2)$ and $\chi_1,\chi_2$, we apply a refined analysis of $\chi_1 \circ \chi_2$ in the following. 
+
+From Proposition~\ref{prop-sum-path}, for $b=1,2$, we assume that $\chi_b$ is defined as follows.
+\begin{itemize}
+\item There is an injective mapping $\pi_b: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_b(j) \le k$, then $\pi_b(j)=j$ and $\chi_b(x_j)=d^{(0)}_{j}$, otherwise, $\chi_b(x_j)=d^{(b,1)}_{\pi_b(j)-k}$.
+% 
+\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1\}$.
+\end{itemize}
+
+Then
+for each $y_j \in Y$,
+\[
+\begin{array}{l c l}
+\medskip
+(\chi_1 \circ \chi_2)(y_j) & = & \chi'_1(\chi_2(y_j))\\
+%& = & \chi'_1(\alpha^{(2)}_{j,0} + \alpha^{(2)}_{j,1} o_j + \beta^{(2)}_{j,1} d^{(0)}_1 + \dots + \beta^{(2)}_{j,k} d^{(0)}_k + \\
+%& & \hspace{8mm} \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2})\\
+%
+& = &  \alpha^{(2)}_{j,0} + \alpha^{(2)}_{j,1} \chi_1(y_j) + \beta^{(2)}_{j,1} \chi_1(x_1) + \dots + \beta^{(2)}_{j,k} \chi_1(x_k) +\\
+\medskip
+& & \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2} \\
+%
+& =  & (\alpha^{(2)}_{j,0}+\alpha^{(2)}_{j,1} \alpha^{(1)}_{j,0})+ (\alpha^{(2)}_{j,1}\alpha^{(1)}_{j,0}) o_j + \\
+%
+& & \sum \limits_{j' \le k, \pi_1(j')=j'} (\beta^{(2)}_{j,j'}+\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_1(j') \neq j'} (\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'}  \\
+%
+& & + \sum \limits_{j' \le r_1, j' + k \in \rng(\pi_1)} (\beta^{(2)}_{j,\pi_1^{-1}(j'+k)}+\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} +\\
+%
+& & \sum \limits_{j' \le r_1, j' + k \not \in \rng(\pi_1)} (\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} + 
+ \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2}.
+\end{array}
+\] 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{\\
+	
+$^P_3 d^{y_j}_{j'}$	
+
+$d^{P,y_j,3}_{{\pi^P}^{-1}(j')}$
+$d(P,y_j,3)_{{\pi(P)}^{-1}(j')}$
+$^P_3{\mathfrak{d}^j_{j'}}$
+$\prescript{P}{3}{\mathfrak{d}^j_{j'}}$
+\newcommand\va{\mathfrak{a}}
+\newcommand\vb{\mathfrak{b}}
+\newcommand\vd{\mathfrak{d}}
+
+
+	
+\begin{proposition}\label{prop-sum-path}
+	The values of the control and data variables after traversing the path $P$ are specified by a function $\chi^P$ satisfying the following conditions.
+	\begin{itemize}
+		\item There is an injective mapping $\pi^P: \{1,\dots,k\} \rightarrow \{1,\dots, k+r_P\}$ such that for each $x_j \in X$, if $\pi^P(j) \le k$, then $\pi^P(j)=j$ and $\chi^P(x_j)=\vb_{j}$, otherwise, $\chi(x_j)=\vd_{\pi^P(j)-k}$.
+		% 
+		\item For each $y_j \in Y$, $\chi^P(y_j) = {c}^P + a^P\va^P + b^{P,y_j}_{1} \vb^P_1 + \dots + b^{P,y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_P} \vd_{r_P}$ for such that $a \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
+		
+		\item test for cycles: $\chi^{C^3}(y_j) = {c}^{C^3} + a^{C^3}\va^{C^3} + b^{{C^3},y_j}_{1} \vb^{C^3}_1 + \dots + b^{{C^3},y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_C} \vd_{r_C}$
+	\end{itemize}
+\end{proposition}	
+
+
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

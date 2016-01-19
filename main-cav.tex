@@ -138,6 +138,13 @@
 \newcommand{\sub}[2]{\mathsf{sub}_{#2}(#1)}
 \newcommand{\eval}[2]{\llbracket#1\rrbracket_{#2}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%The macros introduced by Zhilin%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\sval}{\Omega}
+\newcommand{\sumf}{\Theta}
+\newcommand{\initval}{\sval}
+
 % The macros for the data variables.
 \newcommand{\vard}{\mathfrak{d}}
 \newcommand{\vare}{\mathfrak{e}}
@@ -154,6 +161,9 @@
 \newcommand{\cstl}{\lambda}
 \newcommand{\cstm}{\mu}
 \newcommand{\cstn}{\nu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\hide}[1]{}
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
@@ -225,12 +235,12 @@ In this paper, we assume that all variables range over $\intnum$.% \cup \{\bot\}
 For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  and \emph{range} of $\pi$, respectively. 
 An \emph{expression} $e$ over the set of variables $Z$ is defined by the following rules, $e\equiv  c \mid  c z \mid (e + e) \mid (e - e)$, where $z \in Z$ and $c\in \intnum$.  As a result of the commutativity of $+$, without loss of generality, we assume that all expressions $e$ in this paper are of the form $c_1 z_1 + \dots c_n z_n$, where $c_1,\dots,c_n \in \intnum$ and $z_1,\dots,z_n \in Z$. % \zhilin{I changed a bit the definition of expressions here} 
 
-For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of variables $Z$ is a function from $Z$ to $\intnum$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
-For a function $\rho$, we define the function $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$.
+For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. A \emph{valuation} $\rho$ of $Z$ is a function from $Z$ to $\intnum$. The value of $e$ under $\rho$, denoted by $\eval{e}{\rho}$, is defined as the value obtained by replacing each variable $z \in \vars(e)$ in $e$ with $\rho(z)$.
+For a function $\rho$, we define the function $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$. A \emph{symbolic valuation} $\sval$ of $Z$ is a function which maps each variable $z \in Z$ to an expression (possibly over a different set of variables). 
 
 In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
 A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X^+$, and $c\in \intnum$. 
-Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. An \emph{assignment} $\eta$ for $X \cup Y$ is a partial function from $X \cup Y$ to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=\cur$ or $\eta(x) = x'$ for some $x' \in X$.
+Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
 
 Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
@@ -421,11 +431,11 @@ A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where
 %
 \item $Y$ is a finite set of data variables to aggregate information for the output,
 %
-\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (note that the variables from $Y$ do not occur in $g$), and $\eta$ is an assignment for $X \cup Y$, 
+\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (note that the variables from $Y$ do not occur in $g$), and $\eta$ is an assignment which is a partial function mapping $X \cup Y$  to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=\cur$ or $\eta(x) = x'$ for some $x' \in X$.
 %
 \item $q_0 \in Q$ is the initial state,
 %
-\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X^+ \cup Y}$.
+\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.\zhilin{Here the variable $\cur$ should not be used.}
 \end{itemize}
 Moreover, we assume that the SNT $\Ss$ satisfies the following constraints.
 \begin{description}
@@ -544,164 +554,154 @@ Intuitively, the construction used states to remember the equivalence relation b
 
 Our goal in this section is to present a decision procedure for the non-zero output problem of normalized SNTs.  In the following, we fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. We illustrate the main ideas of the decision procedure for the situation that the guards in the transitions are constant-free, that is, the guards contain no comparisons with constants. The discussions of the more general situation are migrated to the appendix. 
 
-Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.
+%Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 \subsection{Summarization of the computations on paths and cycles}
 
-Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in $\Ss$. 
+Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in the transition graph of $\Ss$. 
 
-Suppose that the initial values of the $k$ control variables are represented by $d_1,\dots, d_k$ and the $n$ data values met when traversing the path are represented by $d_{k+1},\dots,d_{k+n}$ (these data values may repeat). Then the guards and the assignments in the path induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since $\Ss$ is normalized, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_{k+r}$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots, k+n\}$ such that $\min(I_1) < \dots < \min(I_{k+r})$. Then for each $j: 1 \le j \le k$, $\min(I_j)=j$.
 
-Suppose that the initial values of the $k$ control variables are denoted by the variables $d^{(0)}_1,\dots,d^{(0)}_k$ respectively. Moreover, suppose that the $r$ fresh data values that are introduced when traversing the path are denoted by the variables $d^{(1)}_{1},\dots,d^{(1)}_{r}$, with one data value for each of $I_{1},\dots,I_{r}$. 
-In addition, suppose that the initial values of $y_1,\dots, y_l$ are denoted by the variables $o_1,\dots,o_l$ respectively. 
+
+We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ of $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word,  the data value in a position may have to be equal or unequal to the initial value of some control variable (enforced by the guards and assignments in $P$), or have to be equal or unequal to some other data value that have been met before, or can be an arbitrary value from $\intnum$. Let $\sim$  denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position has to be equal to that in the $j$-th position. Assuming that there are $r^{(P)}$ equivalence classes of $\sim$, we use the variables $\vard^{(P)}_1,\vard^{(P)}_2,\dots, \vard^{(P)}_{r^{(P)}}$ to denote the data values met when traversing $P$, one for each equivalence class. Note that here we use the superscript ${(P)}$ to denote the fact that the number $r^{(P)}$ is related to the path $(P)$. We will adopt this notation in the rest of this paper.
+
+%Moreover, suppose that the $r$ fresh data values that are introduced when traversing the path are denoted by the variables $d^{(1)}_{1},\dots,d^{(1)}_{r}$, with one data value for each of $I_{1},\dots,I_{r}$. 
+%In addition, suppose that the initial values of $y_1,\dots, y_l$ are denoted by the variables $o_1,\dots,o_l$ respectively. 
 
 \begin{proposition}\label{prop-sum-path}
-The values of the control and data variables after traversing the path $P$ are specified by a function $\chi$ satisfying the following conditions.
+Suppose that $P$ is a path and the initial values of control and data variables are represented by a symbolic valuation $\initval$. Then the values of the control and data variables after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ of $X \cup Y$ satisfying the following conditions.
 \begin{itemize}
-\item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
+\item There are a partition of $[k]$ into $I^{(P)}_{pe}$ and $I^{(P)}_{tr}$ (indices of persistent and transient control variables respectively) and an injective mapping $\pi^{(P)}: I^{(P)}_{tr} \rightarrow [r^{(P)}]$ such that for each $j \in I^{(P)}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_j)$, and for each $j \in I^{(P)}_{tr}$, $\sumf^{(P,\initval)}(x_j)=\vard^{(P)}_{\pi^{(P)}(j)}$.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \cste_{j} + \cstl_j \varo_j + \csta_{j,1} \vard^{(0)}_1 + \dots + \csta_{j,k} \vard^{(0)}_k + \cstb_{j,1} \vare^{(1)}_1 +\dots + \cstb_{j,r} \vare^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
-\end{itemize}
-\end{proposition}
-
-\hide{\\
-	
-$^P_3 d^{y_j}_{j'}$	
-
-$d^{P,y_j,3}_{{\pi^P}^{-1}(j')}$
-$d(P,y_j,3)_{{\pi(P)}^{-1}(j')}$
-$^P_3{\mathfrak{d}^j_{j'}}$
-$\prescript{P}{3}{\mathfrak{d}^j_{j'}}$
-\newcommand\va{\mathfrak{a}}
-\newcommand\vb{\mathfrak{b}}
-\newcommand\vd{\mathfrak{d}}
-
-
-	
-\begin{proposition}\label{prop-sum-path}
-	The values of the control and data variables after traversing the path $P$ are specified by a function $\chi^P$ satisfying the following conditions.
-	\begin{itemize}
-		\item There is an injective mapping $\pi^P: \{1,\dots,k\} \rightarrow \{1,\dots, k+r_P\}$ such that for each $x_j \in X$, if $\pi^P(j) \le k$, then $\pi^P(j)=j$ and $\chi^P(x_j)=\vb_{j}$, otherwise, $\chi(x_j)=\vd_{\pi^P(j)-k}$.
-		% 
-		\item For each $y_j \in Y$, $\chi^P(y_j) = {c}^P + a^P\va^P + b^{P,y_j}_{1} \vb^P_1 + \dots + b^{P,y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_P} \vd_{r_P}$ for such that $a \in \{0,+1\}$ (as a result of the ``independently evolving and copyless'' constraint).
-		
-		\item test for cycles: $\chi^{C^3}(y_j) = {c}^{C^3} + a^{C^3}\va^{C^3} + b^{{C^3},y_j}_{1} \vb^{C^3}_1 + \dots + b^{{C^3},y_j}_{k} \vb_k + d_{j,1} \vd_1 +\dots + d_{j,r_C} \vd_{r_C}$
-	\end{itemize}
-\end{proposition}	
-
-
-
-}
-
-
-Suppose $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(1,1)}_1,\dots,d^{(1,1)}_{r_1}, d^{(2,1)}_1,\dots,d^{(2,1)}_{r_2}\}$ are a set of pairwise distinct variables from $\intvars$. For $b=1,2$, let 
-\[\Zz_b=\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l, d^{(b,1)}_1,\dots,d^{(b,1)}_{r_b}\},\] and $\chi_b$ be a function from $X \cup Y$ to $\Ee_{\mathcal{Z}_b}$. Then the \emph{composition} of $\chi_1$ and $\chi_2$, denoted by $\chi_1 \circ \chi_2$, is defined as follows: Let $\chi'_1$ be a function with the domain $\{d^{(0)}_1,\dots,d^{(0)}_k, o_1,\dots,o_l\}$ such that for each $j: 1 \le j \le k$ (resp. $j: 1 \le j \le l$), $\chi'_1(d^{(0)}_j)=\chi_1(x_j)$ (resp. $\chi'_1(o_j)=\chi_1(y_j)$). Then
-\begin{itemize}
-\item for each $x_j \in X$, if $\chi_2(x_j) = d^{(0)}_j$, then $(\chi_1 \circ \chi_2)(x_j)=\chi'_1(\chi_2(x_j)) = \chi'_1(d^{(0)}_j)=\chi_1(x_j)$, otherwise, $(\chi_1 \circ \chi_2)(x_j)=\chi_2(x_j)$,
-%
-\item for each $y_j \in Y$, $(\chi_1 \circ \chi_2)(y_j)=\chi'_1(\chi_2(y_j))$.
-\end{itemize}
-
-\begin{corollary}\label{cor-comp-two-paths}
-Suppose that $P_1$ and $P_2$ are two paths in $\Ss$ such that $p^{(1)}_{n_1}=p^{(2)}_0$. Moreover, let $\chi_1$ (resp. $\chi_2$) be the function summarizing the computation of $\Ss$ on $P_1$ (resp. $P_2$). Then the function summarizing the computation of $\Ss$ over the path $P_1 P_2$ is $\chi_1 \circ \chi_2$.
-\end{corollary}
-
-In order to get a better understanding of the relationship between $(\chi_1 \circ \chi_2)$ and $\chi_1,\chi_2$, we apply a refined analysis of $\chi_1 \circ \chi_2$ in the following. 
-
-From Proposition~\ref{prop-sum-path}, for $b=1,2$, we assume that $\chi_b$ is defined as follows.
-\begin{itemize}
-\item There is an injective mapping $\pi_b: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_b(j) \le k$, then $\pi_b(j)=j$ and $\chi_b(x_j)=d^{(0)}_{j}$, otherwise, $\chi_b(x_j)=d^{(b,1)}_{\pi_b(j)-k}$.
-% 
-\item For each $y_j \in Y$, $\chi_b(y_j) = \alpha^{(b)}_{j,0} + \alpha^{(b)}_{j,1} o_j + \beta^{(b)}_{j,1} d^{(0)}_1 + \dots + \beta^{(b)}_{j,k} d^{(0)}_k + \gamma^{(b)}_{j,1} d^{(b,1)}_1 +\dots + \gamma^{(b)}_{j,r_b} d^{(b,1)}_{r_b}$ such that $\alpha^{(b)}_{j,1} \in \{0,+1\}$.
-\end{itemize}
-
-Then
-for each $y_j \in Y$,
+\item For each $y_j \in Y$, 
 \[
-\begin{array}{l c l}
-\medskip
-(\chi_1 \circ \chi_2)(y_j) & = & \chi'_1(\chi_2(y_j))\\
-%& = & \chi'_1(\alpha^{(2)}_{j,0} + \alpha^{(2)}_{j,1} o_j + \beta^{(2)}_{j,1} d^{(0)}_1 + \dots + \beta^{(2)}_{j,k} d^{(0)}_k + \\
-%& & \hspace{8mm} \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2})\\
-%
-& = &  \alpha^{(2)}_{j,0} + \alpha^{(2)}_{j,1} \chi_1(y_j) + \beta^{(2)}_{j,1} \chi_1(x_1) + \dots + \beta^{(2)}_{j,k} \chi_1(x_k) +\\
-\medskip
-& & \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2} \\
-%
-& =  & (\alpha^{(2)}_{j,0}+\alpha^{(2)}_{j,1} \alpha^{(1)}_{j,0})+ (\alpha^{(2)}_{j,1}\alpha^{(1)}_{j,0}) o_j + \\
-%
-& & \sum \limits_{j' \le k, \pi_1(j')=j'} (\beta^{(2)}_{j,j'}+\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_1(j') \neq j'} (\alpha^{(2)}_{j,1} \beta^{(1)}_{j,j'}) d^{(0)}_{j'}  \\
-%
-& & + \sum \limits_{j' \le r_1, j' + k \in \rng(\pi_1)} (\beta^{(2)}_{j,\pi_1^{-1}(j'+k)}+\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} +\\
-%
-& & \sum \limits_{j' \le r_1, j' + k \not \in \rng(\pi_1)} (\alpha^{(2)}_{j,1} \gamma^{(1)}_{j,j'}) d^{(1,1)}_{j'} + 
- \gamma^{(2)}_{j,1} d^{(2,1)}_1 +\dots + \gamma^{(2)}_{j,r_2} d^{(2,1)}_{r_2}.
+\small
+\begin{array}{l}
+\smallskip
+\sumf^{(P,\initval)}(y_j)  = \\
+\hspace{2mm} \cste^{(P)}_{j} + \cstl^{(P)}_j \initval(y_j)  + \csta^{(P)}_{j,1} \initval(x_1) + \dots + \csta^{(P)}_{j,k} \initval(x_k) +  \cstb^{(P)}_{j,1} \vard^{(P)}_1 +\dots + \cstb^{(P)}_{j,r^{(P)}} \vard^{(P)}_{r^{(P)}},
 \end{array}
 \] 
+where $\cste^{(P)}_j,\cstl^{(P)}_j, \csta^{(P)}_{j,1},\dots,\csta^{(P)}_{j,k}, \cstb^{(P)}_{j,1},\dots,\cstb^{(P)}_{j,r^{(P)}}$ are integer constants such that $\cstl^{(P)}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint). Note that possibly $\cstl^{(P)}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{(P)}_{j,1}=0$, and so on.
+\end{itemize}
+\end{proposition}
+Note that in Proposition~\ref{prop-sum-path}, the two sets $I^{(P)}_{pe}$ and $I^{(P)}_{tr}$, the mapping $\pi^{(P)}$, and the constants $\cste^{(P)}_j,\cstl^{(P)}_j, \dots, \cstb^{(P)}_{j,r^{(P)}}$ for $j \in [l]$ only depend on $P$ and are independent of $\initval$.
 
-In the following, for each path $P=C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we provide an analysis of the computation of $\Ss$ on $P$.
+As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
 
-Suppose that $C$ is a cycle in $\Ss$, that is, a path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that $q_n = q_0$.  
+\begin{corollary}\label{cor-comp-two-paths}
+Suppose that $P_1= p_{1,0} \xrightarrow{(g_{1,1},\ \eta_{1,1})} p_{1,1} \dots p_{1, n_1-1} \xrightarrow{(g_{1,n_1},\ \eta_{1,n_1})} p_{1,n_1}$ and $P_2=p_{2,0} \xrightarrow{(g_{2,1},\ \eta_{2,1})} p_{2,1} \dots p_{2, n_2-1} \xrightarrow{(g_{2,n_2},\ \eta_{2,n_2})} p_{2,n_2}$ are two paths in $\Ss$ such that $p_{1,n_1}=p_{2,0}$. Moreover, let $\sumf^{(P_1, \initval)}$ (resp. $\sumf^{(P_2, \initval)}$) be the symbolic valuation summarizing the computation of $\Ss$ on $P_1$ (resp. $P_2$). Then the symbolic valuation summarizing the computation of $\Ss$ on $P_1 P_2$ is $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}$.
+\end{corollary}
 
-Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{(C,1)}_{1},\dots,d^{(C,1)}_{r_C}$ are introduced when traversing the cycle for the first time. 
-In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
-
-From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be constructed to summarize the computation of $\Ss$ on $C$.
+In order to get a better understanding of the relation between $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}$ and $(\sumf^{(P_1, \initval)},\sumf^{(P_2, \initval)})$, in the following, for each $y_j \in Y$, we obtain a more explicit form of the expression $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j)$, by unfolding therein the expression $\sumf^{(P_1,\initval)}(y_{j})$ and the expressions $\sumf^{(P_1,\initval)}(x_{j'})$ with $j' \in [k]$.
+\[
+\small
+\begin{array}{l c l}
+\medskip
+\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j) &  & \\
+%\smallskip
+%& \hspace{-2cm} = & \\
+%\smallskip
+%& & \hspace{-12mm} \cste^{(P_2)}_{j} + \cstl^{(P_2)}_j \sumf^{(P_1,\initval)}(y_j)  +  \csta^{(P_2)}_{j,1} \sumf^{(P_1,\initval)}(x_1) + \dots + \csta^{(P_2)}_{j,k} \sumf^{(P_1,\initval)}(x_k) +  \\
+%\smallskip
+%& & \hspace{-8mm}  \cstb^{(P_2)}_{j,1} \vard^{(P_2)}_1 +\dots + \cstb^{(P_2)}_{j,r} \vard^{(P_2)}_{r}
+%\\
+\smallskip
+& \hspace{-24mm}  =  &  \\
+\smallskip
+& & \hspace{-12mm} \left(\cste^{(P_2)}_{j}+\cstl^{(P_2)}_{j} \cste^{(P_1)}_{j}\right)+ \left(\cstl^{(P_2)}_{j} \cstl^{(P_1)}_{j} \right) \initval(y_j)+\\
+\smallskip
+& &  \hspace{-12mm} \sum \limits_{j' \in I^{(P_1)}_{pe}} \left(\csta^{(P_2)}_{j,j'}+\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'} \right) \initval(x_{j'}) + \sum \limits_{j' \in I^{(P_1)}_{tr}} \left(\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'} \right) \initval(x_{j'}) + \\
+%
+\smallskip
+& & \hspace{-12mm} \sum \limits_{j' \in \rng(\pi^{(P_1)})} \left( \csta^{(P_2)}_{j,(\pi^{(P_1)})^{-1}(j')}+\cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'} \right) \vard^{(P_1)}_{j'} + \\
+\medskip
+& & \hspace{-12mm}  \sum \limits_{j' \le [r^{(P_1)}] \setminus \rng(\pi^{(P_1)})} \left( \cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'} \right) \vard^{(P_1)}_{j'} + \cstb^{(P_2)}_{j,1} \vard^{(P_2)}_1 +\dots + \cstb^{(P_2)}_{j, r^{(P_2)} } \vard^{(P_2)}_{r^{(P_2)} }.
+\end{array}
+\] 
+Below, we explain more intuitively how the coefficients in $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j)$ are obtained from $\sumf^{(P_1, \initval)}(y_j)$ and $\sumf^{(P_2, \initval)}(y_j)$.
 \begin{itemize}
-\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
-% 
-\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1\}$.
+\item The constant coefficient is the sum of $\cste^{(P_2)}_{j}$, i.e. the constant coefficient of $\sumf^{(P_2, \initval)}$,  and $\cstl^{(P_2)}_{j} \cste^{(P_1)}_{j}$, i.e. the constant coefficient of  $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j} $, that is, the coefficient of $\initval(y_j)$ in $\sumf^{(P_2, \initval)}$.
+%
+\item The coefficient of $\initval(y_j)$ is the product of the two coefficients of $\initval(y_j)$ in $\sumf^{(P_1, \initval)}$ and $\sumf^{(P_2, \initval)}$ respectively.
+%
+\item If $j' \in I^{(P_1)}_{pe}$, then the value of $x_{j'}$ is unchanged when traversing $P_1$. This means that the initial value of $x_{j'}$ before traversing $P_2$ is still $\initval(x_{j'})$. Thus the coefficient of $\initval(x_{j'})$ is the sum of $\csta^{(P_2)}_{j,j'}$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_2, \initval)}$, and $\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'}$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j}$.
+%
+\item If $j' \in \rng(\pi^{(P_1)})$, let $\pi^{(P)}(j'')=j'$. Then the initial value of $x_{j''}$ before traversing $P_2$ is $\vard^{(P_1)}_{j'}$. Therefore, the coefficient of $\vard^{(P_1)}_{j'}$ is the sum of $\csta^{(P_2)}_{j,j''}$, i.e. the coefficient of $\initval(x_{j''})$ in $\sumf^{(P_2, \initval)}$, and $\cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'}$, i.e. the coefficient of $\vard^{(P_1)}_{j'}$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j}$.
+%
+\item Similarly for the other coefficients.
 \end{itemize}
 
+In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C,\initval)}$ and $\ell$.
+
+
+
+
+%Suppose that $C$ is a cycle in $\Ss$, that is, a path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that $q_n = q_0$.  
+
+%Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{(C,1)}_{1},\dots,d^{(C,1)}_{r_C}$ are introduced when traversing the cycle for the first time. 
+%In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
+%
+%From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be constructed to summarize the computation of $\Ss$ on $C$.
+%\begin{itemize}
+%\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
+% 
+%\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1\}$.
+%\end{itemize}
+
 \begin{proposition}\label{prop-sum-cycle}
-Suppose $P=C^{\ell}$ such that $\ell \ge 2$. Then the function $\chi^{(C)}_{\ell}$ to summarize the computation of $\Ss$ on $P$ is defined as follows,
+Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,
 \[
+\small
 \begin{array}{l c l}
-\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0}+ \dots +(\alpha^{(C)}_{j,1})^{\ell-1} \alpha^{(C)}_{j,0}) + (\alpha^{(C)}_{j,1})^\ell o_j + \\
-& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1}\beta^{(C)}_{j,j'} + \dots +(\alpha^{(C)}_{j,1})^{\ell-1}  \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \\
+\sumf^{(C^\ell,\initval)}(y_j)  & = & \left(\cste^{(C)}_{j} + \cstl^{(C)}_{j} \cste^{(C)}_{j}+ \dots +(\cstl^{(C)}_{j})^{\ell-1} \cste^{(C)}_{j}\right) + (\cstl^{(C)}_{j})^\ell \initval(y_j) + \\
+& & \sum \limits_{j' \in I^{(C)}_{pe}} \left(\csta^{(C)}_{j,j'}+\cstl^{(C)}_{j}\csta^{(C)}_{j,j'} + \dots +(\cstl^{(C)}_{j})^{\ell-1}  \csta^{(C)}_{j,j'} \right) \initval(x_{j'}) + \\
 %
-& & \sum \limits_{j'\le k, \pi_C(j') \neq j'} ((\alpha^{(C)}_{j,1})^{\ell-1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+& & \sum \limits_{j' \in I^{(C)}_{tr}} \left((\cstl^{(C)}_{j})^{\ell-1} \csta^{(C)}_{j,j'} \right) \initval(x_{j'}) +  \\
 %
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( (\alpha^{(C)}_{j,1})^{\ell-2} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +(\alpha^{(C)}_{j,1})^{\ell-1}\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left( (\cstl^{(C)}_{j})^{\ell-2} \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')} +(\cstl^{(C)}_{j})^{\ell-1}\cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots  +\\
 %
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} ((\alpha^{(C)}_{j,1})^{\ell-1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left( \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}+ \cstl^{(C)}_{j} \cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1}\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+& & \sum \limits_{j' \in [r^{(C)}] \setminus \rng(\pi^{(C)})} \left((\cstl^{(C)}_{j})^{\ell-1} \cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots  \\
 %
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C},
+%
+& &  \sum \limits_{j' \in [r^{(C)}] \setminus \rng(\pi^{(C)})}  \left(\cstl^{(C)}_{j} \cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}},
 \end{array} 
 \]
-where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$
- are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
+where the variables $\vard^{(C,1)}_{1},\dots, \vard^{(C,1)}_{r^{(C)}},\dots, \vard^{(C,\ell)}_{1},\dots, \vard^{(C,\ell)}_{r^{(C)}}$
+ represent the data values introduced when traversing $C$ for the first time, $\dots$, and for the $\ell$-th time.
 \end{proposition}
 
-From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1\}$, for $\ell \ge 2$, we deduce the following facts.
+From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$, we have the following observation.
 \begin{itemize}
-\item If $\alpha^{(C)}_{j,1}=0$, then
+\item If $\cstl^{(C)}_{j}=0$, then
 \[
+\small
 \begin{array}{l c l}
-\chi^{(C)}_{\ell}(y_j)  & = & \alpha^{(C)}_{j,0} +  \sum \limits_{j' \le k, \pi_C(j')=j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +
-\\
 \smallskip
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} d^{(C,\ell-1)}_{j'} + \\
-& & \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
+\sumf^{(C^\ell,\initval)}(y_j)  & = & \cste^{(C)}_{j} +  \sum \limits_{j' \in I^{(C)}_{pe}} \csta^{(C)}_{j,j'} \initval(x_{j'}) +
+\sum \limits_{j'  \in \rng(\pi^{(C)})} \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}\ \vard^{(C,\ell-1)}_{j'} + \\
+%
+& & \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}}.
 \end{array} 
 \]
-\item If $\alpha^{(C)}_{j,1}=1$, then 
+\item If $\cstl^{(C)}_{j}=1$, then 
 \[
+\small
 \begin{array}{l c l}
-\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} \ell) + o_j +   \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'} \ell) d^{(0)}_{j'} + \sum \limits_{j'\le k, \pi_C(j') \neq j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
+\sumf^{(C^\ell,\initval)}(y_j)  & = &  \left(\cste^{(C)}_{j} \ell \right) + \initval(y_j) +   \sum  \limits_{j' \in I^{(C)}_{pe}} \left(\csta^{(C)}_{j,j'} \ell \right) \initval(x_{j'}) + \sum \limits_{j' \in I^{(C)}_{tr}} \csta^{(C)}_{j,j'} \initval(x_{j'}) +  \\
+\smallskip
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left(\csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')} + \cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots +\\
 %
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)} + \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+& &  \sum \limits_{j' \in \rng(\pi^{(C)})}  \left(\csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}+\cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,1)}_{j'} + \dots + \\
+& & \sum \limits_{j' \in [r_C]  \setminus \rng(\pi^{(C)}) } \cstb^{(C)}_{j,j'} \vard^{(C,1)}_{j'} + \dots + \\
 %
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
+& & \sum \limits_{j' \in [r_C]  \setminus \rng(\pi^{(C)}) } \cstb^{(C)}_{j,j'} \vard^{(C,\ell-1)}_{j'} + \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}}.
 \end{array} 
 \]
 %
@@ -738,17 +738,18 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\alpha_{j,1} \in \{0,+1
 }
 \end{itemize}
 %
-From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
-\begin{itemize}
-\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, 
+%From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
+%\begin{itemize}
+%\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, 
 %
-\item the coefficient of $o_j$ is $0$, or $1$, 
+%\item the coefficient of $o_j$ is $0$, or $1$, 
 %
-\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
+%\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
 %
-\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
-\end{itemize}
+%\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
+%\end{itemize}
 
+\zhilin{I stopped here}
 
 \subsection{Decision procedure for generalized lassos}
 
@@ -1247,6 +1248,10 @@ To be done.
 }
 
 \begin{proof}
+and the $n$ data values met when traversing the path are represented by $d_{k+1},\dots,d_{k+n}$ (these data values may repeat). Then the guards and the assignments in the path induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since $\Ss$ is normalized, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_{k+r}$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots, k+n\}$ such that $\min(I_1) < \dots < \min(I_{k+r})$. Then for each $j: 1 \le j \le k$, $\min(I_j)=j$.
+
+
+
 We show by an induction that for each $i: 1 \le i \le n$ and each variable $x_j \in X$ (resp. $y_j \in Y$), an expression $e_{i,x_j}$ (resp. $e_{i,y_j}$) can be constructed to describe the value of $x_j$(resp. $y_j$) after going through the first $i$ transitions of the path. 
 %
 \begin{itemize}
