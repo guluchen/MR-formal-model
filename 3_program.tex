@@ -1,0 +1,150 @@
+%!TEX root = main-cav.tex
+ 
+\section{Language For Integer Reducers}\label{sec-mr-prog}
+We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
+We focus on a language that only allow to iterate though the input list once. Later we will show an extension that allows the reset of list iterators.
+
+
+
+\begin{figure}
+	\centering
+	\begin{tabular}{rcl}
+        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x:=x'\mid s;s\mid \next \mid \ite{g}{s}{s}$\\
+		$ p\in Programs$&$\equiv$&$\loopL{s};\mbox{ret }r \mid s;p$		
+	\end{tabular}
+	\label{fig:language}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, $r$ is a $k$-tuple in $\Ee_{X^+ \cup Y}^k$, and $c\in \mathbb{Z}$.}
+\end{figure}
+
+To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
+The main feature of the language is that we partition the variables into two sets: \emph{control variables} and \emph{data variables}.
+The former are used for guiding the program flow and the latter used for storing aggregated results.
+To be more specific, the control variables can store only values occurred in the input and can be used either in guard or arithmetic expressions.
+The data variables can store the results obtained from an arithmetic expression, but cannot be used either in guards or arithmetic expressions.
+
+Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems for this language are still undecidable, by a reduction from the reachability problem of Perti-net with zero test~\cite{petri}.
+Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables in the loop body: each loop iteration makes a Petri-net transition. 
+The non-determinism in transitions is expressed by branching over the input. 
+The guards in transitions are expressed by branching over the variables (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of Perti-net with zero test can be reduced to reachability problem in the programming language.
+
+
+\begin{figure}
+	\centering
+	\lstset{language=C,
+		basicstyle=\ttfamily\scriptsize}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\begin{minipage}[t]{0.39\textwidth}
+			(a)
+			\begin{lstlisting}[mathescape=true]
+max_abs {
+ if $\cur$>0 then max:=$\cur$
+ else max:= -$\cur$;
+ $\next$;
+ loop{
+  if $\cur$>0 then
+   if $\cur$>max then max:=$\cur$
+  else 
+   if -$\cur$>max then max:=-$\cur$;;
+  $\next$;  
+ } 
+ ret max;
+}
+	\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.22\textwidth}
+			(b)
+			\begin{lstlisting}[mathescape=true]
+avg{
+ sum:=$\cur$;
+ cnt:=0;
+ $\next$;
+ loop{
+  sum+=$\cur$;
+  cnt+=1;
+  $\next$;
+ };
+ ret sum/cnt;
+}
+			\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.35\textwidth}
+			(c) 
+			\begin{lstlisting}[mathescape=true]
+2nd_largest {
+ a:=$\cur$;
+ b:=$\cur$;
+ $\next$;
+ if $\cur$>a then a:=$\cur$
+ else b:=$\cur$;
+ $\next$;
+ loop{
+  if $\cur$>a then b:=a;a:=$\cur$
+  else if $\cur$>b then b:=$\cur$;;
+  $\next$;
+ }
+ ret b;
+}
+			\end{lstlisting}		
+		\end{minipage}\\
+		\hline		
+	\end{tabular}
+	\caption{Examples of Reducers Performing Data Analytics Operations}
+	\label{fig:examples}
+\end{figure}
+
+Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
+We argue that this is sufficient for reducers performing data analytics operations.
+In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the case \texttt{avg}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all the programs we have investigated.
+
+The observation is actually not a big surprise. The \emph{reduce} operation in Map-Reducer has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the list (similar to Hadoop~\cite{Hadoop}).
+
+\begin{figure}
+\hspace{-0.4cm}
+	\scalebox{0.9}{
+	\begin{tabular}{|l|l|}
+    \hline
+	Transitions&
+	Side Condition\\
+    \hline
+	$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$&
+	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{\rho}{e}$\\
+	
+	$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$&
+	$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{y+e}{\rho}$\\
+	
+	$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$&
+	$\eval{g}{\rho} =\ltrue$\\
+	
+	$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$& $\eval{g}{\rho} =\lfalse$\\
+	 
+	$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$&
+	$\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $l\neq \emptyset$\\
+	
+	$(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$&
+	$\rho'(z) =\rho(z)$ for $z\neq x'$, $\rho'(x') = \rho(x)$\\
+	
+	$(\loopL{s;}\mbox{ret }r, l, \rho) \longrightarrow (s;\loopL{s;}\mbox{ret }r, l, \rho)$& \\
+	
+	$(\loopL{s;}\mbox{ret }r, \emptyset, \rho) \longrightarrow (\mbox{ret }r,  \emptyset, \rho)$& 	\\	
+	\hline
+	    
+	\end{tabular}
+    }
+	\caption{The Semantics of the Programming Language}
+	\label{fig:semantics}
+\end{figure}
+
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(l)$. 
+Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$ and $\rho_l(v)=\bot$ for $v\neq \cur$.
+The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
+We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, i.e., each input list corresponds at most one output, the function $p$ is well-defined. 
+
+We are interested in the following two decision problems:
+\begin{description}
+	\item [Commutativity:] given a program $p$, decide whether for each list $l$ and its permutation $l'$, $p(l) = p(l')$.
+	\item [Equivalence:] given programs $p,p'$, decide whether for each list $l$, $p(l)=p(l')$.
+\end{description}
+
+One may argue that allowing only addition and subtraction is too restrictive for data analytics. For cases with multiplication and division at the return point, e.g., \texttt{avg} in Figure~\ref{fig:examples}(b), we can model them as an \emph{uninterpreted $k$-ary function}  (modeled as a tuple in our language) and still have a sound procedure for the decision problems. 
+

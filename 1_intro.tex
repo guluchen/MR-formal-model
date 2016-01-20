@@ -1,0 +1,34 @@
+%!TEX root = main-cav.tex
+
+\section{Introduction}
+%What is Map-Reduce
+MapReduce is a  popular framework for data parallel computation. It has been adopt in various cloud computing frameworks such as Hadoop~\cite{Hadoop} and Spark~\cite{Spark}. In a typical Map-Reduce program, a \emph{mapper} reads from data sources and outputs a list of key-value pairs. 
+The load balance mechanism of the Map-Reduce framework reorganizes the key-value pairs $(k, v_1), (k,v_2)\ldots(k,v_n)$ with the same key $k$ to a pair $(k,l)$, where $l$ is a list of values $v_1,v_2,\ldots,v_n$, and sends $(k,l)$ to a \emph{reducer}. The reducer then iterates through the list and output a key-value pair.
+
+To be more concrete, taking the ``word-counting'' MapReduce program as an example. It counts the occurrences of each word in a set of documents. The mappers reads the documents and output for each document a list in the form of $(word_1, count_1), (word_2, count_2), \ldots, (word_n, count_n)$, where $count_k$ is the number of occurrences of $word_k$ in the document being processed. These lists will be reorganized into the form of $(word_1, list_1), (word_2,list_2), \ldots, (word_n,list_n)$ and sent to the reducers, where $list_k$ is a list of integers recording the number of occurrences of $word_k$ in the set of documents. Note that the \emph{order} of the integers in the lists can differ in different executions due to network latency, load balancing, etc.
+This results in the \emph{commutativity problem}.
+
+%The communitativity problem
+We say that a reducer is \emph{commutativity} if its output is independent of the order of its inputs. The commutativity problem asks if a reducer is commutativity. A study from Microsoft~\cite{XZZ+14} reports that 58\% of the 507 reducers submit to their MapReduce platform are non-commutative. 
+Those reducers already went through serious code review, testing, and experiments with real data for more than three months. Still, among them 5 reducers containing very subtle bugs caused by non-commutativity (confirmed by the programmers). 
+So we know that non-commutativity is a good indicator for potential program errors. 
+Moreover, having the commutativity property makes reproducing a bug found by program testing easier.
+
+%The reason for studying syntatical restrictions 
+The reducer commutative problem in general is undecidable by Rice's theorem. However, in practice, the reducers are seldom Turing machines. They are usually used for data analytics and have very simple control structures. Many of them just iterate through the input list and compute the output with very simple operations.
+We want to study if the commutative problem of real-world reducers are decidable.
+
+A simple programming language of reducers over integers has been considered in~\cite{CHSW15}, where the only loop structure allowed is an iteration over the input list and it is not allowed to reset the iterator to the list head. They show that the commutative problem of programs written by such a simple language is undecidable by a reduction from the satisfiability problem of Diophantine equations. Under scrutiny, we found that the language is still too expressive for typical data analytics programs. For example, it allows multiplications of two different variables, which is a key element in the undecidability proof. 
+
+By observing the behavioral pattern of reducer programs for data analytics, we characterize the essential components in a programming language for reducers. %However, we found that even only with the essential parts of the language, the commutativity problem is still undecidable. 
+Inspired by~\cite{RP11}, we found that the commutativity problem becomes decidable if we partition variables into \emph{control variables} and \emph{data variables}. Data variables cannot be used in transition guards and control variables can store only elements in the input list (e.g., it is not allowed to store the sum of two variables in a control variable). 
+We believe such concepts provide good insights for reducer programming language design.
+
+We define a formalism named \emph{streaming numerical transducers (SNT)} and use it to create a decision procedure for the reducer commutative problem.
+SNTs combine the features of register automata~\cite{XX} and vector addition system with states (VASS)~\cite{YY} with restrictions on the structure of the transition systems.
+We show that the equivalence, commutative, and non-zeroness problems of SNTs are decidable.
+Moreover, SNTs can be composed to form a commutative/equivalence proof of reducer programs that read the input list multiple times.
+On theoretical point of view, the study of deterministic SNT is
+interesting on its own right. It is tightly related to both register automata and integer VASS and the decidability of its decision problems is seemingly non-trivial. 
+
+The rest of the paper is organized as follows. Section~\ref{sec:preliminaries} describes design of the streaming numerical transducer model, including the formal definition, the rationale behind the model design, and the types of data analytics reducer programs it can express. Section~\ref{sec:decision} discusses the decision problems and the procedure for solving the problems.

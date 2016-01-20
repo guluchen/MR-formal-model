@@ -1,0 +1,474 @@
+%!TEX root = main-cav.tex
+
+\section{Decision procedure for the non-zero output problem}\label{sec-dec-snt}
+
+Our goal in this section is to present a decision procedure for the non-zero output problem of normalized SNTs.  In the following, we fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. We illustrate the main ideas of the decision procedure for the situation that the guards in the transitions are constant-free, that is, the guards contain no comparisons with constants. The discussions of the more general situation are migrated to the appendix. 
+
+%Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\subsection{Summarization of the computations on paths and cycles}
+
+Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in the transition graph of $\Ss$. 
+
+
+
+We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ of $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word,  the data value in a position may have to be equal or unequal to the initial value of some control variable (enforced by the guards and assignments in $P$), or have to be equal or unequal to some other data value that have been met before, or can be an arbitrary value from $\intnum$. Let $\sim$  denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position has to be equal to that in the $j$-th position. Assuming that there are $r^{(P)}$ equivalence classes of $\sim$, we use the variables $\vard^{(P)}_1,\vard^{(P)}_2,\dots, \vard^{(P)}_{r^{(P)}}$ to denote the data values met when traversing $P$, one for each equivalence class. Note that here we use the superscript ${(P)}$ to denote the fact that the number $r^{(P)}$ is related to the path $(P)$. We will adopt this notation in the rest of this paper.
+
+%Moreover, suppose that the $r$ fresh data values that are introduced when traversing the path are denoted by the variables $d^{(1)}_{1},\dots,d^{(1)}_{r}$, with one data value for each of $I_{1},\dots,I_{r}$. 
+%In addition, suppose that the initial values of $y_1,\dots, y_l$ are denoted by the variables $o_1,\dots,o_l$ respectively. 
+
+\begin{proposition}\label{prop-sum-path}
+Suppose that $P$ is a path and the initial values of control and data variables are represented by a symbolic valuation $\initval$. Then the values of the control and data variables after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ of $X \cup Y$ satisfying the following conditions.
+\begin{itemize}
+\item There are a partition of $[k]$ into $I^{(P)}_{pe}$ and $I^{(P)}_{tr}$ (indices of persistent and transient control variables respectively) and an injective mapping $\pi^{(P)}: I^{(P)}_{tr} \rightarrow [r^{(P)}]$ such that for each $j \in I^{(P)}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_j)$, and for each $j \in I^{(P)}_{tr}$, $\sumf^{(P,\initval)}(x_j)=\vard^{(P)}_{\pi^{(P)}(j)}$.
+% 
+\item For each $y_j \in Y$, 
+\[
+\small
+\begin{array}{l}
+\smallskip
+\sumf^{(P,\initval)}(y_j)  = \\
+\hspace{2mm} \cste^{(P)}_{j} + \cstl^{(P)}_j \initval(y_j)  + \csta^{(P)}_{j,1} \initval(x_1) + \dots + \csta^{(P)}_{j,k} \initval(x_k) +  \cstb^{(P)}_{j,1} \vard^{(P)}_1 +\dots + \cstb^{(P)}_{j,r^{(P)}} \vard^{(P)}_{r^{(P)}},
+\end{array}
+\] 
+where $\cste^{(P)}_j,\cstl^{(P)}_j, \csta^{(P)}_{j,1},\dots,\csta^{(P)}_{j,k}, \cstb^{(P)}_{j,1},\dots,\cstb^{(P)}_{j,r^{(P)}}$ are integer constants such that $\cstl^{(P)}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint). Note that possibly $\cstl^{(P)}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{(P)}_{j,1}=0$, and so on.
+\end{itemize}
+\end{proposition}
+Note that in Proposition~\ref{prop-sum-path}, the two sets $I^{(P)}_{pe}$ and $I^{(P)}_{tr}$, the mapping $\pi^{(P)}$, and the constants $\cste^{(P)}_j,\cstl^{(P)}_j, \dots, \cstb^{(P)}_{j,r^{(P)}}$ for $j \in [l]$ only depend on $P$ and are independent of $\initval$.
+
+As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
+
+\begin{corollary}\label{cor-comp-two-paths}
+Suppose that $P_1= p_{1,0} \xrightarrow{(g_{1,1},\ \eta_{1,1})} p_{1,1} \dots p_{1, n_1-1} \xrightarrow{(g_{1,n_1},\ \eta_{1,n_1})} p_{1,n_1}$ and $P_2=p_{2,0} \xrightarrow{(g_{2,1},\ \eta_{2,1})} p_{2,1} \dots p_{2, n_2-1} \xrightarrow{(g_{2,n_2},\ \eta_{2,n_2})} p_{2,n_2}$ are two paths in $\Ss$ such that $p_{1,n_1}=p_{2,0}$. Moreover, let $\sumf^{(P_1, \initval)}$ (resp. $\sumf^{(P_2, \initval)}$) be the symbolic valuation summarizing the computation of $\Ss$ on $P_1$ (resp. $P_2$). Then the symbolic valuation summarizing the computation of $\Ss$ on $P_1 P_2$ is $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}$.
+\end{corollary}
+
+In order to get a better understanding of the relation between $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}$ and $(\sumf^{(P_1, \initval)},\sumf^{(P_2, \initval)})$, in the following, for each $y_j \in Y$, we obtain a more explicit form of the expression $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j)$, by unfolding therein the expression $\sumf^{(P_1,\initval)}(y_{j})$ and the expressions $\sumf^{(P_1,\initval)}(x_{j'})$ with $j' \in [k]$.
+\[
+\small
+\begin{array}{l c l}
+\medskip
+\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j) &  & \\
+%\smallskip
+%& \hspace{-2cm} = & \\
+%\smallskip
+%& & \hspace{-12mm} \cste^{(P_2)}_{j} + \cstl^{(P_2)}_j \sumf^{(P_1,\initval)}(y_j)  +  \csta^{(P_2)}_{j,1} \sumf^{(P_1,\initval)}(x_1) + \dots + \csta^{(P_2)}_{j,k} \sumf^{(P_1,\initval)}(x_k) +  \\
+%\smallskip
+%& & \hspace{-8mm}  \cstb^{(P_2)}_{j,1} \vard^{(P_2)}_1 +\dots + \cstb^{(P_2)}_{j,r} \vard^{(P_2)}_{r}
+%\\
+\smallskip
+& \hspace{-24mm}  =  &  \\
+\smallskip
+& & \hspace{-12mm} \left(\cste^{(P_2)}_{j}+\cstl^{(P_2)}_{j} \cste^{(P_1)}_{j}\right)+ \left(\cstl^{(P_2)}_{j} \cstl^{(P_1)}_{j} \right) \initval(y_j)+\\
+\smallskip
+& &  \hspace{-12mm} \sum \limits_{j' \in I^{(P_1)}_{pe}} \left(\csta^{(P_2)}_{j,j'}+\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'} \right) \initval(x_{j'}) + \sum \limits_{j' \in I^{(P_1)}_{tr}} \left(\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'} \right) \initval(x_{j'}) + \\
+%
+\smallskip
+& & \hspace{-12mm} \sum \limits_{j' \in \rng(\pi^{(P_1)})} \left( \csta^{(P_2)}_{j,(\pi^{(P_1)})^{-1}(j')}+\cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'} \right) \vard^{(P_1)}_{j'} + \\
+\medskip
+& & \hspace{-12mm}  \sum \limits_{j' \le [r^{(P_1)}] \setminus \rng(\pi^{(P_1)})} \left( \cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'} \right) \vard^{(P_1)}_{j'} + \cstb^{(P_2)}_{j,1} \vard^{(P_2)}_1 +\dots + \cstb^{(P_2)}_{j, r^{(P_2)} } \vard^{(P_2)}_{r^{(P_2)} }.
+\end{array}
+\] 
+Below, we explain more intuitively how the coefficients in $\sumf^{(P_2,\ \sumf^{(P_1,\initval)})}(y_j)$ are obtained from $\sumf^{(P_1, \initval)}(y_j)$ and $\sumf^{(P_2, \initval)}(y_j)$.
+\begin{itemize}
+\item The constant coefficient is the sum of $\cste^{(P_2)}_{j}$, i.e. the constant coefficient of $\sumf^{(P_2, \initval)}$,  and $\cstl^{(P_2)}_{j} \cste^{(P_1)}_{j}$, i.e. the constant coefficient of  $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j} $, that is, the coefficient of $\initval(y_j)$ in $\sumf^{(P_2, \initval)}$.
+%
+\item The coefficient of $\initval(y_j)$ is the product of the two coefficients of $\initval(y_j)$ in $\sumf^{(P_1, \initval)}$ and $\sumf^{(P_2, \initval)}$ respectively.
+%
+\item If $j' \in I^{(P_1)}_{pe}$, then the value of $x_{j'}$ is unchanged when traversing $P_1$. This means that the initial value of $x_{j'}$ before traversing $P_2$ is still $\initval(x_{j'})$. Thus the coefficient of $\initval(x_{j'})$ is the sum of $\csta^{(P_2)}_{j,j'}$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_2, \initval)}$, and $\cstl^{(P_2)}_{j} \csta^{(P_1)}_{j,j'}$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j}$.
+%
+\item If $j' \in \rng(\pi^{(P_1)})$, let $\pi^{(P)}(j'')=j'$. Then the initial value of $x_{j''}$ before traversing $P_2$ is $\vard^{(P_1)}_{j'}$. Therefore, the coefficient of $\vard^{(P_1)}_{j'}$ is the sum of $\csta^{(P_2)}_{j,j''}$, i.e. the coefficient of $\initval(x_{j''})$ in $\sumf^{(P_2, \initval)}$, and $\cstl^{(P_2)}_{j} \cstb^{(P_1)}_{j,j'}$, i.e. the coefficient of $\vard^{(P_1)}_{j'}$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{(P_2)}_{j}$.
+%
+\item Similarly for the other coefficients.
+\end{itemize}
+
+In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C,\initval)}$ and $\ell$.
+
+
+
+
+%Suppose that $C$ is a cycle in $\Ss$, that is, a path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that $q_n = q_0$.  
+
+%Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{(C,1)}_{1},\dots,d^{(C,1)}_{r_C}$ are introduced when traversing the cycle for the first time. 
+%In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
+%
+%From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be constructed to summarize the computation of $\Ss$ on $C$.
+%\begin{itemize}
+%\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{(C,1)}_{\pi_C(j)-k}$.
+% 
+%\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} o_j + \beta^{(C)}_{j,1} d^{(0)}_1 + \dots + \beta^{(C)}_{j,k} d^{(0)}_k + \gamma^{(C)}_{j,1} d^{(C,1)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,1)}_{r_C}$ such that $\alpha^{(C)}_{j,1} \in \{0,+1\}$.
+%\end{itemize}
+
+\begin{proposition}\label{prop-sum-cycle}
+Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,
+\[
+\small
+\begin{array}{l c l}
+\sumf^{(C^\ell,\initval)}(y_j)  & = & \left(\cste^{(C)}_{j} + \cstl^{(C)}_{j} \cste^{(C)}_{j}+ \dots +(\cstl^{(C)}_{j})^{\ell-1} \cste^{(C)}_{j}\right) + (\cstl^{(C)}_{j})^\ell \initval(y_j) + \\
+& & \sum \limits_{j' \in I^{(C)}_{pe}} \left(\csta^{(C)}_{j,j'}+\cstl^{(C)}_{j}\csta^{(C)}_{j,j'} + \dots +(\cstl^{(C)}_{j})^{\ell-1}  \csta^{(C)}_{j,j'} \right) \initval(x_{j'}) + \\
+%
+& & \sum \limits_{j' \in I^{(C)}_{tr}} \left((\cstl^{(C)}_{j})^{\ell-1} \csta^{(C)}_{j,j'} \right) \initval(x_{j'}) +  \\
+%
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left( (\cstl^{(C)}_{j})^{\ell-2} \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')} +(\cstl^{(C)}_{j})^{\ell-1}\cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots  +\\
+%
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left( \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}+ \cstl^{(C)}_{j} \cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \in [r^{(C)}] \setminus \rng(\pi^{(C)})} \left((\cstl^{(C)}_{j})^{\ell-1} \cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots  \\
+%
+%
+& &  \sum \limits_{j' \in [r^{(C)}] \setminus \rng(\pi^{(C)})}  \left(\cstl^{(C)}_{j} \cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}},
+\end{array} 
+\]
+where the variables $\vard^{(C,1)}_{1},\dots, \vard^{(C,1)}_{r^{(C)}},\dots, \vard^{(C,\ell)}_{1},\dots, \vard^{(C,\ell)}_{r^{(C)}}$
+ represent the data values introduced when traversing $C$ for the first time, $\dots$, and for the $\ell$-th time.
+\end{proposition}
+
+From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$, we have the following observation.
+\begin{itemize}
+\item If $\cstl^{(C)}_{j}=0$, then
+\[
+\small
+\begin{array}{l c l}
+\smallskip
+\sumf^{(C^\ell,\initval)}(y_j)  & = & \cste^{(C)}_{j} +  \sum \limits_{j' \in I^{(C)}_{pe}} \csta^{(C)}_{j,j'} \initval(x_{j'}) +
+\sum \limits_{j'  \in \rng(\pi^{(C)})} \csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}\ \vard^{(C,\ell-1)}_{j'} + \\
+%
+& & \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}}.
+\end{array} 
+\]
+\item If $\cstl^{(C)}_{j}=1$, then 
+\[
+\small
+\begin{array}{l c l}
+\sumf^{(C^\ell,\initval)}(y_j)  & = &  \left(\cste^{(C)}_{j} \ell \right) + \initval(y_j) +   \sum  \limits_{j' \in I^{(C)}_{pe}} \left(\csta^{(C)}_{j,j'} \ell \right) \initval(x_{j'}) + \sum \limits_{j' \in I^{(C)}_{tr}} \csta^{(C)}_{j,j'} \initval(x_{j'}) +  \\
+\smallskip
+& & \sum \limits_{j' \in \rng(\pi^{(C)})} \left(\csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')} + \cstb^{(C)}_{j,j'} \right) \vard^{(C,1)}_{j'} + \dots +\\
+%
+& &  \sum \limits_{j' \in \rng(\pi^{(C)})}  \left(\csta^{(C)}_{j, (\pi^{(C)})^{-1}(j')}+\cstb^{(C)}_{j,j'} \right) \vard^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \in [r_C]  \setminus \rng(\pi^{(C)}) } \cstb^{(C)}_{j,j'} \vard^{(C,1)}_{j'} + \dots + \\
+%
+%
+& & \sum \limits_{j' \in [r_C]  \setminus \rng(\pi^{(C)}) } \cstb^{(C)}_{j,j'} \vard^{(C,\ell-1)}_{j'} + \cstb^{(C)}_{j, 1} \vard^{(C,\ell)}_{1} + \dots + \cstb^{(C)}_{j,r^{(C)}} \vard^{(C,\ell)}_{r^{(C)}}.
+\end{array} 
+\]
+%
+\hide{
+\item If $\alpha^{(C)}_{j,1}=-1$ and $\ell$ is even, then
+\[
+\begin{array}{l c l}
+\chi^{(C)}_{\ell}(y_j)  & = &  o_j + \sum \limits_{j'\le k, \pi_C(j') \neq j'} (-\beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} - \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
+\end{array} 
+\]
+\item If $\alpha_{j,1}=-1$ and $\ell$ is odd, then
+\[
+\begin{array}{l c l}
+\smallskip
+\chi^{(C)}_{\ell}(y_j)  & = &  \alpha^{(C)}_{j,0} - o_j + \sum \limits_{j' \le k, \pi_C(j')=j'} \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \sum \limits_{j'\le k, \pi_C(j') \neq j'}  \beta^{(C)}_{j,j'} d^{(0)}_{j'} +  \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( -\beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} \gamma^{(C)}_{j,j'} d^{(C,1)}_{j'} + \dots + \\
+%
+& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
+%
+& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (-\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C}.
+\end{array} 
+\]
+}
+\end{itemize}
+%
+%From the analysis above, we observe that in $\chi^{(C)}_\ell(y_j)$, 
+%\begin{itemize}
+%\item the constant coefficient is either $\alpha^{(C)}_{j,0}$, or $\alpha^{(C)}_{j,0} \ell$, 
+%
+%\item the coefficient of $o_j$ is $0$, or $1$, 
+%
+%\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{(C)}_{j,j'}$, or $0$, or $\beta^{(C)}_{j,j'} \ell$,
+%
+%\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
+%\end{itemize}
+
+\zhilin{I stopped here}
+
+\subsection{Decision procedure for generalized lassos}
+
+In this subsection, we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lasso. 
+
+Suppose the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+
+From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
+\begin{itemize}
+\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
+% 
+\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \alpha^{(H)}_{j,1} o_j + \gamma^{(H)}_{j,1} d^{(0)}_1 +\dots + \gamma^{(H)}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{(H)}_{j,1} \in \{0,+1,-1\}$. Since the initial value of the control variable $y_j$ is $o_j=\bot$, we assume that $\alpha^{(H)}_{j,1}=0$, without loss of generality.
+\end{itemize}
+
+Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
+
+A \emph{cycle scheme} $\schm$ is a path $H C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by traversing $H$ first, then iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Corollary~\ref{cor-comp-two-paths}, we know that a function $\chi_{\schm}$ can be constructed by composing $\chi_{H}, \chi^{(C_{i_1})}_{\ell_1},\dots,\chi^{(C_{i_t})}_{\ell_t}$, to summarize the computation of $\Ss$ on $\schm$.
+
+\begin{proposition}\label{prop-cycle-schm}
+Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, $\chi_{\schm}(O(q_m))$ contains the following expression,
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. 
+\]
+Moreover, the constant coefficient of $\chi_\schm(O(q_m))$ contains the following expression,
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0}.
+%\end{array}
+\]
+\end{proposition}
+
+\begin{proof}
+At first,  let us check $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$.
+\[
+\begin{array}{l c l}
+\chi^{(C_{i_1})}_{\ell_1}(O(q_m)) & = & a_0 + a_1 \chi^{(C_{i_1})}_{\ell_1}(x_1) + \dots a_k \chi^{(C_{i_1})}_{\ell_1}(x_k) + \\
+& & b_1 \chi^{(C_{i_1})}_{\ell_1}(y_1) + \dots + b_l \chi^{(C_{i_1})}_{\ell_1}(y_l).
+\end{array}
+\] 
+
+Then $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is a linear combination of the variables $d^{(0)}_1,\dots, d^{(0)}_{r_H}$ and $d^{(C_{i_1},1)}_1,\dots, d^{(C_{i_1},1)}_{r_{C_{i_1}}}, \dots, d^{(C_{i_1},\ell_1)}_1,\dots, d^{(C_{i_1},\ell_1)}_{r_{C_{i_1}}}$.
+
+For each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is 
+
+\[a_{j'} + \sum \limits_{1 \le j \le l} b_j \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}.\]
+%
+%
+For each $j: 1 \le j \le l$, $\chi_{\schm}(y_j)$ contains the following expression 
+\[\left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'} d^{(0)}_{\pi_H(j')-k}.\]
+
+Since 
+\[
+\chi_{\schm}(O(q_m)) = a_0 + a_1 \chi_{\schm}(x_1) + \dots a_k \chi_{\schm}(x_k) + b_1 \chi_{\schm}(y_1) + \dots + b_l \chi_{\schm}(y_l),
+\] 
+it is not hard to see that $\chi_\schm(O(q_m))$ contains the expression,
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. 
+\]
+The argument for the constant coefficient is similar.
+\qed
+\end{proof}
+
+We are ready to present the decision procedure.
+
+\smallskip
+
+\noindent {\bf Step I}. Decide whether $\chi_H(O(q_m))$ is not identical to zero (it is easy to do so, just check the coefficients of $d^{(0)}_1, \dots, d^{(0)}_{r_H}$). If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
+
+\smallskip
+
+\noindent {\bf Step II}. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, from Proposition~\ref{prop-cycle-schm}, we know that $\chi_{\schm}(O(q_m))$ contains the following expression,
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) d^{(0)}_{\pi_H(j')-k}. \ \ \  (\ast)
+\]
+Since $\alpha^{(C_{i_2})}_{j,1}, \dots, \alpha^{(C_{i_t})}_{j,1} \in \{0,+1\}$, the expression $(\ast)$ is of the form 
+\[
+\sum \limits_{1 \le j \le l} b_j  s_{\schm,j} \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots +(\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'},
+\]
+where $s_{\schm,j} \in \{0,+1\}$. Then the expression $(\ast)$ can be rewritten as $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constant $\mu_{\schm, (i_1,j')},\nu_{\schm, (i_1,j')}$ (possibly $\mu_{\schm, (i_1,j')}=0$). 
+
+For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j'$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+\item $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
+\end{itemize}
+then return $\ltrue$.
+
+Similarly, if there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
+$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+and $\mu_{\schm,(i_1,0)} \neq 0$, 
+%
+then return $\ltrue$, where $\mu_{\schm,(i_1,0)}$ is obtained from 
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%\end{array}
+\]
+similarly to $\mu_{\schm,(i_1,j')}$ above.
+
+If the decision procedure has not return yet, then go to Step III. \qed
+
+\smallskip
+
+Note that for a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $j' \le k$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, we can let $d^{(0)}_{\pi_H(j')-k} \neq 0$, and let $\ell_1$ sufficiently large, so that $(\mu_{\schm,(i_1,j')} \ell_1 + \nu_{\schm,(i_1,j')})d^{(0)}_{\pi_H(j')-k}$ dominates $\chi_{\schm}(O(q_m))$, and  $\chi_{\schm}(O(q_m))$ becomes non-zero. Similarly for $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$.
+
+We would like to remark that although in Step II, we do not consider all the cycle schemes, the set of cycle schemes chosen in Step II does exhaust all the possible values of $s_{\schm,j}$ when $\schm$ varies.
+
+
+\medskip
+
+\noindent {\bf Claim}. 
+{\it 
+Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
+\begin{enumerate}
+\item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+%
+\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain $D$, no matter whatever $\schm$ is. Moreover a finite state automaton $\Aa$ can be constructed from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record the evolvement of these coefficients  in the cycle schemes.
+\end{enumerate}
+}
+
+\begin{proof}
+Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
+
+We prove the second fact in the following. We exemplify the proof for $t=2$. 
+For each $y_j \in Y$, we will illustrate the argument for the situation that $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$.
+
+Suppose $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$. Then in $\chi'_\schm(y_j)$,
+\begin{itemize}
+\item the constant coefficient is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\  0 = 0$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$ and $\alpha^{(C_{i_1})}_{j,0} \ell_1$ are removed),
+%
+%\item the coefficient of $o_j$ is $1$,
+%
+\item for each $j' \le r_{H}$ such that $j' \not \in \{\pi_H(j'')-k \mid 1 \le j'' \le k\}$, the coefficient of $d^{(0)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(H)}_{j'} = \gamma^{(H)}_{j'}$,
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') = j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = 0$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ and $\beta^{(C_{i_1})}_{j,j'} \ell_1$ are removed),
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $\beta^{(C_{i_2})}_{j,j'} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
+%
+\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$,
+%
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} (\beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}) = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is the expression $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k))=\pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} \ell_2$ is removed),
+%
+\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k)) \neq \pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'}$ $=$ $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$ $+$ $\gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
+%
+\item all the other coefficients are those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ for the data values introduced in $C^{\ell_2}_{i_2}$.
+\end{itemize} 
+From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'$ with $(\chi^{C_{i_2}}_{\ell_2})'$, given a $j': j' \le r_{C_{i_1}}$, the coefficients of all the data values $d^{(C_{i_1},i)}_{j'}$ for $i: 1 \le i < \ell_1$ are the same. Moreover, they will keep the same even we keep composing with $(\chi^{C_{i_3}}_{\ell_3})'$, $(\chi^{C_{i_4}}_{\ell_4})'$, and so on. Therefore, we only need record one copy of these coefficients and there are only a bounded number of coefficients to remember. Then we can construct a finite state automaton $\Aa$ from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record these coefficients in the states and simulate the evolvement of these coefficients. The final states of $\Aa$ represent the coefficients obtained when reaching the state $q_m$ in $\Ss$. \qed
+\end{proof}
+
+\medskip 
+
+\noindent {\bf Step III}. For each final state $\chi$ of $\Aa$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
+
+
+%From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
+
+%\begin{proposition}
+%The non-zero reachability problem of $\intnum$-VASS is in NP.
+%\end{proposition}
+%
+%\begin{proof}
+%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
+%
+% From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
+%\end{proof}
+%
+%
+%Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
+
+
+
+\subsection{Decision procedure for SNTs}
+
+We will illustrate the argument by the following situation, the transition graph comprises a handle $H=q_0\dots q_{m}$,  a collection of cycles $(C_1,\dots,C_n)$ such that $q_m$ is the unique state shared by each pair of them, another handle $H'=q'_0 \dots q'_{m'}$ such that $q'_0=q_m$, and another collection of cycles $(C'_1,\dots,C'_{n'})$ such that $q'_{m'}$ is the unique state shared by each pair of them. Moreover, $O(q'_{m'})$ is defined and $O(q)$ is undefined for all the other states $q$. Suppose $O(q'_{m'}) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
+
+From Proposition~\ref{prop-sum-path}, we know that 
+for the handle $H = q_0 \dots q_m$, a function $\chi_H$ can be constructed to summarize the computation on the handle. Suppose for each $j: 1 \le j \le l$,  $\chi_H(y_j) = \alpha^{(H)}_{j,0} + \gamma^{(H)}_{j,1} d^{(H,0)}_1 + \dots + \gamma^{(H)}_{j,r_H} d^{(H,0)}_{r_H}$, where $d^{(H,0)}_1,\dots, d^{(H,0)}_{r_H}$ represent the $r_H$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_H$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_H\}$ such that for each $j: 1 \le j \le k$, $\chi_H(x_j) = d^{(H,0)}_{\pi_H(j)-k}$.
+
+Similarly, for the handle $H' = q'_0 \dots q'_{m'}$, a function $\chi_{H'}$ can be constructed to summarize the computation on the handle. Let $d'_1,\dots,d'_k$ and $o'_1,\dots,o'_k$ denote the initial values of the control and data variables respectively. Then for each $j: 1 \le j \le l$,  $\chi_{H'}(y_j) = \alpha^{(H')}_{j,0} + \alpha^{(H')}_{j,1} o'_j + \beta^{(H')}_{j,1} d'_1 + \dots + \beta^{(H')}_{j,k} d'_{k}+ \gamma^{(H')}_{j,1} d^{(H',0)}_1 + \dots + \gamma^{(H')}_{j,r_{H'}} d^{(H',0)}_{r_{H'}}$, where $d^{(H',0)}_1,\dots, d^{(H',0)}_{r_{H'}}$ represent the $r_{H'}$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_{H'}$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_{H'}\}$ such that for each $j: 1 \le j \le k$, if $\pi_{H'}(j)=j$, then $\chi_{H'}(x_j) = d'_j$, otherwise, $\chi_{H'}(x_j) = d^{(H',0)}_{\pi_{H'}(j)-k}$.
+
+From Proposition~\ref{prop-sum-cycle}, we know that for $\ell \ge 1$, the functions $\chi^{(C_1)}_{\ell}$,$\dots$, $\chi^{(C_n)}_{\ell}$, $\chi^{(C'_1)}_{\ell}$, $\dots$, and $\chi^{(C'_{n'})}_{\ell}$ can be defined to summarize to computation on $C^{\ell}_1$, $\dots$, $C^{\ell}_n$, $(C'_1)^{\ell}$, $\dots$, and $(C'_n)^{\ell}$ respectively. 
+
+Let us check the expression $\chi_{H'}(O(q'_{m'}))$ defined as follows,
+\[
+\begin{array}{l c l}
+\smallskip
+\chi_{H'}(O(q'_{m'})) & = & a_0 + a_1 \chi_{H'}(x_1) + \dots a_k \chi_{H'}(x_k) + \\
+\smallskip
+& & b_1 \chi_{H'}(y_1) + \dots + b_l \chi_{H'}(y_l) \\
+\smallskip
+&  = &  \left(a_0+\sum \limits_{1 \le j \le l} b_j \alpha^{(H')}_{j,0} \right) + \sum \limits_{j \le k, \pi_{H'}(j)=j} \left(a_j + \sum \limits_{1 \le j' \le l} b_{j'} \beta^{(H')}_{j,j'} \right) d'_j  + \\
+%
+& & \sum \limits_{j \le k, \pi_{H'}(j) \neq j} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \beta^{(H')}_{j,j'})\right) d'_j + \sum \limits_{1\le j \le l} (b_{j} \alpha^{(H')}_{j,0}) o'_{j} + \\
+\smallskip
+%
+& & \sum \limits_{1 \le j \le r_{H'}, j+k \in \rng(\pi_{H'})} \left(a_{(\pi_{H'})^{-1}(j+k)}+\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{(H')}_{j,j'})\right) d^{(H',0)}_j +\\ & & \dots  + \sum \limits_{1 \le j \le r_{H'}, j \not \in \rng(\pi_{H'})} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{(H')}_{j,j'})\right) d^{(H',0)}_j.
+\end{array}
+\] 
+Let $a'_0,a'_1,\dots,a'_k,b'_1,\dots,b'_l$ denote the constant coefficient, the coefficients of $d'_1,\dots,d'_k$, and the coefficients of $o'_1,\dots,o'_l$ in $\chi_{H'}(O(q'_{m'}))$ respectively. 
+
+Then we can adapt the output function $O$ and set $O(q_m) = a'_0 + a'_1 x_1 + \dots a'_k x_k + b'_1 y_1 + \dots b'_l y_l$.
+
+
+\smallskip
+
+\noindent {\bf Step I$'$}. By using the output expression $O(q_m)$, we can do the same analysis for the handle $H$ as for generalized lassos.
+
+\smallskip 
+\noindent {\bf Step II$'$}. At first, by using $O(q_m)$, we do the following computation, similarly to Step II: For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm$  
+$HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}
+$
+or 
+$HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t} (C'_{i'_1})^{\ell'_1} (C'_{i'_2})^{\ell'_2} \dots (C'_{i'_{t'}})^{\ell'_{t'}}$,
+and $j' \le k$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t \le n$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+\item $i'_1,\dots,i'_{t'} \le n'$ are mutually distinct, $\ell'_2 = \dots = \ell'_{t'} = 1$, 
+%
+\item $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$ (recall that $\mu_{\schm,(i_1,j')}$ is obtained from the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in  $\chi_\schm(O(q_m))$), 
+\end{itemize}
+then return $\ltrue$. 
+
+Then by using $O(q'_{m'})$, we do the following: For each $i'_1: 1 \le i'_1 \le n'$, if there are a cycle scheme $\schm' =(C'_{i'_1})^{\ell'_1} (C'_{i'_2})^{\ell'_2} \dots (C'_{i'_{t'}})^{\ell'_{t'}}$, and $j' \le k$ such that
+\begin{itemize}
+\item $i'_2,\dots,i'_t \le n'$ are mutually distinct, $\ell'_2 = \dots = \ell'_t = 1$, 
+%
+\item $\pi_{C'_{i_1}}(j')=j'$, and $\mu_{\schm',(i'_1,j')} \neq 0$ (here $\mu_{\schm',(i_1,j')}$ is obtained from the coefficient of $d''_{j'}$ in  $\chi_{\schm'}(O(q'_{m'}))$, where $d''_1,\dots,d''_k$ denote the initial data values of $x_1,\dots,x_k$ respectively),
+\end{itemize}
+then return $\ltrue$. 
+
+Similarly, we can apply an analysis for the constant coefficient to $\chi_\schm(O(q_m))$. 
+
+If the decision procedure has not return yet, then go to Step III$'$. \qed
+
+\smallskip
+
+Similarly to the generalized lassos, we can construct a finite state automaton $\Aa'$ from $\chi_H,\chi_{C_1},\dots,\chi_{C_n},\chi_{H'}, \chi_{C'_1},\dots,\chi_{C'_{n'}}$ to record the coefficients in the states and simulate the evolvement of these coefficients. The final states of $\Aa$ represent the coefficients obtained when reaching the state $q'_{m'}$ in $\Ss$. 
+
+\smallskip 
+
+\noindent {\bf Step III$'$}. For each final state $\chi'$ of $\Aa'$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi'(O(q'_{m'}))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
+

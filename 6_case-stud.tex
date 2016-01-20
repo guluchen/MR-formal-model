@@ -1,0 +1,25 @@
+%!TEX root = main-cav.tex
+
+\section{Case Studies}
+
+	\begin{lstlisting}[mathescape=true]
+	int MAD() {
+	...
+	// repeat the body  
+	// of (b) to compute
+	// sum and cnt
+	
+	init();
+	avg:= sum/cnt;
+	mad:=0;
+	while(cur()$\neq$end()){
+	if(cur()<avg){
+	mad=mad+(avg-cur());
+	}else{
+	mad=mad+(cur()-avg);
+	}
+	next();
+	}
+	return mad/cnt;
+	}
+	\end{lstlisting}
