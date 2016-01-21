@@ -8,7 +8,7 @@ We will present the decision procedure step by step.
 \begin{itemize}
 \item We first demonstrate how to summarize the computations of $\Ss$ on paths and on cycles (see Section~\ref{sec-sum}). 
 %
-\item Then we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lassos (see Section~\ref{sec-glasso}). The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. 
+\item Then we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lassos (see Section~\ref{sec-glasso}). The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by different cycles from $C_1,\dots,C_n$. 
 %
 \item Finally, we show how the decision procedure for generalized lassos can be generalized to the situation that the transition graph is generalized flat (see Section~\ref{sec-gflat}).
 \end{itemize}
@@ -211,13 +211,20 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
 
-Before presenting the decision procedure for generalized lassos, we introduce an additional notation.
+Before presenting the decision procedure for generalized lassos, we introduce some notations.
 
-Suppose $P$ is a path in $\Ss$, $\Omega$ is a symbolic valuation representing the initial values of the control and data variables, and $r^{(P)}$ data values are introduced when traversing $P$. Moreover, let $e$ be an expression that is linear over $\Omega(x_1),\dots,\Omega(x_k), \vard^{(P)}_1,\dots,\vard^{(P)}_{r^{(P)}}$, more precisely, $e:=\mu_0 + \mu_1 \Omega(x_1) +\dots + \mu_k \Omega(x_k) + \nu_1 \vard^{(P)}_{1} + \dots + \nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}}$, where $\mu_0,\mu_1,\dots,\mu_k,\nu_1,\dots,\nu_{r^{(P)}}$ are the expressions that contain none of the variables from $\Omega(x_1), \dots, \Omega(x_k), \vard^{(P)}_{1},\dots, \vard^{(P)}_{r^{(P)}}$. Then we call the subexpressions $\mu_0,\mu_1 \Omega(x_1),\dots,\mu_k \Omega(x_k),\nu_1 \vard^{(P)}_{1} ,\dots, \nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}}$ as \emph{atoms of $e$ with respect to $P$}. 
+Suppose $P$ is a path in $\Ss$, $\Omega$ is a symbolic valuation representing the initial values of the control and data variables, and $r^{(P)}$ data values are introduced when traversing $P$. Moreover, let $e$ be an expression that is a linear combination of $\Omega(x_1)$, $\dots$, $\Omega(x_k)$, $\vard^{(P)}_1$, $\dots$, and $\vard^{(P)}_{r^{(P)}}$, more precisely, 
+\[e:=\mu_0 + \mu_1 \Omega(x_1) +\dots + \mu_k \Omega(x_k) + \nu_1 \vard^{(P)}_{1} + \dots + \nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}},\]
+ such that $\mu_0,\mu_1,\dots,\mu_k,\nu_1,\dots,\nu_{r^{(P)}}$ are the expressions that contain none of the variables from $\Omega(x_1)$, $\dots$, $\Omega(x_k)$, $\vard^{(P)}_1$, $\dots$, and $\vard^{(P)}_{r^{(P)}}$ (although they may contain some other variables). Then we call $\mu_0$ as the \emph{constant atom} of $e$ (with respect to $P$), and the subexpressions $\mu_1 \initval(x_1)$, $\dots$, $\mu_k \initval(x_k)$, $\nu_1 \vard^{(P)}_{1}$ , $\dots$,  $\nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}}$ as the $(\initval(x_1))$-atom, $\dots$, $(\initval(x_k))$-atom, $\vard^{(P)}_{1}$-atom, $\dots$, and $(\vard^{(P)}_{r^{(P)}})$-atom of $e$ respectively. Moreover, $\mu_1, \dots, \mu_k, \nu_1,\dots, \nu_{r^{(P)}}$ are called the \emph{coefficients} of these atoms. A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} an expression that is identical to zero.
 
-Suppose that $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+In the rest of this subsection, we assume that 
+\begin{quote}
+\it the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by different cycles from $C_1,\dots,C_n$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+\end{quote}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
 \begin{itemize}
 \item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
@@ -226,71 +233,37 @@ From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be co
 \end{itemize}
 
 Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A \emph{cycle scheme} $\schm$ is a path $H C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by traversing $H$ first, then iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Corollary~\ref{cor-comp-two-paths}, we know that a function $\chi_{\schm}$ can be constructed by composing $\chi_{H}, \chi^{(C_{i_1})}_{\ell_1},\dots,\chi^{(C_{i_t})}_{\ell_t}$, to summarize the computation of $\Ss$ on $\schm$.
+A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, we know that a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed by composing $\sumf^{((C_{i_1})^{\ell_1},\initval)}$, $\dots$, and $\sumf^{((C_{i_t})^{\ell_t},\initval)}$, to summarize the computation of $\Ss$ on $\schm$. Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{(C_{i_s},1)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},1)}_{s,r^{(C_{i_s})}}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,r^{(C_{i_s})}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{(C_{i_1})}}$, $\dots$, $\vard^{(C_{i_t},1)}_{t,1}$, $\dots$, $\vard^{(C_{i_t},\ell_t)}_{t, r^{(C_{i_t})}}$. 
+
 
 \begin{proposition}\label{prop-cycle-schm}
-Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, $\chi_{\schm}(O(q_m))$ contains the following expression,
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
-\end{array}
-\right) d^{(0)}_{\pi_H(j')-k}. 
-\]
-Moreover, the constant coefficient of $\chi_\schm(O(q_m))$ contains the following expression,
-\[
-\sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
-%\\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0}.
-%\end{array}
-\]
-\end{proposition}
-
-\begin{proof}
-At first,  let us check $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$.
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Then for each $j: 1 \le j \le l$ and each $j' \in I^{(C_{i_1})}_{pe}$, the $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+\[\left((\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right) \\
+\left(1+\lambda^{(C_{i_1})}_{j} + \dots + (\lambda^{(C_{i_1})}_{j})^{\ell_1-1} \right) \csta^{(C_{i_1})}_{j,j'} \initval(x_{j'}),\]
+and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 \[
 \begin{array}{l c l}
-\chi^{(C_{i_1})}_{\ell_1}(O(q_m)) & = & a_0 + a_1 \chi^{(C_{i_1})}_{\ell_1}(x_1) + \dots a_k \chi^{(C_{i_1})}_{\ell_1}(x_k) + \\
-& & b_1 \chi^{(C_{i_1})}_{\ell_1}(y_1) + \dots + b_l \chi^{(C_{i_1})}_{\ell_1}(y_l).
+\left((\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right)
+\left(1+\lambda^{(C_{i_1})}_{j} + \dots + (\lambda^{(C_{i_1})}_{j})^{\ell_1-1} \right) \cste^{(C_{i_1})}_{j} + \\
+\left((\lambda^{(C_{i_3})}_{j})^{\ell_3} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right)
+\left(1+\lambda^{(C_{i_2})}_{j} + \dots + (\lambda^{(C_{i_2})}_{j})^{\ell_2-1} \right) \cste^{(C_{i_2})}_{j} +\\
+ \dots + 
+\left(1+\lambda^{(C_{i_t})}_{j} + \dots + (\lambda^{(C_{i_t})}_{j})^{\ell_t-1} \right) \cste^{(C_{i_t})}_{j}.
 \end{array}
-\] 
-
-Then $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is a linear combination of the variables $d^{(0)}_1,\dots, d^{(0)}_{r_H}$ and $d^{(C_{i_1},1)}_1,\dots, d^{(C_{i_1},1)}_{r_{C_{i_1}}}, \dots, d^{(C_{i_1},\ell_1)}_1,\dots, d^{(C_{i_1},\ell_1)}_{r_{C_{i_1}}}$.
-
-For each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$ is 
-
-\[a_{j'} + \sum \limits_{1 \le j \le l} b_j \left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}.\]
-%
-%
-For each $j: 1 \le j \le l$, $\chi_{\schm}(y_j)$ contains the following expression 
-\[\left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'} d^{(0)}_{\pi_H(j')-k}.\]
-
-Since 
-\[
-\chi_{\schm}(O(q_m)) = a_0 + a_1 \chi_{\schm}(x_1) + \dots a_k \chi_{\schm}(x_k) + b_1 \chi_{\schm}(y_1) + \dots + b_l \chi_{\schm}(y_l),
-\] 
-it is not hard to see that $\chi_\schm(O(q_m))$ contains the expression,
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
-\end{array}
-\right) d^{(0)}_{\pi_H(j')-k}. 
 \]
-The argument for the constant coefficient is similar.
-\qed
-\end{proof}
+Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient is of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{(C_{i_1})}_{pe}$.
+\end{proposition}
 
 We are ready to present the decision procedure.
 
 \smallskip
 
-\noindent {\bf Step I}. Decide whether $\chi_H(O(q_m))$ is not identical to zero (it is easy to do so, just check the coefficients of $d^{(0)}_1, \dots, d^{(0)}_{r_H}$). If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
+\noindent {\bf Step I}. Decide whether $\sub{O(q_m)}{\sumf^{(H,\initval_0)}}$ is not identical to zero, where $\initval_0$ is the special symbolic valuation such that $\initval_0(x_j)=\bot$ for each $x_j \in X$ and $\initval_0(y_j)=\bot$ for each $y_j \in Y$. If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
 
 \smallskip
 
