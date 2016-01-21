@@ -4,12 +4,21 @@
 
 Our goal in this section is to present a decision procedure for the non-zero output problem of normalized SNTs.  In the following, we fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. We illustrate the main ideas of the decision procedure for the situation that the guards in the transitions are constant-free, that is, the guards contain no comparisons with constants. The discussions of the more general situation are migrated to the appendix. 
 
+We will present the decision procedure step by step.
+\begin{itemize}
+\item We first demonstrate how to summarize the computations of $\Ss$ on paths and on cycles (see Section~\ref{sec-sum}). 
+%
+\item Then we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lassos (see Section~\ref{sec-glasso}). The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. 
+%
+\item Finally, we show how the decision procedure for generalized lassos can be generalized to the situation that the transition graph is generalized flat (see Section~\ref{sec-gflat}).
+\end{itemize}
+
 %Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
-\subsection{Summarization of the computations on paths and cycles}
+\subsection{Summarization of the computations on paths and cycles}\label{sec-sum}
 
 Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path in the transition graph of $\Ss$. 
 
@@ -199,13 +208,15 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 %\item for each data value $d^{(C,i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C,i)}_{j'}$ is either $0$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\gamma^{(C)}_{j,j'}$, or $\gamma^{(C)}_{j,j'}$.
 %\end{itemize}
 
-\zhilin{I stopped here}
 
-\subsection{Decision procedure for generalized lassos}
+\subsection{Decision procedure for generalized lassos}\label{sec-glasso}
 
-In this subsection, we present a decision procedure for the situation that the transition graph of $\Ss$ is a generalized lasso. 
+Before presenting the decision procedure for generalized lassos, we introduce an additional notation.
 
-Suppose the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+Suppose $P$ is a path in $\Ss$, $\Omega$ is a symbolic valuation representing the initial values of the control and data variables, and $r^{(P)}$ data values are introduced when traversing $P$. Moreover, let $e$ be an expression that is linear over $\Omega(x_1),\dots,\Omega(x_k), \vard^{(P)}_1,\dots,\vard^{(P)}_{r^{(P)}}$, more precisely, $e:=\mu_0 + \mu_1 \Omega(x_1) +\dots + \mu_k \Omega(x_k) + \nu_1 \vard^{(P)}_{1} + \dots + \nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}}$, where $\mu_0,\mu_1,\dots,\mu_k,\nu_1,\dots,\nu_{r^{(P)}}$ are the expressions that contain none of the variables from $\Omega(x_1), \dots, \Omega(x_k), \vard^{(P)}_{1},\dots, \vard^{(P)}_{r^{(P)}}$. Then we call the subexpressions $\mu_0,\mu_1 \Omega(x_1),\dots,\mu_k \Omega(x_k),\nu_1 \vard^{(P)}_{1} ,\dots, \nu_{r^{(P)}} \vard^{(P)}_{r^{(P)}}$ as \emph{atoms of $e$ with respect to $P$}. 
+
+Suppose that $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ which share the unique state $q_m$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+
 
 From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
 \begin{itemize}
@@ -400,7 +411,7 @@ From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'
 
 
 
-\subsection{Decision procedure for SNTs}
+\subsection{Decision procedure for SNTs}\label{sec-gflat}
 
 We will illustrate the argument by the following situation, the transition graph comprises a handle $H=q_0\dots q_{m}$,  a collection of cycles $(C_1,\dots,C_n)$ such that $q_m$ is the unique state shared by each pair of them, another handle $H'=q'_0 \dots q'_{m'}$ such that $q'_0=q_m$, and another collection of cycles $(C'_1,\dots,C'_{n'})$ such that $q'_{m'}$ is the unique state shared by each pair of them. Moreover, $O(q'_{m'})$ is defined and $O(q)$ is undefined for all the other states $q$. Suppose $O(q'_{m'}) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
 
