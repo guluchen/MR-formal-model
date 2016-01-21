@@ -160,7 +160,7 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
 The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
 
-
+The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized flat. It might have cycles sharing more than one states. All the cycles coming from the loop and branches inside the loop. There must be at least one state $s$ shared by all cycles. Therefore, we can make it generalized flat by duplicating all shared stated other than $s$ so all cycles will have their own copy of the shared states other than $s$.  
 
 
 
