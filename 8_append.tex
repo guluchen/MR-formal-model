@@ -160,7 +160,7 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
 The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\next$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
 
-
+The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized flat. It might have cycles sharing more than one states. All the cycles coming from the loop and branches inside the loop. There must be at least one state $s$ shared by all cycles. Therefore, we can make it generalized flat by duplicating all shared stated other than $s$ so all cycles will have their own copy of the shared states other than $s$.  
 
 
 
@@ -178,9 +178,9 @@ Given a SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, we show that a normalized ${\Ss}'=(
 
 We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
 %The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
-Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
+Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_fv2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
 
-We say that $M$ is \emph{consistent} if there is no inconsistency when we saturate it with all indirect relations between elements in $X^c$. E.g., if $M(x_1,x_2)=\hat{>}$, $M(x_2,x_3)=\hat{>}$, and we will have the indirection relation $x_1>x_3$. If we also have $M(x_1,x_2)=\hat{<}$, then we detect an inconsistency. If $M(x_1,x_2)=\bot$ then the saturation procedure set $M(x_1,x_2)=\hat{>}$ because now the relation between is no longer unclear. From a consistent and saturated function $M$, one can induce an equivalence relation between elements in $X^c$, which partition $X^c$ into finite number of classes. We definite the \emph{representative element} of an equivalence class in $M$ as the maximal element w.r.t. the following order $c_{min}<\ldots<c_{max}<x_1<\ldots<x_{|X|}$. By abusing the notation, we also use $M$ to denote a function maps an element in $x\in X$ to the representative element in $X^c$ of the equivalence class $x$ belongs to.
+We say that $M$ is \emph{consistent} if there is no inconsistency when we saturate it with all indirect relations between elements in $X^c$. E.g., if $M(x_1,x_2)=\hat{>}$, $M(x_2,x_3)=\hat{>}$, and we will have the indirection relation $x_1>x_3$. If we also have $M(x_1,x_2)=\hat{<}$, then we detect an inconsistency. If $M(x_1,x_2)=\bot$ then the saturation procedure set $M(x_1,x_2)=\hat{>}$ because now the relation between is no longer unclear. From a consistent and saturated function $M$, one can induce an equivalence relation between elements in $X^c$, which partition $X^c$ into finite number of classes. We definite the \emph{representative element} of an equivalence class in $M$ as the minimal element w.r.t. the following order $c_{min}<\ldots<c_{max}<x_1<\ldots<x_{|X|}<\cur$. By abusing the notation, we also use $M$ to denote a function maps an element in $x\in X$ to the representative element in $X^c$ of the equivalence class $x$ belongs to.
 
 
 Let $(q,q',g,\eta)$ be a transition in $\delta$. 
@@ -195,7 +195,7 @@ $(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
 	\item saturate $M'$ with all possible indirect relations. 
   \end{itemize}
 \item $\eta'(M'(x))= \sub{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \sub{\eta(y)}{M}$ if $y\in Y$.
-\item $g'$ is obtained from $g$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$. 
+\item $g'$ is obtained from $g\wedge g^c \wedge \bigwedge_{x \in X} \cur \neq x$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$, where $g^c\in \{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$. 
 \item $Z'= Z\cup (\dom(\eta)\cap X)$.
 \end{itemize}
 %
