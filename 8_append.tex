@@ -170,10 +170,37 @@ The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add 
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
 {\it From each SNT, an equivalent normalized SNT can be constructed in exponential time.} 
 
-\smallskip
 
+\newcommand{\tog}[1]{\mathsf{toGuard(#1)}}
+\newcommand{\toec}[1]{\mathsf{toEqClass(#1)}}
 \begin{proof}
-To be done.
+Given a SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, we show that a normalized ${\Ss}'=(Q', X, Y, \delta', q'_0, O')$ such that ${\Ss}(w) = {\Ss}'(w)$ can be constructed.
+
+We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
+%The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
+Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
+
+We say that $M$ is \emph{consistent} if there is no inconsistency when we saturate it with all indirect relations between elements in $X^c$. E.g., if $M(x_1,x_2)=\hat{>}$, $M(x_2,x_3)=\hat{>}$, and we will have the indirection relation $x_1>x_3$. If we also have $M(x_1,x_2)=\hat{<}$, then we detect an inconsistency. If $M(x_1,x_2)=\bot$ then the saturation procedure set $M(x_1,x_2)=\hat{>}$ because now the relation between is no longer unclear. From a consistent and saturated function $M$, one can induce an equivalence relation between elements in $X^c$, which partition $X^c$ into finite number of classes. We definite the \emph{representative element} of an equivalence class in $M$ as the maximal element w.r.t. the following order $c_{min}<\ldots<c_{max}<x_1<\ldots<x_{|X|}$. By abusing the notation, we also use $M$ to denote a function maps an element in $x\in X$ to the representative element in $X^c$ of the equivalence class $x$ belongs to.
+
+
+Let $(q,q',g,\eta)$ be a transition in $\delta$. 
+$(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
+\begin{itemize}
+\item $\tog{M}\wedge g \neq \lfalse$
+\item $M'$ is obtained by the following steps: 
+  \begin{itemize}
+    \item if $\tog{M}\wedge g$ implies $x_1>x_2$, $x_1<x_2$, $x_1=x_2$ for $x_1\in X, x_2\in X^c$, set $M'(x_1,x_2)=\hat{>}$, $M'(x_1,x_2)=\hat{<}$, $M'(x_1,x_2)=\hat{=}$, respectively.
+	\item clean all rows and columns related to $\dom(\eta)$, $M':=M'[\bot/(x_1,x_2)]$ for all $x_1\in X\wedge x_2 \in \dom(\eta)$ or $x_1 \in \dom(\eta) \wedge x_2\in X^c$ for $x_1\neq x_2$ 
+	\item handle the equivalence related caused by $\eta$, for all $x_1\in X,x_2\in X$ such that $\eta(x_1)=x_2$ execute $M':=M'[\hat{=}/(x_1,x_2)][\hat{=}/(x_2,x_1)]$ and for all $x\in X$ such that $\eta(x)=\cur$ execute $M':=M'[\hat{=}/(x_1,\cur)]$.
+	\item saturate $M'$ with all possible indirect relations. 
+  \end{itemize}
+\item $\eta'(M'(x))= \sub{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \sub{\eta(y)}{M}$ if $y\in Y$.
+\item $g'$ is obtained from $g$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$. 
+\item $Z'= Z\cup (\dom(\eta)\cap X)$.
+\end{itemize}
+%
+The initial state $q_0 = (q_0, \emptyset, M_0)$, where $M_0(x,x) = \hat{=}$ for all $x\in X$.
+The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\sub{O(q)}{M'}$.
 \qed
 \end{proof}
 

@@ -109,18 +109,18 @@ From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial tim
 
 
 We \emph{normalize} the SNTs in order to facilitate the presentation of the decision procedure.
-Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions of $\Ss$. If no integer constant occurs in the guards, then $c_{min}$ and $c_{max}$ are undefined.
+Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
 
 A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be normalized if the following constraints are satisfied.
 \begin{itemize}
 	\item Well-defined: For each run $(q_0,\rho_0),\dots,(q_n,\rho_n)$ of $\Ss$, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$.
 	\item Unique-valued: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables.
-	%
-	\item Constant-partitioned: If $c_{min}$ and $c_{max}$ are defined. For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}$. 
+	\item Constant-partitioned: For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}$. 
 \end{itemize}
 
 
 \begin{proposition}\label{prop-snt-norm}
 	From each SNT, an equivalent normalized SNT can be constructed in time exponential to the number of control variables. 
 \end{proposition}
-The construction can be found in the appendix. The idea behind is simple. To ensure the constructed SNT is well-defined, we record in the state the set of variables with defined values and change the value output function $O(q)$ to undefined if some undefined variables occur in $O(q)$. To ensure the result is unique-valued, we record in states the equivalence relation between control variables and modify the assignments accordingly. To ensure the result is 
+The construction can be found in the appendix. The idea behind is simple. To ensure the constructed SNT is well-defined, we record in the state the set of variables with defined values and change the value output function $O(q)$ to undefined if some undefined variables occur in $O(q)$. To ensure the result is unique-valued, we record in states the equivalence relation between control variables and modify the assignments accordingly. To ensure the result is constant-partitioned, we replace every transition $(q, g, \eta, q')$ with the set of transitions 
+$\{(q, g\wedge e, \eta, q') \mid e\in\{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$.

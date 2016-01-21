@@ -1,0 +1,157 @@
+\documentclass[runningheads,a4paper]{llncs}
+
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{amssymb}
+%\usepackage{dsfont}
+\usepackage{amsmath}
+%\usepackage{amsthm}
+%\usepackage{cancel}
+%\usepackage{verbatim}
+%\usepackage{chngpage}
+%\usepackage{fullpage}
+
+\usepackage{color}
+
+\usepackage{mathrsfs}
+
+%\newtheorem{definition}{Definition}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{example}{Example}
+%\newtheorem{question}{Open Question}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{Algo}{Algorithm}
+%\newtheorem{remark}[theorem]{Remark}
+
+\def\arr#1{\stackrel{#1}{\longrightarrow}}
+
+\def\Aa{{\mathscr{A} }}
+
+\def\Bb{{\mathscr{B} }}
+
+\def\Cc{{\mathcal{C} }}
+
+\def\Dd{{\mathbb{D} }}
+
+\def\Ee{{\mathcal{E} }}
+
+\def\Ff{{\mathcal{F} }}
+
+\def\Zz{{\mathcal{Z} }}
+
+\def\Nn{{\mathbb{N} }}
+
+\def\Ss{{\mathcal{S} }}
+
+\def\schm{{\mathfrak{s} }}
+
+\def\Tt{{\mathcal{T} }}
+
+\def\Ii{{\mathbb{Z} }}
+
+\def\Jj{{\mathcal{J}}}
+
+\def\Vv{{\mathcal{V}}}
+
+\def\Rr{{\mathcal{R} }}
+
+\def\Ll{{\mathcal{L}}}
+
+
+\def\treeset{{\mathscr{T}}}
+
+\def\contextset{{\mathcal{C}}}
+
+\def\theory{{\mathcal{L}}}
+
+\def\termset{{\mathcal{T}}}
+
+\def\formulaset{{\mathcal{F}}}
+
+\newcommand\univ{\mathsf{Univ}}
+
+\newcommand\op{\mathfrak{o}}
+
+\newcommand\dv{\mathtt{x}}
+
+\newcommand\ydv{\mathtt{y}}
+
+\newcommand\cv{\mathtt{z}}
+
+\newcommand\thla{\mathcal{LIA}}
+
+\newcommand\thdif{\mathcal{DIF}}
+
+\newcommand\thord{\mathcal{ORD}}
+
+\newcommand\thset{\mathcal{SET}}
+
+\newcommand\thmset{\mathcal{MUS}}
+
+\newcommand\natnum{{\mathbb{N} }}
+
+\newcommand\intnum{{\mathbb{Z} }}
+
+\newcommand{\hide}[1]{}
+\newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
+\newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
+\newcommand{\lei}[1]{\color{green} {LE: #1 :EL} \color{black}}
+\newcommand{\SDSIT}{SDSIT}
+\newcommand{\Name}{Streaming data string to integer transducer}
+\newcommand{\name}{streaming data string to integer transducer}
+%\def\Ss{{$\mathcal{A}$\ }}
+
+\title{The Formal Model}
+\author{}
+\institute{}
+
+%\author{Yu-Fang Chen, Lei Song, Zhilin Wu}
+
+\begin{document}
+
+\maketitle
+
+
+For a mapping $\pi$, let $dom(\pi)$ and $rng(\pi)$ denote the domain and range of $\pi$.
+Let $\Ii$ denote the set of integers. Let $X$ denote a finite set of variables ranging over $\Ii$ and $x,y$ are variables in $X$. We assume that $X$ contains a special variable $cur$, which is used to denote the current data value. Then a guard over $X$ is a formula defined by the rules, $g::= x\ o\ c \mid x\ o\ x \mid g \wedge g \wedge \neg g$, where $o \in \{=,\neq,<, >, \le, \ge\}$. Let $Y$ be another set of variables over $\Ii$. An arithmetic expression over $Y$ is defined by the rules, $e::= y \mid c \mid e + e \mid e-e$, where $y \in Y$ and $c$ is a constant over $\Ii$. For an expression $e$, let $vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Y$ denote the set of arithmetic expressions over $Y$. An assignment $\eta$ for $X \cup Y$ is a partial function from $(X \setminus \{cur\}) \cup Y$ to $\Ee_{X \cup Y}$ (the set of arithmetic expressions over $X \cup Y$) such that for each $x \in dom(\eta) \cap X$, $\eta(x)\in X$. Note that the assignments to the special variable $cur$ are disallowed.
+A data word is a sequences of data values, that is, sequences $d_1\dots d_n$, where $d_i \in \Ii$ for each $i$.
+
+A streaming numerical transducer (SNT) $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ such that 
+\begin{itemize}
+\item $Q$ is a finite set of states,
+%\item $K \in \Nn$ is the maximum number of data values in each position, 
+\item $X$ is a finite set of control variables which is used to store data values that have been met,
+\item $Y$ is a finite set of data variables, which is used to aggregate information for the output,
+\item $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X$ (note that the variables from $Y$ do not occur in $g$), $\eta$ is an assignment for $X \cup Y$, 
+
+\item $q_0 \in Q$ is the initial state,
+\item $O$ is the output function, which is a partial function from $Q$ to $\Ee_{(X \setminus \{cur\}) \cup Y}$.
+\end{itemize}
+
+We restrict our attention to SNTs $\Ss$ to deterministic ones. That is, for every pair of distinct tuples $(q, g_1, \eta_1,q'_1), (q, g_2,\eta_2,q'_2) \in \delta$, it holds that $g_1$ and $g_2$ are mutually exclusive, that is, $g_1 \wedge g_2$ is unsatisfiable.
+
+The semantics of a SNT $\Ss$  is defined as follows: A configuration of $\Ss$ is a pair $(q,\beta)$, where $q \in Q$ and $\beta$ is a valuation of $X \cup Y$, that is, a partial function from $X \cup Y$ to $\Ii$. When reading a data word $w=d_1 \dots d_n$, $\Ss$ runs over $w$ from left to right. Let $(q, \beta)$ be the configuration of $\Ss$ reached after running over $w$, then the output of $\Ss$ is $\beta(O(q))$, if $O(q)$ is defined and $vars(O(q)) \subseteq dom(\beta)$, and the output is undefined otherwise.
+
+We focus on the following decision problems of SNT.
+\begin{description}
+\item[(Commutativity).] Given a SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, the output of $\Ss$ over $w$ is equal to that of $\Ss$ over $w'$.
+%
+\item[(Non-zero output reachability).] Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is an input $w$ such that the output of $\Ss$ on $w$ is non-zero. 
+\end{description}
+
+
+
+
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+

@@ -16,7 +16,7 @@ In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables}
 A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X^+$, and $c\in \intnum$. 
 Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
 
-Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. A \emph{permutation} on
+Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. Let $\interval{a,b}$ be the set $\{ a, a+1, \ldots, b \}$ when $b\geq a$ and $\emptyset$ otherwise. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
 $\interval{n}$. The set of
 permutations on $\interval{n}$ is denoted by $S_n$.
