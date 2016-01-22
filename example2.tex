@@ -4,8 +4,8 @@
 		basicstyle=\ttfamily\scriptsize}
 	\begin{tabular}{|c|c|c|}
 		\hline
-		\begin{minipage}[t]{0.2\textwidth}
-			(b)
+		\begin{minipage}[t]{0.25\textwidth}
+			(a)
 			\begin{lstlisting}[mathescape=true]
 int avg() {
  sum:=$\cur$;
@@ -19,7 +19,7 @@ int avg() {
 }
 			\end{lstlisting}
 		\end{minipage}&
-		\begin{minipage}[t]{0.4\textwidth}
+		\begin{minipage}[t]{0.35\textwidth}
 			(b)
 \begin{lstlisting}[mathescape=true]
 int MAD() {
@@ -27,7 +27,7 @@ int MAD() {
  loop{
   sum+=$\cur$;cnt+=1;$\next$;
  };
- $\init$;avg:= sum/cnt;mad:=0;
+ avg:= sum/cnt;mad:=0;$\init$;
  loop{
   if($\cur$<avg){
    mad=mad+(avg-$\cur$);
@@ -47,9 +47,9 @@ int SD() {
  loop{
  sum+=$\cur$;cnt+=1;$\next$;
  };
- init(); avg:= sum/cnt;sd:=0;
+ avg:= sum/cnt;sd:=0;init();
  loop{
-  sd+=($\cur$-avg)^2;next();
+  sd+=($\cur$-avg)*($\cur$-avg);next();
  }
  return SQRT(sd/cnt);
 }
@@ -57,6 +57,6 @@ int SD() {
 		\end{minipage}\\
 		\hline		
 	\end{tabular}
-	\caption{Examples of Reducers Performing Data Analytics Operations}
-	\label{fig:examples}
+	\caption{More Challenging Examples of Reducers Performing Data Analytics Operations}
+	\label{fig:examples2}
 \end{figure}
