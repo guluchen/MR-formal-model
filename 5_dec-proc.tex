@@ -238,7 +238,9 @@ Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, we know that a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed by composing $\sumf^{((C_{i_1})^{\ell_1},\initval)}$, $\dots$, and $\sumf^{((C_{i_t})^{\ell_t},\initval)}$, to summarize the computation of $\Ss$ on $\schm$. Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{(C_{i_s},1)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},1)}_{s,r^{(C_{i_s})}}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,r^{(C_{i_s})}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{(C_{i_1})}}$, $\dots$, $\vard^{(C_{i_t},1)}_{t,1}$, $\dots$, $\vard^{(C_{i_t},\ell_t)}_{t, r^{(C_{i_t})}}$. 
+A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in \{1,\dots,n\}$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, we know that a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
+%by composing $\sumf^{((C_{i_1})^{\ell_1},\initval)}$, $\dots$, and $\sumf^{((C_{i_t})^{\ell_t},\initval)}$, 
+to summarize the computation of $\Ss$ on $\schm$. Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{(C_{i_s},1)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},1)}_{s,r^{(C_{i_s})}}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,r^{(C_{i_s})}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{(C_{i_1})}}$, $\dots$, $\vard^{(C_{i_t},1)}_{t,1}$, $\dots$, $\vard^{(C_{i_t},\ell_t)}_{t, r^{(C_{i_t})}}$. 
 
 
 \begin{proposition}\label{prop-cycle-schm}
@@ -311,7 +313,7 @@ Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle 
 
 \smallskip
 
-We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.This is justified by the following argument: For each $j: 1 \le j \le l$, $\cstl^{(C_{i_2})}_j, \dots, \cstl^{(C_{i_t})}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t} = \lambda^{(C_{i_2})}_{j} \dots \lambda^{(C_{i_t})}_{j}$.
+We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.This is justified by the following argument: For each $j: 1 \le j \le l$, $\cstl^{(C_{1})}_j, \dots, \cstl^{(C_{n})}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t} = \lambda^{(C_{i_2})}_{j} \dots \lambda^{(C_{i_t})}_{j}$.
 
 
 \zhilin{I stopped here}
@@ -320,7 +322,7 @@ We would like to remark that in Step II, for a given index $i_1$, we restrict th
 
 \noindent {\bf Claim}. 
 {\it 
-Suppose the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
+Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
 \begin{enumerate}
 \item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
 %
