@@ -1,0 +1,67 @@
+\begin{figure}
+	\centering
+	\lstset{language=C,
+		basicstyle=\ttfamily\scriptsize}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\begin{minipage}[t]{0.39\textwidth}
+			(a)
+			\begin{lstlisting}[mathescape=true]
+max_abs {
+ if $\cur$>0 then max:=$\cur$
+ else max:= -$\cur$;
+ $\next$;
+ loop{
+  if $\cur$>0 then
+   if $\cur$>max then max:=$\cur$
+  else 
+   if -$\cur$>max then max:=-$\cur$;;
+  $\next$;  
+ } 
+ ret max;
+}
+	\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.27\textwidth}
+			(b)
+			\begin{lstlisting}[mathescape=true]
+sum{
+ sum:=$\cur$;$\next$;
+ loop{sum+=$\cur$;$\next$;};
+ ret sum;
+}
+			\end{lstlisting}
+\hrule\vspace{0.1cm}			
+			(c)
+			\begin{lstlisting}[mathescape=true]
+cnt{
+ cnt:=0;$\next$;
+ loop{cnt+=1;$\next$;};
+ ret cnt;
+}
+			\end{lstlisting}			
+		\end{minipage}&
+		\begin{minipage}[t]{0.30\textwidth}
+			(d) 
+			\begin{lstlisting}[mathescape=true]
+2nd_largest {
+ a:=$\cur$;b:=$\cur$;$\next$;
+ if $\cur$>a then a:=$\cur$
+ else b:=$\cur$;
+ $\next$;
+ loop{
+  if $\cur$>a then 
+   b:=a;a:=$\cur$
+  else if $\cur$>b then 
+   b:=$\cur$;;
+  $\next$;
+ }
+ ret b;
+}
+			\end{lstlisting}		
+		\end{minipage}\\
+		\hline		
+	\end{tabular}
+	\caption{Examples of Reducers Performing Data Analytics Operations}
+	\label{fig:examples}
+\end{figure}

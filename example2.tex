@@ -1,0 +1,62 @@
+\begin{figure}
+	\centering
+	\lstset{language=C,
+		basicstyle=\ttfamily\scriptsize}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\begin{minipage}[t]{0.2\textwidth}
+			(b)
+			\begin{lstlisting}[mathescape=true]
+int avg() {
+ sum:=$\cur$;
+ cnt:=0;$\next$;
+ loop{
+  sum+=$\cur$;
+  cnt+=1;
+  $\next$;
+ };
+ return sum/cnt;
+}
+			\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.4\textwidth}
+			(b)
+\begin{lstlisting}[mathescape=true]
+int MAD() {
+ sum:=$\cur$;cnt:=0;$\next$;
+ loop{
+  sum+=$\cur$;cnt+=1;$\next$;
+ };
+ $\init$;avg:= sum/cnt;mad:=0;
+ loop{
+  if($\cur$<avg){
+   mad=mad+(avg-$\cur$);
+  }else{
+   mad=mad+($\cur$-avg);
+  };$\next$;
+ }
+ return mad/cnt;
+}
+\end{lstlisting}
+		\end{minipage}&
+		\begin{minipage}[t]{0.4\textwidth}
+			(c)
+			\begin{lstlisting}[mathescape=true]
+int SD() {
+ sum:=$\cur$;cnt:=0;$\next$;
+ loop{
+ sum+=$\cur$;cnt+=1;$\next$;
+ };
+ init(); avg:= sum/cnt;sd:=0;
+ loop{
+  sd+=($\cur$-avg)^2;next();
+ }
+ return SQRT(sd/cnt);
+}
+			\end{lstlisting}
+		\end{minipage}\\
+		\hline		
+	\end{tabular}
+	\caption{Examples of Reducers Performing Data Analytics Operations}
+	\label{fig:examples}
+\end{figure}

@@ -1,25 +1,7 @@
-%!TEX root = main-cav.tex
-
 \section{Case Studies}
-
-	\begin{lstlisting}[mathescape=true]
-	int MAD() {
-	...
-	// repeat the body  
-	// of (b) to compute
-	// sum and cnt
+\label{sec_cases}
+\input{example2}
 	
-	init();
-	avg:= sum/cnt;
-	mad:=0;
-	while(cur()$\neq$end()){
-	if(cur()<avg){
-	mad=mad+(avg-cur());
-	}else{
-	mad=mad+(cur()-avg);
-	}
-	next();
-	}
-	return mad/cnt;
-	}
-	\end{lstlisting}
+	
+	
+For cases with multiplication and division at the return point, e.g., \texttt{avg} in Figure~\ref{fig:examples}(b), we can model them as an \emph{uninterpreted $k$-ary function}  (modeled as a tuple in our language) and still have a sound procedure for the decision problems. 
