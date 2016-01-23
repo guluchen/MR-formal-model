@@ -2,7 +2,49 @@
 
 \begin{appendix}
 
-\section{Proofs in Section~\ref{sec-def-snt}}
+\section{Formal Semantics of the Programming Language}
+\begin{figure}
+	\hspace{-0.4cm}
+	\scalebox{0.9}{
+		\begin{tabular}{|l|l|}
+			\hline
+			Transitions&
+			Side Condition\\
+			\hline
+			$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$&
+			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{\rho}{e}$\\
+			
+			$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$&
+			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{y+e}{\rho}$\\
+			
+			$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$&
+			$\eval{g}{\rho} =\ltrue$\\
+			
+			$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$& $\eval{g}{\rho} =\lfalse$\\
+			
+			$(\next;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$&
+			$\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $l\neq \emptyset$\\
+			
+			$(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$&
+			$\rho'(z) =\rho(z)$ for $z\neq x'$, $\rho'(x') = \rho(x)$\\
+			
+			$(\loopL{s;}\mbox{ret }r, l, \rho) \longrightarrow (s;\loopL{s;}\mbox{ret }r, l, \rho)$& \\
+			
+			$(\loopL{s;}\mbox{ret }r, \emptyset, \rho) \longrightarrow (\mbox{ret }r,  \emptyset, \rho)$& 	\\	
+			\hline
+			
+		\end{tabular}
+	}
+	\caption{The Semantics of the Programming Language}
+	\label{fig:semantics}
+\end{figure}
+
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(l)$. 
+Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$ and $\rho_l(v)=\bot$ for $v\neq \cur$.
+The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
+We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, i.e., each input list corresponds at most one output, the function $p$ is well-defined.
+
+\section{Proofs in Section~\ref{sec:def-snt}}
 
 \noindent {\bf Proposition~\ref{prop-snt-cmm-to-eqv}}. 
 \emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time}.
@@ -132,6 +174,8 @@ Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifica
 From the aforementioned construction and the assumption that $\Ss$ is well-defined, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.\qed
 \end{proof}
 
+
+
 \section{Translate a Reducer Program to a SNT}
 \begin{algorithm}[H]
 	%  \SetAlgoLine
@@ -164,7 +208,7 @@ The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized fla
 
 
 
-\section{Proofs in Section~\ref{sec-dec-snt}}
+\section{Proofs in Section~\ref{sec:dec-snt}}
 
 
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
