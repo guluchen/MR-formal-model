@@ -316,19 +316,19 @@ Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle 
 We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.This is justified by the following argument: For each $j: 1 \le j \le l$, $\cstl^{(C_{1})}_j, \dots, \cstl^{(C_{n})}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t} = \lambda^{(C_{i_2})}_{j} \dots \lambda^{(C_{i_t})}_{j}$.
 
 
-\zhilin{I stopped here}
-
 \medskip
 
 \noindent {\bf Claim}. 
 {\it 
-Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, each $s: 1 \le s \le t$, and each $y_j \in Y$, let $(\chi^{(\Cc_{i_s})}_{\ell_s})'(y_j)$ denote the expression obtained by removing from $\chi^{(\Cc_{i_s})}_{\ell_s}(y_j)$  all the expressions of the form $c\ \ell_s$ (where $c$ is an integer constant).  Moreover, let $\chi'_\schm$ be the composition of $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$. Then the following two facts hold.
+Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following two facts hold.
 \begin{enumerate}
-\item There is an assignment of values to the variables such that $\chi_\schm(O(q_m))$ becomes non-zero iff there is an assignment of values to the variables such that $\chi'_\schm(O(q_m))$ becomes non-zero.
+\item There is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
 %
-\item All the coefficients in $\chi'_\schm(y_j)$ (where $y_j \in Y$) are from a bounded domain $D$, no matter whatever $\schm$ is. Moreover a finite state automaton $\Aa$ can be constructed from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record the evolvement of these coefficients  in the cycle schemes.
+\item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$, all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$ are from $K$. Let $\mathcal{K}$ be the set consisting of the sets of the coefficients of atoms in  $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$ (where $\schm$ is a cycle scheme). Then $\mathcal{K}$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.
 \end{enumerate}
 }
+
+\zhilin{I stopped here.} 
 
 \begin{proof}
 Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
