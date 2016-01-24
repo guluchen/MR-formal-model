@@ -33,7 +33,7 @@ $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\de
 For each reducer program $p$, an equivalent SNT $\Ss$ (w.r.t. the commutativity and equivalence problems) can be constructed.
 \end{proposition}
 The main difference between $p$ and $\Ss$ is that several transitions in the semantic graph of $P$ correspond to one transition in $\Ss$. A reducer program moves to the next input only when a $\next$ statement is encountered while a SNT reads one input symbol in one transition. Based on this observation, we give a work-list algorithm translating a program $P$ to an SNT $\Ss$ in algorithm~\ref{fig:reducer2SNT} the appendix.
-
+In fact, we can show that if we allows multiple loops with guards at the entry point, our programming language for reducers is ``equivalent'' to the SNT model in terms of expressive power.
 
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
