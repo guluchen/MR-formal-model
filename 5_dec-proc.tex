@@ -261,7 +261,7 @@ and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient contains a subexpression  of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{(C_{i_1})}_{pe}$.
 \end{proposition}
 
-We are ready to present the decision procedure.
+We are ready to present the decision procedure. Without loss of generality, we assume that $I^{(H)}_{tr}=[k]$, that is, after traversing $H$, the values of all the control variables become defined.
 
 \smallskip
 
@@ -270,7 +270,7 @@ We are ready to present the decision procedure.
 \medskip
 
 
-From Proposition~\ref{prop-sum-path}, we know that for each $j' \in I^{(H)}_{tr}$, $\sumf^{(H)}(x_{j'})=\vard^{(H)}_{\pi^{(H)}(j')}$.  Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in I^{(H)}_{tr} \cap I^{(C_{i_1})}_{pe}$, the coefficient of the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following subexpression, 
+From Proposition~\ref{prop-sum-path}, we know that for each $j' \in [k]$ (recall that we assume $I^{(H)}_{tr}=[k]$), $\sumf^{(H)}(x_{j'})=\vard^{(H)}_{\pi^{(H)}(j')}$.  Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{(C_{i_1})}_{pe}$, the coefficient of the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following subexpression, 
 \[
 \sum \limits_{1 \le j \le l} 
 %\begin{array}{l}
@@ -299,7 +299,7 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 
 \noindent {\bf Step II}. For each $i_1: 1 \le i_1 \le n$, if there is a cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct and one of the following constraints is satisfied, then return $\ltrue$.
 \begin{itemize}
-\item There is $j' \in I^{(H)}_{tr} \cap I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$.
+\item There is $j' \in  I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$.
 %
 \item $\mu_{\schm,(i_1,0)} \neq 0$.
 %
@@ -309,65 +309,34 @@ If the decision procedure has not returned yet, then go to Step III. \qed
 
 \medskip
 
-Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{(H)}_{tr} \cap I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we can let $\vard^{(H)}_{\pi^{(H)}(j')} \neq 0$ and $\ell_1$ sufficiently large, so that the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$, where the subexpression $\left(\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')} \right)\vard^{(H)}_{\pi^{(H)}(j')}$ occurs, dominates $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$. This makes $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ sufficiently large to make $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ non-zero.
+Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{(H)}_{\pi^{(H)}(j')} \neq 0$ and $\ell_1$ arbitrarily large, so that the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$, whose coefficient includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$. This is sufficient to make $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero.
 
 \smallskip
 
 We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.This is justified by the following argument: For each $j: 1 \le j \le l$, $\cstl^{(C_{1})}_j, \dots, \cstl^{(C_{n})}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t} = \lambda^{(C_{i_2})}_{j} \dots \lambda^{(C_{i_t})}_{j}$.
 
 
-\medskip
-
-\noindent {\bf Claim}. 
-{\it 
-Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following two facts hold.
+\begin{proposition}\label{prop-bnd-domain}
+Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following three facts hold.
 \begin{enumerate}
 \item There is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
 %
-\item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$, all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$ are from $K$. Let $\mathcal{K}$ be the set consisting of the sets of the coefficients of atoms in  $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$ (where $\schm$ is a cycle scheme). Then $\mathcal{K}$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.
+\item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$. 
+%
+\item For each cycle scheme $\schm$, an abstraction of $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$, denoted by $\abs(\schm)$, can be defined such that $\abs(\schm) \subseteq \{0,\dots, k+1\} \times K^l$ and for each $j: 0 \le j \le k$,  $\abs(\schm) \cap (\{j\} \times K^l)$ is a singleton. Let $\Kk=\{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\Kk$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.
 \end{enumerate}
-}
+\end{proposition}
 
-\zhilin{I stopped here.} 
 
-\begin{proof}
-Because Step II has already considered the evolvement of the coefficients of $d^{(0)}_{\pi_H(j')-k}$ by varying the cycle scheme $\schm$, it is not hard to get the first fact.
-
-We prove the second fact in the following. We exemplify the proof for $t=2$. 
-For each $y_j \in Y$, we will illustrate the argument for the situation that $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$.
-
-Suppose $\alpha^{(C_{i_1})}_{j,1} = 1$ and $\alpha^{(C_{i_2})}_{j,1} = 1$. Then in $\chi'_\schm(y_j)$,
-\begin{itemize}
-\item the constant coefficient is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\  0 = 0$ (here $\alpha^{(C_{i_2})}_{j,0} \ell_2$ and $\alpha^{(C_{i_1})}_{j,0} \ell_1$ are removed),
+\noindent {\bf Step III}. For each $U \in \Kk$, do the following.
+\begin{enumerate}
+\item Check whether there is $(0,(c_{0,1},\dots,c_{0,l})) \in U$ such that $a_0+b_1 c_{0,1}+\dots + b_l c_{0,l} \neq 0$. If the answer is yes, then return $\ltrue$.
 %
-%\item the coefficient of $o_j$ is $1$,
+\item Check whether there are $j \in [k]$ and $(j, (c_{j,1},\dots,c_{j,l})) \in U$ such that $a_j + b_1 c_{j,1} + \dots + b_l c_{j,l} \neq 0$. If the answer is yes, then return $\ltrue$. 
 %
-\item for each $j' \le r_{H}$ such that $j' \not \in \{\pi_H(j'')-k \mid 1 \le j'' \le k\}$, the coefficient of $d^{(0)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(H)}_{j'} = \gamma^{(H)}_{j'}$,
-%
-\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') = j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = 0$ (here $\beta^{(C_{i_2})}_{j,j'} \ell_2$ and $\beta^{(C_{i_1})}_{j,j'} \ell_1$ are removed),
-%
-\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') = j'$ and $\pi_{C_{i_2}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $\beta^{(C_{i_2})}_{j,j'} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ 0 = \beta^{(C_{i_2})}_{j,j'}$ (here $\beta^{(C_{i_1})}_{j,j'} \ell_1$ is removed),
-%
-\item for each $j' \le k$ such that $\pi_{C_{i_1}}(j') \neq j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2}\ \beta^{(C_{i_1})}_{j,j'} = \beta^{(C_{i_1})}_{j,j'}$,
-%
-\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} (\beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}) = \beta^{(C_{i_1})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}+\gamma^{(C_{i_1})}_{j,j'}$,
-%
-\item if $\ell_1>1$, then for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$ and each $i: 1 \le i < \ell_1$, the coefficient of $d^{(C_{i_1},i)}_{j'}$ is the expression $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
-%
-\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k))=\pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $0 + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$ (here $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} \ell_2$ is removed),
-%
-\item for each $ j' \le r_{C_{i_1}}$ such that $j'+k \in \rng(\pi_{C_{i_1}})$ and $\pi_{C_{i_2}}(\pi^{-1}_{C_{i_1}}(j'+k)) \neq \pi^{-1}_{C_{i_1}}(j'+k)$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'}$ $=$ $\beta^{(C_{i_2})}_{j, \pi^{-1}_{C_{i_1}}(j'+k)}$ $+$ $\gamma^{(C_{i_1})}_{j,j'}$,
-%
-\item for each $j' \le r_{C_{i_1}}$ such that $j'+k \not \in \rng(\pi_{C_{i_1}})$, the coefficient of $d^{(C_{i_1},\ell_1)}_{j'}$ is $(\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \gamma^{(C_{i_1})}_{j,j'} = \gamma^{(C_{i_1})}_{j,j'}$,
-%
-\item all the other coefficients are those in $\chi^{(C_{i_2})}_{\ell_2}(y_j)$ for the data values introduced in $C^{\ell_2}_{i_2}$.
-\end{itemize} 
-From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'$ with $(\chi^{C_{i_2}}_{\ell_2})'$, given a $j': j' \le r_{C_{i_1}}$, the coefficients of all the data values $d^{(C_{i_1},i)}_{j'}$ for $i: 1 \le i < \ell_1$ are the same. Moreover, they will keep the same even we keep composing with $(\chi^{C_{i_3}}_{\ell_3})'$, $(\chi^{C_{i_4}}_{\ell_4})'$, and so on. Therefore, we only need record one copy of these coefficients and there are only a bounded number of coefficients to remember. Then we can construct a finite state automaton $\Aa$ from $\chi_H,\chi_{C_1},\dots,\chi_{C_n}$ to record these coefficients in the states and simulate the evolvement of these coefficients. The final states of $\Aa$ represent the coefficients obtained when reaching the state $q_m$ in $\Ss$. \qed
-\end{proof}
-
-\medskip 
-
-\noindent {\bf Step III}. For each final state $\chi$ of $\Aa$ in the claim, check whether the constant coefficient or the coefficient of some data variable in $\chi(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$, otherwise, return $\lfalse$.
+\item Check whether there is $(k+1,(c_1,\dots,c_n)) \in U$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$. If the answer is yes, then return $\ltrue$. 
+\end{enumerate}
+If the decision procedure has not returned yet, return $\lfalse$.
 
 
 %From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
@@ -385,9 +354,11 @@ From the analysis above, we know that when composing $(\chi^{C_{i_1}}_{\ell_1})'
 %
 %Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
 
-
-
 \subsection{Decision procedure for SNTs}\label{sec-gflat}
+
+
+\zhilin{I stopped here}
+
 
 We will illustrate the argument by the following situation, the transition graph comprises a handle $H=q_0\dots q_{m}$,  a collection of cycles $(C_1,\dots,C_n)$ such that $q_m$ is the unique state shared by each pair of them, another handle $H'=q'_0 \dots q'_{m'}$ such that $q'_0=q_m$, and another collection of cycles $(C'_1,\dots,C'_{n'})$ such that $q'_{m'}$ is the unique state shared by each pair of them. Moreover, $O(q'_{m'})$ is defined and $O(q)$ is undefined for all the other states $q$. Suppose $O(q'_{m'}) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
 
