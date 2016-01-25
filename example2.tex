@@ -9,11 +9,11 @@
 			\begin{lstlisting}[mathescape=true]
 int avg() {
  sum:=$\cur$;
- cnt:=0;$\next$;
+ cnt:=0;$\nnext$;
  loop{
   sum+=$\cur$;
   cnt+=1;
-  $\next$;
+  $\nnext$;
  };
  return sum/cnt;
 }
@@ -23,9 +23,9 @@ int avg() {
 			(b)
 \begin{lstlisting}[mathescape=true]
 int MAD() {
- sum:=$\cur$;cnt:=0;$\next$;
+ sum:=$\cur$;cnt:=0;$\nnext$;
  loop{
-  sum+=$\cur$;cnt+=1;$\next$;
+  sum+=$\cur$;cnt+=1;$\nnext$;
  };
  avg:= sum/cnt;mad:=0;$\init$;
  loop{
@@ -33,7 +33,7 @@ int MAD() {
    mad=mad+(avg-$\cur$);
   }else{
    mad=mad+($\cur$-avg);
-  };$\next$;
+  };$\nnext$;
  }
  return mad/cnt;
 }
@@ -43,9 +43,9 @@ int MAD() {
 			(c)
 			\begin{lstlisting}[mathescape=true]
 int SD() {
- sum:=$\cur$;cnt:=0;$\next$;
+ sum:=$\cur$;cnt:=0;$\nnext$;
  loop{
- sum+=$\cur$;cnt+=1;$\next$;
+ sum+=$\cur$;cnt+=1;$\nnext$;
  };
  avg:= sum/cnt;sd:=0;init();
  loop{

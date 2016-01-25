@@ -23,7 +23,18 @@
 \usepackage{color}
 
 \usepackage{mathrsfs}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
 
+%\newcommand*\circled[1]{(\!#1)}
+
+\newcommand*\circled[1]{
+	\mathchoice
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\small $#1$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\small $#1$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\tiny $#1$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.5,ellipse] (char) {\tiny $#1$};}}
+	}
 %\newtheorem{definition}{Definition}
 %\newtheorem{theorem}{Theorem}
 %\newtheorem{proposition}[theorem]{Proposition}
@@ -104,7 +115,7 @@
 \newcommand\intnum{{\mathbb{Z} }}
 
 \newcommand\cur{\mathsf{cur}}
-\newcommand\next{\mathsf{next}}
+\newcommand\nnext{\mathsf{next}}
 \newcommand\head{\mathsf{hd}}
 \newcommand\tail{\mathsf{tl}}
 \newcommand\init{\mathsf{init}}

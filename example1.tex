@@ -10,13 +10,13 @@
 max_abs {
  if $\cur$>0 then max:=$\cur$
  else max:= -$\cur$;
- $\next$;
+ $\nnext$;
  loop{
   if $\cur$>0 then
    if $\cur$>max then max:=$\cur$
   else 
    if -$\cur$>max then max:=-$\cur$;;
-  $\next$;  
+  $\nnext$;  
  } 
  ret max;
 }
@@ -26,8 +26,8 @@ max_abs {
 			(b)
 			\begin{lstlisting}[mathescape=true]
 sum{
- sum:=$\cur$;$\next$;
- loop{sum+=$\cur$;$\next$;};
+ sum:=$\cur$;$\nnext$;
+ loop{sum+=$\cur$;$\nnext$;};
  ret sum;
 }
 			\end{lstlisting}
@@ -35,8 +35,8 @@ sum{
 			(c)
 			\begin{lstlisting}[mathescape=true]
 cnt{
- cnt:=0;$\next$;
- loop{cnt+=1;$\next$;};
+ cnt:=0;$\nnext$;
+ loop{cnt+=1;$\nnext$;};
  ret cnt;
 }
 			\end{lstlisting}			
@@ -45,16 +45,16 @@ cnt{
 			(d) 
 			\begin{lstlisting}[mathescape=true]
 2nd_largest {
- a:=$\cur$;b:=$\cur$;$\next$;
+ a:=$\cur$;b:=$\cur$;$\nnext$;
  if $\cur$>a then a:=$\cur$
  else b:=$\cur$;
- $\next$;
+ $\nnext$;
  loop{
   if $\cur$>a then 
    b:=a;a:=$\cur$
   else if $\cur$>b then 
    b:=$\cur$;;
-  $\next$;
+  $\nnext$;
  }
  ret b;
 }
