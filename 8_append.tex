@@ -12,10 +12,10 @@
 			Side Condition\\
 			\hline
 			$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{\rho}{e}$\\
+			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{\rho}{e}$\\
 			
 			$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \sub{y+e}{\rho}$\\
+			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{y+e}{\rho}$\\
 			
 			$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$&
 			$\eval{g}{\rho} =\ltrue$\\
@@ -42,7 +42,8 @@
 Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(l)$. 
 Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$ and $\rho_l(v)=\bot$ for $v\neq \cur$.
 The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
-We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $\sub{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, i.e., each input list corresponds at most one output, the function $p$ is well-defined.
+We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $
+{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, i.e., each input list corresponds at most one output, the function $p$ is well-defined.
 
 \section{Proofs in Section~\ref{sec:def-snt}}
 
@@ -238,13 +239,13 @@ $(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
 	\item handle the equivalence related caused by $\eta$, for all $x_1\in X,x_2\in X$ such that $\eta(x_1)=x_2$ execute $M':=M'[\hat{=}/(x_1,x_2)][\hat{=}/(x_2,x_1)]$ and for all $x\in X$ such that $\eta(x)=\cur$ execute $M':=M'[\hat{=}/(x_1,\cur)]$.
 	\item saturate $M'$ with all possible indirect relations. 
   \end{itemize}
-\item $\eta'(M'(x))= \sub{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \sub{\eta(y)}{M}$ if $y\in Y$.
+\item $\eta'(M'(x))= \eval{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \eval{\eta(y)}{M}$ if $y\in Y$.
 \item $g'$ is obtained from $g\wedge g^c \wedge \bigwedge_{x \in X} \cur \neq x$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$, where $g^c\in \{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$. 
 \item $Z'= Z\cup (\dom(\eta)\cap X)$.
 \end{itemize}
 %
 The initial state $q_0 = (q_0, \emptyset, M_0)$, where $M_0(x,x) = \hat{=}$ for all $x\in X$.
-The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\sub{O(q)}{M'}$.
+The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\eval{O(q)}{M'}$.
 \qed
 \end{proof}
 
@@ -417,7 +418,7 @@ The argument for the constant coefficient is similar.
 {\it 
 Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following three facts hold.
 \begin{enumerate}
-\item There is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
+\item There is a valuation $\rho$ such that $\eval{\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\eval{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
 %
 \item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$. 
 %
@@ -426,7 +427,7 @@ Suppose that the decision procedure has not returned yet after Step II. For each
 }
 
 \begin{proof}
-Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{(C_{i_1})}_{pe}$, we know that in $\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\sub{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
+Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{(C_{i_1})}_{pe}$, we know that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\eval{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
 
 \medskip
 

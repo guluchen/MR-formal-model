@@ -259,12 +259,12 @@ We are ready to present the decision procedure. Without loss of generality, we a
 
 \smallskip
 
-\noindent {\bf Step I}. Decide whether $\sub{O(q_m)}{\sumf^{(H,\initval_0)}}$ is not identical to zero, where $\initval_0$ is the special symbolic valuation such that $\initval_0(x_j)=\bot$ for each $x_j \in X$ and $\initval_0(y_j)=\bot$ for each $y_j \in Y$. If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
+\noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\initval_0)}}$ is not identical to zero, where $\initval_0$ is the special symbolic valuation such that $\initval_0(x_j)=\bot$ for each $x_j \in X$ and $\initval_0(y_j)=\bot$ for each $y_j \in Y$. If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II. \qed
 
 \medskip
 
 
-From Proposition~\ref{prop-sum-path}, we know that for each $j' \in [k]$ (recall that we assume $I^{(H)}_{tr}=[k]$), $\sumf^{(H,\initval_0)}(x_{j'})=\vard^{(H)}_{\pi^{(H)}(j')}$.  Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{(C_{i_1})}_{pe}$, the coefficient of the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following subexpression, 
+From Proposition~\ref{prop-sum-path}, we know that for each $j' \in [k]$ (recall that we assume $I^{(H)}_{tr}=[k]$), $\sumf^{(H,\initval_0)}(x_{j'})=\vard^{(H)}_{\pi^{(H)}(j')}$.  Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{(C_{i_1})}_{pe}$, the coefficient of the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following subexpression, 
 \[
 \sum \limits_{1 \le j \le l} 
 %\begin{array}{l}
@@ -276,7 +276,7 @@ b_j \left((\cstl^{(C_{i_2})}_{j})^{\ell_2} \dots (\cstl^{(C_{i_t})}_{j})^{\ell_t
 Since $\cstl^{(C_{i_1})}_{j}, \cstl^{(C_{i_2})}_{j}, \dots, \cstl^{(C_{i_t})}_{j} \in \{0, 1\}$, the expression $(\ast)$  can be rewritten as  
  $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constants $\mu_{\schm, (i_1,j')}$ and $\nu_{\schm, (i_1,j')}$. 
  
-Similarly, from Proposition~\ref{prop-cycle-schm},  the constant atom of  $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following  subexpression,
+Similarly, from Proposition~\ref{prop-cycle-schm},  the constant atom of  $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ contains the following  subexpression,
 \[
 \sum \limits_{1 \le j \le l} b_j
 \begin{array}{l}
@@ -304,7 +304,7 @@ If the decision procedure has not returned yet, then go to Step III. \qed
 
 \medskip
 
-Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{(H)}_{\pi^{(H)}(j')} \neq 0$ and $\ell_1$ arbitrarily large, so that the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$, whose coefficient includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$. This is sufficient to make $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make $\sub{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero.
+Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{(C_{i_1})}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{(H)}_{\pi^{(H)}(j')} \neq 0$ and $\ell_1$ arbitrarily large, so that the $\vard^{(H)}_{\pi^{(H)}(j')}$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$, whose coefficient includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\initval_0)})}}$ become non-zero.
 
 \smallskip
 
@@ -314,7 +314,8 @@ We would like to remark that in Step II, for a given index $i_1$, we restrict th
 \begin{proposition}\label{prop-bnd-domain}
 Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following three facts hold.
 \begin{enumerate}
-\item There is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\sub{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
+\item Let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ and $f'=\eval{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}$.
+There is a valuation $\rho$ such that $\eval{f}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{f}{\rho} \neq 0$.
 %
 \item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$. 
 %
@@ -341,7 +342,7 @@ If the decision procedure has not returned yet, return $\lfalse$.
 %\end{proposition}
 %
 %\begin{proof}
-%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \subseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
+%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \evalseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
 %
 % From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
 %\end{proof}
@@ -419,15 +420,15 @@ Then we can adapt the output function $O$ and set $O(q_m) = a'_0 + a'_1 x_1 + \d
 
 \smallskip
 
-Suppose $s: 2 \le s \le r$, and  in $\sub{O(q_{r,m_r})}{\sumf^{(H_s\dots H_{r}, \initval)}}$, the constant atom is $a'_{s,0}$, the coefficient of the $\initval(x_j)$-atom is $a'_{s, j}$ for each $j \in [k]$, moreover, the coefficient of the $\initval(y_{j'})$-atom is $b'_{s, j'}$ for each $j' \in [l]$. Then we change the output function and let
+Suppose $s: 2 \le s \le r$, and  in $\eval{O(q_{r,m_r})}{\sumf^{(H_s\dots H_{r}, \initval)}}$, the constant atom is $a'_{s,0}$, the coefficient of the $\initval(x_j)$-atom is $a'_{s, j}$ for each $j \in [k]$, moreover, the coefficient of the $\initval(y_{j'})$-atom is $b'_{s, j'}$ for each $j' \in [l]$. Then we change the output function and let
 \[O(q_{s-1, m_{s-1}}):=a'_{s, 0}+a'_{s, 1} x_1 + \dots + a'_{s, k} x_k + b'_{s,1} y_1 + \dots + b'_{s, l} y_l.\]
 
 \smallskip 
-\noindent {\bf Step II$'$}.  For each $1 \le s \le r$, each $i_{s,1}\in [n_s]$, and each cycle scheme $\schm = C^{\ell_1}_{i_{s,1}} C_{i_{s,2}} \dots C_{i_{s, t}}$ over the collection of cycles $\{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ such that $i_{s,2},\dots, i_{s,t}$ are mutually distinct, we apply an analysis to the expression $\sub{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval_0)} ) } }$, similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
+\noindent {\bf Step II$'$}.  For each $1 \le s \le r$, each $i_{s,1}\in [n_s]$, and each cycle scheme $\schm = C^{\ell_1}_{i_{s,1}} C_{i_{s,2}} \dots C_{i_{s, t}}$ over the collection of cycles $\{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ such that $i_{s,2},\dots, i_{s,t}$ are mutually distinct, we apply an analysis to the expression $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval_0)} ) } }$, similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
 
 \smallskip
 
-Intuitively, in Step II$'$, during the analysis of $\sub{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval_0)} ) } }$, the effect of the paths $H_{s+1},  \dots,  H_r$ and the cycles $C_{i_{s,2}}, \dots, C_{i_{s, t}}$ is described by the expressions $\cstl^{(H_{s+1})}_j \dots \cstl^{(H_{r})}_j  \cstl^{(C_{i_{s,2}})}_j \dots \cstl^{(C_{i_{s,t}})}_j $ for $j \in [l]$. Since $O(q_{s, m_{s}})$ has already taken into consideration the expressions $\cstl^{(H_{s+1})}_j \dots \cstl^{(H_{r})}_j$ for $j \in [l]$, conceptually, in Step II$'$, we can do the analysis as if we have a generalized lasso where the handle is $H_1\dots H_s$ and the collection of cycles is $\{C_{s,1},\dots, C_{s,n_s}$, $\dots$, $C_{r,1},\dots, C_{r,n_r}\}$. 
+Intuitively, in Step II$'$, during the analysis of $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval_0)} ) } }$, the effect of the paths $H_{s+1},  \dots,  H_r$ and the cycles $C_{i_{s,2}}, \dots, C_{i_{s, t}}$ is described by the expressions $\cstl^{(H_{s+1})}_j \dots \cstl^{(H_{r})}_j  \cstl^{(C_{i_{s,2}})}_j \dots \cstl^{(C_{i_{s,t}})}_j $ for $j \in [l]$. Since $O(q_{s, m_{s}})$ has already taken into consideration the expressions $\cstl^{(H_{s+1})}_j \dots \cstl^{(H_{r})}_j$ for $j \in [l]$, conceptually, in Step II$'$, we can do the analysis as if we have a generalized lasso where the handle is $H_1\dots H_s$ and the collection of cycles is $\{C_{s,1},\dots, C_{s,n_s}$, $\dots$, $C_{r,1},\dots, C_{r,n_r}\}$. 
 
 %$\schm=C^{\ell_{s, 1}}_{i_{s,1}} \dots C^{\ell_{s, t_s}}_{i_{s, t_s}} C^{\ell_{s+1, 1}}_{i_{s+1, 1} } \dots C^{\ell_{s+1, t_{s+1}}}_{i_{s+1, t_{s+1}} } \dots C^{\ell_{r, 1}}_{i_{r,1}} \dots C^{\ell_{r, t_r}}_{i_{r, t_r}} $, where for each $s': s \le s' \le r$, $i_{s',1},\dots, i_{s', t_{s'}} \in [n_{s'}]$, 
 
