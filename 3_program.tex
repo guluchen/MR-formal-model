@@ -3,7 +3,7 @@
 \section{Language For Integer Reducers}\label{sec-mr-prog}
 \label{sec:language}
 We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
-We focus on a language that only allow to iterate though the input list once. Later in Section~\ref{sec:cases} we will show an extension that allows the reset of list iterators.
+We focus on a language that only allow integer data type and hence the input is a data word. It is allowed to iterate though the input data word only once. Later in Section~\ref{sec:cases} we will show an extension that allows the reset of data word iterators.
 
 \begin{figure}
 	\vspace{-0.5cm}
@@ -17,11 +17,12 @@ We focus on a language that only allow to iterate though the input list once. La
 	\vspace{-0.5cm}
 \end{figure}
 
-To be more concrete, we focus on the programming language in Figure~\ref{fig:language} (formal semantics is given in the appendix).
+To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
 The main feature of the language is that we partition the variables into two sets: \emph{control variables} and \emph{data variables}.
 The former are used for guiding the program flow and the latter used for storing aggregated results.
 To be more specific, the control variables can store only values occurred in the input and can be used either in guard or arithmetic expressions.
 The data variables can store the results obtained from an arithmetic expression, but cannot be used either in guards or arithmetic expressions.
+Give a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. Formal semantics of the language is given in the appendix.
 
 Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems for this language are still undecidable, by a reduction from the reachability problem of Perti-net with zero test~\cite{petri}.
 Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables in the loop body: each loop iteration makes a Petri-net transition. 
@@ -30,14 +31,15 @@ The guards in transitions are expressed by branching over the variables (recall 
 
 Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
 We argue that this is sufficient for reducers performing data analytics operations.
-In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input list and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the cases \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest} in Figure~\ref{fig:examples}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all programs we have investigated.
+In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input data word and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the cases \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest} in Figure~\ref{fig:examples}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all programs we have investigated.
 
 \input{example1}
 
 
-The observation is actually not a big surprise. The \emph{reduce} operation in MapReduce has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the list (similar to Hadoop~\cite{Hadoop}).
+The observation is actually not a big surprise. The \emph{reduce} operation in MapReduce has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the input data word (similar to Hadoop~\cite{Hadoop}).
  
-We are interested in two decision problems: (1) \emph{Commutativity}: given a program $p$, decide whether for each list $l$ and its permutation $l'$, $p(l) = p(l')$. (2) \emph{Equivalence:} given programs $p,p'$, decide whether for each list $l$, $p(l)=p(l')$.
+
+We are interested in two decision problems: (1) \emph{Commutativity}: given a program $p$, decide whether for each data word $w$ and its permutation $w'$, $p(w) = p(w')$. (2) \emph{Equivalence:} given programs $p,p'$, decide whether for each data word $w$, $p(w)=p(w')$.
 
 One may argue that allowing only addition and subtraction is too restrictive for data analytics. 
 In Section~\ref{sec:cases}, we will discuss possible extensions of the framework to support more challenging examples, such as computing \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
