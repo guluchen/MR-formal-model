@@ -24,7 +24,7 @@ We would like to remark that for each data word $w$, there is at most one run of
 Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
 
 \begin{example}[SNT for max]
-$\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \emptyset, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the function assigning $\cur$ to $\maxv$.
+Let SNT $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\delta = \{(q_0, \ltrue, \maxv\!:=\!\cur, q_1), (q_1, \maxv\!<\!\cur, \maxv\!:=\!\cur,q_1), (q_1, \maxv \!\ge\! \cur, \emptyset, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv\!:=\!\cur$ denotes the function assigning $\cur$ to $\maxv$.
 \end{example}
 %\begin{example}[SNT for sum]
 %$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that %$\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and %$O(q_1)=\sumv$. 
@@ -66,7 +66,7 @@ The following propositions state that the commutativity problem can be reduced t
 The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
-From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are inequivalent iff there is a data word $w$ such that the output of $\Ss_3(w) \not\in \{\bot,0\}$. 
+From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that there is a data word $w$ that $\Ss_1(w) \neq \Ss_2(w)$ iff $\Ss_3(w) \not\in \{\bot,0\}$. 
 \end{proposition}
 
 
@@ -74,9 +74,9 @@ We \emph{normalize} the SNTs to simlify the presentation of the decision procedu
 Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
 
 A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be normalized if the following constraints are satisfied:
-(1) \emph{Well-defined}: For each run $(q_0,\rho_0),\dots,(q_n,\rho_n)$ of $\Ss$, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2)\emph{Unique-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3 \emph{Constant-partitioned}: For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}$. 
+(1) \emph{Well-defined}: For each run $(q_0,\rho_0),\dots,(q_n,\rho_n)$ of $\Ss$, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2)\emph{Unique-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Constant-partitioned}: For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}$. 
 \begin{proposition}\label{prop-snt-norm}
 	From each SNT, an equivalent normalized SNT can be constructed in time exponential to the number of control variables. 
 \end{proposition}
-The construction can be found in the appendix. The idea behind is simple. To ensure the constructed SNT is well-defined, we record in the state the set of variables with defined values and change the value output function $O(q)$ to undefined if some undefined variables occur in $O(q)$. To ensure the result is unique-valued, we record in states the equivalence relation between control variables and modify the assignments accordingly. To ensure the result is constant-partitioned, we replace every transition $(q, g, \eta, q')$ with the set of transitions 
-$\{(q, g\wedge e, \eta, q') \mid e\in\{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$.
+The construction can be found in the appendix. The idea behind is simple. For the ``well-defined'' constraint, we record in the state the set of variables with defined values and change the value output function $O(q)$ to undefined if some undefined variables occur in $O(q)$. For the ``unique-valued'' constraint, we record in states the equivalence relation between control variables and modify the assignments accordingly. For the ``constant-partitioned'' constraint, we replace every transition $(q, g, \eta, q')$ with the set of transitions 
+$\{(q, g\!\wedge\! e, \eta, q') \mid e\in\{\cur\!<\!c_{min}$, $\cur\!=\!c$ for $c_{min}\!\le\!c\!\le\!c_{max}$, $\cur\! >\! c_{max}\}\}$.

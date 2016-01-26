@@ -32,10 +32,10 @@
 
 \newcommand*\circled[1]{
 	\mathchoice
-	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\small $#1$};}}
-	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\small $#1$};}}
-	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.7,ellipse] (char) {\tiny $#1$};}}
-	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.5,ellipse] (char) {\tiny $#1$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\small] (char) {${#1}$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\small] (char) {${#1}$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\tiny] (char) {${#1}$};}}
+	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.55,ellipse,font=\tiny] (char) {${#1}$};}}
 	}
 %\newtheorem{definition}{Definition}
 %\newtheorem{theorem}{Theorem}
