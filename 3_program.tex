@@ -2,8 +2,10 @@
  
 \section{Language For Integer Reducers}\label{sec-mr-prog}
 \label{sec:language}
-We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable.
-We focus on a language that only allow integer data type and hence the input is a data word. It is allowed to iterate though the input data word only once. Later in Section~\ref{sec:cases} we will show an extension that allows the reset of data word iterators.
+We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable. The language intends to support the following typical behavior pattern of reducers: The inputs are data words where an integer occurs in each position. A reducer program iterates through the input data word once, aggregates some intermediate information into variables, and produces an output when it stops. 
+%We focus on a language that only allows integer data type and hence the input is a data word. It is allowed to iterate though the input data word only once. 
+%
+Later in Section~\ref{sec:cases}, we will show an extension that allows resetting the iterators so that an input data word can be traversed for multiple times.
 
 \begin{figure}
 	\vspace{-0.5cm}
@@ -17,32 +19,32 @@ We focus on a language that only allow integer data type and hence the input is 
 	\vspace{-0.5cm}
 \end{figure}
 
-To be more concrete, we focus on the programming language in Figure~\ref{fig:language}.
-The main feature of the language is that we partition the variables into two sets: \emph{control variables} and \emph{data variables}.
-The former are used for guiding the program flow and the latter used for storing aggregated results.
-To be more specific, the control variables can store only values occurred in the input and can be used either in guard or arithmetic expressions.
-The data variables can store the results obtained from an arithmetic expression, but cannot be used either in guards or arithmetic expressions.
-Give a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. Formal semantics of the language is given in the appendix.
+To be more concrete, we focus on the programming language in Figure~\ref{fig:language}. The language includes the usual features of program languages, variable assignments, sequential compositions, branchings, and the loops. It also includes a statement $\nnext$ which is used to advance the data word iterator.
+The novel feature of the language is that we partition the variables into two sets: \emph{control variables} $X$ and \emph{data variables} $Y$.
+The variables from $X$ are used for guiding the control flow and the variables from $Y$ are used for storing aggregated intermediate data values.
+To be more specific, the variables from $X$ can store only values occurring in the inputs and can occur in guards $g$ or arithmetic expressions $e$.
+On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$.
+Give a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. Formal semantics of the language can be found in the appendix.
 
-Note that we do not allow multiplication in the language, so the reduction from the satisfiability of Diophantine equations no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that basic decision problems for this language are still undecidable, by a reduction from the reachability problem of Perti-net with zero test~\cite{petri}.
-Intuitively, variables are used for remembering the number of tokens in each place. Transitions between places can be described as assignments to variables in the loop body: each loop iteration makes a Petri-net transition. 
-The non-determinism in transitions is expressed by branching over the input. 
-The guards in transitions are expressed by branching over the variables (recall that we are discussing the version that we do not distinguishing data and control variables). Then the reachability problem of Perti-net with zero test can be reduced to reachability problem in the programming language.
+Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Perti nets with inhibitor arcs~\cite{Min71,Rei08}.
+Intuitively, integer variables are used for remembering the number of tokens in each place. Transitions between places can be simulated by the loop body: The updates of the tokens of the places are simulated by variable assignments.
+The inhibitor arcs are simulated by the guards on the integer variables in the branching statements (recall that we are discussing the version that we do not distinguishing the control and data variables). The non-determinism in the transitions of Petri nets is resolved by the guards on the current data values, e.g. $\cur = 2$. 
+Then the reachability problem of Perti-nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem.
 
 Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
 We argue that this is sufficient for reducers performing data analytics operations.
-In Figure~\ref{fig:examples} we demonstrate a few simple examples of reducers performing data analytics operations. Observe that all of them follow the same behavioral pattern; the program iterates through the input data word and aggregates the processed result in some variables. The operation used for the aggregation is usually ratter simple; it either adds a new value (like the cases \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) or assigns a new value (like the cases {\texttt max\_abs} and {\texttt 2nd\_largest} in Figure~\ref{fig:examples}) to the variable storing the aggregated result. Actually, the same behavioral pattern occurs in all programs we have investigated.
+In Figure~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max\_abs} and \texttt{2nd\_largest} in Figure~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
 
 \input{example1}
 
 
-The observation is actually not a big surprise. The \emph{reduce} operation in MapReduce has a tight relation with the \emph{fold} operation in functional languages, which aggregates the values in a list using a \emph{binary function} and returns one value. Here the data variables are used for storing the aggregated results. Since we allows only add and subtract operations in the programming language, we do not need more than ``adds/assigns a value to data variables'' to describe the binary function of fold operations. Hence we argue that our language is sufficient to describe programs that can be described by the \emph{fold} operation in functional languages (with only additions and subtractions). On the other hand, our language is more flexible than a fold operation in the sense that we have full control of what to do while iterating through the input data word (similar to Hadoop~\cite{Hadoop}).
+The observation is actually not a big surprise. The \emph{reduce} operation in MapReduce has a tight connection with the \emph{fold} operation in functional languages, which aggregates the values in an input data word using a \emph{binary function}. We argue that our language is sufficient to describe the \emph{fold} operations in functional languages involving only additions and subtractions: The intermediate results of the fold operations can be stored in some data variables. The binary functions in the fold operations can be simulated by ``adds/assigns a value to data variables'' in our language. However, our language is far more flexible than the fold operations in the sense that we have the full control of what to do when iterating through an input data word (similar to Hadoop~\cite{Hadoop}).
  
 
-We are interested in two decision problems: (1) \emph{Commutativity}: given a program $p$, decide whether for each data word $w$ and its permutation $w'$, $p(w) = p(w')$. (2) \emph{Equivalence:} given programs $p,p'$, decide whether for each data word $w$, $p(w)=p(w')$.
+We are interested in the following decision problems of the programs: (1) \emph{Commutativity}: given a program $p$, decide whether for each data word $w$ and its permutation $w'$, $p(w) = p(w')$. (2) \emph{Equivalence:} given programs $p,p'$, decide whether for each data word $w$, $p(w)=p(w')$.
 
-One may argue that allowing only addition and subtraction is too restrictive for data analytics. 
-In Section~\ref{sec:cases}, we will discuss possible extensions of the framework to support more challenging examples, such as computing \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
+One may argue that allowing only additions and subtractions is too restrictive for data analytics. 
+In Section~\ref{sec:cases}, we will discuss the extensions of the language to support more challenging examples, such as \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
 
 
 
