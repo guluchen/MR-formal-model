@@ -219,7 +219,6 @@ $}
 
 
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
-
 Before presenting the decision procedure for generalized lassos, we introduce some notations.
 Suppose $P$ is a path in $\Ss$, $\initval$ is a symbolic valuation representing the initial values of the control and data variables, and $r^{\circled{P}}$ data values are introduced when traversing $P$. Moreover, let $e$ be an expression that is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\vard^{\circled{P}}_1$, $\dots$, and $\vard^{\circled{P}}_{r^{\circled{P}}}$, more precisely, 
 \[e:=\mu_0 + \mu_1 \initval(x_1) +\dots + \mu_k \initval(x_k) + \nu_1 \initval(y_1)+\dots + \nu_l \initval(y_l)+ \xi_1 \vard^{\circled{P}}_{1} + \dots + \xi_{r^{\circled{P}}} \vard^{\circled{P}}_{r^{\circled{P}}},\]
@@ -268,6 +267,32 @@ and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 \]
 Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient contains a subexpression  of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{\circled{C_{i_1}}}_{pe}$.
 \end{proposition}
+
+
+\begin{proposition}\label{test}
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Let $B^i(j)$ be the largest number that $j\in\bigcap\limits_{n\in[i,B^i(j)]} I^{\circled{C_{i_{n}}}}_{pe}$.
+Then for each $j: 1 \le j \le l$, the coefficient of the $(\initval(x_{j}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+\[\sum\limits_{n\in[B^1(j)]} 
+\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m} 
+\left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right) \csta^{\circled{C_{i_n}}}_{j,j'}\] plus $(\lambda^{\circled{C_{i_n}}}_{j})^{\ell_{B^1(j)+1}-1} \csta^{\circled{C_{i_n}}}_{j,j'}$ when $B^1(j)\neq t$,
+
+contains the following subexpression,
+	\[\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) \\
+	\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'},\]
+	and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
+	\[
+	\begin{array}{l c l}
+	\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+	\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \cste^{\circled{C_{i_1}}}_{j} + \\
+	\left((\lambda^{\circled{C_{i_3}}}_{j})^{\ell_3} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+	\left(1+\lambda^{\circled{C_{i_2}}}_{j} + \dots + (\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2-1} \right) \cste^{\circled{C_{i_2}}}_{j} +\\
+	\dots + 
+	\left(1+\lambda^{\circled{C_{i_t}}}_{j} + \dots + (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t-1} \right) \cste^{\circled{C_{i_t}}}_{j}.
+	\end{array}
+	\]
+	Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient contains a subexpression  of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{\circled{C_{i_1}}}_{pe}$.
+\end{proposition}
+
 
 We are ready to present the decision procedure. Without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all the control variables become defined.
 

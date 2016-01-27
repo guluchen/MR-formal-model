@@ -7,33 +7,33 @@
 
 \section{Streaming Numerical Transducers}\label{sec:def-snt}
 
-In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. Over a data word, a SNT scans the data word from left to right, records and computes information using control and data variables, and outputs a data value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the Reduce programs defined in Section~\ref{sec-mr-prog}.
+In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. Over a data word, a SNT scans the data word from left to right, records and aggregates some information using control and data variables, and outputs an integer value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the reducer programs defined in Section~\ref{sec-mr-prog}.
 
 
 A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where $Q$ is a finite set of states, $X$ is a finite set of control variables to store data values that have been met, $Y$ is a finite set of data variables to aggregate information for the output, $\delta$ is the set of transitions, $q_0 \in Q$ is the initial state, $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.%\zhilin{Here the variable $\cur$ should not be used.}
 The set of transitions $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (defined in Section~\ref{sec:preliminaries}), and $\eta$ is an assignment which is a partial function mapping $X \cup Y$  to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=\cur$ or $\eta(x) = x'$ for some $x' \in X$. We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience. 
 
-Moreover, we assume that the SNT $\Ss$ satisfies the following constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a state or a set of cycles sharing a unique state. (3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
+Moreover, we assume that the SNT $\Ss$ satisfies the following constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ which contains a state $q$ such that for each $i,j: 1 \le i < j \le n$, $q$ is the \emph{only} state shared by $C_i$ and $C_j$. (3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
 
 The semantics of a SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(z)=\bot$ for each $z \in X\cup Y$.
 A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
-a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a path (sequence of transitions) $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i: 1 \le i \le n$, $\rho_{i-1} \models g_i[d_i/\cur]$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$, then $\rho_i(x)=d_i$,  if $\eta_i(x)=x' \in X$, then $\rho_i(x)=\rho_{i-1}(x')$, otherwise, $\rho_i(x)=\rho_{i-1}(x)$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)[d_i/\cur]}{\rho_{i-1}}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$,
+a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a path (sequence of transitions) $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i: 1 \le i \le n$, $\rho_{i-1}[d_i/\cur] \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$, then $\rho_i(x)=d_i$, otherwise, if $\eta_i(x)=x' \in X$, then $\rho_i(x)=\rho_{i-1}(x')$, otherwise, $\rho_i(x)=\rho_{i-1}(x)$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)}{\rho_{i-1}[d_i/\cur]}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$,
 
 We will call $(q_n,\rho_n)$ as the \emph{final configuration} of the run.
 We would like to remark that for each data word $w$, there is at most one run of $\Ss$ over $w$, since $\Ss$ is deterministic. 
 Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
 
 \begin{example}[SNT for max]
-Let SNT $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\delta = \{(q_0, \ltrue, \maxv\!:=\!\cur, q_1), (q_1, \maxv\!<\!\cur, \maxv\!:=\!\cur,q_1), (q_1, \maxv \!\ge\! \cur, \emptyset, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv\!:=\!\cur$ denotes the function assigning $\cur$ to $\maxv$.
+The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is defined as follows: $\Ss_{\max}=(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \emptyset, q_1)\}$, and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the assignment mapping $\maxv$ to $\cur$.
 \end{example}
 %\begin{example}[SNT for sum]
 %$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that %$\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and %$O(q_1)=\sumv$. 
 %\end{example
 \begin{proposition}\label{prop-mrprog-to-snt}
-For each reducer program $p$, an equivalent SNT $\Ss$ (w.r.t. the commutativity and equivalence problems) can be constructed.
+For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
 \end{proposition}
-The main difference between $p$ and $\Ss$ is that several transitions in the semantic graph of $P$ correspond to one transition in $\Ss$. A reducer program moves to the next input only when a $\nnext$ statement is encountered while a SNT reads one input symbol in one transition. Based on this observation, we give a work-list algorithm translating a program $P$ to an SNT $\Ss$ in algorithm~\ref{fig:reducer2SNT} the appendix.
-In fact, we can show that if we allows multiple loops with guards at the entry point, our programming language for reducers is ``equivalent'' to the SNT model in terms of expressive power.
+The main difference between $p$ and $\Ss$ is that several statements in the control flow of $p$ correspond to one transition of $\Ss$. A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed while an SNT advances the iterator in each transition. Based on this observation, we can have a work-list algorithm to translate a program $p$ into an SNT $\Ss$ (see Algorithm~\ref{fig:reducer2SNT} in the appendix).
+In fact, we can show that if we add guards at the entry points of loops and allow multiple loops in the reducer language, then the language becomes expressively equivalent to SNTs.
 
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
@@ -60,7 +60,7 @@ In fact, we can show that if we allows multiple loops with guards at the entry p
 
 We focus on three decision problems of SNTs: (1) \emph{Commutativity}: Given a SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, $\Ss(w)=\Ss(w')$. (2) \emph{Equivalence}: Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $\Ss_1(w)=\Ss_2(w)$. (3) \emph{Non-zero output}: Given a SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is a data word $w$ such that $\Ss(w)\notin \{\bot, 0\}$. 
 
-The following propositions state that the commutativity problem can be reduced to the equivalence problem, which in turn can be reduced to the non-zero output problem.
+It turns out that the commutativity problem can be reduced to the equivalence problem, whichcan be further reduced to the non-zero output problem.
 
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
 The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
@@ -70,13 +70,13 @@ From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial tim
 \end{proposition}
 
 
-We \emph{normalize} the SNTs to simlify the presentation of the decision procedure.
-Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is a SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
+We normalize SNTs in order to simplify the presentation of the decision procedure later.
+Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is an SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions in $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
 
-A SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be normalized if the following constraints are satisfied:
-(1) \emph{Well-defined}: For each run $(q_0,\rho_0),\dots,(q_n,\rho_n)$ of $\Ss$, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2)\emph{Unique-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Constant-partitioned}: For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}$. 
+An SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following constraints are satisfied:
+(1) \emph{Well-defined}: For each run $(q_0,\rho_0),\dots,(q_n,\rho_n)$ of $\Ss$, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Unique-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Constant-partitioned}: For each $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$. 
 \begin{proposition}\label{prop-snt-norm}
-	From each SNT, an equivalent normalized SNT can be constructed in time exponential to the number of control variables. 
+	From each SNT, an equivalent normalized SNT can be constructed in  exponential time w.r.t. the number of control variables. 
 \end{proposition}
-The construction can be found in the appendix. The idea behind is simple. For the ``well-defined'' constraint, we record in the state the set of variables with defined values and change the value output function $O(q)$ to undefined if some undefined variables occur in $O(q)$. For the ``unique-valued'' constraint, we record in states the equivalence relation between control variables and modify the assignments accordingly. For the ``constant-partitioned'' constraint, we replace every transition $(q, g, \eta, q')$ with the set of transitions 
-$\{(q, g\!\wedge\! e, \eta, q') \mid e\in\{\cur\!<\!c_{min}$, $\cur\!=\!c$ for $c_{min}\!\le\!c\!\le\!c_{max}$, $\cur\! >\! c_{max}\}\}$.
+The construction can be found in the appendix. The idea of the construction is simple. To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the output function by removing $q$ from the domain of $O$ if $O(q)$ contains some variable whose value is undefined (this information can be discovered from the states). To ensure the ``unique-valued'' constraint, we record in the states the equivalence relation between the control variables and modify the transitions accordingly. To ensure the ``constant-partitioned'' constraint, we replace every transition $(q, g, \eta, q')$ with the following set of transitions 
+$\{(q, g\wedge g', \eta, q') \mid g' \equiv \cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, \mbox{ or } $\cur > c_{max}\}$.
