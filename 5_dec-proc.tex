@@ -370,12 +370,13 @@ Suppose that the decision procedure has not returned yet after Step II.
 the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
 
 \item For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
-(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for all $j' \in [l]$ and data variable $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(x_j)\mid x_j\in X\}$.
-Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$ by a fixed point computation.
+(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for all $j' \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(x_j)\mid x_j\in X\}$.
+\item Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed by a fixed point computation as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until a fixed point is reached.
+
+
+
 \end{enumerate}
 \end{proposition}
-
-
 
 
 \framebox[\textwidth]{
