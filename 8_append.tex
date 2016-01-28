@@ -11,24 +11,31 @@
 			Transitions&
 			Side Condition\\
 			\hline
-			$(y := e;p, l, \rho) \longrightarrow (p, l, \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{\rho}{e}$\\
+			$(y := e;p, w, \rho) \longrightarrow (p, w, \rho')$&
+			$\rho'=\rho[\eval{e}{\rho}/y]$\\
 			
-			$(y \addeq e;p, l, \rho) \longrightarrow (p, l, \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{y+e}{\rho}$\\
+%			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{\rho}{e}$\\
 			
-			$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_1;p, l, \rho)$&
-			$\eval{g}{\rho} =\ltrue$\\
+			$(y \addeq e;p, w, \rho) \longrightarrow (p, w, \rho')$&
+			$\rho'=\rho[\eval{y+e}{\rho}/y]$\\
+%			$\rho'(z) =\rho(z)$ for $z\neq y$, $\rho'(y) = \eval{y+e}{\rho}$\\
 			
-			$(\ite{g}{s_1}{s_2};p, l, \rho) \longrightarrow (s_2;p, l, \rho)$& $\eval{g}{\rho} =\lfalse$\\
+			$(\ite{g}{s_1}{s_2};p, w, \rho) \longrightarrow (s_1;p, w, \rho)$&
+			$\rho \models g$\\
 			
-			$(\nnext;p, l, \rho) \longrightarrow (p, \tail(l), \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq \cur$, $\rho'(\cur) = \head(l)$, $l\neq \emptyset$\\
+			$(\ite{g}{s_1}{s_2};p, w, \rho) \longrightarrow (s_2;p, w, \rho)$& $\rho \not \models g$\\
 			
-			$(x':=x;p, l, \rho) \longrightarrow (p, l, \rho')$&
-			$\rho'(z) =\rho(z)$ for $z\neq x'$, $\rho'(x') = \rho(x)$\\
+			$(\nnext;p, w, \rho) \longrightarrow (p, \tail(w), \rho')$&
+			$\rho'=\rho[\head(\tail(w))/\cur]$ if $\tail(w) \neq \epsilon$\\
+
+			$(\nnext;p, w, \rho) \longrightarrow (p, \epsilon, \rho_\bot)$&
+			 if $\tail(w) = \epsilon$\\
+
 			
-			$(\loopL{s;}\mbox{ret }r, l, \rho) \longrightarrow (s;\loopL{s;}\mbox{ret }r, l, \rho)$& \\
+			$(x':=x;p, w, \rho) \longrightarrow (p, w, \rho')$&
+			$\rho'  =\rho[\rho(x)/x']$\\
+			
+			$(\loopL{s;}\mbox{ret }r, w, \rho) \longrightarrow (s;\loopL{s;}\mbox{ret }r, w, \rho)$& \\
 			
 			$(\loopL{s;}\mbox{ret }r, \emptyset, \rho) \longrightarrow (\mbox{ret }r,  \emptyset, \rho)$& 	\\	
 			\hline
@@ -39,11 +46,12 @@
 	\label{fig:semantics}
 \end{figure}
 
-Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,l,\rho)$, where $p$ is a program, $l$ is the input list, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(l)$. 
-Let $\rho_l$ be an assignment that $\rho_l(\cur)=\head(l)$ and $\rho_l(v)=\bot$ for $v\neq \cur$.
-The set of initial nodes is $\{(p_0,l_0,\rho_{l_0})\mid l_0\mbox{ is an input list}\}$.
-We use $p(l)$ to denote the \emph{output} of a program $p$ with respect to a list $l$. Then $p(l) =v$ if there exists a path from the initial node $(p, l, \rho_l)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $
-{r}{\rho_r}=v$. Otherwise, $p(l)=\bot$. Since the program is deterministic, i.e., each input list corresponds at most one output, the function $p$ is well-defined.
+
+Formally, the semantics of a program $p_0$ in the programming language can be defined as a graph in Figure~\ref{fig:semantics}. Each node in the graph is a triple $(p,w,\rho)$, where $p$ is a program, $w$ is the input data word, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(w)$. 
+Let $\rho_w$ be an assignment that $\rho_w(\cur)=\head(w)$ and $\rho_w(v)=\bot$ for $v\neq \cur$.
+The set of initial nodes is $\{(p_0, w_0, \rho_{w_0})\mid w_0\mbox{ is an input data word}\}$.
+We use $p(w)$ to denote the \emph{output} of a program $p$ with respect to a data word $w$. Then $p_0(w) =v$ if there exists a path from the initial node $(p_0, w, \rho_w)$ to some return node $(\mbox{ret }r,  \emptyset, \rho_r)$ and $
+\eval{r}{\rho_r}=v$. Otherwise, $p_0(w)=\bot$. Since the program is deterministic, i.e., each input data word has at most one output, the semantics of $p_0$ is well-defined.
 
 \section{Proofs in Section~\ref{sec:def-snt}}
 
