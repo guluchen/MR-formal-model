@@ -27,16 +27,18 @@
 \usetikzlibrary{shapes}
 \usepackage{times}
 %\usepackage{pslatex}
+\newcommand{\hide}[1]{}
 
-%\newcommand*\circled[1]{(\!#1)}
+\newcommand*\circled[1]{\overline{#1}}
 
+\hide{
 \newcommand*\circled[1]{
 	\mathchoice
 	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\small] (char) {${#1}$};}}
 	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\small] (char) {${#1}$};}}
 	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.75,ellipse,font=\tiny] (char) {${#1}$};}}
 	{\tikz[baseline=(char.base)]{\node[draw,inner sep=0pt, scale=0.55,ellipse,font=\tiny] (char) {${#1}$};}}
-	}
+	}}
 %\newtheorem{definition}{Definition}
 %\newtheorem{theorem}{Theorem}
 %\newtheorem{proposition}[theorem]{Proposition}
@@ -188,7 +190,7 @@
 
 \newcommand{\abs}{\mathsf{Abs}}
 
-\newcommand{\hide}[1]{}
+
 \newcommand{\yfc}[1]{\color{blue} {YF: #1 :FY} \color{black}}
 \newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
 \newcommand{\lei}[1]{\color{green} {LE: #1 :EL} \color{black}}

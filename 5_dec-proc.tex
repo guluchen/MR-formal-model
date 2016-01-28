@@ -110,7 +110,7 @@ Below, we explain more intuitively how the coefficients in $\sumf^{(P_2,\ \sumf^
 \end{itemize}
 }
 
-In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$.
+In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{loop counter variable}.
 
 
 
@@ -273,7 +273,7 @@ Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-
 
 
 \begin{proposition}\label{prop-cycle-schm}
-Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Let $r_j$ be the largest number that $j\in\bigcap_{n\in[r_j]} I^{\circled{C_{i_{n}}}}_{pe}$, i.e., $x_j$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{b_j}}^{\ell_{b_j}}$.
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Let $r_j$ be the largest number that $j\in\bigcap_{n\in[r_j]} I^{\circled{C_{i_{n}}}}_{pe}$, i.e., $x_j$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_j}}$.
 Then for each $j: 1 \le j \le l$, the coefficient of the $\initval(x_{j})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
 $$\sum\limits_{n\in[r_j]}  
 \left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right) \csta^{\circled{C_{i_n}}}_{j,j'}\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m}$$ in addition with  $(\lambda^{\circled{C_{i_n}}}_{j})^{(\ell_{r_j+1})-1} \csta^{\circled{C_{i_n}}}_{j,j'}$ when $r_j\neq t$.
@@ -285,7 +285,7 @@ $$
 \cste^{\circled{C_{i_n}}}_{j} 
 \prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m}$$
 
-Moreover, for each $j: 1 \le j \le l$, it holds that only the constant atom and the coefficient of the $\initval(x_{j'})$-atom (for $j': 1 \le j' \le l$) in $\sumf^{(\schm,\initval)}(y_j)$ contain a subexpression of the form $c \ell_1$.
+Moreover, for each $j: 1 \le j \le l$, it holds that only the constant atom and the coefficient of the $\initval(x_{j'})$-atom (for $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$) in $\sumf^{(\schm,\initval)}(y_j)$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$.
 \end{proposition}
 Notice that in the above, $\lambda^{\circled{C_{i_n}}}_j\in\{0,1\}$ for $j:1\leq j\leq l$ and $n:1\leq n \leq t$. Hence the value of $(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} )$ can only be $1$ or $\ell_n$ and $\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m}\in\{0,1\}$.
 Hence both the constant atom and the coefficient of the $\initval(x_{j'})$-atom (for $j': 1 \le j' \le l$) can be rewritten to the form of $c_0+c_1l_1+c_2l_2+\ldots+c_nl_t$ for $c_0\ldots c_n\in \intnum$. 
@@ -293,12 +293,12 @@ Hence both the constant atom and the coefficient of the $\initval(x_{j'})$-atom 
 
 
 
-We are ready to present the decision procedure. By the ``well-defined'' and ``unique-valued'' constraint of a normalized SNT, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
+We are ready to present the decision procedure. By the ``well-defined'' and ``unique-valued'' constraints of a normalized SNT, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
 Under the assumption, for all $j \in [k]$, the symbolic value of $\sumf^{(H,\emptyset)}(x_j)=\vard^{\circled{H}}_{\pi^{\circled{H}}(j)}$ is a fresh data variable.\bigskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
 \noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\emptyset)}}$ is not identical to zero.
-This can be done by checking if the constant-atom or the coefficient of some non-constant atoms is not identical to zero.
+This can be done by checking if the constant-atom or the coefficient of some non-constant atom of $\eval{O(q_m)}{\sumf^{(H,\emptyset)}}$ is not identical to zero.
 If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II.
 \end{minipage}
 }\bigskip
@@ -308,7 +308,7 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 
 %\in [k]$ (recall that we assume $I^{\circled{H}}_{tr}=[k]$), $\sumf^{(H,\initval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$. 
 
-The goal of Step II is either showing that in the analysis all cycle counter variables in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ can be ignored  or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
+The goal of Step II is either showing that in the analysis of $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ all subexpressions containing cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
 \[
 \sum \limits_{1 \le j \le l} 
 %\begin{array}{l}
@@ -329,10 +329,10 @@ Similarly, from Proposition~\ref{prop-cycle-schm},  the constant atom of  $\eval
 \end{array}
 \]
 %
-The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If both $\mu_{\schm,(i_1,0)}=\mu_{\schm,(i_1,j')}=0$, then we can ignore subexpression containing the cycle counter variable $\ell_1$ (i,e, the expressions $(\ast)$ and $(\ast\ast)$)  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$\smallskip\\
+The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
-		\noindent {\bf Step II}. For each $i_1: 1 \le i_1 \le n$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct and 
+		\noindent {\bf Step II}. For each $i_1: 1 \le i_1 \le n$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
 		one of the following constraints is satisfied, then return $\ltrue$.
 		\begin{itemize}
 			\item There is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$.
@@ -344,20 +344,20 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 		If the decision procedure has not returned yet, then go to Step III.
 	\end{minipage}
 }\smallskip\\
-If Step II does not return $\ltrue$, we show that all cycle counter variables can be ignored in the analysis of any cycle scheme $\schm=C_{i'_1}^{\ell_1} C_{i'_2}^{\ell_2} \dots C_{i'_n}^{\ell_n}$.
+If Step II does not return $\ltrue$, we show that for all cycle scheme $\schm=C_{i'_1}^{\ell_1} C_{i'_2}^{\ell_2} \dots C_{i'_n}^{\ell_n}$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be ignored.
 In Step II we already checked a cycle scheme $\schm'=C_{i'_1}^{\ell_1} C_{i''_2} \dots C_{i''_m}$, where 
-$C_{i''_2}, \dots, C_{i''_m}$ contain all cycles in $C_{i'_2} ,\dots, C_{i'_n}$. Step II guarantees that we can ignore the subexpressions containing $\ell_1$ in the form of $(\ast)$ and $(\ast\ast)$ in 
-$\eval{O(q_m)}{\sumf^{(\schm',\initval)}}$.
-We show that we can do the same for $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
-Notice that $j: 1 \le j \le l$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$, therefore we have $(\lambda^{\circled{C_{i'_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i'_n}}}_{j})^{\ell_n} = \lambda^{\circled{C_{i''_2}}}_{j} \dots \lambda^{\circled{C_{i''_m}}}_{j}$. Hence the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm$ and $\schm'$ and thus can both be ignored.
-If $j' \in  I^{\circled{C_{i'_2}}}_{pe}$, then the we have subexpressions containing $\ell_2$ in the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
-Also we may have subexpressions containing $\ell_2$ in the constant atom.
-Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm'=C_{i'_2}^{\ell_3} C_{i''_3} \dots C_{i''_m}$ and applying a similar reasoning. The same applied to all other cycle counting variables $\ell_3,\dots,\ell_n$.
+$\{C_{i''_2}, \dots, C_{i''_m}\}$ contain all cycles in $\{C_{i'_2} ,\dots, C_{i'_n}\}$. Step II guarantees all subexpressions containing $\ell_1$ in 
+$\eval{O(q_m)}{\sumf^{(\schm',\initval)}}$ are identical to zero and hence can be ignored.
+Notice that for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$, therefore we have $(\lambda^{\circled{C_{i'_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i'_n}}}_{j})^{\ell_n} = \lambda^{\circled{C_{i''_2}}}_{j} \dots \lambda^{\circled{C_{i''_m}}}_{j}$. The $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm$ and $\schm'$.
+Hence we can also ignore all subexpressions containing $\ell_1$ in  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
+%If $j' \in  I^{\circled{C_{i'_2}}}_{pe}$, then the we have subexpressions containing $\ell_2$ in the coefficient of the $\initval(x_{j'})$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{pe}$) or $\vard^{\circled{C_{i'_1}}}_{\pi^{\circled{C_{i'_1}}}(j')}$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{tr}$) of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
+%Also we may have subexpressions containing $\ell_2$ in the constant atom.
+Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm'=C_{i'_2}^{\ell_2} C_{i''_3} \dots C_{i''_m}$ and applying a similar reasoning. The same applied to all other cycle counting variables $\ell_3,\dots,\ell_n$.
 
 \hide{We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$. We show that this is enough to cover all cycle schemes beginning with $C_{i_1}^{\ell_1}$ by the following argument: For each $j: 1 \le j \le l$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t} = \lambda^{\circled{C_{i_2}}}_{j} \dots \lambda^{\circled{C_{i_t}}}_{j}$.}
 
 Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ non-zero.
-
+Similar argument can be applied for $\ell_2\dots\ell_n$.
 
 \smallskip
 
