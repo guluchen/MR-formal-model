@@ -89,7 +89,7 @@ $\begin{array}{rl}
 	\end{array}$
 }\medskip\\
 In the equation, $j'\in  I^{\circled{P_1}}_{pe}$ implies that $x_{j'}$ remains unchanged when traversing $P_1$, which means the initial value of $x_{j'}$ before traversing $P_2$ is still $\initval(x_{j'})$ and therefore we have the item $ (\csta^{\circled{P_2}}_{j,j'}) \initval(x_{j'})$. When $j' \in \rng(\pi^{\circled{P_1}})$, the initial value of $x_{(\pi^{\circled{P_1}})^{-1}(j')}$ before traversing $P_2$ is $\vard^{\circled{P_1}}_{j'}$ and therefore we have the item $( \csta^{\circled{P_2}}_{j,(\pi^{\circled{P_1}})^{-1}(j')}) \vard^{\circled{P_1}}_{j'}$.
-For all $j'\in [k] = I^{\circled{P_1}}_{pe} \cup I^{\circled{P_1}}_{tr}$, we have the item $(\cstl^{\circled{P_2}}_{j} \csta^{\circled{P_1}}_{j,j'}) \initval(x_{j'})$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$. Moreover, for all $j'\in [r^{\circled{P_1}}] = \rng(\pi^{\circled{P_1}}) \cup ([r^{\circled{P_1}}]\!\setminus\!\rng(\pi^{\circled{P_1}}))$, we have 
+For all $j'\in [k] = I^{\circled{P_1}}_{pe} \cup I^{\circled{P_1}}_{tr}$, we have the item $(\cstl^{\circled{P_2}}_{j} \csta^{\circled{P_1}}_{j,j'}) \initval(x_{j'})$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$. Moreover, for all $j'\in [r^{\circled{P_1}}] = \rng(\pi^{\circled{P_1}}) \cup ([r^{\circled{P_1}}] \setminus \rng(\pi^{\circled{P_1}}))$, we have 
 the item $( \cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'}) \vard^{\circled{P_1}}_{j'}$, i.e. the coefficient of $\vard^{\circled{P_1}}_{j'}$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$.
 
 
@@ -117,14 +117,14 @@ In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\re
 
 %Suppose that $C$ is a cycle in $\Ss$, that is, a path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that $q_n = q_0$.  
 
-%Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{\circled{C\!,\!1}}_{1},\dots,d^{\circled{C\!,\!1}}_{r_C}$ are introduced when traversing the cycle for the first time. 
+%Suppose the initial values of the $k$ control variables are $d^{(0)}_1,\dots,d^{(0)}_k$. Moreover, suppose that the $r_C$ data values $d^{\circled{C , 1}}_{1},\dots,d^{\circled{C , 1}}_{r_C}$ are introduced when traversing the cycle for the first time. 
 %In addition, suppose that the initial values of $y_1,\dots, y_l$ are $o_1,\dots,o_l$. 
 %
 %From Proposition~\ref{prop-sum-path}, we know that a function $\chi_C$ can be constructed to summarize the computation of $\Ss$ on $C$.
 %\begin{itemize}
-%\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{\circled{C\!,\!1}}_{\pi_C(j)-k}$.
+%\item There is an injective mapping $\pi_C: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_C(j) \le k$, then $\pi_C(j)=j$ and $\chi_C(x_j)=d^{(0)}_{j}$, otherwise, $\chi_C(x_j)=d^{\circled{C , 1}}_{\pi_C(j)-k}$.
 % 
-%\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{\circled{C}}_{j,0} + \alpha^{\circled{C}}_{j,1} o_j + \beta^{\circled{C}}_{j,1} d^{(0)}_1 + \dots + \beta^{\circled{C}}_{j,k} d^{(0)}_k + \gamma^{\circled{C}}_{j,1} d^{\circled{C\!,\!1}}_1 +\dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C\!,\!1}}_{r_C}$ such that $\alpha^{\circled{C}}_{j,1} \in \{0,+1\}$.
+%\item For each $y_j \in Y$, $\chi_C(y_j) = \alpha^{\circled{C}}_{j,0} + \alpha^{\circled{C}}_{j,1} o_j + \beta^{\circled{C}}_{j,1} d^{(0)}_1 + \dots + \beta^{\circled{C}}_{j,k} d^{(0)}_k + \gamma^{\circled{C}}_{j,1} d^{\circled{C , 1}}_1 +\dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C , 1}}_{r_C}$ such that $\alpha^{\circled{C}}_{j,1} \in \{0,+1\}$.
 %\end{itemize}
 
 \begin{proposition}\label{prop-sum-cycle}
@@ -132,21 +132,21 @@ Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symboli
 \resizebox{\hsize}{!}{
 $\begin{array}{l c l}
 \sumf^{(C^\ell,\initval)}(y_j)  & = & 
-\left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell\!-\!1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
+\left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
 %
-& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell\!-\!1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell\!-\!1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
+& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
 %
 & & \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{m\in[\ell -1]}
 \left(  \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} +(\cstl^{\circled{C}}_{j})\cstb^{\circled{C}}_{j,j'} \right)
 (\cstl^{\circled{C}}_{j})^{\ell-m-1}
-\vard^{\circled{C\!,\!m}}_{j'} +\\
+\vard^{\circled{C , m}}_{j'} +\\
 %
-& & \sum \limits_{j' \in [r^{\circled{C}}] \setminus \rng(\pi^{\circled{C}})}\sum \limits_{m\in[\ell -1]} \left((\cstl^{\circled{C}}_{j})^{\ell\!-\!m} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C\!,\!m}}_{j'} + 
+& & \sum \limits_{j' \in [r^{\circled{C}}] \setminus \rng(\pi^{\circled{C}})}\sum \limits_{m\in[\ell -1]} \left((\cstl^{\circled{C}}_{j})^{\ell - m} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , m}}_{j'} + 
 \sum \limits_{j' \in [r^{\circled{C}}] }  
- \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C\!,\!\ell}}_{j'},
+ \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
 $}\medskip\\
-where the variables $\vard^{\circled{C\!,\!1}}_{m},\dots, \vard^{\circled{C\!,\!m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
+where the variables $\vard^{\circled{C , 1}}_{m},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
  represent the data values introduced when traversing $C$ for the $m$-th time.
 \end{proposition}
 
@@ -155,8 +155,8 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 \item If $\cstl^{\circled{C}}_{j}=0$, then\medskip\\
 \resizebox{0.95\hsize}{!}{$
 \sumf^{(C^\ell,\initval)}(y_j)   =  \cste^{\circled{C}}_{j} +  \sum \limits_{j' \in I^{\circled{C}}_{pe}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +
-\sum \limits_{j'  \in \rng(\pi^{\circled{C}})} \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')}\ \vard^{\circled{C\!,\!\ell\!\!-\!\!1}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
-\cstb^{\circled{C}}_{j, j'} \vard^{\circled{C\!,\!\ell}}_{j'}.$}
+\sum \limits_{j'  \in \rng(\pi^{\circled{C}})} \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')}\ \vard^{\circled{C , \ell  -  1}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
+\cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'}.$}
 
 
 \item If $\cstl^{\circled{C}}_{j}=1$, then\medskip\\
@@ -165,11 +165,11 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 \sumf^{(C^\ell,\initval)}(y_j)  & = &   \ell \cste^{\circled{C}}_{j}  + \initval(y_j) +   \sum  \limits_{j' \in I^{\circled{C}}_{pe}} \ell \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}) + 
 \sum \limits_{j' \in I^{\circled{C}}_{tr}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \smallskip\\
 & & \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{m\in[\ell -1]}
-\left(\csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} + \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C\!,\!m}}_{j'} +\smallskip\\
+\left(\csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} + \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , m}}_{j'} +\smallskip\\
 %
 & & \sum \limits_{j' \in [r^{\circled{C}}]  \setminus \rng(\pi^{\circled{C}}) }\sum \limits_{m\in[\ell -1]} 
-\cstb^{\circled{C}}_{j,j'} \vard^{\circled{C\!,\!m}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
-\cstb^{\circled{C}}_{j, j'} \vard^{\circled{C\!,\!\ell}}_{j'}.
+\cstb^{\circled{C}}_{j,j'} \vard^{\circled{C , m}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
+\cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'}.
 \end{array}
 $}
 %
@@ -179,13 +179,13 @@ $}
 \begin{array}{l c l}
 \chi^{\circled{C}}_{\ell}(y_j)  & = &  o_j + \sum \limits_{j'\le k, \pi_C(j') \neq j'} (-\beta^{\circled{C}}_{j,j'}) d^{(0)}_{j'} +  \\
 %
-& & \sum \limits_{j' \le r_C\!,\! j'+k \in \rng(\pi_C)} ( \beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)} - \gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!1}}_{j'} + \\
+& & \sum \limits_{j' \le r_C ,  j'+k \in \rng(\pi_C)} ( \beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)} - \gamma^{\circled{C}}_{j,j'}) d^{\circled{C , 1}}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C\!,\!  j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!1}}_{j'} + \dots + \\
+& & \sum \limits_{j' \le r_C ,   j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , 1}}_{j'} + \dots + \\
 %
-& & \sum \limits_{j' \le r_C\!,\! j'+k \in \rng(\pi_C)} (\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!\ell\!\!-\!\!1}}_{j'} + \\
+& & \sum \limits_{j' \le r_C ,  j'+k \in \rng(\pi_C)} (\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , \ell  -  1}}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C\!,\!  j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!\ell\!\!-\!\!1}}_{j'} + \gamma^{\circled{C}}_{j, 1} d^{\circled{C\!,\!\ell}}_{1} + \dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C\!,\!\ell}}_{r_C}.
+& & \sum \limits_{j' \le r_C ,   j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , \ell  -  1}}_{j'} + \gamma^{\circled{C}}_{j, 1} d^{\circled{C , \ell}}_{1} + \dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C , \ell}}_{r_C}.
 \end{array} 
 \]
 \item If $\alpha_{j,1}=-1$ and $\ell$ is odd, then
@@ -194,13 +194,13 @@ $}
 \smallskip
 \chi^{\circled{C}}_{\ell}(y_j)  & = &  \alpha^{\circled{C}}_{j,0} - o_j + \sum \limits_{j' \le k, \pi_C(j')=j'} \beta^{\circled{C}}_{j,j'} d^{(0)}_{j'} +  \sum \limits_{j'\le k, \pi_C(j') \neq j'}  \beta^{\circled{C}}_{j,j'} d^{(0)}_{j'} +  \\
 %
-& & \sum \limits_{j' \le r_C\!,\! j'+k \in \rng(\pi_C)} ( -\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)} +\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!1}}_{j'} + \\
+& & \sum \limits_{j' \le r_C ,  j'+k \in \rng(\pi_C)} ( -\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)} +\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , 1}}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C\!,\!  j'+k \not \in \rng(\pi_C)} \gamma^{\circled{C}}_{j,j'} d^{\circled{C\!,\!1}}_{j'} + \dots + \\
+& & \sum \limits_{j' \le r_C ,   j'+k \not \in \rng(\pi_C)} \gamma^{\circled{C}}_{j,j'} d^{\circled{C , 1}}_{j'} + \dots + \\
 %
-& & \sum \limits_{j' \le r_C\!,\! j'+k \in \rng(\pi_C)} (\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!\ell\!\!-\!\!1}}_{j'} + \\
+& & \sum \limits_{j' \le r_C ,  j'+k \in \rng(\pi_C)} (\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , \ell  -  1}}_{j'} + \\
 %
-& & \sum \limits_{j' \le r_C\!,\!  j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C\!,\!\ell\!\!-\!\!1}}_{j'} + \gamma^{\circled{C}}_{j, 1} d^{\circled{C\!,\!\ell}}_{1} + \dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C\!,\!\ell}}_{r_C}.
+& & \sum \limits_{j' \le r_C ,   j'+k \not \in \rng(\pi_C)} (-\gamma^{\circled{C}}_{j,j'}) d^{\circled{C , \ell  -  1}}_{j'} + \gamma^{\circled{C}}_{j, 1} d^{\circled{C , \ell}}_{1} + \dots + \gamma^{\circled{C}}_{j,r_C} d^{\circled{C , \ell}}_{r_C}.
 \end{array} 
 \]
 }
@@ -214,7 +214,7 @@ $}
 %
 %\item for each data value $d^{(0)}_{j'}$, the coefficient of $d^{(0)}_{j'}$ is either $\beta^{\circled{C}}_{j,j'}$, or $0$, or $\beta^{\circled{C}}_{j,j'} \ell$,
 %
-%\item for each data value $d^{(C\!,\!i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C\!,\!i)}_{j'}$ is either $0$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}+\gamma^{\circled{C}}_{j,j'}$, or $\gamma^{\circled{C}}_{j,j'}$.
+%\item for each data value $d^{(C , i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C , i)}_{j'}$ is either $0$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}+\gamma^{\circled{C}}_{j,j'}$, or $\gamma^{\circled{C}}_{j,j'}$.
 %\end{itemize}
 
 
@@ -250,7 +250,7 @@ Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_
 
 A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j: 1 \le j < t$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, we know that a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
 %by composing $\sumf^{((C_{i_1})^{\ell_1},\initval)}$, $\dots$, and $\sumf^{((C_{i_t})^{\ell_t},\initval)}$, 
-to summarize the computation of $\Ss$ on $\schm$. Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{\circled{C_{i_s}\!,\!1}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s}\!,\!1}}_{s,r^{\circled{C_{i_s}}}}$, $\dots$, $\vard^{\circled{C_{i_s}\!,\!\ell_s}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s}\!,\!\ell_s}}_{s,r^{\circled{C_{i_s}}}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{\circled{C_{i_1}\!,\!1}}_{1,1}$, $\dots$, $\vard^{\circled{C_{i_1}\!,\!\ell_1}}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{\circled{C_{i_t}\!,\!1}}_{t,1}$, $\dots$, $\vard^{\circled{C_{i_t}\!,\!\ell_t}}_{t, r^{\circled{C_{i_t}}}}$. 
+to summarize the computation of $\Ss$ on $\schm$. Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{\circled{C_{i_s} , 1}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , 1}}_{s,r^{\circled{C_{i_s}}}}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,r^{\circled{C_{i_s}}}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{\circled{C_{i_1} , 1}}_{1,1}$, $\dots$, $\vard^{\circled{C_{i_1} , \ell_1}}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{\circled{C_{i_t} , 1}}_{t,1}$, $\dots$, $\vard^{\circled{C_{i_t} , \ell_t}}_{t, r^{\circled{C_{i_t}}}}$. 
 
 \hide{
 \begin{proposition}\label{prop-cycle-schm}
@@ -304,8 +304,6 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 }\bigskip
 %}
 
-
-
 %\in [k]$ (recall that we assume $I^{\circled{H}}_{tr}=[k]$), $\sumf^{(H,\initval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$. 
 
 The goal of Step II is either showing that in the analysis of $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ all subexpressions containing cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then from Proposition~\ref{prop-cycle-schm}, for each $j' \in  I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
@@ -353,41 +351,46 @@ Hence we can also ignore all subexpressions containing $\ell_1$ in  $\eval{O(q_m
 %If $j' \in  I^{\circled{C_{i'_2}}}_{pe}$, then the we have subexpressions containing $\ell_2$ in the coefficient of the $\initval(x_{j'})$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{pe}$) or $\vard^{\circled{C_{i'_1}}}_{\pi^{\circled{C_{i'_1}}}(j')}$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{tr}$) of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
 %Also we may have subexpressions containing $\ell_2$ in the constant atom.
 Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm'=C_{i'_2}^{\ell_2} C_{i''_3} \dots C_{i''_m}$ and applying a similar reasoning. The same applied to all other cycle counting variables $\ell_3,\dots,\ell_n$.
+For a cycle scheme $\schm$ and $y_j \in Y$, we use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counting variables. 
 
-\hide{We would like to remark that in Step II, for a given index $i_1$, we restrict the cycle schemes to those of the form $C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$. We show that this is enough to cover all cycle schemes beginning with $C_{i_1}^{\ell_1}$ by the following argument: For each $j: 1 \le j \le l$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$. Therefore, for each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and each $j: 1 \le j \le l$,  we have $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t} = \lambda^{\circled{C_{i_2}}}_{j} \dots \lambda^{\circled{C_{i_t}}}_{j}$.}
+\begin{proposition}\label{prop-bnd-domain-1}
+	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+\end{proposition}
+
 
 Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If there is $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}$ non-zero.
 Similar argument can be applied for $\ell_2\dots\ell_n$.
-
 \smallskip
 
 
-
-
-\begin{proposition}\label{prop-bnd-domain}
-Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following three facts hold.
+\begin{proposition}\label{prop-bnd-domain-2}
+Suppose that the decision procedure has not returned yet after Step II. 
 \begin{enumerate}
-\item Let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ and $f'=\eval{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}$.
-There is a valuation $\rho$ such that $\eval{f}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{f}{\rho} \neq 0$.
-%
-\item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$. 
-%
-\item For each cycle scheme $\schm$, an abstraction of $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$, denoted by $\abs(\schm)$, can be defined such that $\abs(\schm) \subseteq \{0,\dots, k+1\} \times K^l$ and for each $j: 0 \le j \le k$,  $\abs(\schm) \cap (\{j\} \times K^l)$ is a singleton. Let $\Kk=\{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\Kk$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.
+\item For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
+
+\item For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
+(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for all $j' \in [l]$ and data variable $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(x_j)\mid x_j\in X\}$.
+Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$ by a fixed point computation.
 \end{enumerate}
 \end{proposition}
 
 
-\noindent {\bf Step III}. For each $U \in \Kk$, do the following.
-\begin{enumerate}
-\item Check whether there is $(0,(c_{0,1},\dots,c_{0,l})) \in U$ such that $a_0+b_1 c_{0,1}+\dots + b_l c_{0,l} \neq 0$. If the answer is yes, then return $\ltrue$.
-%
-\item Check whether there are $j \in [k]$ and $(j, (c_{j,1},\dots,c_{j,l})) \in U$ such that $a_j + b_1 c_{j,1} + \dots + b_l c_{j,l} \neq 0$. If the answer is yes, then return $\ltrue$. 
-%
-\item Check whether there is $(k+1,(c_1,\dots,c_n)) \in U$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$. If the answer is yes, then return $\ltrue$. 
-\end{enumerate}
-If the decision procedure has not returned yet, return $\lfalse$.
 
 
+\framebox[\textwidth]{
+	\begin{minipage}{0.95\textwidth}
+		\noindent {\bf Step III} We first construct the set $\mathscr{A}$ and then. 
+		\begin{enumerate}
+			\item Check whether there is $(0,(c_{0,1},\dots,c_{0,l})) \in \mathscr{A}$ such that $a_0+b_1 c_{0,1}+\dots + b_l c_{0,l} \neq 0$. If the answer is yes, then return $\ltrue$.
+			%
+			\item Check whether there are $j \in [k]$ and $(j, (c_{j,1},\dots,c_{j,l})) \in \mathscr{A}$ such that $a_j + b_1 c_{j,1} + \dots + b_l c_{j,l} \neq 0$. If the answer is yes, then return $\ltrue$. 
+			%
+			\item Check whether there is $(k+1,(c_1,\dots,c_n)) \in \mathscr{A}$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$. If the answer is yes, then return $\ltrue$. 
+		\end{enumerate}
+		If the decision procedure has not returned yet, return $\lfalse$.
+	\end{minipage}
+}\smallskip\\
 %From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
 
 %\begin{proposition}
@@ -525,7 +528,7 @@ If the decision procedure has not return yet, then go to Step III$'$. \qed
 
 \smallskip
 
-After Step II$'$, if the decision procedure has not returned yet, then similar to Proposition~\ref{prop-bnd-domain}, the following results hold.
+After Step II$'$, if the decision procedure has not returned yet, then similar to Proposition~\ref{prop-bnd-domain-2}, the following results hold.
 \begin{itemize}
 \item For each $s \in [r]$ and each path $\schm=H_1 \schm_1 H_2 \dots H_s \schm_s$ such that for each $s'\in [s]$, $\schm_{s'}$ is a cycle scheme over the collection of cycles $\{C_{s',1},\dots,C_{s',n_{s'}}\}$, it holds that the constant atom and all the coefficients of the non-constant atoms in $(\sumf^{(\schm,\initval_0)})'(y_j)$ are from a bounded domain $K$.
 %
