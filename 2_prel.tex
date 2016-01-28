@@ -11,9 +11,9 @@ For a function $\pi$, let $\dom(\pi)$ and $\rng(\pi)$ denote the \emph{domain}  
 
 For an expression $e$, let $\vars(e)$ denote the set of variables occurring in $e$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. 
 %Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. 
-A \emph{valuation} $\rho$ of $Z$ is a function from $Z$ to $\intnum\cup\{\bot\}$. A \emph{symbolic valuation} $\sval$ of $Z$ is a function which maps each variable $z \in Z$ to an expression (possibly over a different set of variables). The value of $e$ under a valuation $\rho$ (resp. symbolic valuation $\sval$), denoted by $\eval{e}{\rho}$ (resp. $\eval{e}{\sval}$), is defined recursively in the standard way. For example, let $\sval$ be a symbolic valuation the maps $x$ to $x+y$ and $y$ to $3y$, then $\eval{2x+3y}{\sval}=2\eval{x}{\rho}+3\eval{y}{\sval}=2(x+y)+3(3y)=2x+11y$.
+A \emph{valuation} $\rho$ of $Z$ is a function from $Z$ to $\intnum\cup\{\bot\}$. A \emph{symbolic valuation} $\sval$ of $Z$ is a function which maps each variable $z \in Z$ to an expression (possibly over a different set of variables). The value of $e$ under a valuation $\rho$ (resp. symbolic valuation $\sval$), denoted by $\eval{e}{\rho}$ (resp. $\eval{e}{\sval}$), is defined recursively in the standard way. For example, let $\sval$ be a symbolic valuation the maps $z_1$ to $z_1+z_2$ and $z_2$ to $3z_2$, then $\eval{2z_1+3z_2}{\sval}=2\eval{z_1}{\sval}+3\eval{z_2}{\sval}=2(z_1+z_2)+3(3z_2)=2z_1+11z_2$.
 %Note that a valuation can be seen as a special symbolic valuation where the image of each variable is a constant.
-For a valuation $\rho$, $x \in Z$, and $d \in \intnum$, define the function $\rho[d/x]$ such that $\rho[d/x](x)=d$ and $\rho[d/x](y)=\rho(y)$ for $y\neq x$. 
+For a valuation $\rho$, $z\in Z$, and $d \in \intnum$, define the function $\rho[d/z]$ such that $\rho[d/z](z)=d$ and $\rho[d/z](z')=\rho(z')$ for $z'\neq z$. We use $\rho_\bot$ to denote the valuation such that $\rho_\bot(z) = \bot$ for each $z \in Z$.
 
 In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
 A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c\in \intnum$. 
@@ -26,6 +26,6 @@ permutations on $\interval{n}$ is denoted by $S_n$.
 
 A \emph{data word $w$} is a sequence of integer values $d_1\ldots d_n$ such that $d_i \in \intnum$ for each $i$.
 We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the data value $d_1$, the tail $d_2\dots d_n$, and the length $n$, respectively.
-We use $\epsilon$ to denote an empty data word.
+We use $\epsilon$ to denote an empty data word. As a convention, we let $\head(w)=\bot$, $\tail(w)=\epsilon$, and $|w|=0$.
 Given two data words $w,w'$, we use $w.w'$ to denote their concatenation.
 Given $\sigma \in S_n$, we lift $\sigma$ to data words by defining $\sigma(w)=d_{\sigma(1)} \ldots d_{\sigma(n)}$, for each data word $w=d_1\ldots d_n$. We call $\sigma(w)$ as a permutation of $w$.
