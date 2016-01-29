@@ -461,28 +461,29 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 
 
 \noindent {\bf Lemma~\ref{prop-cycle-schm}}.
-{\it Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Let $r_j$ be the largest number that $j\in\bigcap_{n\in[r_j]} I^{\circled{C_{i_{n}}}}_{pe}$, i.e., $x_j$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_j}}$.
-Then for each $j: 1 \le j \le l$, the coefficient of the $\initval(x_{j})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is
-\begin{center}
+{\it 
+	Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
+	For all $j'\in[k]$, let $r_{j'}$ be the largest number that $j'\in\bigcap_{s\in[r_{j'}]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_{j'}}}$.
+	Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is\smallskip\\
 	\resizebox{0.8\hsize}{!}{
-$\sum\limits_{n\in[r_j]}  
-\left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right) \csta^{\circled{C_{i_n}}}_{j,j'}\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m} +$}
-\end{center}
-\resizebox{0.4\hsize}{!}{
-$sign(t-r_j) (\lambda^{\circled{C_{i_n}}}_{j})^{(\ell_{r_j+1})-1} \csta^{\circled{C_{i_n}}}_{j,j'},$} where $sign(c)$ returns $1$ if $c>1$, else it returns $0$. The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
-\begin{center}
-\resizebox{0.7\hsize}{!}{$
-\sum\limits_{n\in[t]}
-\left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right)
-\cste^{\circled{C_{i_n}}}_{j} 
-\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m}$}
-\end{center}
-Moreover, only the constant atom and the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$, $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, and $j \in [l]$.
+		$\left(\lambda^{\circled{C_{i_{s_1}}}}_{j}\right)^{(\ell_{r_{j'}+1})-1} \csta^{\circled{C_{i_{s_1}}}}_{j,j'}+\sum\limits_{s_1\in[r_{j'}]}  
+		\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{s_2\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$ } when $r_{j'}<t$\smallskip\\
+	\resizebox{0.585\hsize}{!}{
+		$\sum\limits_{s_1\in[t]}  
+		\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$} \hspace{2.55cm} when $r_{j'}=t$\smallskip\\
+	The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+	\begin{center}
+		\resizebox{0.7\hsize}{!}{$
+			\sum\limits_{{s_1}\in[t]}
+			\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right)
+			\cste^{\circled{C_{i_{s_1}}}}_{j} 
+			\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$}
+	\end{center}
+	Moreover, for all $j \in [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$.
 }
 
 \begin{proof}
 The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\ref{cor-comp-two-paths}, and an induction on the length of the cycle scheme $t$.
-
 
 
 \hide{
@@ -524,22 +525,12 @@ The argument for the constant coefficient is similar.}
 
 \smallskip
 
-\noindent {\bf Lemma~\ref{prop-bnd-domain-1}}.
-{\it	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
-}
-
 
 \noindent {\bf Lemma~\ref{prop-bnd-domain-2}}.
 {\it 
 Suppose that the decision procedure has not returned yet after Step II. 
-\begin{enumerate}
-\item For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
-the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
-
-\item For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
-(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for all $j' \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(x_j)\mid x_j\in X\}$.
-\item Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.
-\end{enumerate}
+For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
 }
 
 
@@ -552,13 +543,14 @@ the constant atom and the coefficients of the non-constant atoms in the expressi
 
 
 \begin{proof}
+\hide{
 Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{\circled{C_{i_1}}}_{pe}$, we know that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\eval{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
 
 \medskip
 
 We prove the second fact next. 
 
-Let $K$ be the subset of $\intnum$ comprising the following numbers,
+Let $U$ be the subset of $\intnum$ comprising the following numbers,
 \begin{itemize}
 \item the constant atom and the coefficients of the non-constant atoms in the expression $(\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})})'(y_j)$, where $1 \le i \le n$ and $\ell_i \ge 1$ (note that if $\ell_i \ge 2$, then the exact value of $\ell_i$ is indifferent to those coefficients),
 
@@ -568,7 +560,7 @@ Let $K$ be the subset of $\intnum$ comprising the following numbers,
 %
 \item  the numbers $\csta^{\circled{C_{i_1}}}_{j, j'} + \csta^{(C_{i_2})}_{j,j'}$, where $1 \le i_1,i_2 \le n$, $1 \le j \le l$, and $j' \in [k]$. 
 %$j' \in I^{\circled{C_{i_1}}}_{tr}$, and $\cstl^{(C_{i_2})}_j = 0$.
-\end{itemize}
+\end{itemize}}
 
 For each cycle scheme $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ and each $y_j \in Y$, we know that $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ is a linear combination of $\vard^{(H)}_1$, $\dots$, $\vard^{(H)}_{r^{(H)}}$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{(C_{i_t},1)}_{t,1}$, $\dots$, $\vard^{(C_{i_t},\ell_t)}_{t, r^{(C_{i_t})}}$. 
 
@@ -637,7 +629,8 @@ We illustrate the arguments for the case $\cstl^{(C_{i_t})}_{j} = 1$. The case $
 %
 \item The coefficients of all the other atoms are those of  the $\vard^{(C_{i_t}, i)}_{j, j'}$-atoms for $i: 1 \le i \le \ell_t$ in $(\sumf^{(C^{\ell_t}_{i_t},\sumf^{(H,\initval_0)})})'(y_j)$.
 \end{itemize} 
-
+\qed
+\hide{
 \smallskip
 
 Finally, we consider the third fact.
@@ -652,7 +645,7 @@ Let $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ be a cycle scheme. An abstra
 \end{enumerate}
 Intuitively, $\abs(\schm)$, the abstraction of  $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'$,  is the set comprising the tuple of the constant atoms, the tuples of the coefficients of the atoms corresponding to the control variables, and the tuples of the coefficients of the atoms corresponding to the other data variables.
 
-From the proof that all the constant atoms and the coefficients of the non-constant atoms in $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ for $y_j \in Y$ are from a bounded domain $K$, it is not hard to see that $\Kk = \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$ can be computed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.\qed
+From the proof that all the constant atoms and the coefficients of the non-constant atoms in $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ for $y_j \in Y$ are from a bounded domain $K$, it is not hard to see that $\Kk = \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$ can be computed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.\qed}
 \end{proof}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%the proof of the claim%%%%%%%%%%%%%%%%%%%%%%%%
