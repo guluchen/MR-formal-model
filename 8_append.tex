@@ -55,6 +55,66 @@ We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there
 
 \section{Proofs in Section~\ref{sec:def-snt}}
 
+
+
+
+\newcommand\assume{\mathsf{assume}}
+
+\newcommand\loc{\mathfrak{l}}
+
+\medskip
+
+\noindent {\bf The translation of reducer Programs to SNTs}.
+
+\smallskip
+
+In the following, we demonstrate how to translate reducer programs into an equivalent SNT.
+
+We introduce a few notations first.
+
+Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
+
+Let $p$ be a reducer program of the form $s_1; \loopL{s_2}$; ret $r$.  We assume that $p$ is well-formed in the following sense: Each execution path of $s_1$ resp. $s_2$ ends in a $\nnext$ statement. In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
+
+The loop body of $s_2$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $P_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y+=e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
+
+In addition, each execution path of $s_1$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
+
+The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.
+
+
+\begin{algorithm}[H]
+	%  \SetAlgoLine
+	\KwData{A reducer program $p$}
+	$Q=\{q_0\}, \delta=\emptyset, O=\emptyset$, $\mathsf{toState}(p) =q_0$, $\mathsf{toVisit}=\{(\mathsf{toState}(p),p,\ltrue,\emptyset)\}$\;
+	\While{$\mathsf{toVisit}\neq \emptyset$}{
+		remove $(q,p,g,\eta)$ from $\mathsf{toVisit}$\;
+		\Switch{$p$}{
+			\lCase{$y := e;p'$,$y \addeq e;p'$,$x'=x;p'$: }{add $(q,p',g,\eta[e/y])$, $(q,p',g,\eta[(y+e)/y])$, $(q,p',g,\eta[x'/x])$ to $\mathsf{toVisit}$, respectively}
+			\lCase{$\ite{g'}{s_1}{s_2};p'$: }{add both $(q,s_1;p',g\wedge g',\eta)$ and $(q,s_2;p',g\wedge \neg g',\eta)$ to $\mathsf{toVisit}$}
+			\lCase{$\loopL{s;}\mbox{ret }r$: }{add both $(q,s;\loopL{s;}\mbox{ret }r,g,\eta)$ and $(q,\mbox{ret }r, g,\eta)$ to $\mathsf{toVisit}$}
+			\lCase{$\nnext;p'$: }{\label{alg:next}
+				\uIf{$\mathsf{toState}(p') \not\in Q$}{add $(\mathsf{toState}(p'),p',\ltrue,\emptyset)$ to $\mathsf{toVisit}$ and add $\mathsf{toState}(p')$ to $Q$}
+				add $(q, \mathsf{toState}(p'),g,\eta)$ to $\delta$
+			}
+			\lCase{$\mbox{ret }r: $}{\label{alg:output}
+				add a fresh state $q_r$ to $Q$, 
+				add $(q, q_r,g,\eta)$ to $\delta$, and $O:=O[r/q_r]$}
+		}
+	}
+	\Return $(Q,X,Y,\delta, \mathsf{toState}(p),O)$\;
+	
+	\caption{Translate a Reducer Program to a SNT}
+	\label{fig:reducer2SNT}
+\end{algorithm}
+We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
+The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\nnext$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
+
+The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized flat. It might have cycles sharing more than one states. All the cycles coming from the loop and branches inside the loop. There must be at least one state $s$ shared by all cycles. Therefore, we can make it generalized flat by duplicating all shared stated other than $s$ so all cycles will have their own copy of the shared states other than $s$.  
+
+
+\vspace{4mm}
+
 \noindent {\bf Proposition~\ref{prop-snt-cmm-to-eqv}}. 
 \emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time}.
 
@@ -184,61 +244,7 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 \end{proof}
 
 
-
-\section{Translate a Reducer Program to a SNT}
-
-\newcommand\assume{\mathsf{assume}}
-
-\newcommand\loc{\mathfrak{l}}
-
-In the following, we demonstrate how to translate reducer programs into an equivalent SNT.
-
-We introduce a few notations first.
-
-Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
-
-Let $p$ be a reducer program of the form $s_1; \loopL{s_2}$; ret $r$.  We assume that $p$ is well-formed in the following sense: Each execution path of $s_1$ resp. $s_2$ ends in a $\nnext$ statement. In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
-
-The loop body of $s_2$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $P_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y+=e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
-
-In addition, each execution path of $s_1$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
-
-The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.
-
-
-\begin{algorithm}[H]
-	%  \SetAlgoLine
-	\KwData{A reducer program $p$}
-	$Q=\{q_0\}, \delta=\emptyset, O=\emptyset$, $\mathsf{toState}(p) =q_0$, $\mathsf{toVisit}=\{(\mathsf{toState}(p),p,\ltrue,\emptyset)\}$\;
-	\While{$\mathsf{toVisit}\neq \emptyset$}{
-		remove $(q,p,g,\eta)$ from $\mathsf{toVisit}$\;
-		\Switch{$p$}{
-			\lCase{$y := e;p'$,$y \addeq e;p'$,$x'=x;p'$: }{add $(q,p',g,\eta[e/y])$, $(q,p',g,\eta[(y+e)/y])$, $(q,p',g,\eta[x'/x])$ to $\mathsf{toVisit}$, respectively}
-			\lCase{$\ite{g'}{s_1}{s_2};p'$: }{add both $(q,s_1;p',g\wedge g',\eta)$ and $(q,s_2;p',g\wedge \neg g',\eta)$ to $\mathsf{toVisit}$}
-			\lCase{$\loopL{s;}\mbox{ret }r$: }{add both $(q,s;\loopL{s;}\mbox{ret }r,g,\eta)$ and $(q,\mbox{ret }r, g,\eta)$ to $\mathsf{toVisit}$}
-			\lCase{$\nnext;p'$: }{\label{alg:next}
-				\uIf{$\mathsf{toState}(p') \not\in Q$}{add $(\mathsf{toState}(p'),p',\ltrue,\emptyset)$ to $\mathsf{toVisit}$ and add $\mathsf{toState}(p')$ to $Q$}
-				add $(q, \mathsf{toState}(p'),g,\eta)$ to $\delta$
-			}
-			\lCase{$\mbox{ret }r: $}{\label{alg:output}
-				add a fresh state $q_r$ to $Q$, 
-				add $(q, q_r,g,\eta)$ to $\delta$, and $O:=O[r/q_r]$}
-		}
-	}
-	\Return $(Q,X,Y,\delta, \mathsf{toState}(p),O)$\;
-	
-	\caption{Translate a Reducer Program to a SNT}
-	\label{fig:reducer2SNT}
-\end{algorithm}
-We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, where $q$ is the source SNT state, $p$ is a reducer program, $g$ is a guard, and $\eta$ is an assignment.
-The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\nnext$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
-
-The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized flat. It might have cycles sharing more than one states. All the cycles coming from the loop and branches inside the loop. There must be at least one state $s$ shared by all cycles. Therefore, we can make it generalized flat by duplicating all shared stated other than $s$ so all cycles will have their own copy of the shared states other than $s$.  
-
-
-
-\section{Proofs in Section~\ref{sec:dec-snt}}
-
+\vspace{4mm}
 
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
 {\it From each SNT, an equivalent normalized SNT can be constructed in exponential time.} 
@@ -329,44 +335,38 @@ For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $
 \end{itemize}
 \end{itemize}
 \qed
-
-
-\hide{
-We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
-%The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
-Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_fv2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
-
-We say that $M$ is \emph{consistent} if there is no inconsistency when we saturate it with all indirect relations between elements in $X^c$. E.g., if $M(x_1,x_2)=\hat{>}$, $M(x_2,x_3)=\hat{>}$, and we will have the indirection relation $x_1>x_3$. If we also have $M(x_1,x_2)=\hat{<}$, then we detect an inconsistency. If $M(x_1,x_2)=\bot$ then the saturation procedure set $M(x_1,x_2)=\hat{>}$ because now the relation between is no longer unclear. From a consistent and saturated function $M$, one can induce an equivalence relation between elements in $X^c$, which partition $X^c$ into finite number of classes. We definite the \emph{representative element} of an equivalence class in $M$ as the minimal element w.r.t. the following order $c_{min}<\ldots<c_{max}<x_1<\ldots<x_{|X|}<\cur$. By abusing the notation, we also use $M$ to denote a function maps an element in $x\in X$ to the representative element in $X^c$ of the equivalence class $x$ belongs to.
-
-
-Let $(q,q',g,\eta)$ be a transition in $\delta$. 
-$(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
-\begin{itemize}
-\item $\tog{M}\wedge g \neq \lfalse$
-\item $M'$ is obtained by the following steps: 
-  \begin{itemize}
-    \item if $\tog{M}\wedge g$ implies $x_1>x_2$, $x_1<x_2$, $x_1=x_2$ for $x_1\in X, x_2\in X^c$, set $M'(x_1,x_2)=\hat{>}$, $M'(x_1,x_2)=\hat{<}$, $M'(x_1,x_2)=\hat{=}$, respectively.
-	\item clean all rows and columns related to $\dom(\eta)$, $M':=M'[\bot/(x_1,x_2)]$ for all $x_1\in X\wedge x_2 \in \dom(\eta)$ or $x_1 \in \dom(\eta) \wedge x_2\in X^c$ for $x_1\neq x_2$ 
-	\item handle the equivalence related caused by $\eta$, for all $x_1\in X,x_2\in X$ such that $\eta(x_1)=x_2$ execute $M':=M'[\hat{=}/(x_1,x_2)][\hat{=}/(x_2,x_1)]$ and for all $x\in X$ such that $\eta(x)=\cur$ execute $M':=M'[\hat{=}/(x_1,\cur)]$.
-	\item saturate $M'$ with all possible indirect relations. 
-  \end{itemize}
-\item $\eta'(M'(x))= \eval{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \eval{\eta(y)}{M}$ if $y\in Y$.
-\item $g'$ is obtained from $g\wedge g^c \wedge \bigwedge_{x \in X} \cur \neq x$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$, where $g^c\in \{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$. 
-\item $Z'= Z\cup (\dom(\eta)\cap X)$.
-\end{itemize}
-%
-The initial state $q_0 = (q_0, \emptyset, M_0)$, where $M_0(x,x) = \hat{=}$ for all $x\in X$.
-The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\eval{O(q)}{M'}$.
-}
 \end{proof}
+
+\section{Proofs in Section~\ref{sec-sum}}
 
 
 \noindent {\bf Proposition~\ref{prop-sum-path}}.
-{\it The values of the control and data variables after traversing the path $P$ are specified by a function $\chi$ satisfying the following conditions.
+{\it Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
 \begin{itemize}
-\item There is an injective mapping $\pi: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi(j) \le k$, then $\pi(j)=j$ and $\chi(x_j)=d^{(0)}_{j}$, otherwise, $\chi(x_j)=d^{(1)}_{\pi(j)-k}$.
+\item The set of indices of $X$, i.e., $[k]$, is partitioned into $I^{\circled{P}}_{pe}$ and $I^{\circled{P}}_{tr}$, the indices of \emph{persistent} and \emph{transient} control variables, respectively. A control variable is persistent if its value has not been changed while traversing $P$, otherwise, it is transient.
+\item For each $x_j\in X$ such that $j\in I^{\circled{P}}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_j)$.
+%
+\item  For each $x_j\in X$ such that $j\in I^{\circled{P}}_{tr}$,
+$\sumf^{(P,\initval)}(x_j)=\vard^{\circled{P}}_{\pi^{\circled{P}}(j)}$, where $\pi^{\circled{P}}: I^{\circled{P}}_{tr} \rightarrow [r^{\circled{P}}]$ is an injective mapping from the index of a transient control variable to the index of the data value assigned to it.
 % 
-\item For each $y_j \in Y$, $\chi(y_j) = \alpha_{j,0} + \alpha_{j,1} o_j + \beta_{j,1} d^{(0)}_1 + \dots + \beta_{j,k} d^{(0)}_k + \gamma_{j,1} d^{(1)}_1 +\dots + \gamma_{j,r} d^{(1)}_{r}$ for some constants $\alpha_{j,0},\alpha_{j,1}, \beta_{j,1},\dots,\beta_{j,k}, \gamma_{j,1},\dots,\gamma_{j,r}$ such that $\alpha_{j,1} \in \{0,+1,-1\}$ (as a result of the ``independently evolving and copyless'' constraint).
+\item For each $y_j \in Y$, 
+$
+ \sumf^{(P,\initval)}(y_j)  =
+ \cste^{\circled{P}}_{j} + 
+ \cstl^{\circled{P}}_j \initval(y_j)  + 
+  \sum\limits_{j'\in [k]}\csta^{\circled{P}}_{j,j'}\initval(x_{j'}) +
+  \sum\limits_{j'\in [r^{\circled{P}}]}\cstb^{\circled{P}}_{j,j'} \vard^{\circled{P}}_{j'}$,
+\hide{
+\item For each $y_j \in Y$, 
+\[
+\small
+\begin{array}{l}
+\smallskip
+\sumf^{(P,\initval)}(y_j)  = \\
+\hspace{2mm} \cste^{\circled{P}}_{j} + \cstl^{\circled{P}}_j \initval(y_j)  + \csta^{\circled{P}}_{j,1} \initval(x_1) + \dots + \csta^{\circled{P}}_{j,k} \initval(x_k) +  \cstb^{\circled{P}}_{j,1} \vard^{\circled{P}}_1 +\dots + \cstb^{\circled{P}}_{j,r^{\circled{P}}} \vard^{\circled{P}}_{r^{\circled{P}}},
+\end{array}
+\]} 
+where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\dots,\csta^{\circled{P}}_{j,k}, \cstb^{\circled{P}}_{j,1},\dots,\cstb^{\circled{P}}_{j,r^{\circled{P}}}$ are integer constants such that $\cstl^{\circled{P}}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint).  It can happen that $\cstl^{\circled{P}}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{\circled{P}}_{j,1}=0$, and so on.
 \end{itemize}
 }
 
@@ -398,26 +398,29 @@ Then the function $\chi$ can be defined as the restriction of $\theta_n$ to $X \
 
 
 \noindent {\bf Proposition~\ref{prop-sum-cycle}}.
-{\it Suppose $P=C^{\ell}$ such that $\ell \ge 2$. Then the function $\chi^{(C)}_{\ell}$ to summarize the computation of $\Ss$ on $P$ is defined as follows,
-\[
-\begin{array}{l c l}
-\chi^{(C)}_{\ell}(y_j)  & = & (\alpha^{(C)}_{j,0} + \alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0}+ \dots +(\alpha^{(C)}_{j,1})^{\ell-1} \alpha^{(C)}_{j,0}) + (\alpha^{(C)}_{j,1})^\ell o_j + \\
-& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1}\beta^{(C)}_{j,j'} + \dots +(\alpha^{(C)}_{j,1})^{\ell-1}  \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \\
+{\it 
+Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
+\resizebox{\hsize}{!}{
+$\begin{array}{l c l}
+\sumf^{(C^\ell,\initval)}(y_j)  & = & 
+\left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
 %
-& & \sum \limits_{j'\le k, \pi_C(j') \neq j'} ((\alpha^{(C)}_{j,1})^{\ell-1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} +  \\
+& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
 %
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} ( (\alpha^{(C)}_{j,1})^{\ell-2} \beta^{(C)}_{j, \pi_C^{-1}(j'+k)} +(\alpha^{(C)}_{j,1})^{\ell-1}\gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \\
+& & \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{m\in[\ell -1]}
+\left(  \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} +(\cstl^{\circled{C}}_{j})\cstb^{\circled{C}}_{j,j'} \right)
+(\cstl^{\circled{C}}_{j})^{\ell-m-1}
+\vard^{\circled{C , m}}_{j'} +\\
 %
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} ((\alpha^{(C)}_{j,1})^{\ell-1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + \dots + \\
-%
-& & \sum \limits_{j' \le r_C, j'+k \in \rng(\pi_C)} (\beta^{(C)}_{j, \pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1}\gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \\
-%
-& & \sum \limits_{j' \le r_C,  j'+k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,\ell-1)}_{j'} + \gamma^{(C)}_{j, 1} d^{(C,\ell)}_{1} + \dots + \gamma^{(C)}_{j,r_C} d^{(C,\ell)}_{r_C},
+& & \sum \limits_{j' \in [r^{\circled{C}}] \setminus \rng(\pi^{\circled{C}})}\sum \limits_{m\in[\ell -1]} \left((\cstl^{\circled{C}}_{j})^{\ell - m} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , m}}_{j'} + 
+\sum \limits_{j' \in [r^{\circled{C}}] }  
+ \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
-\]
-where $d^{(C,2)}_{1},\dots, d^{(C,2)}_{r_C},\dots, d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$
- are the data values introduced when traversing $C$ for the second time, $\dots$, and for $\ell$ times.
+$}\medskip\\
+where the variables $\vard^{\circled{C , 1}}_{m},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
+ represent the data values introduced when traversing $C$ for the $m$-th time.
 }
+
 %
 \begin{proof}
 Let $d^{(C,2)}_{1},\dots,d^{(C,2)}_{r_C}$ be the data values introduced when traversing the cycle for the second time. Then from Corollary~\ref{cor-comp-two-paths}, we know that $\chi^{(C)}_2 = \chi_{C} \circ \chi_C$ is defined as follows: For each $y_j \in Y$,
@@ -439,49 +442,29 @@ For $\ell > 3$, let $d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$ be the data valu
 \qed
 \end{proof}
 
+\section{Proofs in Section~\ref{sec-glasso}}
 
-\smallskip
 
-\noindent {\bf Proposition~\ref{prop-cycle-schm}}.
-{\it 
-Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Then for each $j: 1 \le j \le l$ and each $j' \in I^{(C_{i_1})}_{pe}$, the $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
-\[\left((\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right) \\
-\left(1+\lambda^{(C_{i_1})}_{j} + \dots + (\lambda^{(C_{i_1})}_{j})^{\ell_1-1} \right) \csta^{(C_{i_1})}_{j,j'} \initval(x_{j'}),\]
-and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
-\[
-\begin{array}{l c l}
-\left((\lambda^{(C_{i_2})}_{j})^{\ell_2} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right)
-\left(1+\lambda^{(C_{i_1})}_{j} + \dots + (\lambda^{(C_{i_1})}_{j})^{\ell_1-1} \right) \cste^{(C_{i_1})}_{j} + \\
-\left((\lambda^{(C_{i_3})}_{j})^{\ell_3} \dots (\lambda^{(C_{i_t})}_{j})^{\ell_t}\right)
-\left(1+\lambda^{(C_{i_2})}_{j} + \dots + (\lambda^{(C_{i_2})}_{j})^{\ell_2-1} \right) \cste^{(C_{i_2})}_{j} +\\
- \dots + 
-\left(1+\lambda^{(C_{i_t})}_{j} + \dots + (\lambda^{(C_{i_t})}_{j})^{\ell_t-1} \right) \cste^{(C_{i_t})}_{j}.
-\end{array}
-\]
-Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient is of the form $c\ell_1$ for some $c \in \intnum$, is in fact the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ or an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{(C_{i_1})}_{pe}$.
+
+\noindent {\bf Lemma~\ref{prop-cycle-schm}}.
+{\it Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Let $r_j$ be the largest number that $j\in\bigcap_{n\in[r_j]} I^{\circled{C_{i_{n}}}}_{pe}$, i.e., $x_j$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_j}}$.
+Then for each $j: 1 \le j \le l$, the coefficient of the $\initval(x_{j})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is
+\begin{center}
+	\resizebox{0.8\hsize}{!}{
+$\sum\limits_{n\in[r_j]}  
+\left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right) \csta^{\circled{C_{i_n}}}_{j,j'}\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m} +$}
+\end{center}
+\resizebox{0.4\hsize}{!}{
+$sign(t-r_j) (\lambda^{\circled{C_{i_n}}}_{j})^{(\ell_{r_j+1})-1} \csta^{\circled{C_{i_n}}}_{j,j'},$} where $sign(c)$ returns $1$ if $c>1$, else it returns $0$. The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+\begin{center}
+\resizebox{0.7\hsize}{!}{$
+\sum\limits_{n\in[t]}
+\left(1+\lambda^{\circled{C_{i_n}}}_{j} + \dots + (\lambda^{\circled{C_{i_n}}}_{j})^{\ell_n-1} \right)
+\cste^{\circled{C_{i_n}}}_{j} 
+\prod\limits_{m\in[n+1,t]}\left(\lambda^{\circled{C_{i_m}}}_{j}\right)^{\ell_m}$}
+\end{center}
+Moreover, only the constant atom and the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$, $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, and $j \in [l]$).
 }
-
-
-\begin{proposition}
-Let $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. Then for each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, $\chi_{\schm}(O(q_m))$ contains the following expression,
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
-\end{array}
-\right) d^{(0)}_{\pi_H(j')-k}. 
-\]
-Moreover, the constant coefficient of $\chi_\schm(O(q_m))$ contains the following expression,
-\[
-\sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
-%\\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0}.
-%\end{array}
-\]
-\end{proposition}
 
 \begin{proof}
 At first,  let us check $\chi^{(C_{i_1})}_{\ell_1}(O(q_m))$.
@@ -520,22 +503,34 @@ The argument for the constant coefficient is similar.
 \end{proof}
 
 
+\smallskip
+
+\noindent {\bf Lemma~\ref{prop-bnd-domain-1}}.
+{\it	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+}
+
+
+\noindent {\bf Lemma~\ref{prop-bnd-domain-2}}.
+{\it 
+Suppose that the decision procedure has not returned yet after Step II. 
+\begin{enumerate}
+\item For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
+
+\item For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
+(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(y_{j'})$ for all $j' \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\emptyset)})}}^-(x_j)\mid x_j\in X\}$.
+\item Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.
+\end{enumerate}
+}
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%the proof of the claim%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\noindent {\bf Proposition~\ref{prop-bnd-domain}}. 
-{\it 
-Suppose that the decision procedure has not returned yet after Step II. For each cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ and $y_j \in Y$, let $(\sumf^{(\schm,\initval)})'(y_j)$ denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all the expressions of the form $c\ \ell_1$, $\dots$, or $c\ \ell_t$ (where $c$ is an integer constant).  Then the following three facts hold.
-\begin{enumerate}
-\item There is a valuation $\rho$ such that $\eval{\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}}{\rho}\neq 0$ iff there is a valuation $\rho$ such that $\eval{\eval{O(q_m)}{(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'}}{\rho} \neq 0$.
-%
-\item There is a finite subset of $\intnum$, say $K$, such that for every cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$. 
-%
-\item For each cycle scheme $\schm$, an abstraction of $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'$, denoted by $\abs(\schm)$, can be defined such that $\abs(\schm) \subseteq \{0,\dots, k+1\} \times K^l$ and for each $j: 0 \le j \le k$,  $\abs(\schm) \cap (\{j\} \times K^l)$ is a singleton. Let $\Kk=\{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\Kk$ can be constructed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.
-\end{enumerate}
-}
 
 \begin{proof}
 Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{(C_{i_1})}_{pe}$, we know that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\eval{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
@@ -645,7 +640,7 @@ From the proof that all the constant atoms and the coefficients of the non-const
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Comparisons with constants in guards}
+\section{Extension of the decision procedure: Constants in guards}
 
 We now consider the situation that the guards contain the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
 

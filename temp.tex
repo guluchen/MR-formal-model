@@ -1,4 +1,37 @@
 
+\hide{
+We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
+%The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
+Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_fv2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
+
+We say that $M$ is \emph{consistent} if there is no inconsistency when we saturate it with all indirect relations between elements in $X^c$. E.g., if $M(x_1,x_2)=\hat{>}$, $M(x_2,x_3)=\hat{>}$, and we will have the indirection relation $x_1>x_3$. If we also have $M(x_1,x_2)=\hat{<}$, then we detect an inconsistency. If $M(x_1,x_2)=\bot$ then the saturation procedure set $M(x_1,x_2)=\hat{>}$ because now the relation between is no longer unclear. From a consistent and saturated function $M$, one can induce an equivalence relation between elements in $X^c$, which partition $X^c$ into finite number of classes. We definite the \emph{representative element} of an equivalence class in $M$ as the minimal element w.r.t. the following order $c_{min}<\ldots<c_{max}<x_1<\ldots<x_{|X|}<\cur$. By abusing the notation, we also use $M$ to denote a function maps an element in $x\in X$ to the representative element in $X^c$ of the equivalence class $x$ belongs to.
+
+
+Let $(q,q',g,\eta)$ be a transition in $\delta$. 
+$(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
+\begin{itemize}
+\item $\tog{M}\wedge g \neq \lfalse$
+\item $M'$ is obtained by the following steps: 
+  \begin{itemize}
+    \item if $\tog{M}\wedge g$ implies $x_1>x_2$, $x_1<x_2$, $x_1=x_2$ for $x_1\in X, x_2\in X^c$, set $M'(x_1,x_2)=\hat{>}$, $M'(x_1,x_2)=\hat{<}$, $M'(x_1,x_2)=\hat{=}$, respectively.
+	\item clean all rows and columns related to $\dom(\eta)$, $M':=M'[\bot/(x_1,x_2)]$ for all $x_1\in X\wedge x_2 \in \dom(\eta)$ or $x_1 \in \dom(\eta) \wedge x_2\in X^c$ for $x_1\neq x_2$ 
+	\item handle the equivalence related caused by $\eta$, for all $x_1\in X,x_2\in X$ such that $\eta(x_1)=x_2$ execute $M':=M'[\hat{=}/(x_1,x_2)][\hat{=}/(x_2,x_1)]$ and for all $x\in X$ such that $\eta(x)=\cur$ execute $M':=M'[\hat{=}/(x_1,\cur)]$.
+	\item saturate $M'$ with all possible indirect relations. 
+  \end{itemize}
+\item $\eta'(M'(x))= \eval{\eta(x)}{M}$ if $x \in X$ and  $\eta'(y)= \eval{\eta(y)}{M}$ if $y\in Y$.
+\item $g'$ is obtained from $g\wedge g^c \wedge \bigwedge_{x \in X} \cur \neq x$ by replacing all occurrences of $x\in\dom(M)$ with $M(x)$, where $g^c\in \{\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, $\cur > c_{max}\}\}$. 
+\item $Z'= Z\cup (\dom(\eta)\cap X)$.
+\end{itemize}
+%
+The initial state $q_0 = (q_0, \emptyset, M_0)$, where $M_0(x,x) = \hat{=}$ for all $x\in X$.
+The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\eval{O(q)}{M'}$.
+\end{proof}
+}
+
+
+
+
+
 In order to get a better understanding of the relationship between $(\chi_1 \circ \chi_2)$ and $\chi_1,\chi_2$, we apply a refined analysis of $\chi_1 \circ \chi_2$ in the following. 
 
 From Proposition~\ref{prop-sum-path}, for $b=1,2$, we assume that $\chi_b$ is defined as follows.
