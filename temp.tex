@@ -1,3 +1,65 @@
+For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
+\[
+\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+%\\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%\end{array}
+\]
+the expressions 
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+\end{array}
+\right) c^{(H)}_{\pi_H(j')-k}
+\]
+such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+\left((\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i-1} \beta^{(C_{i_1})}_{j,\pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $1 \le i < \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \in \rng(\pi_{C_{i_1}})$,\\
+the expressions
+\[
+\left(\sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)  \left( (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+%\end{array}
+\right) c^{(C_{i_1})}_{j'},
+\]
+such that $i: 1 \le i \le \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \not \in \rng(\pi_{C_{i_1}})$.
+
+Then $c_{\schm,i_1}$ can be rewritten as $\mu_{\schm, (i_1,0)} \ell_1 + \nu_{\schm, (i_1,0)}$ for constants $\mu_{\schm, (i_1,0)},\nu_{\schm, (i_1,0)}$.
+
+\medskip
+
+\noindent {\bf Step II$''$}. For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j' \le k$ such that 
+\begin{itemize}
+\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+\item $\pi_H(j')-k \not \in J_H$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
+\end{itemize}
+then return $\ltrue$.
+
+If there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
+$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+%
+and $\mu_{\schm,(i_1,0)} \neq 0$, 
+%
+then return $\ltrue$. 
+
+If the decision procedure has not return yet, then go to Step III$''$. \qed
+
+\medskip
+
 
 
 \hide{Before presenting the decision procedure for generalized lassos, we introduce some notations.
