@@ -483,43 +483,7 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 }
 
 \begin{proof}
-The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\ref{cor-comp-two-paths}, and an induction on the length of the cycle scheme $t$.
-
-
-\hide{
-At first,  let us check $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$.
-\[
-\begin{array}{l c l}
-\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m)) & = & a_0 + a_1 \chi^{\circled{C_{i_1}}}_{\ell_1}(x_1) + \dots a_k \chi^{\circled{C_{i_1}}}_{\ell_1}(x_k) + \\
-& & b_1 \chi^{\circled{C_{i_1}}}_{\ell_1}(y_1) + \dots + b_l \chi^{\circled{C_{i_1}}}_{\ell_1}(y_l).
-\end{array}
-\] 
-
-Then $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$ is a linear combination of the variables $d^{(0)}_1,\dots, d^{(0)}_{r_H}$ and $d^{(C_{i_1},1)}_1,\dots, d^{(C_{i_1},1)}_{r_{C_{i_1}}}, \dots, d^{(C_{i_1},\ell_1)}_1,\dots, d^{(C_{i_1},\ell_1)}_{r_{C_{i_1}}}$.
-
-For each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$ is 
-
-\[a_{j'} + \sum \limits_{1 \le j \le l} b_j \left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'}.\]
-%
-%
-For each $j: 1 \le j \le l$, $\chi_{\schm}(y_j)$ contains the following expression 
-\[\left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)\left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'} d^{(0)}_{\pi_H(j')-k}.\]
-
-Since 
-\[
-\chi_{\schm}(O(q_m)) = a_0 + a_1 \chi_{\schm}(x_1) + \dots a_k \chi_{\schm}(x_k) + b_1 \chi_{\schm}(y_1) + \dots + b_l \chi_{\schm}(y_l),
-\] 
-it is not hard to see that $\chi_\schm(O(q_m))$ contains the expression,
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'}
-\end{array}
-\right) d^{(0)}_{\pi_H(j')-k}. 
-\]
-The argument for the constant coefficient is similar.}
-\qed
+The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\ref{cor-comp-two-paths}, and an induction on the length of the cycle scheme $t$.\qed
 \end{proof}
 
 
@@ -533,119 +497,48 @@ For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coef
 the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
 }
 
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%the proof of the claim%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \begin{proof}
-\hide{
-Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{\circled{C_{i_1}}}_{pe}$, we know that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\eval{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
-
-\medskip
-
-We prove the second fact next. 
-
-Let $U$ be the subset of $\intnum$ comprising the following numbers,
-\begin{itemize}
-\item the constant atom and the coefficients of the non-constant atoms in the expression $(\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})})'(y_j)$, where $1 \le i \le n$ and $\ell_i \ge 1$ (note that if $\ell_i \ge 2$, then the exact value of $\ell_i$ is indifferent to those coefficients),
-
-%(note that the exact value of $\ell_i$ is indifferent to these numbers),
-%
-\item  the numbers $\csta^{(C_{i_2})}_{j,j'} + \cstb^{\circled{C_{i_1}}}_{j,\pi^{\circled{C_{i_1}}}(j')}$, where $1 \le i_1,i_2 \le n$,  $1 \le j \le l$, and $j' \in I^{\circled{C_{i_1}}}_{tr} \cap I^{(C_{i_2})}_{tr}$,
-%
-\item  the numbers $\csta^{\circled{C_{i_1}}}_{j, j'} + \csta^{(C_{i_2})}_{j,j'}$, where $1 \le i_1,i_2 \le n$, $1 \le j \le l$, and $j' \in [k]$. 
-%$j' \in I^{\circled{C_{i_1}}}_{tr}$, and $\cstl^{(C_{i_2})}_j = 0$.
-\end{itemize}}
-
-For each cycle scheme $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ and each $y_j \in Y$, we know that $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ is a linear combination of $\vard^{(H)}_1$, $\dots$, $\vard^{(H)}_{r^{(H)}}$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{(C_{i_t},1)}_{t,1}$, $\dots$, $\vard^{(C_{i_t},\ell_t)}_{t, r^{(C_{i_t})}}$. 
-
-%Similarly, $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(y_j)$ is a linear combination of $\vard^{(H)}_1$, $\dots$, $\vard^{(H)}_{r^{(H)}}$, $\vard^{(C_{i_1},1)}_{1,1}$, $\dots$, $\vard^{(C_{i_1},\ell_1)}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{(C_{i_{t-1}},1)}_{t-1,1}$, $\dots$, $\vard^{(C_{i_{t-1}},\ell_{t-1})}_{t-1, r^{(C_{i_{t-1}})}}$.
+For each cycle scheme $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ and each $y_j \in Y$, suppose for each $s\in [t]$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{\circled{C_{i_s} , 1}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , 1}}_{s,r^{\circled{C_{i_s}}}}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,r^{\circled{C_{i_s}}}}$. Then for each $y_j \in Y$,
+ ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)$ is a linear combination of $\vard^{\circled{H}}_1$, $\dots$, $\vard^{\circled{H}}_{r^{\circled{H}}}$, $\vard^{\circled{C_{i_1} , 1}}_{1,1}$, $\dots$, $\vard^{\circled{C_{i_1} , \ell_1}}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{\circled{C_{i_t} , 1}}_{t,1}$, $\dots$, $\vard^{\circled{C_{i_t} , \ell_t}}_{t, r^{\circled{C_{i_t}}}}$. 
 
 Suppose for each $y_j \in Y$,
 \[
 \begin{array}{l cl }
-(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j) &:= & (\cste^{(\schm)}_{j})'  + (\csta^{(\schm)}_{j,1})' \vard^{(H)}_1 + \dots + (\csta^{(\schm)}_{j,r^{(H)}})' \vard^{(H)}_{r^{(H)}} + \\
-& & (\cstb^{(\schm,1)}_{1,1})' \vard^{(C_{i_1},1)}_{1,1}  + \dots + (\cstb^{(\schm,\ell_1)}_{1,r^{\circled{C_{i_1}}}})' \vard^{(C_{i_1},\ell_1)}_{1,r^{\circled{C_{i_1}}}}  +  \\
+{\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j) &:= & (\cste^{\circled{\schm}}_{j})'  + (\csta^{\circled{\schm}}_{j,1})' \vard^{\circled{H}}_1 + \dots + (\csta^{\circled{\schm}}_{j,r^{\circled{H}}})' \vard^{\circled{H}}_{r^{\circled{H}}} + \\
+& & (\cstb^{\circled{\schm,1}}_{1,1})' \vard^{\circled{C_{i_1},1}}_{1,1}  + \dots + (\cstb^{\circled{\schm,\ell_1}}_{1,r^{\circled{C_{i_1}}}})' \vard^{\circled{C_{i_1},\ell_1}}_{1,r^{\circled{C_{i_1}}}}  +  \\
 & & \dots + \\
-& & (\cstb^{(\schm,1)}_{t,1})' \vard^{(C_{i_{t}},1)}_{t,1} + \dots + (\cstb^{(\schm,\ell_{t})}_{t,r^{(C_{i_{t}})}})' \vard^{(C_{i_{t}},\ell_{t})}_{t, r^{(C_{i_{t}})}}.
+& & (\cstb^{\circled{\schm,1}}_{t,1})' \vard^{\circled{C_{i_{t}},1}}_{t,1} + \dots + (\cstb^{\circled{\schm,\ell_{t}}}_{t,r^{\circled{C_{i_{t}}}}})' \vard^{\circled{C_{i_{t}},\ell_{t}}}_{t, r^{\circled{C_{i_{t}}}}}.
 \end{array}
 \]
 
-
-
 In the following, we show by induction on $t$ that for each cycle scheme $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ and $y_j \in Y$, the following results hold.
 \begin{enumerate}
-\item The constant atom and all the coefficients of the non-constant atoms in $(\sumf^{(\schm, \sumf^{(H,\initval_0)})})'(y_j)$ are from $K$.
+\item In ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)$, the constant atom and all the coefficients of the non-constant atoms are from $U$.
 %
-\item For each $\vard^{(H)}_{j'}$ such that $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(H)}_{j'}$ for some $j''  \in [k]$, the following fact holds: if there is $s \in [t]$ such that $\cstl^{(C_{i_s})}_j =0$, let $s_0$ be the maximum $s$ satisfying the constraint, then $(\csta^{(\schm)}_{j,j'})'=\csta^{(C_{i_{s_0}})}_{j, j''}$, otherwise, $(\csta^{(\schm)}_{j,j'})'= \beta^{(H)}_{j,j'}$.
+\item For each $\vard^{\circled{H}}_{j'}$ such that ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_{j''})=\vard^{\circled{H}}_{j'}$ for some $j''  \in [k]$, the following fact holds: if there is $s \in [t]$ such that $\cstl^{\circled{C_{i_s}}}_j =0$, let $s_0$ be the maximum $s$ satisfying the constraint, then $(\csta^{\circled{\schm}}_{j,j'})'=\csta^{\circled{C_{i_{s_0}}}}_{j, j''}$, otherwise, $(\csta^{\circled{\schm}}_{j,j'})'= \beta^{\circled{H}}_{j,j'}$.
 %
-\item For each $s \in [t]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(\schm, i)}_{s, j'}$ for some $j''  \in [k]$, it holds that $i = \ell_s$, $j'' \in I^{(C_{i_s})}_{tr}$, $j'' \in I^{(C_{i_{s'}})}_{pe}$ for each $s': s < s' \le t$, and the following fact holds: if there is $s': s < s' \le t$ such that $\cstl^{(C_{i_{s'}})}_j =0$, let $s'_0$ be the maximum $s'$ satisfying the constraint, then $(\cstb^{(\schm, i)}_{j,j'})'=\csta^{(C_{i_{s'_0}})}_{j, j''}$, otherwise, $(\cstb^{(\schm, i)}_{j,j'})'= \cstb^{(C_{i_s})}_{j,j'}$. 
+\item For each $s \in [t]$, $i \in [\ell_s]$, and $j' \in [r^{\circled{C_{i_s}}}]$ such that ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_{j''})=\vard^{\circled{\schm, i}}_{s, j'}$ for some $j''  \in [k]$, it holds that $i = \ell_s$, $j'' \in I^{\circled{C_{i_s}}}_{tr}$, $j'' \in I^{\circled{C_{i_{s'}}}}_{pe}$ for each $s': s < s' \le t$, and the following fact holds: if there is $s': s < s' \le t$ such that $\cstl^{\circled{C_{i_{s'}}}}_j =0$, let $s'_0$ be the maximum $s'$ satisfying the constraint, then $(\cstb^{\circled{\schm, i}}_{j,j'})'=\csta^{\circled{C_{i_{s'_0}}}}_{j, j''}$, otherwise, $(\cstb^{\circled{\schm, i}}_{j,j'})'= \cstb^{\circled{C_{i_s}}}_{j,j'}$. 
 \end{enumerate}
-
-
 
 Induction base: $t=1$. 
 \begin{itemize}
-\item The first result: Follow from the definition of $K$. 
+\item The first result: Follow from the definition of $U$. 
 
-\item The second result: If $\cstl^{\circled{C_{i_1}}}_j = 0$, then $(\csta^{(\schm)}_{j,j'})'=\csta^{(C_{i_{1}})}_{j, j''}$,  otherwise, $(\csta^{(\schm)}_{j,j'})'=0$, since the expression $\csta^{\circled{C_{i_1}}}_{j,j''} \ell_1$ is removed from the coefficient of the $\sumf^{(H,\initval_0)}(x_{j''})$-atom in $\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_0)})}(y_j)$, i.e. the $\vard^{(H)}_{j'}$-atom in $\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_0)})}(y_j)$. 
+\item The second result: If $\cstl^{\circled{C_{i_1}}}_j = 0$, then $(\csta^{\circled{\schm}}_{j,j'})'=\csta^{\circled{C_{i_{1}}}}_{j, j''}$,  otherwise, $(\csta^{\circled{\schm}}_{j,j'})'=0$, since the expression $\csta^{\circled{C_{i_1}}}_{j,j''} \ell_1$ is removed from the coefficient of the $\sumf^{(H,\initval_\bot)}(x_{j''})$-atom in $\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_\bot)})}(y_j)$, i.e. the $\vard^{\circled{H}}_{j'}$-atom in $\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_\bot)})}(y_j)$. 
 
-\item The third result: Suppose that $(\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(C_{i_1}, i)}_{1, j'}$ for $i \in [\ell_1]$, $j' \in [r^{\circled{C_{i_1}}}]$, and $j'' \in [k]$. Then $j'' \in I^{\circled{C_{i_1}}}_{tr}$, otherwise, $\vard^{(C_{i_1}, i)}_{1, j'}$ would not be assigned to $x_{j''}$. From this, we deduce that $i = \ell_s$. Moreover, $(\csta^{(C^{\ell_1}_{i_1})}_{j,j'})'= \cstb^{\circled{C_{i_1}}}_{j,j'}$. 
+\item The third result: Suppose that $(\sumf^{(C^{\ell_1}_{i_1},\sumf^{(H,\initval_\bot)})})'(x_{j''})=\vard^{\circled{C_{i_1}, i}}_{1, j'}$ for $i \in [\ell_1]$, $j' \in [r^{\circled{C_{i_1}}}]$, and $j'' \in [k]$. Then $j'' \in I^{\circled{C_{i_1}}}_{tr}$, otherwise, $\vard^{\circled{C_{i_1}, i}}_{1, j'}$ would not be assigned to $x_{j''}$. From this, we deduce that $i = \ell_s$. Moreover, $(\csta^{\circled{C^{\ell_1}_{i_1}}}_{j,j'})'= \cstb^{\circled{C_{i_1}}}_{j,j'}$. 
 \end{itemize}
 
 Induction step: Suppose $t \ge 2$ and $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$.
 
 Let $\schm_1= C^{\ell_1}_{i_1} \dots C^{\ell_{t-1}}_{i_{t-1}}$.  Then for each $y_j \in Y$, 
-\[(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)=(\sumf^{(C^{\ell_t}_{i_t},\ (\sumf^{(\schm_1, \sumf^{(H,\initval_0)})})')})'(y_j).\] 
+\[{\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)=
+{\sumf^{(C^{\ell_t}_{i_t},\ {\sumf^{(\schm_1, \sumf^{(H,\initval_\bot)})}}^-)}}^-(y_j).\] 
 
-By the induction hypothesis, the three results hold for $(\sumf^{(\schm_1, \sumf^{(H,\initval_0)})})'$.
+By the induction hypothesis, the three results hold for ${\sumf^{(\schm_1, \sumf^{(H,\initval_\bot)})}}^-$.
 
-%Suppose for each $s: 1 \le s \le t$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{(C_{i_s},1)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},1)}_{s,r^{(C_{i_s})}}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,1}$, $\dots$, $\vard^{(C_{i_s},\ell_s)}_{s,r^{(C_{i_s})}}$. 
-
-
-We illustrate the arguments for the case $\cstl^{(C_{i_t})}_{j} = 1$. The case $\cstl^{(C_{i_t})}_{j} = 0$ is simpler and can be discussed similarly. Suppose $y_j \in Y$.  In the following, we check that the constant atom and the coefficients of all the non-constant atoms of $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ belong to $K$.  
-%For brevity, we abbreviate an(resp. the) atom of $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ as an (resp. the) atom below.
-\begin{itemize}
-\item $(\cste^{(\schm)}_{j})' = 0 + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\cste^{(\schm_1)}_j)' = (\cste^{(\schm_1)}_j)' \in K$ (here $\cste^{(C_{i_t})}_{j} \ell_t$ is removed).
-%
-%\item the coefficient of $o_j$ is $1$,
-%
-\item For each $j' \in [r^{(H)}]$ such that there does not exist $j'' \in [k]$ satisfying that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(H)}_{j'}$, $(\csta^{(\schm)}_{j, j'})' = (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})' = (\csta^{(\schm_1)}_{j, j'})' \in K$.
-%
-\item For each $j' \in [r^{(H)}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(H)}_{j'}$ for some $j''  \in I^{(C_{i_t})}_{pe}$, $(\csta^{(\schm)}_{j, j'})' = 0 + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})'= (\csta^{(\schm_1)}_{j, j'})' \in K$ (here $\csta^{(C_{i_t})}_{j,j'} \ell_t$ is removed). In this case, we have $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(H)}_{j'}$. From the induction hypothesis, it is easy to see that the second result holds for $\schm$, $y_j$.
-%
-\item For each $j' \in [r^{(H)}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(H)}_{j'}$ for some $j''  \in I^{(C_{i_t})}_{tr}$, $(\csta^{(\schm)}_{j, j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t-1} \csta^{(C_{i_t})}_{j,j''} + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})' = \csta^{(C_{i_t})}_{j,j''} + (\csta^{(\schm_1)}_{j, j'})' $. From the induction hypothesis, we know that either $(\csta^{(\schm_1)}_{j, j'})' = \csta^{(C_{i_{s_0}})}_{j,j''}$ if there is $s$ such that $\cstl^{(C_{i_s})}_j =0$,  or otherwise, $(\csta^{(\schm_1)}_{j, j'})'=\cstb^{(H)}_{j, j'}$. Therefore, $(\csta^{(\schm)}_{j, j'})' =\csta^{(C_{i_t})}_{j,j''} +  \csta^{(C_{i_{s_0}})}_{j,j''}$ or $\csta^{(C_{i_t})}_{j,j''}+ \cstb^{(H)}_{j, j'}$. We conclude that $(\csta^{(\schm)}_{j, j'})' \in K$.
-%
-\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that there does not exist $j'' \in [k]$ satisfying that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$, it holds that $(\cstb^{(\schm,i)}_{s,j'})' = (\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})'  =  (\cstb^{(\schm_1, i)}_{s, j'})'  \in K$. 
-%
-\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$ for some $j'' \in I^{(C_{i_t})}_{pe}$, $(\cstb^{(\schm,i)}_{s,j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})'+ 0  =  (\cstb^{(\schm_1, i)}_{s, j'})' \in K$ (here $\csta^{(C_{i_t})}_{j, j''} \ell_t$ is removed). Moreover, from the induction hypothesis, the third condition holds for $\schm$ and $y_j$.
-%
-\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$ for some $j'' \in I^{(C_{i_t})}_{tr}$, it holds that $i = \ell_s$, $j'' \in I^{(C_{i_s})}_{tr}$, and for each $s': s < s' \le t$, $j'' \in I^{(C_{i_{s'}})}_{pe}$. Then $(\cstb^{(\schm,i)}_{s,j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})' + \csta^{(C_{i_t})}_{j, j''}  =  (\cstb^{(\schm_1, i)}_{s, j'})' + \csta^{(C_{i_t})}_{j, j''}$. From the induction hypothesis,  if there is $s': s < s' \le t-1$ such that $\cstl^{(C_{i_{s'}})}_j =0$, let $s'_0$ be the maximum $s'$ satisfying the constraint, then $(\cstb^{(\schm_1, i)}_{j,j'})'=\csta^{(C_{i_{s'_0}})}_{j, j''}$, otherwise, $(\cstb^{(\schm_1, i)}_{j,j'})'= \cstb^{(C_{i_s})}_{j,j'}$. Therefore, $(\cstb^{(\schm,i)}_{s,j'})' = \csta^{(C_{i_{s'_0}})}_{j, j''} + \csta^{(C_{i_t})}_{j, j''}$ or $\cstb^{(C_{i_s})}_{j,j'} + \csta^{(C_{i_t})}_{j, j''}$, thus belongs to $K$. In this case, $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{(C_{i_t},\ell_t)}_{t, \pi^{(C_{i_t})}(j'')}$ and $(\cstb^{(\schm,\ell_t)}_{t, \pi^{(C_{i_t})}(j'')})' = \cstb^{(C_{i_t})}_{j, \pi^{(C_{i_t})}(j'')}$. So the third condition holds for $\schm$ and $y_j$.
-%
-\item The coefficients of all the other atoms are those of  the $\vard^{(C_{i_t}, i)}_{j, j'}$-atoms for $i: 1 \le i \le \ell_t$ in $(\sumf^{(C^{\ell_t}_{i_t},\sumf^{(H,\initval_0)})})'(y_j)$.
-\end{itemize} 
 \qed
-\hide{
-\smallskip
 
-Finally, we consider the third fact.
-
-Let $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ be a cycle scheme. An abstraction of $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'$, denoted by $\abs(\schm)$, can be computed from $\schm$ by the following procedure.
-\begin{enumerate}
-\item Let $\abs(\schm):=\{(0, ( (\cste^{(\schm)}_{1})',\dots, (\cste^{(\schm)}_l)'))\}$.
-%
-\item For each $j \in [k]$ and $j' \in [l]$, let $\cstg_{j, j'}$ be the coefficient of the $((\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_j))$-atom in $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_{j'})$. Let $\abs(\schm): = \abs(\schm) \cup \{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$.
-%
-\item For each data variable $\vard'$ such that $\vard' \neq (\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(x_j)$ for each $j \in [k]$, let $\abs(\schm):=\abs(\schm) \cup \{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in K^l$ is the tuple of the coefficients of the $\vard'$-atom in $((\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_{j'})$ for $j' \in [l]$. 
-\end{enumerate}
-Intuitively, $\abs(\schm)$, the abstraction of  $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'$,  is the set comprising the tuple of the constant atoms, the tuples of the coefficients of the atoms corresponding to the control variables, and the tuples of the coefficients of the atoms corresponding to the other data variables.
-
-From the proof that all the constant atoms and the coefficients of the non-constant atoms in $(\sumf^{(\schm,\sumf^{(H,\initval_0)})})'(y_j)$ for $y_j \in Y$ are from a bounded domain $K$, it is not hard to see that $\Kk = \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$ can be computed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.\qed}
 \end{proof}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%the proof of the claim%%%%%%%%%%%%%%%%%%%%%%%%
@@ -666,13 +559,13 @@ Let $q_0 \dots q_m C_1 \dots C_n$ be a generalized lasso and $O(q_m)=a_0 + a_1 x
 \[
 \begin{array}{l c l }
 \chi_H(O(q_m)) & = & a_0 + a_1 \chi_H(x_1) + \dots + a_k \chi_H(x_k) + b_1 \chi_H(y_1) + \dots b_l \chi_H(y_l) \\
-& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
-& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
+& = & (a_0+b_1 \alpha^{\circled{H}}_{1,0} + \dots + b_l \alpha^{\circled{H}}_{l,0}) + \\
+& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{\circled{H}}_{j,1}+\dots + b_l \gamma^{\circled{H}}_{j,l}) d^{(0)}_j +
 \\
-& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
+& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{\circled{H}}_{j,1}+\dots + b_l \gamma^{\circled{H}}_{j,l}) d^{(0)}_j .
 \end{array}
 \]
-From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{(H)}_j$ for some $c_{\min}\le c^{(H)}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
+From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{\circled{H}}_j$ for some $c_{\min}\le c^{\circled{H}}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
 
 For each $j \not \in J_H$, decide whether the coefficient of $d^{(0)}_j$ in $\chi_H(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$. 
 
@@ -698,9 +591,9 @@ the expressions
 b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
 \left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'}
 \end{array}
-\right) c^{(H)}_{\pi_H(j')-k}
+\right) c^{\circled{H}}_{\pi_H(j')-k}
 \]
-such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
+such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{\circled{H}}_{\pi_H(j')-k}$), \\
 the expressions
 \[
 \left(\sum \limits_{1 \le j \le l} 
