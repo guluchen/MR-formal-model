@@ -335,28 +335,33 @@ Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. The
 We generalize the decision procedure for the case that the transition graphs of the SNTs are generalized lassos to the full class of SNTs.
 We first define a \emph{generalized multi-lasso} as a sequence $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r})$ s.t. (1) for each $s\in[r]$, $H_s = q_{s,1} \dots q_{s, m_s}$ and $H_s (C_{s,1},\dots,C_{s, n_s})$ is a generalized lasso, (2) for $1 \leq s< s' \leq r$, $H_s (C_{s,1},\dots,C_{s, n_s})$ and $H_{s'} (C_{s', 1},\dots,C_{s', n_{s'}})$ are state-disjoint, except the case that when $s'=s+1$, $q_{s, m_s}=q_{s',1}$, and (3) $q_{1,1}=q_0$.
 
-Since the transition graph of $\Ss$ can be seen as a collection of generalized multi-lassos, in the following, we shall present the decision procedure by showing how to decide the non-zero output problem for generalized multi-lassos. We fix a generalized multi-lasso
-$\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r}).$
+Since the transition graph of $\Ss$ can be seen as a collection of generalized multi-lassos, in the following, we shall present the decision procedure by showing how to decide the non-zero output problem for generalized multi-lassos. 
 
-Without loss of generality, we assume that $O(q_{r,m_r})=a_0+a_1 x_1 + \dots + a_k x_k + b_1 y_1  + \dots + b_l y_l$ and $O(q')$ is undefined for every other state $q'$ in $\gmlasso$.\smallskip\\
+We fix a generalized multi-lasso
+
+\smallskip
+\hspace{8mm} $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r})$.
+
+\smallskip
+\noindent Without loss of generality, we assume that $O(q_{r,m_r})=a_0+a_1 x_1 + \dots + a_k x_k + b_1 y_1  + \dots + b_l y_l$ and $O(q')$ is undefined for every other state $q'$ in $\gmlasso$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
-		\noindent {\bf Step I$'$}. We do the same analysis of Step I for the path $H_1\dots H_r$.
+		\noindent {\bf Step I$'$}. We do the same analysis as in Step I for the path $H_1\dots H_r$.
 	\end{minipage}
 }\smallskip
 
-Let $s\in [2,r]$. In order to analyze the set of cycles $\Cc=\{C_{s-1,1},\dots,C_{s-1,n_1}\}$, below we show how to summarize effect of the path $H_s\dots H_r$ to $O(q_{s-1, m_{s-1}})$, which is shared by all those cycles in $\Cc$.
-Suppose that $\eval{O(q_{r,m_r})}{\sumf^{(H_s\dots H_{r}, \initval)}}=a_{s, 0}+a_{s, 1} \initval(x_1)+ \dots + a_{s, k} \initval(x_k) + b_{s,1} \initval(y_1) + \dots + b_{s, l} \initval(y_l).$ 
+Let $s\in [2,r]$. In order to analyze the set of cycles $\Cc=\{C_{s-1,1},\dots,C_{s-1,n_{s-1}}\}$, below we show how to summarize effect of the path $H_s\dots H_r$ to $O(q_{s-1, m_{s-1}})$, which is shared by all those cycles in $\Cc$.
+Suppose that $\eval{O(q_{r,m_r})}{\sumf^{(H_s\dots H_{r}, \initval)}}=a_{s, 0}+a_{s, 1} \initval(x_1)+ \dots + a_{s, k} \initval(x_k) + b_{s,1} \initval(y_1) + \dots + b_{s, l} \initval(y_l)+e$, where $e$ is a linear combination of the data variables that represent the data values introduced when traversing $H_s\dots H_r$. 
 %the constant atom is $a_{s,0}$, the coefficient of the $\initval(x_j)$-atom is $a_{s, j}$ for each $j \in [k]$, and the coefficient of the $\initval(y_{j'})$-atom is $b_{s, j'}$ for each $j' \in [l]$. 
 Then we change the output function and let
-$O(q_{s-1, m_{s-1}}):=a_{s, 0}+a_{s, 1} x_1 + \dots + a_{s, k} x_k + b_{s,1} y_1 + \dots + b_{s, l} y_l.$\smallskip\\
+$O(q_{s-1, m_{s-1}}):=a_{s, 0}+a_{s, 1} x_1 + \dots + a_{s, k} x_k + b_{s,1} y_1 + \dots + b_{s, l} y_l$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 \noindent {\bf Step II$'$}.  For each $s\in [r]$ and $s'\in [n_s]$, we check each cycle scheme $\schm = C^{\ell_1}_{s,s'} C_{i_{2}} \dots C_{i_{t}}$ such that $C_{i_{2}} \dots C_{i_{t}}\in \{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ and $C_{i_{2}} \dots C_{i_{t}}$ are mutually distinct by performing an analysis of the expression $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, in a way similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
 	\end{minipage}
 }\smallskip
 
-Intuitively, in Step II$'$, during the analysis of $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, the effect of the paths $H_{s+1},  \dots,  H_r$ and the cycles $C_{i_{2}}, \dots, C_{i_{t}}$ is described by the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j  \cstl^{\circled{C_{i_{s,2}}}}_j \dots \cstl^{\circled{C_{i_{s,t}}}}_j $ for $j \in [l]$. Since $O(q_{s, m_{s}})$ has already taken into consideration the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j$ for $j \in [l]$, conceptually, in Step II$'$, we can do the analysis as if we have a generalized lasso where the handle is $H_1\dots H_s$ and the collection of cycles is $\{C_{s,1},\dots, C_{s,n_s}$, $\dots$, $C_{r,1},\dots, C_{r,n_r}\}$. 
+Intuitively, in Step II$'$, during the analysis of $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, the effect of the paths $H_{s+1},  \dots,  H_r$ and the cycles $C_{i_{2}}, \dots, C_{i_{t}}$ is described by the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j  \cstl^{\circled{C_{i_{2}}}}_j \dots \cstl^{\circled{C_{i_{t}}}}_j $ for $j \in [l]$. Since $O(q_{s, m_{s}})$ has already taken into consideration the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j$ for $j \in [l]$, conceptually, in Step II$'$, we can do the analysis as if we have a generalized lasso where the handle is $H_1\dots H_s$ and the collection of cycles is $\{C_{s,1},\dots, C_{s,n_s}$, $\dots$, $C_{r,1},\dots, C_{r,n_r}\}$. 
 %$\schm=C^{\ell_{s, 1}}_{i_{s,1}} \dots C^{\ell_{s, t_s}}_{i_{s, t_s}} C^{\ell_{s+1, 1}}_{i_{s+1, 1} } \dots C^{\ell_{s+1, t_{s+1}}}_{i_{s+1, t_{s+1}} } \dots C^{\ell_{r, 1}}_{i_{r,1}} \dots C^{\ell_{r, t_r}}_{i_{r, t_r}} $, where for each $s': s \le s' \le r$, $i_{s',1},\dots, i_{s', t_{s'}} \in [n_{s'}]$, 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
