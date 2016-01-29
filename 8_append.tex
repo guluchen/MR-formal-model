@@ -464,13 +464,13 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 {\it 
 	Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
 	For all $j'\in[k]$, let $r_{j'}$ be the largest number such that $j'\in\bigcap_{s\in[r_{j'}]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_{j'}}}$.
-	Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is\smallskip\\
-	\resizebox{0.8\hsize}{!}{
-		$\left(\lambda^{\circled{C_{i_{s_1}}}}_{j}\right)^{(\ell_{r_{j'}+1})-1} \csta^{\circled{C_{i_{s_1}}}}_{j,j'}+\sum\limits_{s_1\in[r_{j'}]}  
-		\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{s_2\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$ } when $r_{j'}<t$\smallskip\\
-	\resizebox{0.585\hsize}{!}{
-		$\sum\limits_{s_1\in[t]}  
-		\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$} \hspace{2.55cm} when $r_{j'}=t$\smallskip\\
+	Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+	\begin{center}
+		\resizebox{0.8\hsize}{!}{
+			$e+\sum\limits_{s_1\in[t]}  
+			\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
+	\end{center}
+	where $e=0$ when $r_j'=t$ and $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
 	The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
 	\begin{center}
 		\resizebox{0.7\hsize}{!}{$
@@ -493,10 +493,8 @@ The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\
 \noindent {\bf Lemma~\ref{prop-bnd-domain-2}}.
 {\it 
 Suppose that the decision procedure has not returned yet after Step II. 
-For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ 
-(1)
-the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\
-(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
+For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
 }
 
 \begin{proof}
