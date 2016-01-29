@@ -463,7 +463,7 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 \noindent {\bf Lemma~\ref{prop-cycle-schm}}.
 {\it 
 	Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
-	For all $j'\in[k]$, let $r_{j'}$ be the largest number that $j'\in\bigcap_{s\in[r_{j'}]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent after traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_{j'}}}$.
+	For all $j'\in[k]$, let $r_{j'}$ be the largest number such that $j'\in\bigcap_{s\in[r_{j'}]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_{j'}}}$.
 	Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is\smallskip\\
 	\resizebox{0.8\hsize}{!}{
 		$\left(\lambda^{\circled{C_{i_{s_1}}}}_{j}\right)^{(\ell_{r_{j'}+1})-1} \csta^{\circled{C_{i_{s_1}}}}_{j,j'}+\sum\limits_{s_1\in[r_{j'}]}  
@@ -483,7 +483,7 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 }
 
 \begin{proof}
-The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\ref{cor-comp-two-paths}, and an induction on the length of the cycle scheme $t$.\qed
+The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\ref{cor-comp-two-paths}, and an induction on the length $t$ of the cycle schemes.\qed
 \end{proof}
 
 
@@ -493,8 +493,10 @@ The lemma can be shown by applying Proposition~\ref{prop-sum-cycle}, Corollary~\
 \noindent {\bf Lemma~\ref{prop-bnd-domain-2}}.
 {\it 
 Suppose that the decision procedure has not returned yet after Step II. 
-For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
-the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
+For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ 
+(1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\
+(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
 }
 
 \begin{proof}
@@ -554,7 +556,7 @@ We illustrate the arguments for the case $\cstl^{\circled{C_{i_t}}}_{j} = 1$. Th
 	%
 	\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{\circled{C_{i_s}}}]$ such that ${\sumf^{(\schm_1,\sumf^{(H,\initval_\bot)})}}^-(x_{j''}) = \vard^{\circled{C_{i_s}, i}}_{s, j'}$ for some $j'' \in I^{\circled{C_{i_t}}}_{tr}$, it holds that $i = \ell_s$, $j'' \in I^{\circled{C_{i_s}}}_{tr}$, and for each $s': s < s' \le t$, $j'' \in I^{\circled{C_{i_{s'}}}}_{pe}$. Then $(\cstb^{\circled{\schm,i}}_{s,j'})' =(\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}  (\cstb^{\circled{\schm_1, i}}_{s, j'})' + \csta^{\circled{C_{i_t}}}_{j, j''}  =  (\cstb^{\circled{\schm_1, i}}_{s, j'})' + \csta^{\circled{C_{i_t}}}_{j, j''}$. From the induction hypothesis,  if there is $s': s < s' \le t-1$ such that $\cstl^{\circled{C_{i_{s'}}}}_j =0$, let $s'_0$ be the maximum $s'$ satisfying the constraint, then $(\cstb^{\circled{\schm_1, i}}_{j,j'})'=\csta^{\circled{C_{i_{s'_0}}}}_{j, j''}$, otherwise, $(\cstb^{\circled{\schm_1, i}}_{j,j'})'= \cstb^{\circled{C_{i_s}}}_{j,j'}$. Therefore, $(\cstb^{\circled{\schm,i}}_{s,j'})' = \csta^{\circled{C_{i_{s'_0}}}}_{j, j''} + \csta^{\circled{C_{i_t}}}_{j, j''}$ or $\cstb^{\circled{C_{i_s}}}_{j,j'} + \csta^{\circled{C_{i_t}}}_{j, j''}$, thus belongs to $U$. In this case, ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_{j''})=\vard^{\circled{C_{i_t},\ell_t}}_{t, \pi^{\circled{C_{i_t}}}(j'')}$ and $(\cstb^{\circled{\schm,\ell_t}}_{t, \pi^{\circled{C_{i_t}}}(j'')})' = \cstb^{\circled{C_{i_t}}}_{j, \pi^{\circled{C_{i_t}}}(j'')}$. So the third condition holds for $\schm$ and $y_j$.
 	%
-	\item The coefficients of all the other atoms are those of  the $\vard^{\circled{C_{i_t}, i}}_{j, j'}$-atoms for $i: 1 \le i \le \ell_t$ in ${\sumf^{(C^{\ell_t}_{i_t},\sumf^{(H,\initval_\bot)})}}^-(y_j)$.
+	\item The coefficients of all the other atoms are those of  the $\vard^{\circled{C_{i_t}, i}}_{j, j'}$-atoms for $i \in [\ell_t]$ in ${\sumf^{(C^{\ell_t}_{i_t},\sumf^{(H,\initval_\bot)})}}^-(y_j)$.
 \end{itemize} \qed
 
 \end{proof}
