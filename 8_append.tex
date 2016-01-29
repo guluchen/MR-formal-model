@@ -59,11 +59,11 @@ We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there
 \emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time}.
 
 \begin{proof}
-Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is a SNT. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
+Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
 \begin{itemize}
 \item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$, that is, the data word obtained from $w$ by swapping the first two data values.
 %
-\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving first data value to the end. 
+\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving the first data value to the end. 
 \end{itemize}
 The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
 
@@ -73,9 +73,9 @@ The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
 
 Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$ as follows: When reading $d_2$ in $w$, the data variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
 
-Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, the following constraints are satisfied,
+Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ starting from the initial state $q_0$ in $\Ss$, the following constraints are satisfied,
 \begin{itemize}
-\item $g_1$ does not contain any variable from $X$,
+\item $g_1$ does not contain any variable from $X$ (otherwise, $g_1$ would be evaluated to $\lfalse$),
 %
 \item for each variable $x \in X$ such that $x$ occurs in $g_2$, it holds that $x \in \dom(\eta_1)$,
 %
@@ -90,11 +90,11 @@ Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{
 \begin{itemize}
 \item each element of $\delta$ is an element of $\delta_1$,
 %
-\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose $X \cap \dom(\eta_1)=\{x_1,\dots,x_k\}$, for each $y \in Y \cap \dom(\eta_1)$, $\eta_1(y)=a_{1,y} + b_{1,y}\cur$, and for each $y \in Y \cap \dom(\eta_2)$, 
-\[\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,0} y + c_{y,1} x_1 + \dots + c_{y,k} x_k,\] 
+\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose for each $y_j \in Y \cap \dom(\eta_1)$, $\eta_1(y_j)=a_{j} + b_{j}\cur$, and for each $y_j \in Y \cap \dom(\eta_2)$, 
+\[\eta_2(y_j)= y_j + a'_{j} + b'_{j,0}  \cur + \sum\limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} x_{j'},\] 
 or 
 \[
-\eta_2(y)=a_{2,y} + b_{2,y} \cur + c_{y,1} x_1 + \dots + c_{y,k} x_k.
+\eta_2(y_j) = a'_{j} + b'_{j,0} \cur + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} x_{j'} .
 \]
 Then $\eta'_1, g', \eta'_2$ are defined as follows.
 \begin{itemize}
@@ -104,22 +104,22 @@ Then $\eta'_1, g', \eta'_2$ are defined as follows.
 %
 \item For each $x \in X$, if $x \in \dom(\eta_2)$, then $\eta'_2(x)$ is undefined, otherwise, if $x \in \dom(\eta_1)$, then $\eta'_2(x)=\cur$, otherwise, $\eta'_2(x)$ is undefined.
 %
-\item For each $y \in Y$, if $y \in \dom(\eta_2)$, then 
+\item For each $y_j \in Y$, if $y_j \in \dom(\eta_2)$, then 
 \[
 \begin{array}{l c l}
-\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,0} (a_{1,y} + b_{1,y}\cur) + c_{y,1} \cur + \dots + c_{y,k} \cur \\
-& = & (a_{2,y} + c_{y,0} a_{1,y}) + b_{2,y} x' + (c_{y,0} b_{1,y}  + c_{y,1} + \dots + c_{y,k} )\cur,
+\eta'_2(y_j) & = & (a_{j} + b_{j}\cur) + a'_{j} + b'_{j,0} x' + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} \cur \\
+& = & (a_{j} + a'_{j}) + b'_{j,0} x' + (b_{j}  + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} )\cur,
 \end{array}
 \]
 or 
 \[
 \begin{array}{l c l}
-\eta'_2(y) & = & a_{2,y} + b_{2,y} x' + c_{y,1} \cur + \dots + c_{y,k} \cur \\
-& = & a_{2,y} + b_{2,y} x' + (c_{y,1} + \dots + c_{y,k} )\cur.
+\eta'_2(y_j) & = & a'_{j} + b'_{j,0} x' + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} \cur  \\
+& = & a'_{j} + b_{j,0} x' + (\sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'}  )\cur.
 \end{array}
 \]
 %
-Otherwise, if $y \in \dom(\eta_1)$, then $\eta'_2(y)= a_{1,y} + b_{1,y} \cur$. Otherwise, $\eta'_2(y)$ is undefined.
+Otherwise, if $y_j \in \dom(\eta_1)$, then $\eta'_2(y_j)= a_{j} + b_{j} \cur$. Otherwise, $\eta'_2(y_j)$ is undefined.
 \end{itemize}
 \end{itemize}
 \end{itemize}
@@ -131,29 +131,29 @@ It is easy to see that the size of $\Ss_1$ is polynomial with respect to the siz
 
 Intuitively, over a data word $w=d_1\dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reaching the end of $w$, $\Ss_2$ outputs immediately by using $x'$ to represent $d_1$ and simulating the last transition of $\Ss$ over $d_2 \dots d_n d_1$. In order to simulate \emph{deterministically} the last transition of $\Ss$ over $d_2 \dots d_n d_1$ when reading the end of $w$ (since SNTs are required to be deterministic), we need record in the states of $\Ss_2$ the relationship between $d_1$ and all the values stored in the control variables. This implies an exponential blow-up of the size of $\Ss_2$ with respect to $\Ss$.
 
-Let $c_{\max}$ and $c_{\min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$.
+Let $c_{max}$ and $c_{min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$. As a convention, let $c_{max}=c_{min}=0$ if no constants occur in $\Ss$.
 
 Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (Q', Y, \delta_2, q'_{0}, O_2)$, where $O',\delta_2,O_2$ are defined as follows. 
 \begin{itemize}
-\item $Q' = \{q_0\} \cup \left(\left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where $[c_{\min},c_{\max}]= \{c \in \intnum \mid c_{\min} \le c \le c_{\max} \}$.
+\item $Q' = \{q'_0\} \cup \left(Q \times \left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where in a state $(q,(c, o)) \in Q'$, the third component $o$ denotes the relationship between $x'$ and $x$, e.g. $o(x)=<$ means that $x' < x$.
 %
 \item $\delta_2$ is defined as follows, 
 \begin{itemize}
-\item for each $c \in [c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
+\item for each $c \in [c_{min}, c_{max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
 %
-\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that the guard $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, then $\delta_2$ contains the following three transitions, 
-$((q,(c,o)), g \wedge \cur = x', \eta, (q',(c,o'_1)))$, $((q,(c,o)), g \wedge \cur< x', \eta, (q',(c,o'_2)))$, and $((q,(c,o)), g \wedge \cur > x', \eta, (q',(c,o'_3)))$, 
-where 
-for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) = \ =$, $o'_2(x)=\ >$, and $o'_3(x) =\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) = o(x)$.
+\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, $\delta_2$ contains the following three transitions, 
+$(q,(c,o)) \xrightarrow{(g \wedge \cur = x', \eta)} (q',(c,o'_1))$, 
+$(q,(c,o)) \xrightarrow{(g \wedge \cur< x', \eta)}  (q',(c,o'_2))$,
+and  $(q,(c,o)) \xrightarrow{(g \wedge \cur > x', \eta)} (q',(c,o'_3))$, where 
+for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) := \ =$, $o'_2(x):=\ >$, and $o'_3(x) :=\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) := o(x)$.
 \end{itemize}
 %
-\item $O_2$ is defined as follows: For each $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(\bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, suppose 
-\[O(q')=a+b_1 x_1 + \dots + b_k x_k + c_1 y_1 + \dots + c_l y_l,\]
-where $x_1,\dots,x_k$ (resp. $y_1,\dots,y_l$) are pairwise distinct variables from $X$ (resp. $Y$),
-then let
-\[O_2((q,(c,o)))=a+b_1 \eta'(x_1) + \dots + b_k \eta'(x_k) + c_1 \eta'(y_1) + \dots + c_l \eta'(y_l),\]
+\item $O_2$ is defined as follows: Let $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(g_c \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, where $g_c := \cur = c$ if $c \in [c_{min}, c_{max}]$, $g_c:=\cur < c_{min}$ if $c=-\infty$, and $g_c:=\cur > c_{max}$ otherwise. Suppose 
+\[O(q')=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l.\]
+Then let
+\[O_2((q,(c,o)))=a_0 + a_1 \eta'(x_1) + \dots + a_k \eta'(x_k) + b_1 \eta'(y_1) + \dots + b_l \eta'(y_l),\]
 where for each $z \in \dom(\eta)$, $\eta'(z)=\eta(z)$, and for all the other variables $z' \in X \cup Y$, $\eta'(z')=z'$.  \\
-Note that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint.
+We would like to remark that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint, as a result of the determinism of $\Ss$.
 \end{itemize}
 %
 Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
@@ -227,8 +227,91 @@ The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized fla
 \newcommand{\tog}[1]{\mathsf{toGuard(#1)}}
 \newcommand{\toec}[1]{\mathsf{toEqClass(#1)}}
 \begin{proof}
-Given a SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, we show that a normalized ${\Ss}'=(Q', X, Y, \delta', q'_0, O')$ such that ${\Ss}(w) = {\Ss}'(w)$ can be constructed.
+Given an SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, we show that an equivalent normalized SNT ${\Ss}'=(Q', X, Y, \delta', q'_0, O')$  can be constructed.
 
+Before presenting the construction, we introduce some notations first.
+
+Let $\sntcset_\Ss=\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\} \cup [c_{min}, c_{max}] \cup \{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$ and $\cabs_\Ss$ denote the set of partial functions from some $X$ to $\sntcset_\Ss$. Intuitively, $\cabs_\Ss$ is the set of abstractions of the control variables, where $\sntc^{<}_{1},\dots, \sntc^{<}_{k}$ (resp. $\sntc^{>}_{1},\dots, \sntc^{>}_{k}$) are the $k$ colors to denote the control variables whose values are less than $c_{min}$ (resp. greater than $c_{max}$). For $f \in \cabs_\Ss$ and $x, x' \in X$, $x'$ is said to be a \emph{successor} of $x$ wrt. $f$ if one of the following holds: 
+\begin{itemize}
+\item either $f(x)=c$ and $f(x')=c+1$ for $c \in \intnum$ such that $c, c+1 \in [c_{min},c_{max}]$, or
+
+\item $f(x) = \sntc^{<}_i$ and $f(x') = \sntc^{<}_{j}$ for $i,j: 1 \le i < j \le k$, and the range of $f$ does not contain any color from $\{\sntc^{<}_{i+1},\dots, \sntc^{<}_{j-1}\}$, or
+
+\item $f(x) = \sntc^{>}_i$ and $f(x') = \sntc^{>}_{j}$ for some $i,j: 1 \le i < j \le k$, and and the range of $f$ does not contain any color from $\{\sntc^{>}_{i+1},\dots, \sntc^{>}_{j-1}\}$. 
+\end{itemize}
+For $x \in X$, $x$ is said to be the \emph{maximum} (resp. \emph{minimum}) control variable wrt. $f$ if $x \in \dom(f)$ and there is no $x' \in X$ such that $f(x')$ is a successor of $f(x)$ (resp. $f(x)$ is a successor of $f(x')$). Let $\sntcset^{<}_\Ss$ denote $\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\}$, similarly, let $\sntcset^{>}_\Ss$ denote $\{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$. Two colors from $\sntcset^{<}_\Ss$ are said to be \emph{adjacent} if they are $\sntc^{<}_i$ and $\sntc^<_{i+1}$ for some $i: 1 \le i < k$. Similarly for two colors from $\sntcset^>_\Ss$. A linear order can be defined on $\sntcset^<_\Ss$ as follows: A color $\sntc^<_i$ is said to be less than $\sntc^<_j$ if $i<j$. A similar order relation can be defined over $\sntcset^>_\Ss$. Moreover, these two linear orders can be extended to a linear order on $\sntcset_\Ss$ in a natural way.
+
+For $f \in \cabs_\Ss$, let $\varphi_f$ denote the constraint over control variables represented by $f$.
+\[
+\begin{array}{l c l }
+\varphi_f  &:=& \bigwedge \limits_{f(x_i)=c,  c_{min} \le c \le c_{max}} x_i = c \ \wedge \\
+&  & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}, f(x_j)=\sntc^{<}_{j'}, i' < j' } (x_i < x_j \wedge x_j < c_{min})\  \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}= f(x_j)}(x_i = x_j \wedge x_j < c_{min})\ \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}, f(x_j)=\sntc^{>}_{j'}, i' < j' } (x_i < x_j \wedge x_i > c_{max})\ \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}= f(x_j)} (x_i = x_j  \wedge x_i > c_{max}).
+\end{array}
+\]
+
+Then $Q'= Q \times 2^Y \times \cabs_\Ss$, and $q'_0=(q_0, \emptyset, f_0)$ such that $\dom(f_0)=\emptyset$. Moreover, $O'$ is defined as follows: For each $(q, Z, f) \in Q'$, if $O(q)$  is defined and $\vars(O(q)) \subseteq \dom(f) \cup Z$, then $O'((q, Z, f))=O(q)$, otherwise, $O((q, Z, f))$ is undefined. It remains to define $\delta'$.
+
+The transition set $\delta'$ is defined by the following rule: 
+For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, Z, f) \xrightarrow{(g',\eta')} (q', Z', f')$ satisfying the following constraints. 
+\begin{itemize}
+\item For each $x \in \dom(f) \cap \dom(\eta)$, it holds that $\eta(x) \in \{\cur\} \cup \dom(f)$.  Intuitively, this means that if the original value of $x$ is defined  and $x$ is updated by $\eta$, then the value of $x$ after the update should be defined as well.
+
+\item  For each $y \in Z \cap \dom(\eta)$, it holds that $\vars(\eta(y)) \subseteq \{\cur\} \cup  \dom(f) \cup Z$.  Intuitively, this means that if the original value of $y$ is defined and $y$ is updated by $\eta$, then the value of $y$ after the update should be defined as well.
+
+\item $Z'$ is the union of $Z$ and the set of $y \in Y \cap \dom(\eta)$ such that $\vars(\eta(y)) \subseteq \{\cur\} \cup  \dom(f) \cup Z$.
+
+\item $g',\eta', f'$ satisfy one of the following constraints.
+\begin{itemize}
+\item The guard $g' := g \wedge \cur = c$ such that $g' \wedge \varphi_f$ is satisfiable. The assignment $\eta'$ is the restriction of  $\eta$ to $Y$, that is, $\dom(\eta') = \dom(\eta) \cap Y$ and for each $y \in \dom(\eta')$, $\eta'(y)=\eta(y)$. The abstraction function $f'$ is defined as follows: For each $x \in X$ such that $\eta(x)=\cur$,  let $f'(x) = c$. Moreover, for each $x \in X$ such that $\eta(x) = x'$, let $f'(x)=f(x')$. For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.
+ 
+\item The guard $g' := g \wedge \cur < c_{min} \wedge \cur = x$ such that $g' \wedge \varphi_f$ is satisfiable and $f(x)=\sntc^{<}_i$ for some $i$.  The assignment $\eta'$ is the restriction of  $\eta$ to $Y$. The abstraction function $f'$ is defined as follows: For each $x' \in X$ such that $\eta(x')=\cur$, let $f'(x')=f(x)$. Moreover, for each $x' \in X$ such that $\eta(x')=x''$, let $f'(x')=f(x'')$. For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.
+
+\item The guard $g': = g \wedge \cur < c_{min} \wedge  x_i < \cur \wedge \cur < x_j$ such that $g' \wedge \varphi_f$ is satisfiable and $x_j$ is a successor of $x_i$ wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^{<}_{i'}$ and $f(x_j)=\sntc^{<}_{j'}$. 
+\begin{itemize}
+\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+%
+\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i'+1 < j'$, then let $f'(x)= \sntc^{<}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^<_\Ss$,  we can remove $\{x\mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ and $f(x_j)$ become non-adjacent, while preserving the order relation on $\sntcset^<_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^<_{i''}$. Then let $f'(x)=\sntc^<_{i''+1}$  for each $x \in X$ such that $\eta(x)=\cur$.
+%
+\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
+\end{itemize}
+
+\item The guard $g' := g \wedge \cur < c_{min} \wedge  \cur < x_i$ such that $g' \wedge \varphi_f$ is satisfiable and $x_i$ is the minimum control variable wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^<_{i'}$.
+\begin{itemize}
+\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+%
+\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i' > 1$, then let $f'(x)= \sntc^{<}_{i'-1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^<_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ become different from $1$, while preserving the order relation on $\sntcset^<_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^<_{i''}$. Then let $f'(x)=\sntc^<_{i''-1}$ for each $x \in X$ such that $\eta(x)=\cur$. 
+
+\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
+\end{itemize}
+%
+\item The guard $g' := g \wedge \cur > c_{max} \wedge \cur = x$ for some $x$ such that $g' \wedge \varphi_f$ is satisfiable and $f(x)=\sntc^{>}_i$ for some $i$.  The assignment $\eta'$ is the restriction of  $\eta$ to $Y$. The abstraction function $f'$ is defined as follows: For each $x' \in X$ such that $\eta(x')=\cur$, let $f'(x')=f(x)$. Moreover, for each $x' \in X$ such that $\eta(x')=x''$, let $f'(x')=f(x'')$. 
+%
+\item The guard $g' := g \wedge \cur > c_{max} \wedge  x_i < \cur \wedge \cur < x_j$ such that $x_j$ is the successor of $x_i$ wrt. $f$ and $g' \wedge \varphi_f$ is satisfiable. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^{>}_{i'}$ and $f(x_j)=\sntc^{>}_{j'}$. 
+\begin{itemize}
+\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+%
+\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i'+1 < j'$, then let $f'(x)= \sntc^{>}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^>_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ and $f(x_j)$ become non-adjacent, while preserving the order relation on $\sntcset^>_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^>_{i''}$. Then let $f'(x)=\sntc^>_{i''+1}$ for each $x \in X$ such that $\eta(x)=\cur$.
+
+\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.  
+\end{itemize}
+%
+\item The guard $g' := g \wedge \cur > c_{max} \wedge  \cur > x_i$ such that $g' \wedge \varphi_f$ is satisfiable and $x_i$ is the maximum control variable wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^>_{i'}$.
+\begin{itemize}
+\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+%
+\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i' < k$, then let $f'(x)= \sntc^{>}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^>_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ become different from $k$, while preserving the order relation on $\sntcset^>_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^>_{i''}$. Then let $f'(x)=\sntc^>_{i''+1}$ for each $x \in X$ such that $\eta(x)=\cur$. 
+
+\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\qed
+
+
+\hide{
 We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
 %The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
 Each state in $Q'$ is a triple $(q, Z, M)$, where $q\in Q$, $Z\in 2^X$ is a set of defined variables, $M: (X\times X^c) \rightarrow \{\hat{=}, \hat{<}, \hat{>}\}$ is a partial function recording the relation between control variables $X$ and elements in $X^+$. Specifically, $M$ is a function from a pair $(x_1, x_2) \in X\times X^c$ to their relationship in $\{\hat{=}, \hat{<}, \hat{>}\}$.  The function $M$ can be translated to a guard with the same meaning as follows $\tog{M}=\bigwedge_{M(x_1,x_2)= \hat{=}} x_1 = x_fv2 \wedge \bigwedge_{M(x_1,x_2)= \hat{>}} x_1 > x_2 \wedge \bigwedge_{M(x_1,x_2)= \hat{<}} x_1 < x_2$. 
@@ -254,7 +337,7 @@ $(q,Z,M) \xrightarrow{(g',\eta')} (q',Z', M') \in \delta$ iff
 %
 The initial state $q_0 = (q_0, \emptyset, M_0)$, where $M_0(x,x) = \hat{=}$ for all $x\in X$.
 The output function $O'((q,Z,M))=\bot$ if $\vars(O(q)) \setminus Z\neq \emptyset$, i.e. there are some undefined variables in $O(q)$. Otherwise $O'((q,Z,M))=\eval{O(q)}{M'}$.
-\qed
+}
 \end{proof}
 
 
