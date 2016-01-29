@@ -413,7 +413,7 @@ the constant atom and the coefficients of the non-constant atoms in the expressi
 \subsection{Decision procedure for SNTs}\label{sec-gflat}
 
 We generalize the decision procedure for the case that the transition graphs of the SNTs are generalized lassos to the full class of SNTs.
-We first define a \emph{generalized multi-lasso} as a sequence $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r})$ s.t. (1) for each $s\in[r]$, $H_s = q_{s,1} \dots q_{s, m_s}$ and $H_s (C_{s,1},\dots,C_{s, n_s})$ is a generalized lasso, (2) \yfc{for each $s, s'\in[r]$ with $s < s'$, $H_s (C_{s,1},\dots,C_{s, n_s})$ and $H_{s'} (C_{s', 1},\dots,C_{s', n_{s'}})$ are state-disjoint}, (3) $q_{1,1}=q_0$, and (4) for each $s \in [r-1]$, $q_{s, m_s}=q_{s+1,1}$.
+We first define a \emph{generalized multi-lasso} as a sequence $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r})$ s.t. (1) for each $s\in[r]$, $H_s = q_{s,1} \dots q_{s, m_s}$ and $H_s (C_{s,1},\dots,C_{s, n_s})$ is a generalized lasso, (2) for $1 \leq s< s' \leq r$, $H_s (C_{s,1},\dots,C_{s, n_s})$ and $H_{s'} (C_{s', 1},\dots,C_{s', n_{s'}})$ are state-disjoint, except the case that when $s'=s+1$, $q_{s, m_s}=q_{s',1}$, and (3) $q_{1,1}=q_0$.
 
 Since the transition graph of $\Ss$ can be seen as a collection of generalized multi-lassos, in the following, we shall present the decision procedure by showing how to decide the non-zero output problem for generalized multi-lassos. We fix a generalized multi-lasso
 $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r}).$
