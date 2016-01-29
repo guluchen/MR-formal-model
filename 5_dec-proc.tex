@@ -238,13 +238,13 @@ The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 Moreover, for all $j \in [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$.
 \end{lemma}
 Notice that in the above, $\lambda^{\circled{C_{i_{s_1}}}}_j\in\{0,1\}$ for $j\in[l]$ and $s_1\in [t]$. Hence the value of $(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} )$ can only be $1$ or $\ell_{s_1}$ and $\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}\in\{0,1\}$.
-Hence both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in [k]$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Notice that some of $c_0\ldots c_t$ can be zero.
+Hence both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in [k]$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ can be zero.
 
 
 
 
 We are ready to present the decision procedure. By the ``well-defined'' and ``uniquely-valued'' constraints of a normalized SNT, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
-Under the assumption, for all $j \in [k]$, the symbolic value of $\sumf^{(H,\sval_\bot)}(x_j)=\vard^{\circled{H}}_{\pi^{\circled{H}}(j)}$\smallskip\\
+Under the assumption, for all $j' \in [k]$, the symbolic value of $\sumf^{(H,\sval_\bot)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$\smallskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
 \noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_\bot)}}$ is not identical to zero.
@@ -252,18 +252,13 @@ This can be done by checking if the constant-atom or the coefficient of some non
 If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II.
 \end{minipage}
 }\bigskip
-%}
 
-%\in [k]$ (recall that we assume $I^{\circled{H}}_{tr}=[k]$), $\sumf^{(H,\initval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$. 
-
-The goal of Step II is either showing that in the analysis of $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ all subexpressions containing cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
+The goal of Step II is either showing that $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ all subexpressions containing cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
 	\resizebox{0.7\hsize}{!}{$
 \sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
 b_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
 \left(1+\cstl^{\circled{C_{i_1}}}_{j} + \dots + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'}.
-%\end{array} \hspace{1cm}  
 \hspace{4mm} (\ast)
 $}
 \end{center}
@@ -284,25 +279,24 @@ $}
 The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
-		\noindent {\bf Step II}. For each $i_1: 1 \le i_1 \le n$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
-		one of the following constraints is satisfied, then return $\ltrue$. (1) There is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$. (2) $\mu_{\schm,(i_1,0)} \neq 0$.
+		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
+		one of the following constraints is satisfied, then return $\ltrue$. \\(1) There is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$. (2) $\mu_{\schm,(i_1,0)} \neq 0$.
 		%
+		
 		If the decision procedure has not returned yet, then go to Step III.
 	\end{minipage}
 }\smallskip\\
 If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
 Similar argument can be applied for $\ell_2\dots\ell_n$.
 
-If Step II does not return $\ltrue$, we show below that for all cycle scheme $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be ignored.
+If Step II does not return $\ltrue$, we show below that for all cycle scheme $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed.
 In Step II we already checked a cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$, where the two sets of cycles in the tail 
 $\{C_{i_2} ,\dots, C_{i_{s_1}}\}=\{C_{i'_2} \dots C_{i'_{s_2}}\}$. Step II guarantees all subexpressions containing $\ell_1$ in 
-$\eval{O(q_m)}{\sumf^{(\schm',\initval)}}$ are identical to zero and hence can be ignored.
+$\eval{O(q_m)}{\sumf^{(\schm_2,\initval)}}$ are identical to zero and hence can be removed.
 Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm_1$ and $\schm_2$.
-Hence we can also ignore all subexpressions containing $\ell_1$ in  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
-%If $j' \in  I^{\circled{C_{i'_2}}}_{pe}$, then the we have subexpressions containing $\ell_2$ in the coefficient of the $\initval(x_{j'})$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{pe}$) or $\vard^{\circled{C_{i'_1}}}_{\pi^{\circled{C_{i'_1}}}(j')}$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{tr}$) of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
-%Also we may have subexpressions containing $\ell_2$ in the constant atom.
-Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{s_3}}$ with $\{C_{i_3} ,\dots, C_{i_{s_1}}\}=\{C_{i''_3} \dots C_{i''_{s_3}}\}$ and applying a similar reasoning. The same applies to all other cycle counting variables $\ell_3,\dots,\ell_{s_1}$.
-We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counting variables, for all $y_j \in Y$. 
+Hence we can also remove all subexpressions containing $\ell_1$ in  $\eval{O(q_m)}{\sumf^{(\schm_1,\initval)}}$.
+Those subexpressions containing $\ell_2$ can also be removed by considering the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{s_3}}$ with $\{C_{i_3} ,\dots, C_{i_{s_1}}\}=\{C_{i''_3} \dots C_{i''_{s_3}}\}$ and applying a similar reasoning. The same applies to all other cycle counting variables $\ell_3,\dots,\ell_{s_1}$.
+We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counting variables, for all $y_j \in Y$. 
 
 \begin{lemma}\label{prop-bnd-domain-1}
 	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
@@ -314,13 +308,13 @@ We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression
 
 \begin{lemma}\label{prop-bnd-domain-2}
 Suppose that the decision procedure has not returned yet after Step II. 
-For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and all the coefficients of atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
+For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprises\\ (1)
 the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$.\smallskip\\(2) the numbers $\csta^{\circled{C_{m_2}}}_{j,j'} + \cstb^{\circled{C_{m_1}}}_{j,\pi^{\circled{C_{m_1}}}(j')}$ and $\csta^{\circled{C_{m_1}}}_{j, j''} + \csta^{\circled{C_{m_2}}}_{j,j''}$, where  $m_1,m_2 \in [n], j\in[l],j' \in I^{\circled{C_{m_1}}}_{tr} \cap I^{\circled{C_{m_2}}}_{tr},  j'' \in [k]$. 
 
 \end{lemma}
 
 For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
-(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j'})$ for all $j' \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_j)\mid x_j\in X\}$.
+(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. (2)~control variable atom: $\{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$, where $\cstg_{j, j'}$ is the coefficient of the $\sval(x_j)$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j'})$ for $j'\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for all $j\in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})\mid x_{j'}\in X\}$.
 Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
@@ -335,20 +329,7 @@ Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. The
 		If the decision procedure has not returned yet, return $\lfalse$.
 	\end{minipage}
 }\smallskip\\
-%From the claim, it follows that the updates of the values of control and data variables along $\schm$, as well as the update of the value of the output expression $O(q_m)$, can be obtained by composing $\chi_H$, $(\chi^{(\Cc_{i_1})}_{\ell_1})'$, $\dots$, and $\chi^{(\Cc_{i_t})}_{\ell_t})'$, which can further be simulated by a $\intnum$-VASS $\Aa$, that is, an integer vector addition system with states (cf. \cite{HH14}). Then the non-zero output reachability of $\Ss$ is reduced to the non-zero reachability of $\Aa$, that is, given an index $i$, decide whether $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$. Finally, we decide the non-zero reachability of $\Aa$. If the answer is ``yes'', then return $\ltrue$, otherwise, return $\lfalse$.
 
-%\begin{proposition}
-%The non-zero reachability problem of $\intnum$-VASS is in NP.
-%\end{proposition}
-%
-%\begin{proof}
-%The non-zero reachability problem of $\intnum$-VASS can be reduced to the coverability problem of $\intnum$-VASS in polynomial time as follows: Given a $\intnum$-VASS $\Aa$ of dimension $m$ (that is, $m$ is the length of the integer vectors) and an index $i: 1 \le i \le m$, we construct a $\intnum$-VASS $\Bb$ as follows: From each final state of $\Aa$, nondeterministically we choose a subset $Idx \evalseteq \{1,\dots,m\}$, and for each $i' \in Idx$, replace $z_{i'}$ by $-z_{i'}$. It is easy to see that $\Aa$ can reach a vector $\vec{z}$ where $z_i \neq 0$ iff $\Bb$ can reach a vector covering $(0,\dots,1,\dots,0)$, that is, the vector whose $i$-th component is $1$ and all the other components are zero.
-%
-% From the fact that the coverability of $\intnum$-VASS is NP-complete (\cite{HH14}), we know that the non-zero reachability problem of $\intnum$-VASS is in NP. \qed
-%\end{proof}
-%
-%
-%Therefore, in this case, the non-zero output reachability problem is reduced to the non-zero reachability problem of $\intnum$-VAS, 
 
 \subsection{Decision procedure for SNTs}\label{sec-gflat}
 
