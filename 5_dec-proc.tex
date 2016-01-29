@@ -2,8 +2,8 @@
 
 \section{Decision procedure for the non-zero output problem}\label{sec:dec-snt}
 %
-We prove Theorem~\ref{thm:correctness} by presenting a decision procedure for the non-zero output problem of normalized SNTs. We fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general class in the appendix.
-We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by $C_1,\dots,C_n$. We generalize the procedure for a generalized lasso to full SNT in Section~\ref{sec-gflat}.
+We prove our main result, Theorem~\ref{thm:correctness}, by presenting a decision procedure for the non-zero output problem of SNTs. We fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general case in the appendix.
+We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We then present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. We will generalize the procedure to full SNTs in Section~\ref{sec-gflat}.
 
 \begin{theorem}\label{thm:correctness}
 The non-zero output problem of SNTs is decidable.
@@ -12,7 +12,7 @@ The non-zero output problem of SNTs is decidable.
 
 \subsection{Summarization of the computations on paths and cycles}\label{sec-sum}
 
-Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be equal or unequal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. Note that here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ is associated with the path $P$.
+Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
 
 \begin{proposition}\label{prop-sum-path}
 Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
@@ -29,7 +29,7 @@ $
  \cste^{\circled{P}}_{j} + 
  \cstl^{\circled{P}}_j \initval(y_j)  + 
   \sum\limits_{j'\in [k]}\csta^{\circled{P}}_{j,j'}\initval(x_{j'}) +
-  \sum\limits_{j'\in [r^{\circled{P}}]}\cstb^{\circled{P}}_{j,j'} \vard^{\circled{P}}_{j'}$,
+  \sum\limits_{j''\in [r^{\circled{P}}]}\cstb^{\circled{P}}_{j,j''} \vard^{\circled{P}}_{j''}$,
 \hide{
 \item For each $y_j \in Y$, 
 \[
@@ -43,7 +43,7 @@ $
 where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\dots,\csta^{\circled{P}}_{j,k}, \cstb^{\circled{P}}_{j,1},\dots,\cstb^{\circled{P}}_{j,r^{\circled{P}}}$ are integer constants such that $\cstl^{\circled{P}}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint).  It can happen that $\cstl^{\circled{P}}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{\circled{P}}_{j,1}=0$, and so on.
 \end{itemize}
 \end{proposition}
-In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. Due to the uniquely-valued constraint of a normalized SNT, the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, is well-defined.
+In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. Due to the uniquely-valued constraint of normalized SNTs, $\pi^{\circled{P}}$ is injective, and the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, exists.
 
 As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
 
@@ -98,7 +98,7 @@ $\begin{array}{l c l}
  \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
 $}\medskip\\
-where the variables $\vard^{\circled{C , s}}_{1},\dots, \vard^{\circled{C ,s}}_{r^{\circled{C}}}$ for $s\in [\ell-1]$
+where the variables $\vard^{\circled{C , s}}_{1},\dots, \vard^{\circled{C ,s}}_{r^{\circled{C}}}$ for $s\in [\ell]$
  represent the data values introduced when traversing $C$ for the $s$-th time.
 \end{proposition}
 
