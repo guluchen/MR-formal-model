@@ -339,42 +339,7 @@ We first define a \emph{generalized multi-lasso} as a sequence $\gmlasso= H_1 (C
 Since the transition graph of $\Ss$ can be seen as a collection of generalized multi-lassos, in the following, we shall present the decision procedure by showing how to decide the non-zero output problem for generalized multi-lassos. We fix a generalized multi-lasso
 $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r}).$
 
-For each $s\in [r]$, suppose $H_s=q_{s,1} \dots q_{s, m_s}$. Without loss of generality, we assume that $O(q_{r,m_r})=a_0+a_1 x_1 + \dots + a_k x_k + b_1 y_1  + \dots + b_l y_l$ and $O(q')$ is undefined for every other state $q'$ in $\gmlasso$.\smallskip\\
-%We shall illustrate the argument by the following situation, the transition graph comprises a handle $H=q_0\dots q_{m}$,  a collection of cycles $(C_1,\dots,C_n)$ such that $q_m$ is the unique state shared by each pair of them, another handle $H'=q'_0 \dots q'_{m'}$ such that $q'_0=q_m$, and another collection of cycles $(C'_1,\dots,C'_{n'})$ such that $q'_{m'}$ is the unique state shared by each pair of them. Moreover, $O(q'_{m'})$ is defined and $O(q)$ is undefined for all the other states $q$. Suppose $O(q'_{m'}) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-From Proposition~\ref{prop-sum-path}, we know that 
-for the handle $H = q_0 \dots q_m$, a function $\chi_H$ can be constructed to summarize the computation on the handle. Suppose for each $j: 1 \le j \le l$,  $\chi_H(y_j) = \alpha^{\circled{H}}_{j,0} + \gamma^{\circled{H}}_{j,1} d^{(H,0)}_1 + \dots + \gamma^{\circled{H}}_{j,r_H} d^{(H,0)}_{r_H}$, where $d^{(H,0)}_1,\dots, d^{(H,0)}_{r_H}$ represent the $r_H$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_H$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_H\}$ such that for each $j: 1 \le j \le k$, $\chi_H(x_j) = d^{(H,0)}_{\pi_H(j)-k}$.
-
-Similarly, for the handle $H' = q'_0 \dots q'_{m'}$, a function $\chi_{H'}$ can be constructed to summarize the computation on the handle. Let $d'_1,\dots,d'_k$ and $o'_1,\dots,o'_k$ denote the initial values of the control and data variables respectively. Then for each $j: 1 \le j \le l$,  $\chi_{H'}(y_j) = \alpha^{\circled{H'}}_{j,0} + \alpha^{\circled{H'}}_{j,1} o'_j + \beta^{\circled{H'}}_{j,1} d'_1 + \dots + \beta^{\circled{H'}}_{j,k} d'_{k}+ \gamma^{\circled{H'}}_{j,1} d^{(H',0)}_1 + \dots + \gamma^{\circled{H'}}_{j,r_{H'}} d^{(H',0)}_{r_{H'}}$, where $d^{(H',0)}_1,\dots, d^{(H',0)}_{r_{H'}}$ represent the $r_{H'}$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_{H'}$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_{H'}\}$ such that for each $j: 1 \le j \le k$, if $\pi_{H'}(j)=j$, then $\chi_{H'}(x_j) = d'_j$, otherwise, $\chi_{H'}(x_j) = d^{(H',0)}_{\pi_{H'}(j)-k}$.
-
-From Proposition~\ref{prop-sum-cycle}, we know that for $\ell \ge 1$, the functions $\chi^{\circled{C_1}}_{\ell}$,$\dots$, $\chi^{\circled{C_n}}_{\ell}$, $\chi^{(C'_1)}_{\ell}$, $\dots$, and $\chi^{(C'_{n'})}_{\ell}$ can be defined to summarize to computation on $C^{\ell}_1$, $\dots$, $C^{\ell}_n$, $(C'_1)^{\ell}$, $\dots$, and $(C'_n)^{\ell}$ respectively. 
-
-Let us check the expression $\chi_{H'}(O(q'_{m'}))$ defined as follows,
-\[
-\begin{array}{l c l}
-\smallskip
-\chi_{H'}(O(q'_{m'})) & = & a_0 + a_1 \chi_{H'}(x_1) + \dots a_k \chi_{H'}(x_k) + \\
-\smallskip
-& & b_1 \chi_{H'}(y_1) + \dots + b_l \chi_{H'}(y_l) \\
-\smallskip
-&  = &  \left(a_0+\sum \limits_{1 \le j \le l} b_j \alpha^{\circled{H'}}_{j,0} \right) + \sum \limits_{j \le k, \pi_{H'}(j)=j} \left(a_j + \sum \limits_{1 \le j' \le l} b_{j'} \beta^{\circled{H'}}_{j,j'} \right) d'_j  + \\
-%
-& & \sum \limits_{j \le k, \pi_{H'}(j) \neq j} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \beta^{\circled{H'}}_{j,j'})\right) d'_j + \sum \limits_{1\le j \le l} (b_{j} \alpha^{\circled{H'}}_{j,0}) o'_{j} + \\
-\smallskip
-%
-& & \sum \limits_{1 \le j \le r_{H'}, j+k \in \rng(\pi_{H'})} \left(a_{(\pi_{H'})^{-1}(j+k)}+\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{\circled{H'}}_{j,j'})\right) d^{(H',0)}_j +\\ & & \dots  + \sum \limits_{1 \le j \le r_{H'}, j \not \in \rng(\pi_{H'})} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{\circled{H'}}_{j,j'})\right) d^{(H',0)}_j.
-\end{array}
-\] 
-Let $a'_0,a'_1,\dots,a'_k,b'_1,\dots,b'_l$ denote the constant coefficient, the coefficients of $d'_1,\dots,d'_k$, and the coefficients of $o'_1,\dots,o'_l$ in $\chi_{H'}(O(q'_{m'}))$ respectively. 
-
-Then we can adapt the output function $O$ and set $O(q_m) = a'_0 + a'_1 x_1 + \dots a'_k x_k + b'_1 y_1 + \dots b'_l y_l$.
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Without loss of generality, we assume that $O(q_{r,m_r})=a_0+a_1 x_1 + \dots + a_k x_k + b_1 y_1  + \dots + b_l y_l$ and $O(q')$ is undefined for every other state $q'$ in $\gmlasso$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step I$'$}. We do the same analysis of Step I for the path $H_1\dots H_r$.
@@ -388,7 +353,7 @@ Then we change the output function and let
 $O(q_{s-1, m_{s-1}}):=a_{s, 0}+a_{s, 1} x_1 + \dots + a_{s, k} x_k + b_{s,1} y_1 + \dots + b_{s, l} y_l.$\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
-\noindent {\bf Step II$'$}.  For each $s\in [r]$ and $m\in [n_s]$, we check each cycle scheme $\schm = C^{\ell_1}_{s,m} C_{i_{2}} \dots C_{i_{t}}$ such that $C_{i_{2}} \dots C_{i_{t}}\in \{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ and $C_{i_{2}} \dots C_{i_{t}}$ are mutually distinct by performing an analysis of the expression $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, in a way similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
+\noindent {\bf Step II$'$}.  For each $s\in [r]$ and $s'\in [n_s]$, we check each cycle scheme $\schm = C^{\ell_1}_{s,s'} C_{i_{2}} \dots C_{i_{t}}$ such that $C_{i_{2}} \dots C_{i_{t}}\in \{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ and $C_{i_{2}} \dots C_{i_{t}}$ are mutually distinct by performing an analysis of the expression $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, in a way similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
 	\end{minipage}
 }\smallskip
 

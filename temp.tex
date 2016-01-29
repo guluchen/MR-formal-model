@@ -1,3 +1,34 @@
+
+\hide{
+	From Proposition~\ref{prop-sum-path}, we know that 
+	for the handle $H = q_0 \dots q_m$, a function $\chi_H$ can be constructed to summarize the computation on the handle. Suppose for each $j: 1 \le j \le l$,  $\chi_H(y_j) = \alpha^{\circled{H}}_{j,0} + \gamma^{\circled{H}}_{j,1} d^{(H,0)}_1 + \dots + \gamma^{\circled{H}}_{j,r_H} d^{(H,0)}_{r_H}$, where $d^{(H,0)}_1,\dots, d^{(H,0)}_{r_H}$ represent the $r_H$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_H$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_H\}$ such that for each $j: 1 \le j \le k$, $\chi_H(x_j) = d^{(H,0)}_{\pi_H(j)-k}$.
+	
+	Similarly, for the handle $H' = q'_0 \dots q'_{m'}$, a function $\chi_{H'}$ can be constructed to summarize the computation on the handle. Let $d'_1,\dots,d'_k$ and $o'_1,\dots,o'_k$ denote the initial values of the control and data variables respectively. Then for each $j: 1 \le j \le l$,  $\chi_{H'}(y_j) = \alpha^{\circled{H'}}_{j,0} + \alpha^{\circled{H'}}_{j,1} o'_j + \beta^{\circled{H'}}_{j,1} d'_1 + \dots + \beta^{\circled{H'}}_{j,k} d'_{k}+ \gamma^{\circled{H'}}_{j,1} d^{(H',0)}_1 + \dots + \gamma^{\circled{H'}}_{j,r_{H'}} d^{(H',0)}_{r_{H'}}$, where $d^{(H',0)}_1,\dots, d^{(H',0)}_{r_{H'}}$ represent the $r_{H'}$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_{H'}$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_{H'}\}$ such that for each $j: 1 \le j \le k$, if $\pi_{H'}(j)=j$, then $\chi_{H'}(x_j) = d'_j$, otherwise, $\chi_{H'}(x_j) = d^{(H',0)}_{\pi_{H'}(j)-k}$.
+	
+	From Proposition~\ref{prop-sum-cycle}, we know that for $\ell \ge 1$, the functions $\chi^{\circled{C_1}}_{\ell}$,$\dots$, $\chi^{\circled{C_n}}_{\ell}$, $\chi^{(C'_1)}_{\ell}$, $\dots$, and $\chi^{(C'_{n'})}_{\ell}$ can be defined to summarize to computation on $C^{\ell}_1$, $\dots$, $C^{\ell}_n$, $(C'_1)^{\ell}$, $\dots$, and $(C'_n)^{\ell}$ respectively. 
+	
+	Let us check the expression $\chi_{H'}(O(q'_{m'}))$ defined as follows,
+	\[
+	\begin{array}{l c l}
+	\smallskip
+	\chi_{H'}(O(q'_{m'})) & = & a_0 + a_1 \chi_{H'}(x_1) + \dots a_k \chi_{H'}(x_k) + \\
+	\smallskip
+	& & b_1 \chi_{H'}(y_1) + \dots + b_l \chi_{H'}(y_l) \\
+	\smallskip
+	&  = &  \left(a_0+\sum \limits_{1 \le j \le l} b_j \alpha^{\circled{H'}}_{j,0} \right) + \sum \limits_{j \le k, \pi_{H'}(j)=j} \left(a_j + \sum \limits_{1 \le j' \le l} b_{j'} \beta^{\circled{H'}}_{j,j'} \right) d'_j  + \\
+	%
+	& & \sum \limits_{j \le k, \pi_{H'}(j) \neq j} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \beta^{\circled{H'}}_{j,j'})\right) d'_j + \sum \limits_{1\le j \le l} (b_{j} \alpha^{\circled{H'}}_{j,0}) o'_{j} + \\
+	\smallskip
+	%
+	& & \sum \limits_{1 \le j \le r_{H'}, j+k \in \rng(\pi_{H'})} \left(a_{(\pi_{H'})^{-1}(j+k)}+\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{\circled{H'}}_{j,j'})\right) d^{(H',0)}_j +\\ & & \dots  + \sum \limits_{1 \le j \le r_{H'}, j \not \in \rng(\pi_{H'})} \left(\sum \limits_{1 \le j' \le l} (b_{j'} \gamma^{\circled{H'}}_{j,j'})\right) d^{(H',0)}_j.
+	\end{array}
+	\] 
+	Let $a'_0,a'_1,\dots,a'_k,b'_1,\dots,b'_l$ denote the constant coefficient, the coefficients of $d'_1,\dots,d'_k$, and the coefficients of $o'_1,\dots,o'_l$ in $\chi_{H'}(O(q'_{m'}))$ respectively. 
+	
+	Then we can adapt the output function $O$ and set $O(q_m) = a'_0 + a'_1 x_1 + \dots a'_k x_k + b'_1 y_1 + \dots b'_l y_l$.
+}
+
+
 For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
 \[
 \sum \limits_{1 \le j \le l} 
