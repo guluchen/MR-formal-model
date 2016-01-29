@@ -1,26 +1,6 @@
 
 
-We illustrate the arguments for the case $\cstl^{(C_{i_t})}_{j} = 1$. The case $\cstl^{(C_{i_t})}_{j} = 0$ is simpler and can be discussed similarly. Suppose $y_j \in Y$.  In the following, we check that the constant atom and the coefficients of all the non-constant atoms of ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)$ belong to $K$.  
-%For brevity, we abbreviate an(resp. the) atom of ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)$ as an (resp. the) atom below.
-\begin{itemize}
-	\item $(\cste^{\circled{\schm}}_{j})' = 0 + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\cste^{(\schm_1)}_j)' = (\cste^{(\schm_1)}_j)' \in K$ (here $\cste^{(C_{i_t})}_{j} \ell_t$ is removed).
-	%
-	%\item the coefficient of $o_j$ is $1$,
-	%
-	\item For each $j' \in [r^{\circled{H}}]$ such that there does not exist $j'' \in [k]$ satisfying that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{\circled{H}}_{j'}$, $(\csta^{\circled{\schm}}_{j, j'})' = (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})' = (\csta^{(\schm_1)}_{j, j'})' \in K$.
-	%
-	\item For each $j' \in [r^{\circled{H}}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{\circled{H}}_{j'}$ for some $j''  \in I^{(C_{i_t})}_{pe}$, $(\csta^{\circled{\schm}}_{j, j'})' = 0 + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})'= (\csta^{(\schm_1)}_{j, j'})' \in K$ (here $\csta^{(C_{i_t})}_{j,j'} \ell_t$ is removed). In this case, we have ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_{j''})=\vard^{\circled{H}}_{j'}$. From the induction hypothesis, it is easy to see that the second result holds for $\schm$, $y_j$.
-	%
-	\item For each $j' \in [r^{\circled{H}}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''})=\vard^{\circled{H}}_{j'}$ for some $j''  \in I^{(C_{i_t})}_{tr}$, $(\csta^{\circled{\schm}}_{j, j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t-1} \csta^{(C_{i_t})}_{j,j''} + (\cstl^{(C_{i_t})}_{j})^{\ell_t} (\csta^{(\schm_1)}_{j, j'})' = \csta^{(C_{i_t})}_{j,j''} + (\csta^{(\schm_1)}_{j, j'})' $. From the induction hypothesis, we know that either $(\csta^{(\schm_1)}_{j, j'})' = \csta^{(C_{i_{s_0}})}_{j,j''}$ if there is $s$ such that $\cstl^{(C_{i_s})}_j =0$,  or otherwise, $(\csta^{(\schm_1)}_{j, j'})'=\cstb^{\circled{H}}_{j, j'}$. Therefore, $(\csta^{\circled{\schm}}_{j, j'})' =\csta^{(C_{i_t})}_{j,j''} +  \csta^{(C_{i_{s_0}})}_{j,j''}$ or $\csta^{(C_{i_t})}_{j,j''}+ \cstb^{\circled{H}}_{j, j'}$. We conclude that $(\csta^{\circled{\schm}}_{j, j'})' \in K$.
-	%
-	\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that there does not exist $j'' \in [k]$ satisfying that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$, it holds that $(\cstb^{(\schm,i)}_{s,j'})' = (\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})'  =  (\cstb^{(\schm_1, i)}_{s, j'})'  \in K$. 
-	%
-	\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$ for some $j'' \in I^{(C_{i_t})}_{pe}$, $(\cstb^{(\schm,i)}_{s,j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})'+ 0  =  (\cstb^{(\schm_1, i)}_{s, j'})' \in K$ (here $\csta^{(C_{i_t})}_{j, j''} \ell_t$ is removed). Moreover, from the induction hypothesis, the third condition holds for $\schm$ and $y_j$.
-	%
-	\item For each $s \in [t-1]$, $i \in [\ell_s]$, and $j' \in [r^{(C_{i_s})}]$ such that $(\sumf^{(\schm_1,\sumf^{(H,\initval_0)})})'(x_{j''}) = \vard^{(C_{i_s}, i)}_{s, j'}$ for some $j'' \in I^{(C_{i_t})}_{tr}$, it holds that $i = \ell_s$, $j'' \in I^{(C_{i_s})}_{tr}$, and for each $s': s < s' \le t$, $j'' \in I^{(C_{i_{s'}})}_{pe}$. Then $(\cstb^{(\schm,i)}_{s,j'})' =(\cstl^{(C_{i_t})}_{j})^{\ell_t}  (\cstb^{(\schm_1, i)}_{s, j'})' + \csta^{(C_{i_t})}_{j, j''}  =  (\cstb^{(\schm_1, i)}_{s, j'})' + \csta^{(C_{i_t})}_{j, j''}$. From the induction hypothesis,  if there is $s': s < s' \le t-1$ such that $\cstl^{(C_{i_{s'}})}_j =0$, let $s'_0$ be the maximum $s'$ satisfying the constraint, then $(\cstb^{(\schm_1, i)}_{j,j'})'=\csta^{(C_{i_{s'_0}})}_{j, j''}$, otherwise, $(\cstb^{(\schm_1, i)}_{j,j'})'= \cstb^{(C_{i_s})}_{j,j'}$. Therefore, $(\cstb^{(\schm,i)}_{s,j'})' = \csta^{(C_{i_{s'_0}})}_{j, j''} + \csta^{(C_{i_t})}_{j, j''}$ or $\cstb^{(C_{i_s})}_{j,j'} + \csta^{(C_{i_t})}_{j, j''}$, thus belongs to $K$. In this case, ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_{j''})=\vard^{(C_{i_t},\ell_t)}_{t, \pi^{(C_{i_t})}(j'')}$ and $(\cstb^{\circled{\schm,\ell_t}}_{t, \pi^{(C_{i_t})}(j'')})' = \cstb^{(C_{i_t})}_{j, \pi^{(C_{i_t})}(j'')}$. So the third condition holds for $\schm$ and $y_j$.
-	%
-	\item The coefficients of all the other atoms are those of  the $\vard^{(C_{i_t}, i)}_{j, j'}$-atoms for $i: 1 \le i \le \ell_t$ in $(\sumf^{(C^{\ell_t}_{i_t},\sumf^{(H,\initval_0)})})'(y_j)$.
-\end{itemize} 
+
 \hide{
 	\smallskip
 	
