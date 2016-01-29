@@ -62,27 +62,28 @@ We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there
 
 \newcommand\loc{\mathfrak{l}}
 
-\medskip
-
-\noindent {\bf The translation of reducer Programs to SNTs}.
+\noindent {\bf Proposition~\ref{prop-mrprog-to-snt}}.
+{\it 
+For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
+}
 
 \smallskip
 
-In the following, we demonstrate how to translate reducer programs into an equivalent SNT.
-
+\begin{proof}
 We introduce a few notations first.
 
 Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
 
-Let $p$ be a reducer program of the form $s_1; \loopL{s_2}$; ret $r$.  We assume that $p$ is well-formed in the following sense: Each execution path of $s_1$ resp. $s_2$ ends in a $\nnext$ statement. In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
+Let $p$ be a reducer program of the form $s_1; \nnext; \loopL{s_2;\nnext}$; ret $r$.  In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
 
-The loop body of $s_2$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $P_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y+=e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
+The loop body $s_2;\nnext$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $p_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y {+=} e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
 
-In addition, each execution path of $s_1$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
+In addition, each execution path of $s_1;\nnext$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
 
-The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.
+The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.\qed
+\end{proof}
 
-
+\hide{
 \begin{algorithm}[H]
 	%  \SetAlgoLine
 	\KwData{A reducer program $p$}
@@ -111,7 +112,7 @@ We use a tuple $(q,p,g,\eta)$ to store intermediate results of the translation, 
 The algorithm begins with the tuple $(p,p,\ltrue,\emptyset)$. The algorithm add a transition to SNT only when a $\nnext$ statement is encountered (line~\ref{alg:next}). When a $\mbox{ret }r$ statement is encountered, the algorithm adds a fresh state $q_r$ to the SNT and extends the output function to $O[r/q_r]$ (line~\ref{alg:output}).
 
 The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized flat. It might have cycles sharing more than one states. All the cycles coming from the loop and branches inside the loop. There must be at least one state $s$ shared by all cycles. Therefore, we can make it generalized flat by duplicating all shared stated other than $s$ so all cycles will have their own copy of the shared states other than $s$.  
-
+}
 
 \vspace{4mm}
 
@@ -371,35 +372,33 @@ where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\d
 }
 
 \begin{proof}
-and the $n$ data values met when traversing the path are represented by $d_{k+1},\dots,d_{k+n}$ (these data values may repeat). Then the guards and the assignments in the path induce an equivalence relation $\sim$ on $\{1,\dots, k+n\}$ so that  $i \sim j$ iff it can be inferred from the guards and assignments that $d_i = d_j$. Since $\Ss$ is normalized, we know that for each pair of indices $i,j: 1 \le i < j \le k+n$ such that $i \sim j$, it holds that $j \ge k+1$. Let $I_1,\dots, I_{k+r}$ be an enumeration of the equivalence classes of $\sim$ on $\{1,\dots, k+n\}$ such that $\min(I_1) < \dots < \min(I_{k+r})$. Then for each $j: 1 \le j \le k$, $\min(I_j)=j$.
+Suppose that $\Ss=(Q,X,Y, \delta,q_0,O)$ is an (normalized) SNT. Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$ and $\initval$ is a symbolic valuation representing the  initial values of the control and data variables.  When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be equal or unequal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. 
 
-
-
-We show by an induction that for each $i: 1 \le i \le n$ and each variable $x_j \in X$ (resp. $y_j \in Y$), an expression $e_{i,x_j}$ (resp. $e_{i,y_j}$) can be constructed to describe the value of $x_j$(resp. $y_j$) after going through the first $i$ transitions of the path. 
+We show by an induction that for each $i: 1 \le i \le n$, a symbolic valuation $\sumf_i$ over $X^+ \cup Y$ can be constructed  to describe the value of $x_j$ (resp. $y_j$) after going through the first $i$ transitions of $P$. Moreover, an index set $I_i \subseteq [k]$ is computed as well.
 %
 \begin{itemize}
-\item Let $\theta_0$ be an assignment such that for each $x_j \in X$ (resp. $y_j \in Y$), $\theta_0(x_j)=d^{(0)}_j$ (resp. $\theta_0(y_j)=o_j$), moreover, $\theta_0(\cur)=d^{(1)}_1$.
+\item Let $\sumf_0=\initval[\vard^{\circled{P}}_1/\cur]$ and $I_0 = \emptyset$.
 %
 %\item For each $x_j \in X$, if $x_j \in \dom(\eta_1)$, then $e_{1,x_j}=d^{(1)}_1$, otherwise, $e_{1,x_j}=d^{(0)}_j$. For each $y_j \in Y$, if $y_j \in \dom(\eta_1)$, then $e_{1,y_j} = \theta_0(\eta_{1}(y_j))$,
 %otherwise, $e_{1,y_j}=o_j$. 
 %
 \item Let $i: 1 \le i \le n$. 
 \begin{itemize}
-\item For each $x_j \in X$, if $x_j \in \dom(\eta_i)$, then $e_{i,x_j}=\theta_{i-1}(\cur)$, otherwise, $e_{i,x_j}=\theta_{i-1}(x_j)$.
+\item For each $x_j \in X$, if $x_j \in \dom(\eta_i)$, then $\sumf_i(x_j)=\sumf_{i-1}(\cur)$ and $I_i= I_{i-1} \cup \{j\}$, otherwise, $\sumf_i(x_j) = \sumf_{i-1}(x_j)$ and and $I_i= I_{i-1}$. If $i < n$, suppose  the data value in the $(i+1)$-th position is represented by $\vard^{\circled{P}}_s$ for $1 \le s \le r^{\circled{P}}$, then let $\sumf_i(\cur)=\vard^{\circled{P}}_s$. Otherwise, $\sumf_i(\cur)=\bot$.
 %
-\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then $e_{i,y_j} = \theta_{i-1}(\eta_i(y_j))$, otherwise, $e_{i,y_j}=\theta_{i-1}(y_j)$.
+\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then $\sumf_i(y_j) = \eval{\eta_i(y_j)}{\sumf_{i-1}}$, otherwise, $\sumf_i(y_j) =\sumf_{i-1}(y_j)$.
 %
-\item For each $x_{j} \in X$ (resp. $y_j \in Y$), $\theta_i(x_{j})=e_{i,x_{j}}$ (resp. $\theta_i(y_{j})=e_{i, y_{j}}$). If $i < n$, then $\theta_i(\cur)=d^{(1)}_{s}$, where $1\le s \le r$ and $k+i + 1 \in I_s$, otherwise, $\theta_i(\cur)=\bot$.
+%\item For each $x_{j} \in X$ (resp. $y_j \in Y$), $\theta_i(x_{j})=e_{i,x_{j}}$ (resp. $\theta_i(y_{j})=e_{i, y_{j}}$). If $i < n$, then $\theta_i(\cur)=d^{(1)}_{s}$, where $1\le s \le r$ and $k+i + 1 \in I_s$, otherwise, $\theta_i(\cur)=\bot$.
+\end{itemize} 
 \end{itemize}
-\end{itemize}
-Then the function $\chi$ can be defined as the restriction of $\theta_n$ to $X \cup Y$.
+Then let $I^{\circled{P}}_{tr}:=I_n$ and $I^{\circled{P}}_{pe}:=[k] \setminus I^{\circled{P}}_{tr}$. The injective mapping $\pi^{\circled{P}}$ is defined as follows: For each $j \in I^{\circled{P}}_{tr}$, there is $s \in [r^{\circled{P}}]$ such that $\sumf_n(x_j)=\vard^{\circled{P}}_{s}$, let $\pi^{\circled{P}}(j)=s$. The symbolic valuation $\sumf^{(P,\initval)}$ can be defined as the restriction of $\sumf_n$ to $X \cup Y$. Since for each assignment $\eta_i$ and $y_j \in Y$, $\eta_i(y_j) = e$ or $\eta_i(y_j) = y_j +e$ for $e \in \Ee_{X^+}$, it follows that $\sumf^{(P,\initval)}(y_j)$ is of the form required by the proposition.
 \qed
 \end{proof}
 
 
 \noindent {\bf Proposition~\ref{prop-sum-cycle}}.
 {\it 
-Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
+Suppose that $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
 \resizebox{\hsize}{!}{
 $\begin{array}{l c l}
 \sumf^{(C^\ell,\initval)}(y_j)  & = & 
@@ -417,28 +416,47 @@ $\begin{array}{l c l}
  \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
 $}\medskip\\
-where the variables $\vard^{\circled{C , 1}}_{m},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
+where the variables $\vard^{\circled{C , m}}_{1},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
  represent the data values introduced when traversing $C$ for the $m$-th time.
 }
 
 %
 \begin{proof}
-Let $d^{(C,2)}_{1},\dots,d^{(C,2)}_{r_C}$ be the data values introduced when traversing the cycle for the second time. Then from Corollary~\ref{cor-comp-two-paths}, we know that $\chi^{(C)}_2 = \chi_{C} \circ \chi_C$ is defined as follows: For each $y_j \in Y$,
+We prove by an induction on $\ell$ that $\sumf^{(C^\ell,\initval)}(y_j)$ is of the desired form required by the proposition.
+
+\noindent The induction base: $\ell=2$.
+
+\smallskip
+
+Let $\vard^{(\circled{C, 2})}_{1}, \dots, \vard^{(\circled{C, 2})}_{r^{\circled{C}}}$ be the data values introduced when traversing the cycle for the second time. Then from Corollary~\ref{cor-comp-two-paths}, we know that $\sumf^{(C^{2},\initval)} = \sumf^{(C,\sumf^{(C,\initval)})}$ is defined as follows: For each $y_j \in Y$,
+
 \[
-\begin{array}{l c l}
-\smallskip
-\chi^{(C)}_2(y_j) & =  & (\alpha^{(C)}_{j,0}+\alpha^{(C)}_{j,1} \alpha^{(C)}_{j,0})+ (\alpha^{(C)}_{j,1})^2 o_j + \\
-%
-\smallskip
-& & \sum \limits_{j' \le k, \pi_C(j')=j'} (\beta^{(C)}_{j,j'}+\alpha^{(C)}_{j,1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'} + \sum \limits_{j' \le k, \pi_C(j') \neq j'} (\alpha^{(C)}_{j,1} \beta^{(C)}_{j,j'}) d^{(0)}_{j'}  \\
-%
-& & + \sum \limits_{j' \le r_C, j' + k \in \rng(\pi_C)} (\beta^{(C)}_{j,\pi_C^{-1}(j'+k)}+\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} +\\
-%
-& & \sum \limits_{j' \le r_C, j' + k \not \in \rng(\pi_C)} (\alpha^{(C)}_{j,1} \gamma^{(C)}_{j,j'}) d^{(C,1)}_{j'} + 
- \gamma^{(C)}_{j,1} d^{(C,2)}_1 +\dots + \gamma^{(C)}_{j,r_C} d^{(C,2)}_{r_C}.
+\begin{array}{rl}
+	\medskip
+	\sumf^{(C^{2},\initval)}(y_j) = & 
+	\left(\cste^{\circled{C}}_{j}+
+	\cstl^{\circled{C}}_{j} \cste^{\circled{C}}_{j}\right)+ \left(\cstl^{\circled{C}}_{j}\right)^2 \initval(y_j)+ \sum \limits_{j' \in I^{\circled{C}}_{pe}} 
+	\left(1+\cstl^{\circled{C}}_{j}\right)  \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +\\
+	\medskip
+	& 
+	\sum \limits_{j' \in  I^{\circled{C}}_{tr}} 
+	 \cstl^{\circled{C}}_{j} \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}) +
+	\sum \limits_{j' \in \rng(\pi^{\circled{C}})} \left( \csta^{\circled{C}}_{j,(\pi^{\circled{C}})^{-1}(j')}+\cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} + 
+	 \\
+	%
+	\smallskip
+	& 
+	\sum \limits_{j' \in [r^{\circled{C}}]\setminus \rng(\pi^{\circled{C}})} \left( \cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} +
+	
+	\sum \limits_{j'\in[r^{\circled{C}}]} \cstb^{\circled{C}}_{j,j'} \vard^{\circled{C,2}}_{j'}.
 \end{array}
-\] 
-For $\ell > 3$, let $d^{(C,\ell)}_{1},\dots,d^{(C,\ell)}_{r_C}$ be the data values introduced when traversing the cycle for the $\ell$-th time. Then from Corollary~\ref{cor-comp-two-paths}, the fact $\chi^{(C)}_\ell = \chi_C \circ \chi^{(C)}_{\ell-1}$, and the induction hypothesis, we can show that $\chi^{(C)}_\ell$ is of the desired form.
+\]
+
+\noindent Induction step: Let $\ell \ge 3$.
+
+From the induction hypothesis, we know that for each $y_j \in Y$, $\sumf^{(C^{\ell-1},\initval)}(y_j)$ is of the desired form.
+
+From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C, \sumf^{(C^{\ell-1},\initval)})}$. Then for each $y_j \in Y$, by unfolding the expressions $\sumf^{(C^{\ell-1},\initval)}(x_{j'})$ for $j' \in [k]$ and $\sumf^{(C^{\ell-1},\initval)}(y_{j''})$ for $j'' \in [l]$ in $\sumf^{(C, \sumf^{(C^{\ell-1},\initval)})}(y_j)$, we can observe that $\sumf^{(C^\ell,\initval)}(y_j)$ is of the desired form.
 \qed
 \end{proof}
 
