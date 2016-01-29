@@ -5,7 +5,7 @@
 		basicstyle=\ttfamily\scriptsize}
 	\begin{tabular}{|c|c|c|}
 		\hline
-		\begin{minipage}[t]{0.25\textwidth}
+		\begin{minipage}[t]{0.2\textwidth}
 			(a)
 			\begin{lstlisting}[mathescape=true]
 int avg() {
@@ -14,30 +14,21 @@ int avg() {
  loop{
   sum+=$\cur$;
   cnt+=1;
-  $\nnext$;
- };
- return sum/cnt;
-}
+  $\nnext$;};
+ return sum/cnt;}
 			\end{lstlisting}
 		\end{minipage}&
-		\begin{minipage}[t]{0.35\textwidth}
+		\begin{minipage}[t]{0.4\textwidth}
 			(b)
 \begin{lstlisting}[mathescape=true]
 int MAD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
- loop{
-  sum+=$\cur$;cnt+=1;$\nnext$;
- };
+ loop{sum+=$\cur$;cnt+=1;$\nnext$;};
  avg:= sum/cnt;mad:=0;$\init$;
  loop{
-  if($\cur$<avg){
-   mad=mad+(avg-$\cur$);
-  }else{
-   mad=mad+($\cur$-avg);
-  };$\nnext$;
- }
- return mad/cnt;
-}
+  if($\cur$<avg){mad=mad+(avg-$\cur$);}
+  else{mad=mad+($\cur$-avg);};$\nnext$;};
+ return mad/cnt;}
 \end{lstlisting}
 		\end{minipage}&
 		\begin{minipage}[t]{0.4\textwidth}
@@ -45,15 +36,12 @@ int MAD() {
 			\begin{lstlisting}[mathescape=true]
 int SD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
+ loop{sum+=$\cur$;cnt+=1;$\nnext$;};
+ avg:= sum/cnt;sd:=0;$\init$;
  loop{
- sum+=$\cur$;cnt+=1;$\nnext$;
+  sd+=($\cur$-avg)*($\cur$-avg);$\nnext$;
  };
- avg:= sum/cnt;sd:=0;init();
- loop{
-  sd+=($\cur$-avg)*($\cur$-avg);next();
- }
- return SQRT(sd/cnt);
-}
+ return SQRT(sd/cnt);}
 			\end{lstlisting}
 		\end{minipage}\\
 		\hline		
