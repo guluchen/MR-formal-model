@@ -186,6 +186,26 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 
 
 \section{Translate a Reducer Program to a SNT}
+
+\newcommand\assume{\mathsf{assume}}
+
+\newcommand\loc{\mathfrak{l}}
+
+In the following, we demonstrate how to translate reducer programs into an equivalent SNT.
+
+We introduce a few notations first.
+
+Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
+
+Let $p$ be a reducer program of the form $s_1; \loopL{s_2}$; ret $r$.  We assume that $p$ is well-formed in the following sense: Each execution path of $s_1$ resp. $s_2$ ends in a $\nnext$ statement. In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
+
+The loop body of $s_2$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $P_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y+=e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
+
+In addition, each execution path of $s_1$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
+
+The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.
+
+
 \begin{algorithm}[H]
 	%  \SetAlgoLine
 	\KwData{A reducer program $p$}
