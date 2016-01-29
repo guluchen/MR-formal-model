@@ -119,9 +119,7 @@
 \newcommand\init{\mathsf{init}}
 
 \newcommand{\loopL}[1]{\mbox{loop\{} #1\mbox{\}}}
-\newcommand{\ite}[3]{\mbox{if } #1 \mbox{ then } #2\mbox{ else }#3 }
-
-
+\newcommand{\ite}[3]{\mbox{if } #1 \mbox{ then } #2 \mbox{ [else }#3\mbox{]} }
 
 \newcommand\vars{\mathsf{vars}}
 
@@ -212,7 +210,7 @@
 
 \begin{abstract}
 
-MapReduce is a popular programming model for data parallel computations. 
+MapReduce is a popular programming model for data parallel computation. 
 In MapReduce, the \emph{reducer} produces an output from a list of inputs. Due to the scheduling policy of the platform, the inputs may arrive at the reducers in different order. The \emph{commutativity problem} of reducers asks if the output of a reducer is independent of the order of its inputs. Although the problem is undecidable in general,
 %due to Rice's theorem and thus is seemingly uninteresting. 
 the MapReduce programs in practice are usually used for data analytics and thus require very simple data and control flow. 

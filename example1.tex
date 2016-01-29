@@ -16,7 +16,7 @@ max_abs {
    if $\cur$>max then max:=$\cur$;
   else 
    if -$\cur$>max then max:=-$\cur$;;
-  $\nnext$; };
+  $\nnext$ };
  ret max;}
 	\end{lstlisting}
 		\end{minipage}&
@@ -25,7 +25,7 @@ max_abs {
 			\begin{lstlisting}[mathescape=true]
 sum{
  sum:=$\cur$;$\nnext$;
- loop{sum+=$\cur$;$\nnext$;};
+ loop{sum+=$\cur$;$\nnext$};
  ret sum;}
 			\end{lstlisting}
 \hrule\vspace{0.1cm}%
@@ -33,7 +33,7 @@ sum{
 			\begin{lstlisting}[mathescape=true]
 cnt{
  cnt:=0;$\nnext$;
- loop{cnt+=1;$\nnext$;};
+ loop{cnt+=1;$\nnext$};
  ret cnt;}
 			\end{lstlisting}			
 		\end{minipage}&
@@ -49,7 +49,7 @@ cnt{
    b:=a;a:=$\cur$
   else if $\cur$>b then 
    b:=$\cur$;;
-  $\nnext$;};
+  $\nnext$};
  ret b;}
 			\end{lstlisting}		
 		\end{minipage}\\

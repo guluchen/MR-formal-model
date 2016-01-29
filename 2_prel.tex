@@ -2,32 +2,32 @@
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-Let $\intnum$,  $\intnum^+$ be the set of integers, positive integers, respectively and $\bot \not \in \intnum$ be  the undefined value. By convention,  $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum^+$.
-In this paper, we assume that all variables range over $\intnum \cup \{\bot\}$.  
-For a function $\rho$, let $\dom(\rho)$ and $\rng(\rho)$ denote the \emph{domain}  and \emph{range} of $\rho$, respectively. We use $\rho_\bot$ to denote a function with empty domain. 
+Let $\intnum$,  $\intnum^+$ be the set of integers, non-zero integers, respectively and $\bot \not \in \intnum$ be  the undefined value. By convention,  $\bot + \bot = \bot$, $\bot + n = \bot$ for each $n \in \intnum$, $0 \times \bot = 0$, and $n \times \bot = \bot$ for each $n \in \intnum^+$.
+We assume that all variables range over $\intnum \cup \{\bot\}$.  
+For a function $f$, let $\dom(f)$ and $\rng(f)$ denote the \emph{domain}  and \emph{range} of $f$, respectively. 
 
-An \emph{expression} $e$ over the set of variables $Z$ is defined by the following rules, $e\equiv  c \mid  c z \mid (e + e) \mid (e - e)$, where $z \in Z$ and $c\in \intnum$.  As a result of the commutativity of $+$, without loss of generality, we assume that all expressions $e$ in this paper are of the form $c_0 + c_1 z_1 + \dots c_n z_n$, where $c_0, c_1,\dots,c_n \in \intnum$ and $z_1,\dots,z_n \in Z$. 
+An \emph{expression} $e$ over the set of variables $Z$ is defined by the following rules, $e\equiv  c \mid  c z \mid (e + e) \mid (e - e)$, where $z \in Z$ and $c\in \intnum$.  As a result of the commutativity of $+$, without loss of generality, we assume that all expressions $e$ in this paper are of the form $c_0 + c_1 z_1 + \dots + c_n z_n$, where $c_0, c_1,\dots,c_n \in \intnum$ and $z_1,\dots,z_n \in Z$. 
 For an expression $e=c_0+c_1 z_1 + \dots + c_n z_n$, let $\vars(e)$ denote the set of variables $z_i$ such that $c_i \neq 0$. Let $\Ee_Z$ denote the set of all expressions over the set of variables $Z$. 
 
 % \zhilin{I changed a bit the definition of expressions here} 
 
 %Let $e$ be an expression and $\eta$ be a partial function from $\vars(e)$ to expressions. Then we use $\sub{e}{\eta}$ to denote the expression obtained from $e$ by replacing each variable $z \in \vars(e)\cap\dom(\eta)$ with $\eta(z)$. 
-A \emph{valuation} $\rho$ of $Z$ is a function from $Z$ to $\intnum\cup\{\bot\}$. A \emph{symbolic valuation} $\sval$ of $Z$ is a function which maps a variable in $Z$ to an expression (possibly over a different set of variables). The value of $e$ under a valuation $\rho$ (resp. symbolic valuation $\sval$), denoted by $\eval{e}{\rho}$ (resp. $\eval{e}{\sval}$), is defined recursively in the standard way. For example, let $\sval$ be a symbolic valuation the maps $z_1$ to $z_1+z_2$ and $z_2$ to $3z_2$, then $\eval{2z_1+3z_2}{\sval}=2\eval{z_1}{\sval}+3\eval{z_2}{\sval}=2(z_1+z_2)+3(3z_2)=2z_1+11z_2$.
+A \emph{valuation} $\rho$ of $Z$ is a function from $Z$ to $\intnum\cup\{\bot\}$. A \emph{symbolic valuation} $\sval$ of $Z$ is a function that maps a variable in $Z$ to an expression (possibly over a different set of variables). The value of $e$ under a valuation $\rho$ (resp. symbolic valuation $\sval$), denoted by $\eval{e}{\rho}$ (resp. $\eval{e}{\sval}$), is defined recursively in the standard way. For example, let $\sval$ be a symbolic valuation the maps $z_1$ to $z_1+z_2$ and $z_2$ to $3z_2$, then $\eval{2z_1+z_2}{\sval}=2\eval{z_1}{\sval}+\eval{z_2}{\sval}=2(z_1+z_2)+3z_2=2z_1+5z_2$.
 %Note that a valuation can be seen as a special symbolic valuation where the image of each variable is a constant.
 For a valuation $\rho$
 %, $z\in Z$, and $d \in \intnum$  \yfc{the target range need not to be \intnum}
-, define the function $\rho[d/z]$ such that $\rho[d/z](z)=d$ and $\rho[d/z](z')=\rho(z')$ for $z'\neq z$. 
+, define the function $\rho[d/z]$ such that $\rho[d/z](z)=d$ and $\rho[d/z](z')=\rho(z')$ for $z'\neq z$. We use $\rho_\bot$ and $\Omega_\bot$ to denote a valuation and a symbolic valuation with empty domain, respectively.
 
 In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
 A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c\in \intnum$. 
-Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff for each variable $z \in \vars(g)$, $\rho(z) \neq \bot$, and $g$ is evaluated to $\ltrue$ under $\rho$. 
-Let $\interval{n}$ be the set $\{ 1, 2, \ldots, n \}$. Let $\interval{a,b}$ be the set $\{ a, a+1, \ldots, b \}$ when $b\geq a$ and $\emptyset$ otherwise. A \emph{permutation} on
+Let $\rho$ be a valuation and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff $\rho(z) \neq \bot$ for each variable $z \in \vars(g)$ and $g$ is evaluated to $\ltrue$ under $\rho$. 
+Let $\interval{n}$ be the set $\{ 1, 2, \dots, n \}$. Let $\interval{a,b}$ be the set $\{ a, a+1, \dots, b \}$ when $b\geq a$ and $\emptyset$ otherwise. A \emph{permutation} on
 $\interval{n}$ is a one-to-one and onto mapping from $\interval{n}$ to
 $\interval{n}$. The set of
 permutations on $\interval{n}$ is denoted by $S_n$.
 
-A \emph{data word $w$} is a sequence of integer values $d_1\ldots d_n$ such that $d_i \in \intnum$ for each $i$.
+A \emph{data word $w$} is a sequence of integer values $d_1\dots d_n$ such that $d_i \in \intnum$ for each $i$.
 We use $\head(w)$, $\tail(w)$, and $|w|$ to denote the data value $d_1$, the tail $d_2\dots d_n$, and the length $n$, respectively.
-We use $\epsilon$ to denote an empty data word. As a convention, we let $\head(w)=\bot$, $\tail(w)=\epsilon$, and $|w|=0$.
+We use $\epsilon$ to denote an empty data word. As a convention, we let $\head(\epsilon)=\bot$, $\tail(\epsilon)=\bot$, and $|w|=0$.
 Given two data words $w,w'$, we use $w.w'$ to denote their concatenation.
-Given $\sigma \in S_n$, we lift $\sigma$ to data words by defining $\sigma(w)=d_{\sigma(1)} \ldots d_{\sigma(n)}$, for each data word $w=d_1\ldots d_n$. We call $\sigma(w)$ as a permutation of $w$.
+Given $\sigma \in S_n$, we lift $\sigma$ to data words by defining $\sigma(w)=d_{\sigma(1)} \dots d_{\sigma(n)}$, for each data word $w=d_1\dots d_n$. We call $\sigma(w)$ as a permutation of $w$.
