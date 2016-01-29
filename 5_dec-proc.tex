@@ -6,8 +6,9 @@ We prove Theorem~\ref{thm:correctness} by presenting a decision procedure for th
 We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by $C_1,\dots,C_n$. We generalize the procedure for a generalized lasso to full SNT in Section~\ref{sec-gflat}.
 
 \begin{theorem}\label{thm:correctness}
-The non-zero output problem of SNTs is decidable
+The non-zero output problem of SNTs is decidable.
 \end{theorem}
+
 %Finally, we will show how to adapt the algorithm for the situation that the guards of the transitions may contain the comparisons with integer constants.%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -131,7 +132,7 @@ In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\re
 %\end{itemize}
 
 \begin{proposition}\label{prop-sum-cycle}
-Suppose $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
+Suppose that $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
 \resizebox{\hsize}{!}{
 $\begin{array}{l c l}
 \sumf^{(C^\ell,\initval)}(y_j)  & = & 
@@ -149,7 +150,7 @@ $\begin{array}{l c l}
  \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
 $}\medskip\\
-where the variables $\vard^{\circled{C , 1}}_{m},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
+where the variables $\vard^{\circled{C , m}}_{1},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
  represent the data values introduced when traversing $C$ for the $m$-th time.
 \end{proposition}
 
