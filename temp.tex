@@ -1,4 +1,36 @@
+%Suppose for each $s\in [t]$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{\circled{C_{i_s} , 1}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , 1}}_{s,r^{\circled{C_{i_s}}}}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,r^{\circled{C_{i_s}}}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{\circled{C_{i_1} , 1}}_{1,1}$, $\dots$, $\vard^{\circled{C_{i_1} , \ell_1}}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{\circled{C_{i_t} , 1}}_{t,1}$, $\dots$, $\vard^{\circled{C_{i_t} , \ell_t}}_{t, r^{\circled{C_{i_t}}}}$. 
 
+\hide{
+	From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
+	\begin{itemize}
+		\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
+		% 
+		\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{\circled{H}}_{j,0} + \alpha^{\circled{H}}_{j,1} o_j + \gamma^{\circled{H}}_{j,1} d^{(0)}_1 +\dots + \gamma^{\circled{H}}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{\circled{H}}_{j,1} \in \{0,+1,-1\}$. Since the initial value of the control variable $y_j$ is $o_j=\bot$, we assume that $\alpha^{\circled{H}}_{j,1}=0$, without loss of generality.
+	\end{itemize}
+	
+	Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
+}
+
+\hide{
+	\begin{proposition}\label{prop-cycle-schm}
+		Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Then for each $j: 1 \le j \le l$ and each $j' \in I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ contains the following subexpression,
+		\[\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) \\
+		\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'},\]
+		and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
+		\[
+		\begin{array}{l c l}
+		\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+		\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \cste^{\circled{C_{i_1}}}_{j} + \\
+		\left((\lambda^{\circled{C_{i_3}}}_{j})^{\ell_3} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+		\left(1+\lambda^{\circled{C_{i_2}}}_{j} + \dots + (\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2-1} \right) \cste^{\circled{C_{i_2}}}_{j} +\\
+		\dots + 
+		\left(1+\lambda^{\circled{C_{i_t}}}_{j} + \dots + (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t-1} \right) \cste^{\circled{C_{i_t}}}_{j}.
+		\end{array}
+		\]
+		Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient contains a subexpression  of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{\circled{C_{i_1}}}_{pe}$.
+	\end{proposition}}
+	
+	
 \hide{
 	From Proposition~\ref{prop-sum-path}, we know that 
 	for the handle $H = q_0 \dots q_m$, a function $\chi_H$ can be constructed to summarize the computation on the handle. Suppose for each $j: 1 \le j \le l$,  $\chi_H(y_j) = \alpha^{\circled{H}}_{j,0} + \gamma^{\circled{H}}_{j,1} d^{(H,0)}_1 + \dots + \gamma^{\circled{H}}_{j,r_H} d^{(H,0)}_{r_H}$, where $d^{(H,0)}_1,\dots, d^{(H,0)}_{r_H}$ represent the $r_H$ data values introduced in the handle. Moreover, there is an injective mapping $\pi_H$ from $\{1,\dots,k\}$ to $\{1,\dots,k+r_H\}$ such that for each $j: 1 \le j \le k$, $\chi_H(x_j) = d^{(H,0)}_{\pi_H(j)-k}$.

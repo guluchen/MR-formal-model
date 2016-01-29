@@ -177,44 +177,8 @@ Then we call $\mu_0$ as the \emph{constant atom}, $\mu_i \initval(z_i)$ the $\in
 
 In the rest of this subsection, we assume that the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by different cycles from $C_1,\dots,C_n$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-From Proposition~\ref{prop-sum-path}, we know that a function $\chi_H$ can be constructed to summarize the computation of $\Ss$ on the handle. Let $d^{(0)}_{1}, \dots, d^{(0)}_{r_H}$ denote the $r_H$ data values introduced in the handle. Because all the values of the control and data variables are $\bot$ (undefined) in the initial configuration,  we can concretize $\chi_H$ as follows. 
-\begin{itemize}
-\item There is an injective mapping $\pi_H: \{1,\dots,k\} \rightarrow \{1,\dots, k+r\}$ such that for each $x_j \in X$, if $\pi_H(j) \le k$, then $\pi_H(j)=j$ and $\chi_H(x_j)=\bot$, otherwise, $\chi_H(x_j)=d^{(0)}_{\pi_H(j)-k}$. Without loss of generality, we assume $\pi_H(j) > k$ for each $j: 1\le j \le k$. Intuitively, this means that after traversing the handle $H$, the values of all control variables are defined (i.e. not $\bot$).
-% 
-\item For each $y_j \in Y$, $\chi_H(y_j) = \alpha^{\circled{H}}_{j,0} + \alpha^{\circled{H}}_{j,1} o_j + \gamma^{\circled{H}}_{j,1} d^{(0)}_1 +\dots + \gamma^{\circled{H}}_{j,r_H} d^{(0)}_{r_H}$ such that $\alpha^{\circled{H}}_{j,1} \in \{0,+1,-1\}$. Since the initial value of the control variable $y_j$ is $o_j=\bot$, we assume that $\alpha^{\circled{H}}_{j,1}=0$, without loss of generality.
-\end{itemize}
-
-Moreover, from Proposition~\ref{prop-sum-cycle}, we know that for each cycle $C_i$ ($1 \le i \le n$), a function $\chi^{(C_i)}_{\ell}$ can be constructed to summarize the computation of $\Ss$ on $C^{\ell}_i$ (the iteration of $C_i$ for $\ell$ times).
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j\in [t-1]$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
-to summarize the computation of $\Ss$ on $\schm$. %Suppose for each $s\in [t]$, the data values introduced when traversing $C_{i_s}^{\ell_s}$ in $\schm$ are represented by the variables $\vard^{\circled{C_{i_s} , 1}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , 1}}_{s,r^{\circled{C_{i_s}}}}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,1}$, $\dots$, $\vard^{\circled{C_{i_s} , \ell_s}}_{s,r^{\circled{C_{i_s}}}}$. Then for each $y_j \in Y$, $\sumf^{(\schm,\initval)}(y_j)$ is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_j)$, $\vard^{\circled{C_{i_1} , 1}}_{1,1}$, $\dots$, $\vard^{\circled{C_{i_1} , \ell_1}}_{1,r^{\circled{C_{i_1}}}}$, $\dots$, $\vard^{\circled{C_{i_t} , 1}}_{t,1}$, $\dots$, $\vard^{\circled{C_{i_t} , \ell_t}}_{t, r^{\circled{C_{i_t}}}}$. 
-
-\hide{
-\begin{proposition}\label{prop-cycle-schm}
-Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. Then for each $j: 1 \le j \le l$ and each $j' \in I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ contains the following subexpression,
-\[\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) \\
-\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'},\]
-and the constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
-\[
-\begin{array}{l c l}
-\left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
-\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \cste^{\circled{C_{i_1}}}_{j} + \\
-\left((\lambda^{\circled{C_{i_3}}}_{j})^{\ell_3} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
-\left(1+\lambda^{\circled{C_{i_2}}}_{j} + \dots + (\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2-1} \right) \cste^{\circled{C_{i_2}}}_{j} +\\
- \dots + 
-\left(1+\lambda^{\circled{C_{i_t}}}_{j} + \dots + (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t-1} \right) \cste^{\circled{C_{i_t}}}_{j}.
-\end{array}
-\]
-Moreover, for each $j: 1 \le j \le l$, it holds that each \emph{nontrivial} non-constant atom of $\sumf^{(\schm,\initval)}(y_j)$ such that its coefficient contains a subexpression  of the form $c\ell_1$ for some $c \in \intnum$, is in fact an $(\initval(x_{j'}))$-atom of $\sumf^{(\schm,\initval)}(y_j)$ with $j' \in I^{\circled{C_{i_1}}}_{pe}$.
-\end{proposition}}
+to summarize the computation of $\Ss$ on $\schm$. 
 
 
 \begin{lemma}\label{prop-cycle-schm}
@@ -226,7 +190,7 @@ Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-a
 $e+\sum\limits_{s_1\in[t]}  
 \left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
 \end{center}
-where $e=0$ when $r_j'=t$ and $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
+where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
 The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
 \begin{center}
 \resizebox{0.7\hsize}{!}{$
