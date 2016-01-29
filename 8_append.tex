@@ -462,24 +462,24 @@ From Corollary~\ref{cor-comp-two-paths}, $\sumf^{(C^\ell,\initval)} = \sumf^{(C,
 
 \noindent {\bf Lemma~\ref{prop-cycle-schm}}.
 {\it 
-	Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
-	For all $j'\in[k]$, let $r_{j'}$ be the largest number such that $j'\in\bigcap_{s\in[r_{j'}]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_j}}^{\ell_{r_{j'}}}$.
-	Then for each $j\in [l], j' \in[k]$, the coefficient of the $\initval(x_{j'})$-atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
-	\begin{center}
-		\resizebox{0.8\hsize}{!}{
-			$e+\sum\limits_{s_1\in[t]}  
-			\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
-	\end{center}
-	where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
-	The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
-	\begin{center}
-		\resizebox{0.7\hsize}{!}{$
-			\sum\limits_{{s_1}\in[t]}
-			\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right)
-			\cste^{\circled{C_{i_{s_1}}}}_{j} 
-			\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$}
-	\end{center}
-	Moreover, for all $j \in [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$.
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
+For all $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, let $r_{j'}$ be the largest number $r \in [t]$ such that $j'\in\bigcap_{s\in[r]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_{j'}}}^{\ell_{r_{j'}}}$.
+Then for each $j\in [l]$ and $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ is 
+\begin{center}
+\resizebox{0.8\hsize}{!}{
+$e+\sum\limits_{s_1\in[t]}  
+\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
+\end{center}
+where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
+The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+\begin{center}
+\resizebox{0.7\hsize}{!}{$
+\sum\limits_{{s_1}\in[t]}
+\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right)
+\cste^{\circled{C_{i_{s_1}}}}_{j} 
+\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$}
+\end{center}
+Moreover, for all $j \in [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some $\mu_\schm\in \intnum$.
 }
 
 \begin{proof}
