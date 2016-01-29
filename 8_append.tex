@@ -656,109 +656,110 @@ From the proof that all the constant atoms and the coefficients of the non-const
 
 \section{Extension of the decision procedure: Constants in guards}
 
-We now consider the situation that the guards contain the comparisons with constants, that is, the atomic formulae of the form $cur\ o\ c$, where $c$ is an integer constant. 
+We now consider the situation that the guards of the transitions in $\Ss$ may contain constants, that is, the atomic formulae of the form $cur \odot c$ for integer constants $c$. 
 
-We illustrate the argument for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below.
+We illustrate the arguments for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below. The arguments for the SNTs whose transition graphs are not necessarily generalized lassos are similar.
 
-Let $q_0 \dots q_m C_1 \dots C_n$ be a generalized lasso and $O(q_m)=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
+Suppose $H (C_1, \dots, C_n)$ is a generalized lasso, $H=q_0 \dots q_m$, and $O(q_m)=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$.
 
-\smallskip
-
-\noindent {\bf Step I$''$}. Let
-\[
-\begin{array}{l c l }
-\chi_H(O(q_m)) & = & a_0 + a_1 \chi_H(x_1) + \dots + a_k \chi_H(x_k) + b_1 \chi_H(y_1) + \dots b_l \chi_H(y_l) \\
-& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
-& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
-\\
-& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
-\end{array}
-\]
-From the guards and assignments of the transitions in $H$, we know that some of $d^{(0)}_1,\dots,d^{(0)}_{r_H}$ are integer constants between $c_{\min}$ and $c_{\max}$. Let $J_H \subseteq \{1,\dots, r_H\}$ denote the indices $j: 1 \le j \le r_H$ such that $d^{(0)}_j = c^{(H)}_j$ for some $c_{\min}\le c^{(H)}_j \le c_{\max}$. Since $\Ss$ is assumed to be normalized, we know that for $j \not \in J_H$,  $d^{(0)}_j < c_{\min}$ or $d^{(0)}_j > c_{\max}$.
-
-For each $j \not \in J_H$, decide whether the coefficient of $d^{(0)}_j$ in $\chi_H(O(q_m))$ is nonzero. If the answer is yes, then return $\ltrue$. 
-
-If the algorithm has not return yet, we substitute the data variables $d^{(0)}_j$ for $j \in J_H$ with the integer constants. Then $\chi_H(O(q_m))$ becomes an integer constant $c_H$. If $c_H \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$. \qed
-
-\medskip
-
-For each $i_1: 1 \le i_1 \le n$, let $J_{C_{i_1}}$ denote the indices $j': 1 \le j' \le l$ such that there is $c^{C_{i_1}}_{j'}$ satisfying that $c_{\min} \le c^{C_{i_1}}_{j'} \le c_{\max}$, and for each $i: 1 \le i \le \ell_1$, $d^{(C_{i_1},i)}_{j'}=c^{C_{i_1}}_{j'}$ in $\chi^{(C_{i_1})}_{\ell_1}$. 
-
-For a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, let $c_{\schm,i_1}$ denote the sum of all the following expressions (intuitively, $c_{\schm,i_1}$ is the constant coefficient of $\chi_\schm(O(q_m))$ involving the terms $ c\ \ell_1$ for some integer constant $c$, when taking into consideration the fact that some introduced data values are in fact integer constants between $c_{\min}$ and $c_{\max}$),
-\[
-\sum \limits_{1 \le j \le l} 
-%\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) 
+From the guards and assignments of the transitions in $H$, we know that some of $\vard^{\circled{H}}_1,\dots, \vard^{\circled{H}}_{r^{\circled{H}}}$ have to be integer constants in $[c_{min}, c_{max}]$. Let $J^{\circled{H}} \subseteq [r^{\circled{H}}]$ denote the set of indices $j \in [r^{\circled{H}}]$ such that $\vard^{\circled{H}}_j$ has to be in $[c_{min}, c_{max}]$. Let $c^{\circled{H}}_j \in [c_{min}, c_{max}]$ denote this constant corresponding to $\vard^{\circled{H}}_j$. Since $\Ss$ is assumed to be normalized, we know that for each $j \not \in J^{\circled{H}}$,  $\vard^{\circled{H}}_j < c_{min}$ or $\vard^{\circled{H}}_j > c_{max}$.
+%
+%
+%Let
+%\[
+%\begin{array}{l c l }
+%\eval{O(q_m)}{\sumf^{(H,\initval_\bot)}} & = & a_0 + a_1 \sumf^{(H,\initval_\bot)} (x_1) + \dots + a_k \sumf^{(H,\initval_\bot)} (x_k) + b_1 \sumf^{(H,\initval_\bot)} (y_1) + \dots b_l \sumf^{(H,\initval_\bot)} (y_l) \\
+%& = & (a_0+b_1 \alpha^{(H)}_{1,0} + \dots + b_l \alpha^{(H)}_{l,0}) + \\
+%& & \sum \limits_{j \le r_H, j+k \in \rng(\pi_H)} (a_{\pi_H^{-1}(j+k)}+ b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j +
 %\\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \alpha^{(C_{i_1})}_{j,0},
+%& & \sum \limits_{j \le r_H, j +k \not \in \rng(\pi_H)}  (b_1 \gamma^{(H)}_{j,1}+\dots + b_l \gamma^{(H)}_{j,l}) d^{(0)}_j .
 %\end{array}
-\]
-the expressions 
-\[
-\left(\sum \limits_{1 \le j \le l} 
+%\]
+%
+%
+\smallskip\\
+\framebox[\textwidth]{
+\begin{minipage}{0.95\textwidth}
+\noindent {\bf Step I$''$}. For each $j \in [r^{\circled{H}}] \setminus J^{\circled{H}}$, decide whether the coefficient of the $\vard^{\circled{H}}_j$-atom in $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$ is nonzero. If the answer is yes, then return $\ltrue$. If the decision procedure has not returned yet, substitute each data variable $\vard^{\circled{H}}_j$ for $j \in J^{\circled{H}}$ with $c^{\circled{H}}_j$ in $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$. Then $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$ becomes an integer constant $c^{\circled{H}}$. If $c^{\circled{H}} \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$.
+\end{minipage}
+}\bigskip
+
+For each $i_1 \in [n]$, let $J^{\circled{q_m}}$ denote the set of indices $j' \in [k]$ such that $\initval(x_{j'})$ has to be in $[c_{min}, c_{max}]$, which is enforced by the state $q_m$. Recall that the SNT $\Ss$ is state-dominating. Therefore, from the state $q_m$, we know which control variable should have a value in $[c_{min},c_{max}]$. For each $j' \in J^{\circled{q_m}}$, let $c^{\circled{q_m}}_{j'}$ denote this constant corresponding to $j'$. 
+
+Let $\schm=C_{i_1}^{\ell_1} C^{\ell_2}_{i_2} \dots C^{\ell_t}_{i_t}$ be a cycle scheme. 
+For each $i_1 \in [n]$, let $J^{\circled{C_{i_1}}}$ denote the set of indices $j'' \in [r^{\circled{C_{i_1}}}]$ such that there is $c^{\circled{C_{i_1}}}_{j''} \in [c_{min}, c_{max}]$ satisfying that for each $i \in [\ell_1]$, $\vard^{\circled{C_{i_1}, i}}_{1, j''}$ has to be equal to $c^{\circled{C_{i_1}}}_{j''}$, as a result of the guards and assignments on $C_{i_1}$. (Recall that the SNT $\Ss$ is required to be normalized). Note that the definition of $J^{\circled{C_{i_1}}}$ is independent of the choices of $\schm$.
+
+Suppose $\schm=C_{i_1}^{\ell_1} C^{\ell_2}_{i_2} \dots C^{\ell_t}_{i_t}$ is a cycle scheme. Then for each $j' \in  I^{\circled{C_{i_1}}}_{pe} \setminus J^{\circled{q_m}}$, we can obtain $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ as in Step II of Section~\ref{sec-glasso}. 
+
+We then define $\mu'_{\schm,(i_1,0)} \ell_1 + \nu'_{\schm,(i_1,0)}$ as follows. Because $\initval(x_{j'})$ is a constant for each $j' \in J^{\circled{q_m}}$, and for each $j \in [r^{\circled{C_{i_1}}}]$ and $i \in [\ell_1]$, $\vard^{\circled{C_{i_1}, i}}_{1, j}$ is a constant, we should take as a group the constant atom of  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, the $\initval(x_{j'})$-atoms for $j' \in J^{\circled{q_m}}$, and the $\vard^{\circled{C_{i_1}, i}}_{1, j}$-atoms for $j \in [r^{\circled{C_{i_1}}}]$ and $i \in [\ell_1]$.
+%
+Recall that the constant atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following  subexpression,
+\begin{center}
+	\vspace{-0.2cm}
+	\resizebox{0.8\hsize}{!}{$
+e_0:= \sum \limits_{1 \le j \le l} b_j
 \begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left(1+\alpha^{(C_{i_1})}_{j,1} + \dots + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-1} \right) \beta^{(C_{i_1})}_{j,j'}
+ \left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \cste^{\circled{C_{i_1}}}_{j}. 
 \end{array}
-\right) c^{(H)}_{\pi_H(j')-k}
-\]
-such that $j' \le k$, $\pi_H(j')-k \in J_H$ (Recall that $d^{(0)}_{\pi_H(j')-k}=c^{(H)}_{\pi_H(j')-k}$), \\
-the expressions
-\[
-\left(\sum \limits_{1 \le j \le l} 
-\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
-\left((\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i-1} \beta^{(C_{i_1})}_{j,\pi^{-1}_{C_{i_1}}(j'+k)} + (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
-\end{array}
-\right) c^{(C_{i_1})}_{j'},
-\]
-such that $1 \le i < \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \in \rng(\pi_{C_{i_1}})$,\\
-the expressions
-\[
-\left(\sum \limits_{1 \le j \le l} 
+$}
+\end{center}
+Moreover, for each $j' \in  J^{\circled{q_m}} \cap I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
+\begin{center}
+	\resizebox{0.8\hsize}{!}{$
+e_{j'} := \sum \limits_{1 \le j \le l} 
 %\begin{array}{l}
-b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)  \left( (\alpha^{(C_{i_1})}_{j,1})^{\ell_1-i} \gamma^{(C_{i_1})}_{j,j'}\right)
+b_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
+\left(1+\cstl^{\circled{C_{i_1}}}_{j} + \dots + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'}.
+%\end{array} \hspace{1cm}  
+$}
+\end{center}
+
+For each $j'' \in J^{\circled{C_{i_1}}} \cap \rng(\pi^{\circled{C_{i_1}}})$ and $i \in [\ell_1]$, the coefficient of the $\vard^{\circled{C_{i_1}, i}}_{1, j''}$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
+\begin{center}
+	\resizebox{0.95\hsize}{!}{$
+f_{j'',i} := \sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+ b_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
+\left((\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-i-1} \csta^{\circled{C_{i_1}}}_{j, (\pi^{\circled{C_{i_1}}})^{-1}(j'') } + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-i} \cstb^{\circled{C_{i_1}}}_{j,j'}\right).
 %\end{array}
-\right) c^{(C_{i_1})}_{j'},
-\]
-such that $i: 1 \le i \le \ell_1$, $j' \in J_{C_{i_1}}$, and $j'+k \not \in \rng(\pi_{C_{i_1}})$.
+$}
+\end{center}
 
-Then $c_{\schm,i_1}$ can be rewritten as $\mu_{\schm, (i_1,0)} \ell_1 + \nu_{\schm, (i_1,0)}$ for constants $\mu_{\schm, (i_1,0)},\nu_{\schm, (i_1,0)}$.
+For each $j'' \in J^{\circled{C_{i_1}}} \setminus \rng(\pi^{\circled{C_{i_1}}})$ and $i \in [\ell_1]$, the coefficient of the $\vard^{\circled{C_{i_1}, i}}_{1, j''}$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
+\begin{center}
+	\resizebox{0.75\hsize}{!}{$
+f_{j'',i} := \sum \limits_{1 \le j \le l} 
+%\begin{array}{l}
+ b_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
+\left( (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-i} \cstb^{\circled{C_{i_1}}}_{j,j'}\right).
+%\end{array}
+$}
+\end{center}
 
-\medskip
-
-\noindent {\bf Step II$''$}. For each $i_1: 1 \le i_1 \le n$, if there are a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$  and $j' \le k$ such that 
-\begin{itemize}
-\item $i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+Then we consider the expression 
+\[e_0 + \sum \limits_{j' \in J^{\circled{q_m}} \cap I^{\circled{C_{i_1}}}_{pe}} (e_{j'} c^{\circled{q_m}}_{j'}) + \sum \limits_{j'' \in J^{\circled{C_{i_1}}} } \sum \limits_{i \in [\ell_1]} (f_{j'',i}\ c^{\circled{C_{i_1}}}_{j''}),\] 
+which can be rewritten as $\mu'_{\schm,(i_1,0)} \ell_1 + \nu'_{\schm,(i_1,0)}$ for some integer constants $\mu'_{\schm, (i_1,0)}$ and $\nu'_{\schm, (i_1,0)}$. 
+%If $\mu'_{\schm,(i_1,0)}=\mu_{\schm,(i_1,j')}=0$ for all $j' \in J^{\circled{q_m}} \cap I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu'_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in J^{\circled{q_m}} \cap  I^{\circled{C_{i_1}}}_{pe}$.
 %
-\item $\pi_H(j')-k \not \in J_H$, $\pi_{C_{i_1}}(j')=j'$, and $\mu_{\schm,(i_1,j')} \neq 0$, 
-\end{itemize}
-then return $\ltrue$.
+\medskip\\
+\framebox[\textwidth]{
+	\begin{minipage}{0.95\textwidth}
+		\noindent {\bf Step II$''$}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
+		one of the following constraints is satisfied, then return $\ltrue$. (1) There is $j' \in  I^{\circled{C_{i_1}}}_{pe} \setminus J^{\circled{q_m}}$ such that $\mu_{\schm,(i_1,j')} \neq 0$. (2) $\mu'_{\schm,(i_1,0)} \neq 0$.
+		%
+		If the decision procedure has not returned yet, then go to Step III$''$.
+	\end{minipage}
+}\smallskip\\
 
-If there is a cycle scheme $\schm=HC_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that 
-$i_2,\dots,i_t$ are mutually distinct, $\ell_2 = \dots = \ell_t = 1$, 
+If after Step II$''$, the algorithm has not return yet, then similarly to Section~\ref{sec-glasso}, we can construct a finite set $U'' \subset \intnum$, which acts as a bounded domain for the constant atoms and the coefficients of non-constant atoms after removing all the subexpressions related to the cycle counting variables $\ell_1,\dots,\ell_t$. Moreover, we can construct the set $\mathscr{A''}$ of abstractions of cycle schemes.
 %
-and $\mu_{\schm,(i_1,0)} \neq 0$, 
-%
-then return $\ltrue$. 
-
-If the decision procedure has not return yet, then go to Step III$''$. \qed
-
-\medskip
-
-If after Step II, the algorithm has not return yet, then after removing the terms involving $c\ \ell_1,\dots, c\ \ell_t$, a finite state automaton $\Aa$ can be constructed to simulate the evolvement of the coefficients of the non-constant data variables, and the sum of the constant coefficients and all the terms involving the data variables which are integer constants. 
-
-\medskip
-
-
-
-\noindent {\bf Step III$''$}. For each final state $\chi$ of $\Aa$, do the following.
-\begin{itemize}
-\item Check whether the coefficient of some non-constant data variable in $\chi(O(q_m))$ is nonzero, if the answer is yes, then return $\ltrue$.
-%
-\item Otherwise, check whether the number obtained from $\chi(O(q_m))$ by replacing the remaining data variables with the corresponding integer constants, is nonzero. If the answer is yes, then return $\ltrue$. 
-\end{itemize}
-Finally, return $\lfalse$ and the algorithm terminates.
+\medskip\\
+\framebox[\textwidth]{
+	\begin{minipage}{0.95\textwidth}
+		\noindent {\bf Step III$''$}. Similar to Step III, with $U,\mathscr{A}$ replaced by $U''$ and $\mathscr{A''}$.
+	\end{minipage}
+}\smallskip\\
 
 \end{appendix}
 
