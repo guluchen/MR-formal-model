@@ -61,6 +61,78 @@ If the decision procedure has not return yet, then go to Step III$''$. \qed
 \medskip
 
 
+
+
+\hide{
+	\smallskip
+	
+	Finally, we consider the third fact.
+	
+	Let $\schm=C^{\ell_1}_{i_1} \dots C^{\ell_t}_{i_t}$ be a cycle scheme. An abstraction of ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-$, denoted by $\abs\circled{\schm}$, can be computed from $\schm$ by the following procedure.
+	\begin{enumerate}
+		\item Let $\abs\circled{\schm}:=\{(0, ( (\cste^{\circled{\schm}}_{1})',\dots, (\cste^{\circled{\schm}}_l)'))\}$.
+		%
+		\item For each $j \in [k]$ and $j' \in [l]$, let $\cstg_{j, j'}$ be the coefficient of the $({\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_j))$-atom in ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_{j'})$. Let $\abs\circled{\schm}: = \abs\circled{\schm} \cup \{(j, (\cstg_{j,1},\dots, \cstg_{j,l})) \mid j \in [k]\}$.
+		%
+		\item For each data variable $\vard'$ such that $\vard' \neq {\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(x_j)$ for each $j \in [k]$, let $\abs\circled{\schm}:=\abs\circled{\schm} \cup \{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in K^l$ is the tuple of the coefficients of the $\vard'$-atom in $({\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_{j'})$ for $j' \in [l]$. 
+	\end{enumerate}
+	Intuitively, $\abs\circled{\schm}$, the abstraction of  ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-$,  is the set comprising the tuple of the constant atoms, the tuples of the coefficients of the atoms corresponding to the control variables, and the tuples of the coefficients of the atoms corresponding to the other data variables.
+	
+	From the proof that all the constant atoms and the coefficients of the non-constant atoms in ${\sumf^{(\schm,\sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $y_j \in Y$ are from a bounded domain $K$, it is not hard to see that $\Kk = \{\abs\circled{\schm} \mid \schm \mbox{ a cycle scheme}\}$ can be computed effectively from $\sumf^{(H,\initval)}$, $\sumf^{(C_1,\initval)}$, $\dots$, and $\sumf^{(C_n,\initval)}$.\qed}
+\hide{
+	At first,  let us check $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$.
+	\[
+	\begin{array}{l c l}
+	\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m)) & = & a_0 + a_1 \chi^{\circled{C_{i_1}}}_{\ell_1}(x_1) + \dots a_k \chi^{\circled{C_{i_1}}}_{\ell_1}(x_k) + \\
+	& & b_1 \chi^{\circled{C_{i_1}}}_{\ell_1}(y_1) + \dots + b_l \chi^{\circled{C_{i_1}}}_{\ell_1}(y_l).
+	\end{array}
+	\] 
+	
+	Then $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$ is a linear combination of the variables $d^{(0)}_1,\dots, d^{(0)}_{r_H}$ and $d^{\circled{C_{i_1},1}}_1,\dots, d^{\circled{C_{i_1},1}}_{r_{C_{i_1}}}, \dots, d^{(C_{i_1},\ell_1)}_1,\dots, d^{(C_{i_1},\ell_1)}_{r_{C_{i_1}}}$.
+	
+	For each $j'$ such that $j' \le k$ and $\pi_{C_{i_1}}(j')=j'$, the coefficient of $d^{(0)}_{\pi_H(j')-k}$ in $\chi^{\circled{C_{i_1}}}_{\ell_1}(O(q_m))$ is 
+	
+	\[a_{j'} + \sum \limits_{1 \le j \le l} b_j \left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'}.\]
+	%
+	%
+	For each $j: 1 \le j \le l$, $\chi_{\schm}(y_j)$ contains the following expression 
+	\[\left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right)\left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'} d^{(0)}_{\pi_H(j')-k}.\]
+	
+	Since 
+	\[
+	\chi_{\schm}(O(q_m)) = a_0 + a_1 \chi_{\schm}(x_1) + \dots a_k \chi_{\schm}(x_k) + b_1 \chi_{\schm}(y_1) + \dots + b_l \chi_{\schm}(y_l),
+	\] 
+	it is not hard to see that $\chi_\schm(O(q_m))$ contains the expression,
+	\[
+	\left(\sum \limits_{1 \le j \le l} 
+	\begin{array}{l}
+	b_j \left((\alpha^{(C_{i_2})}_{j,1})^{\ell_2} \dots (\alpha^{(C_{i_t})}_{j,1})^{\ell_t}\right) \\
+	\left(1+\alpha^{\circled{C_{i_1}}}_{j,1} + \dots + (\alpha^{\circled{C_{i_1}}}_{j,1})^{\ell_1-1} \right) \beta^{\circled{C_{i_1}}}_{j,j'}
+	\end{array}
+	\right) d^{(0)}_{\pi_H(j')-k}. 
+	\]
+	The argument for the constant coefficient is similar.}
+
+
+\hide{
+	Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. If the decision procedure has not returned yet after Step II, then all these expressions of the form $c\ \ell_1,\dots, c\ \ell_t$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored, since our only concern is whether the output $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$ is non-zero. More specifically, the arguments are as follows: From the fact that  $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for each $j' \in I^{\circled{C_{i_1}}}_{pe}$, we know that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_1$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Similarly, let $\schm' = C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$, then in $\eval{O(q_m)}{\sumf^{(\schm', \sumf^{(H,\initval_0)})}}$, the  expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Thus, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm', \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. From this, we deduce that in $\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\initval_0)})}}$, all the expressions of the form $c\ \ell_2$ from different $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ will cancel each other. Therefore, all the expressions of the form $c\ \ell_2$ in $\sumf^{(\schm, \sumf^{(H,\initval_0)})}(y_j)$ for $y_j \in Y$ can be ignored. We can apply the same arguments for the expressions of the form $c\ \ell_3,\dots,c\ \ell_t$.
+	
+	\medskip
+	
+	We prove the second fact next. 
+	
+	Let $U$ be the subset of $\intnum$ comprising the following numbers,
+	\begin{itemize}
+		\item the constant atom and the coefficients of the non-constant atoms in the expression $(\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})})'(y_j)$, where $1 \le i \le n$ and $\ell_i \ge 1$ (note that if $\ell_i \ge 2$, then the exact value of $\ell_i$ is indifferent to those coefficients),
+		
+		%(note that the exact value of $\ell_i$ is indifferent to these numbers),
+		%
+		\item  the numbers $\csta^{(C_{i_2})}_{j,j'} + \cstb^{\circled{C_{i_1}}}_{j,\pi^{\circled{C_{i_1}}}(j')}$, where $1 \le i_1,i_2 \le n$,  $1 \le j \le l$, and $j' \in I^{\circled{C_{i_1}}}_{tr} \cap I^{(C_{i_2})}_{tr}$,
+		%
+		\item  the numbers $\csta^{\circled{C_{i_1}}}_{j, j'} + \csta^{(C_{i_2})}_{j,j'}$, where $1 \le i_1,i_2 \le n$, $1 \le j \le l$, and $j' \in [k]$. 
+		%$j' \in I^{\circled{C_{i_1}}}_{tr}$, and $\cstl^{(C_{i_2})}_j = 0$.
+	\end{itemize}}
+
 \hide{
 We use $X^c$ to denote the set $X^+\cup  \interval{c_{min},c_{max}}$.
 %The set of states $Q'=Q\times 2^X \times (X\times X^c) \rightarrow \{=, <, >,  \bot\}$. 
