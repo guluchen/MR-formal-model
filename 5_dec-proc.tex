@@ -1,7 +1,7 @@
 %!TEX root = main-cav.tex
 
 \section{Decision procedure for the non-zero output problem}\label{sec:dec-snt}
-We prove the Theorem~\ref{thm:correctness} by presenting a decision procedure for the non-zero output problem of normalized SNTs. We fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general class in the appendix.
+We prove Theorem~\ref{thm:correctness} by presenting a decision procedure for the non-zero output problem of normalized SNTs. We fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general class in the appendix.
 We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by $C_1,\dots,C_n$. We generalize the procedure for a generalized lasso to full SNT in Section~\ref{sec-gflat}.
 
 \begin{theorem}\label{thm:correctness}
@@ -46,7 +46,7 @@ $
 where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\dots,\csta^{\circled{P}}_{j,k}, \cstb^{\circled{P}}_{j,1},\dots,\cstb^{\circled{P}}_{j,r^{\circled{P}}}$ are integer constants such that $\cstl^{\circled{P}}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint).  It can happen that $\cstl^{\circled{P}}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{\circled{P}}_{j,1}=0$, and so on.
 \end{itemize}
 \end{proposition}
-Note that in Proposition~\ref{prop-sum-path}, the two sets $I^{\circled{P}}_{pe}$ and $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. Due to the unique-valued constraint of a normalized SNT, the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, is well-defined.
+In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. Due to the unique-valued constraint of a normalized SNT, the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, is well-defined.
 
 As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
 
@@ -353,8 +353,8 @@ Notice that for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\cir
 Hence we can also ignore all subexpressions containing $\ell_1$ in  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
 %If $j' \in  I^{\circled{C_{i'_2}}}_{pe}$, then the we have subexpressions containing $\ell_2$ in the coefficient of the $\initval(x_{j'})$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{pe}$) or $\vard^{\circled{C_{i'_1}}}_{\pi^{\circled{C_{i'_1}}}(j')}$-atom (when $j' \in  I^{\circled{C_{i'_1}}}_{tr}$) of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$.
 %Also we may have subexpressions containing $\ell_2$ in the constant atom.
-Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm'=C_{i'_2}^{\ell_2} C_{i''_3} \dots C_{i''_m}$ and applying a similar reasoning. The same applied to all other cycle counting variables $\ell_3,\dots,\ell_n$.
-For a cycle scheme $\schm$ and $y_j \in Y$, we use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counting variables. 
+Those subexpressions containing $\ell_2$ can also be ignore by considering the cycle scheme $\schm'=C_{i'_2}^{\ell_2} C_{i''_3} \dots C_{i''_m}$ and applying a similar reasoning. The same applies to all other cycle counting variables $\ell_3,\dots,\ell_n$.
+We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the coefficients of the atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counting variables, for all $y_j \in Y$, . 
 
 \begin{lemma}\label{prop-bnd-domain-1}
 	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\emptyset)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.

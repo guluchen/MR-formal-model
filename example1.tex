@@ -5,7 +5,7 @@
 	\begin{tabular}{|c|c|c|}
 		\hline
 		\begin{minipage}[t]{0.39\textwidth}
-			(a)
+		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 max_abs {
  if $\cur$>0 then max:=$\cur$
@@ -13,49 +13,43 @@ max_abs {
  $\nnext$;
  loop{
   if $\cur$>0 then
-   if $\cur$>max then max:=$\cur$
+   if $\cur$>max then max:=$\cur$;
   else 
    if -$\cur$>max then max:=-$\cur$;;
-  $\nnext$;  
- } 
- ret max;
-}
+  $\nnext$; };
+ ret max;}
 	\end{lstlisting}
 		\end{minipage}&
 		\begin{minipage}[t]{0.27\textwidth}
-			(b)
+		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 sum{
  sum:=$\cur$;$\nnext$;
  loop{sum+=$\cur$;$\nnext$;};
- ret sum;
-}
+ ret sum;}
 			\end{lstlisting}
-\hrule\vspace{0.1cm}			
-			(c)
+\hrule\vspace{0.1cm}%
+			%(c)	
 			\begin{lstlisting}[mathescape=true]
 cnt{
  cnt:=0;$\nnext$;
  loop{cnt+=1;$\nnext$;};
- ret cnt;
-}
+ ret cnt;}
 			\end{lstlisting}			
 		\end{minipage}&
 		\begin{minipage}[t]{0.30\textwidth}
-			(d) 
+		\vspace{-0.5cm}			
 			\begin{lstlisting}[mathescape=true]
 2nd_largest {
  a:=$\cur$;b:=$\cur$;$\nnext$;
  if $\cur$>a then a:=$\cur$
- else b:=$\cur$;
- $\nnext$;
+ else b:=$\cur$;$\nnext$;
  loop{
   if $\cur$>a then 
    b:=a;a:=$\cur$
   else if $\cur$>b then 
    b:=$\cur$;;
-  $\nnext$;
- }
+  $\nnext$;};
  ret b;}
 			\end{lstlisting}		
 		\end{minipage}\\
