@@ -1,4 +1,3 @@
-\vspace{-1cm}
 \begin{figure}
 	\centering
 	\lstset{language=C,
@@ -6,7 +5,7 @@
 	\begin{tabular}{|c|c|c|}
 		\hline
 		\begin{minipage}[t]{0.2\textwidth}
-			(a)
+		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 int avg() {
  sum:=$\cur$;
@@ -15,11 +14,11 @@ int avg() {
   sum+=$\cur$;
   cnt+=1;
   $\nnext$;};
- return sum/cnt;}
+ ret sum/cnt;}
 			\end{lstlisting}
 		\end{minipage}&
 		\begin{minipage}[t]{0.4\textwidth}
-			(b)
+		\vspace{-0.5cm}
 \begin{lstlisting}[mathescape=true]
 int MAD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
@@ -28,11 +27,11 @@ int MAD() {
  loop{
   if($\cur$<avg){mad=mad+(avg-$\cur$);}
   else{mad=mad+($\cur$-avg);};$\nnext$;};
- return mad/cnt;}
+ ret mad/cnt;}
 \end{lstlisting}
 		\end{minipage}&
 		\begin{minipage}[t]{0.4\textwidth}
-			(c)
+		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 int SD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
@@ -41,7 +40,7 @@ int SD() {
  loop{
   sd+=($\cur$-avg)*($\cur$-avg);$\nnext$;
  };
- return SQRT(sd/cnt);}
+ ret SQRT(sd/cnt);}
 			\end{lstlisting}
 		\end{minipage}\\
 		\hline		
