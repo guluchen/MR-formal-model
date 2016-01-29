@@ -1,5 +1,9 @@
 
 
+\hide{Before presenting the decision procedure for generalized lassos, we introduce some notations.
+	Suppose $P$ is a path in $\Ss$, $\initval$ is a symbolic valuation representing the initial values of the control and data variables, and $r^{\circled{P}}$ data values are introduced when traversing $P$. Moreover, let $e$ be an expression that is a linear combination of $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\vard^{\circled{P}}_1$, $\dots$, and $\vard^{\circled{P}}_{r^{\circled{P}}}$, more precisely, 
+	\[e:=\mu_0 + \mu_1 \initval(x_1) +\dots + \mu_k \initval(x_k) + \nu_1 \initval(y_1)+\dots + \nu_l \initval(y_l)+ \xi_1 \vard^{\circled{P}}_{1} + \dots + \xi_{r^{\circled{P}}} \vard^{\circled{P}}_{r^{\circled{P}}},\]
+	such that $\mu_0,\mu_1,\dots,\mu_k,\nu_1,\dots,\nu_{l}, \xi_1,\dots,\xi_{r^{\circled{P}}}$ are the expressions that contain none of the variables from $\initval(x_1)$, $\dots$, $\initval(x_k)$, $\initval(y_1)$, $\dots$, $\initval(y_l)$, $\vard^{\circled{P}}_1$, $\dots$, and $\vard^{\circled{P}}_{r^{\circled{P}}}$ (although they may contain some other variables). Then we call $\mu_0$ as the \emph{constant atom} of $e$ (with respect to $P$), and the subexpressions $\mu_1 \initval(x_1)$, $\dots$, $\mu_k \initval(x_k)$, $\nu_1 \initval(y_1)$, $\dots$, $\nu_l \initval(y_l)$, $\xi_1 \vard^{\circled{P}}_{1}$ , $\dots$,  $\xi_{r^{\circled{P}}} \vard^{\circled{P}}_{r^{\circled{P}}}$ as the $(\initval(x_1))$-atom, $\dots$, $(\initval(x_k))$-atom, $(\initval(y_1))$-atom, $\dots$, $(\initval(y_l))$-atom, $\vard^{\circled{P}}_{1}$-atom, $\dots$, and $(\vard^{\circled{P}}_{r^{\circled{P}}})$-atom of $e$ respectively. Moreover, $\mu_1, \dots, \mu_k, \nu_1,\dots, \nu_{l}, \xi_1,\dots, \xi_{r^{\circled{P}}}$ are called the \emph{coefficients} of these atoms. A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} an expression that is identical to zero.}
 
 \hide{
 	\smallskip
