@@ -579,7 +579,7 @@ From the guards and assignments of the transitions in $H$, we know that some of 
 \smallskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
-\noindent {\bf Step I$''$}. For each $j \in [r^{\circled{H}}] \setminus J^{\circled{H}}$, decide whether the coefficient of the $\vard^{\circled{H}}_j$-atom in $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$ is nonzero. If the answer is yes, then return $\ltrue$. If the decision procedure has not returned yet, substitute each data variable $\vard^{\circled{H}}_j$ for $j \in J^{\circled{H}}$ with $c^{\circled{H}}_j$ in $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$. Then $\eval{(O(q_m)}{\sumf^{(H,\initval_\bot)}}$ becomes an integer constant $c^{\circled{H}}$. If $c^{\circled{H}} \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$.
+\noindent {\bf Step I$''$}. For each $j \in [r^{\circled{H}}] \setminus J^{\circled{H}}$, decide whether the coefficient of the $\vard^{\circled{H}}_j$-atom in $\eval{O(q_m)}{\sumf^{(H,\initval_\bot)}}$ is nonzero. If the answer is yes, then return $\ltrue$. If the decision procedure has not returned yet, substitute each data variable $\vard^{\circled{H}}_j$ for $j \in J^{\circled{H}}$ with $c^{\circled{H}}_j$ in $\eval{O(q_m)}{\sumf^{(H,\initval_\bot)}}$. Then $\eval{O(q_m)}{\sumf^{(H,\initval_\bot)}}$ becomes an integer constant $c^{\circled{H}}$. If $c^{\circled{H}} \neq 0$, then return $\ltrue$.  Otherwise, go to Step II$''$.
 \end{minipage}
 }\bigskip
 
