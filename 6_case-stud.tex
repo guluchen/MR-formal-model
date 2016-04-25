@@ -1,4 +1,4 @@
-\section{Discussion}
+\section{Extensions}
 \label{sec:cases}
 
 \input{example2}
@@ -7,7 +7,7 @@ In this section, we discuss more challenging examples.
 For cases with multiplication, division, or other more complicated functions at the return point, e.g., the \texttt{avg} case, we can model them as an \emph{uninterpreted $k$-ary function} and verify that all $k$ parameters of the uninterpreted functions remain the same no matter how the input is permuted, e.g., the \texttt{avg} program always produces the same \texttt{sum} and \texttt{cnt} for all permutation of the same input data word. This is a \emph{sound} but \emph{incomplete} procedure for verifying programs of this type. Nevertheless, it is not often that a  practical program for data analytics produces, e.g., $2q/2r$ from some input and $q/r$ for its permutation. Hence this procedure is often enough for proving commutativity for real world programs.
 
 The case \texttt{MAD} (Mean Absolute Deviation) is a bit more involved. Beside the division operator $/$ that also occurs in the \texttt{avg} example, it uses a new iterator operation $\init$, which resets $\cur$ to the head of the input data word. The strategy to verify this program is to divide the task into two parts: (1) ensure that the value of \texttt{avg} is independent of the order of the input, (2) treat \texttt{avg} as a special variable whose initial value is nondeterministically assigned and then check if the 2nd half of the program (the part after $\nnext$) is commutative. The latter requires an extension to the SNT decision problems. Given a data word $w$, we say a data word $w'$ is a $k$-permutation of $w$ iff there exists $\sigma_k\in S_{|w|}$ such that $\sigma_k(i)=i$ for $i \in [k]$ and $w'=\sigma_k(w)$. A \emph{$k$-commutativity problem} of a SNT $\Ss$ asks whether for each data word $w$ and its $k$-permutation $w'$, $\Ss(w)=\Ss(w')$. The problem can be reduced to SNT equivalence problems in a similar way to the standard commutativity problem.
-
+\yfc{todo: explain more the k-commutativity business}
 \begin{proposition}\label{prop-snt-kcmm-to-eqv}
 	The $k$-commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time. 
 \end{proposition}

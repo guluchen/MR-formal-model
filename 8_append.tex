@@ -33,7 +33,12 @@
 			
 			$(\loopL{s};\mbox{ret }r, w, \rho) \longrightarrow (s;\loopL{s};\mbox{ret }r, w, \rho)$& \\
 			
+			$(\loopL{s};s;\mbox{ret }r, w, \rho) \longrightarrow (s;\loopL{s};s;\mbox{ret }r, w, \rho)$& \\
+
+			
 			$(\loopL{s};\mbox{ret }r, \epsilon, \rho) \longrightarrow (\mbox{ret }r,  \epsilon, \rho)$& 	\\	
+
+			$(\loopL{s};s;\mbox{ret }r, \epsilon, \rho) \longrightarrow (s;\mbox{ret }r,  \epsilon, \rho)$& 	\\
 			\hline
 			
 		\end{tabular}
@@ -45,7 +50,7 @@
 
 Formally, the semantics of a program $p$ in the programming language is defined as a transition system in Fig.~\ref{fig:semantics}. Let $p$ be a reducer program and $w$ be an input data word.  Each configuration of the transition system is a triple $(p', w', \rho)$, where $p'$ is a program, $w'$ is a suffix of $w$, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(w')$. 
 Let $\rho_w$ be an assignment such that $\rho_w(\cur)=\head(w)$ and $\rho_w(z)=\bot$ for $z \in X \cup Y$.
-The initial configuration is $(p, \tail{w}, \rho_w)$.
+The initial configuration is $(p, \tail(w), \rho_w)$.
 We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there exists a path from the initial configuration $(p, w, \rho_w)$ to some return configuration $(\mbox{ret }r,  \epsilon, \rho_r)$ such that $
 \eval{r}{\rho_r}=d$. Otherwise, $p(w)=\bot$. Since the program is deterministic, i.e., each input data word has at most one output, the semantics of $p$ is well-defined.
 
@@ -66,6 +71,7 @@ For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
 \smallskip
 
 \begin{proof}
+\yfc{To be fixed, need also complexity analysis}
 We introduce a few notations first.
 
 Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 

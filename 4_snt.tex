@@ -7,7 +7,8 @@
 
 \section{Streaming Numerical Transducers}\label{sec:def-snt}
 
-In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. A SNT scans a data word from left to right, records and aggregates some information using control and data variables, and outputs an integer value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the reducer programs defined in Section~\ref{sec-mr-prog}.
+In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. A SNT scans a data word from left to right, records and aggregates some information using control and data variables, and outputs an integer value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the reducer programs defined in Section~\ref{sec-mr-prog}. 
+Due to lack of space we omit most of the proofs in the conference version. The complete paper is available at~\cite{full-version}. 
 
 
 A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where $Q$ is a finite set of states, $X$ is a finite set of control variables to store data values that have been met, $Y$ is a finite set of data variables to aggregate information for the output, $\delta$ is the set of transitions, $q_0 \in Q$ is the initial state, $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.%\zhilin{Here the variable $\cur$ should not be used.}
@@ -26,6 +27,7 @@ Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with t
 \begin{example}[SNT for max]
 The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is defined as $(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$ such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \emptyset, q_1)\}$ and $O(q_1)=\maxv$, where $\maxv:=\cur$ denotes the assignment mapping $\maxv$ to $\cur$.
 \end{example}
+
 %\begin{example}[SNT for sum]
 %$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that %$\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and %$O(q_1)=\sumv$. 
 %\end{example
@@ -73,11 +75,20 @@ From SNT $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial ti
 We normalize SNTs in order to simplify the presentation of the decision procedure later.
 Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is an SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions in $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
 
+
+\yfc{Old version:}
 An SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following constraints are satisfied:
 (1) \emph{Well-defined}: For each run $(q_0,\rho_0) \dots (q_n,\rho_n)$ of $\Ss$ corresponding to the path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$, and each $i \in [n]$, it holds that $\rho_{i}(z) \neq \bot$ for all $z \in \dom(\eta_i)$, 
 %more formally, it holds that $\vars(\eta_i(z)) \subseteq \{z' \mid \rho_i(z') \neq \bot\} \cup \{\cur\}$, 
 %
 moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Uniquely-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{State-dominating}: For each state $q \in Q$, and every pair of valuations $\rho,\rho'$ such that $(q,\rho)$ and $(q,\rho')$ are reachable from the initial configuration $(q_0,\rho_0)$, it holds that $\rho,\rho'$ are equivalent in the following sense: For each guard $g \in \{x_i < x_j \mid 1 \le i, j \le k\} \cup \{x_i = c \mid 1 \le i \le k, c_{min} \le c \le c_{max} \} \cup \{x_i < c_{min},x_i > c_{max} \mid 1 \le i \le k\}$, $\rho \models g$ iff $\rho' \models g$.
+
+\yfc{New version:}
+An SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following constraints are satisfied:
+(1) \emph{Well-defined}: For each run $(q_0,\rho_0) \dots (q_n,\rho_n)$ of $\Ss$ corresponding to the path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$, and each $i \in [n]$, it holds that $\rho_{i}(z) \neq \bot$ for all $z \in \dom(\eta_i)$, 
+%more formally, it holds that $\vars(\eta_i(z)) \subseteq \{z' \mid \rho_i(z') \neq \bot\} \cup \{\cur\}$, 
+%
+moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Uniquely-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Transition-enablement}: Every sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$ in $\Ss$ has a least one corresponding run.
 
 % $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$. 
 %
@@ -86,7 +97,7 @@ moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(
 	From each SNT, an equivalent normalized SNT can be constructed in  exponential time w.r.t. the number of control variables. 
 \end{proposition}
 %
-The construction can be found in the appendix. The idea of the construction is simple. To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the transitions and the output function accordingly.
+The idea of the construction is simple. To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the transitions and the output function accordingly.
 %by removing $q$ from the domain of $O$ if $O(q)$ contains some variable whose value is undefined (this information can be discovered from the states). 
 %
 To ensure the ``uniquely-valued'' and ``state-dominating'' constraints, we record in the states the equivalence relation and order relation between the control variables, as well as their relation with the constants from $[c_{min}, c_{max}]$, remove the duplicated values from control variables, and enforce that the guards in the transitions conform to the these relations recorded in the states.
