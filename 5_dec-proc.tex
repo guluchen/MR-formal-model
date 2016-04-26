@@ -177,9 +177,10 @@ $}
 \vspace{-0.2cm}
 %
 \yfc{newly added}
-Observe the pattern of the computation summary in Proposition~\ref{prop-sum-cycle}. 
-The coefficients of the loop counter variable $\ell$ can be none-zero when $\cstl^{\circled{C}}_{j}=1$. The coefficients may propagate to the output expression.  In such a case, due to the ``transition-enablement'' constraint of a normalized SNT (for any sequence of transitions, one can find a corresponding run), one can pick a run corresponding to a very large $\ell$ such that it dominates the value of the output expression. Therefore the the output of the SNT can be made none-zero. In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces none-zero output in Step I.
-We then check if the coefficient of $\ell$ is none-zero in the output expression in Step II. If the coefficient of $\ell$ is zero in the output expression, then we show in Step III that the testing of output none-zeroness can be reduced to a finite state reachability problem and thus can be easily decided.
+Observe the pattern of the computation summary in Proposition~\ref{prop-sum-cycle}.
+The coefficients of the loop counter variable $\ell$ can be none-zero when $\cstl^{\circled{C}}_{j}=1$. The none-zero coefficients may propagate to the output expression.  In such a case, due to the ``transition-enablement'' constraint of a normalized SNT (for any sequence of transitions, one can find a corresponding run), one can pick a run corresponding to a very large $\ell$ such that it dominates the value of the output expression. Therefore the output of the SNT can be made none-zero. 
+In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces none-zero output in Step I.
+We then check if the coefficient of $\ell$ is none-zero in the output expression in Step II. If the coefficient of $\ell$ is zero in the output expression, we show in Step III that the testing of output none-zeroness can be reduced to a finite state reachability problem and thus can be easily decided.
 
 Before presenting the decision procedure for generalized lassos, we introduce some notations.
 Let $e$ be an expression consists of symbolic values $\initval(z)$ for $z\in X\cup Y$ and data variables $\vard_1, \dots, \vard_{s_2}$. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{s_1} \initval(z_{s_1}) + \xi_1 \vard_1 + \dots + \xi_{s_2} \vard_{s_2}$,

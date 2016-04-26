@@ -35,7 +35,9 @@ The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is de
 For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
 \end{proposition}
 We describe the procedure translating a program $p$ into an SNT $\Ss$ in the appendix. Intuitively, the main difference between $p$ and $\Ss$ is that several statements in the control flow of $p$ correspond to one transition of $\Ss$. A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed while an SNT advances the iterator in each transition. 
-In fact, we can show that if we add guards at the entry points of loops and allow multiple loops in the reducer language, then the language becomes expressively equivalent to SNTs.
+\yfc{added some justifications}
+In fact, we can show that if we add guards at the entry points of loops and allow multiple loops in the reducer language, then the language becomes expressively equivalent to SNTs. However,  we do not allow guards before loops in the reducer language because it will not allow the language to express more commutative reducers. For all permutations of the input list, a guard before the loop separates the list to two sublists according to the ``position'' of the first element violating the guard. The program then apply two different sequence of programs commands to the two sublists. Unless the two sequence of programs commands essentially compute the same thing, the output of the program is expected to be different wrt. different permutations of the input list.
+
 
 %\begin{example}[Example inspired by Pagerank]
 %The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
