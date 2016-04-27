@@ -35,7 +35,7 @@ The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is de
 For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
 \end{proposition}
 We describe the procedure translating a program $p$ into an SNT $\Ss$ in the appendix. Intuitively, the main difference between $p$ and $\Ss$ is that several statements in the control flow of $p$ correspond to one transition of $\Ss$. A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed while an SNT advances the iterator in each transition. 
-\yfc{added some justifications}
+\yfc{added some justifications}\zhilin{Not so convincible for me. It seems that you are arguing against guards in SNTs. I am thinking why it is harmful to extend the language and make it equivalent to SNTs}
 In fact, we can show that if we add guards at the entry points of loops and allow multiple loops in the reducer language, then the language becomes expressively equivalent to SNTs. However,  we do not allow guards before loops in the reducer language because it will not allow the language to express more commutative reducers. For all permutations of the input list, a guard before the loop separates the list to two sublists according to the ``position'' of the first element violating the guard. The program then apply two different sequence of programs commands to the two sublists. Unless the two sequence of programs commands essentially compute the same thing, the output of the program is expected to be different wrt. different permutations of the input list.
 
 
