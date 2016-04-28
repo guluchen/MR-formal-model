@@ -5,7 +5,7 @@
 We discuss the rationale behind the design of the programming language for reducers such that the commutativity problem is decidable. The language intends to support the following typical behavior pattern of reducers: A reducer program iterates through the input data word once, aggregates intermediate information into variables, and produces an output when it stops. 
 %We focus on a language that only allows integer data type and hence the input is a data word. It is allowed to iterate though the input data word only once. 
 %
-Later in Section~\ref{sec:cases}, we will show an extension that allows resetting the iterators so that an input data word can be traversed for multiple times.
+Later in Section~\ref{sec:cases}, we will show an extension that allows resetting the iterators so that an input data word can be traversed multiple times.
 
 \begin{figure}
 	\vspace{-0.5cm}
@@ -26,10 +26,10 @@ The variables from $X$ can store only values occurring in the input data word an
 On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$.
 Given a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. The formal semantics of the language is in the appendix.
 
-Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Perti nets with inhibitor arcs~\cite{Min71,Rei08}.
+Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Petri nets with inhibitor arcs~\cite{Min71,Rei08}.
 Intuitively, integer variables are used for remembering the number of tokens in each place. Transitions between places can be simulated by the loop body: The updates of the tokens of the places are simulated by variable assignments.
 The inhibitor arcs are simulated by the guards on the integer variables in the branching statements (recall that we are discussing the version that we do not distinguishing the control and data variables). The non-determinism in the transitions of Petri nets is resolved by the guards on the current data values, e.g. $\cur = 2$. 
-Then the reachability problem of Perti-nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem.
+Then the reachability problem of Petri-nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem.
 
 Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
 We argue that this is sufficient for reducers performing data analytics operations.
