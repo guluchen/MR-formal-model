@@ -54,7 +54,8 @@ $
 where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\dots,\csta^{\circled{P}}_{j,k}, \cstb^{\circled{P}}_{j,1},\dots,\cstb^{\circled{P}}_{j,r^{\circled{P}}}$ are integer constants such that $\cstl^{\circled{P}}_{j} \in \{0,1\}$ (as a result of the ``independently evolving and copyless'' constraint).  It can happen that $\cstl^{\circled{P}}_j =0$,  which means that $\initval(y_j)$ is irrelevant to $\sumf^{(P,\initval)}(y_j)$. Similarly for $\csta^{\circled{P}}_{j,1}=0$, and so on.
 \end{itemize}
 \end{proposition}
-In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. Due to the uniquely-valued constraint of normalized SNTs, $\pi^{\circled{P}}$ is injective, and the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, exists.
+In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. In addition, they can be computed in polynomial time from (the transitions in) $P$.
+Due to the uniquely-valued constraint of normalized SNTs, $\pi^{\circled{P}}$ is injective, and the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, exists.  
 
 As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
 
@@ -184,13 +185,12 @@ $}
 
 \vspace{-0.5cm}
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
-\vspace{-0.2cm}
+\vspace{-1mm}
 %
-\yfc{newly added}
-Observe the pattern of the computation summary in Proposition~\ref{prop-sum-cycle}.
-The coefficients of the loop counter variable $\ell$ can be none-zero when $\cstl^{\circled{C}}_{j}=1$. The none-zero coefficients may propagate to the output expression.  In such a case, due to the ``transition-enablement'' constraint of a normalized SNT (for any sequence of transitions, one can find a corresponding run), one can pick a run corresponding to a very large $\ell$ such that it dominates the value of the output expression. Therefore the output of the SNT can be made none-zero. 
+%\yfc{newly added}
+From Proposition~\ref{prop-sum-cycle}, we know that the coefficients of the loop counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be none-zero when $\cstl^{\circled{C}}_{j}=1$. The none-zero coefficients may propagate to the output expression.  In such a case, due to the ``transition-enabled'' constraint of normalized SNTs (i.e. for any sequence of transitions, a corresponding run exists), one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression. Therefore the output of the SNT can be made none-zero. 
 In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces none-zero output in Step I.
-We then check if the coefficient of $\ell$ is none-zero in the output expression in Step II. If the coefficient of $\ell$ is zero in the output expression, we show in Step III that the testing of output none-zeroness can be reduced to a finite state reachability problem and thus can be easily decided.
+We then check in Step II whether the coefficient of $\ell$ in the output expression is none-zero. If the coefficient of $\ell$ is zero in the output expression, we show in Step III that testing the existence of an input so that the output is non-zero can be reduced to a finite state reachability problem and thus can be easily decided.
 
 Before presenting the decision procedure for generalized lassos, we introduce some notations.
 Let $e$ be an expression consists of symbolic values $\initval(z)$ for $z\in X\cup Y$ and data variables $\vard_1, \dots, \vard_{s_2}$. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{s_1} \initval(z_{s_1}) + \xi_1 \vard_1 + \dots + \xi_{s_2} \vard_{s_2}$,
@@ -239,6 +239,10 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 \end{minipage}
 }\bigskip
 
+\noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_\bot)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
+
+\smallskip
+
 The goal of Step II is either showing that in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, all subexpressions containing the cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
 	\resizebox{0.7\hsize}{!}{$
@@ -270,7 +274,12 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 		%
 		If the decision procedure has not returned yet, then go to Step III.
 	\end{minipage}
-}\smallskip\\
+}\bigskip
+
+\noindent{\it Complexity analysis of Step II}. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential over the number of cycles in the generalized lasso. Once the cycle scheme is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential over the number of cycles in the generalized lasso.
+
+\smallskip
+
 If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
 Similar arguments can be applied for $\ell_2\dots\ell_n$.
 
@@ -315,9 +324,13 @@ Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. The
 	\end{minipage}
 }\smallskip\\
 
-\vspace{-0.5cm}
+\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is polynomial over the size of the generalized lasso (i.e. the size of the transitions in the generalized lasso). The size of $\mathscr{A}$ is exponential over $l$, the number of data variables. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}$. In summary, the complexity of Step III is exponential over the number of data variables.
+
+
+
+\vspace{-2mm}
 \subsection{Decision procedure for SNTs without Constants}\label{sec-gflat}
-\vspace{-0.3cm}
+\vspace{-1mm}
 
 We generalize the decision procedure for the case that the transition graphs of the SNTs are generalized lassos to the full class of SNTs.
 We first define a \emph{generalized multi-lasso} as a sequence $\gmlasso= H_1 (C_{1,1},\dots,C_{1,n_1}) H_2 (C_{2,1},\dots,C_{2,n_2}) \dots H_r (C_{r,1},\dots, C_{r, n_r})$ s.t. (1) for each $s\in[r]$, $H_s = q_{s,1} \dots q_{s, m_s}$ and $H_s (C_{s,1},\dots,C_{s, n_s})$ is a generalized lasso, (2) for $1 \leq s< s' \leq r$, $H_s (C_{s,1},\dots,C_{s, n_s})$ and $H_{s'} (C_{s', 1},\dots,C_{s', n_{s'}})$ are state-disjoint, except the case that when $s'=s+1$, $q_{s, m_s}=q_{s',1}$, and (3) $q_{1,1}=q_0$.
@@ -346,8 +359,7 @@ $O(q_{s-1, m_{s-1}}):=a_{s, 0}+a_{s, 1} x_1 + \dots + a_{s, k} x_k + b_{s,1} y_1
 	\begin{minipage}{0.95\textwidth}
 \noindent {\bf Step II$'$}.  For each $s\in [r]$ and $s'\in [n_s]$, we check each cycle scheme $\schm = C^{\ell_1}_{s,s'} C_{i_{2}} \dots C_{i_{t}}$ such that $C_{i_{2}} \dots C_{i_{t}}\in \{C_{s, 1}, \dots, C_{s,n_s},\dots, C_{r,1}, \dots, C_{r,n_r}\}$ and $C_{i_{2}} \dots C_{i_{t}}$ are mutually distinct by performing an analysis of the expression $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, in a way similar to Step II. If the decision procedure does not return during the analysis, then go to Step III$'$.
 	\end{minipage}
-}\smallskip
-
+}\bigskip\\
 Intuitively, in Step II$'$, during the analysis of $\eval{ O(q_{s, m_{s}})} {\sumf^{(\schm,\sumf^{(H_1 \dots H_{s}, \initval)} ) } }$, the effect of the paths $H_{s+1},  \dots,  H_r$ and the cycles $C_{i_{2}}, \dots, C_{i_{t}}$ is described by the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j  \cstl^{\circled{C_{i_{2}}}}_j \dots \cstl^{\circled{C_{i_{t}}}}_j $ for $j \in [l]$. Since $O(q_{s, m_{s}})$ has already taken into consideration the expressions $\cstl^{\circled{H_{s+1}}}_j \dots \cstl^{\circled{H_{r}}}_j$ for $j \in [l]$, conceptually, in Step II$'$, we can do the analysis as if we have a generalized lasso where the handle is $H_1\dots H_s$ and the collection of cycles is $\{C_{s,1},\dots, C_{s,n_s}$, $\dots$, $C_{r,1},\dots, C_{r,n_r}\}$. 
 %$\schm=C^{\ell_{s, 1}}_{i_{s,1}} \dots C^{\ell_{s, t_s}}_{i_{s, t_s}} C^{\ell_{s+1, 1}}_{i_{s+1, 1} } \dots C^{\ell_{s+1, t_{s+1}}}_{i_{s+1, t_{s+1}} } \dots C^{\ell_{r, 1}}_{i_{r,1}} \dots C^{\ell_{r, t_r}}_{i_{r, t_r}} $, where for each $s': s \le s' \le r$, $i_{s',1},\dots, i_{s', t_{s'}} \in [n_{s'}]$, 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -398,9 +410,13 @@ $H_1, C_{1,1}, \dots, C_{1,n_1},H_2,\dots, H_r,C_{r,1},\dots, C_{r,n_r}$.
 	\begin{minipage}{0.95\textwidth}
 \noindent {\bf Step III$'$}. We apply the same analysis to $\mathscr{A}$ as in Step III. If the procedure does not return during the analysis, return $\lfalse$.
 	\end{minipage}
-}
+}\bigskip
+
+\noindent {\it Complexity analysis of Step I$'$-III$'$}. The complexity of Step I$'$ is polynomial over the the maximum length of generalized multi-lassos in $\Ss$. The complexity of Step II$''$ is exponential over the maximum number of simple cycles in generalized multi-lassos. The complexity of Step III$'$ is still exponential over the number of data variables in $\Ss$.
 
 \subsection{Decision procedure for SNTs}
+
+\zhilin{The rest to be cleaned.}
 
 We now consider the situation that the guards of the transitions in $\Ss$ may contain constants, that is, the atomic formulae of the form $cur \odot c$ for integer constants $c$. 
 
@@ -496,3 +512,5 @@ If after Step II$''$, the algorithm has not return yet, then similarly to Sectio
 		\noindent {\bf Step III$''$}. Similar to Step III, with $U,\mathscr{A}$ replaced by $U''$ and $\mathscr{A''}$.
 	\end{minipage}
 }\smallskip\\
+
+\noindent{\it Complexity analysis of Step I$''$-III$''$}.
