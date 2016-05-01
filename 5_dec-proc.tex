@@ -6,12 +6,22 @@ We prove our main result, Theorem~\ref{thm:correctness}, by presenting a decisio
 We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We then present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. We will generalize the procedure to full SNTs in Section~\ref{sec-gflat}.
 
 \begin{theorem}\label{thm:correctness}
-The non-zero output problem of SNTs is decidable.
+The non-zero output problem of normalized SNTs can be decided in time exponential over the number of data variables and the maximum number of simple cycles in nontrivial SCCs of transition graphs.
 \end{theorem}
+\vspace{-2mm}
 
-\vspace{-0.8cm}
+\begin{corollary}\label{cor:snt-dec-proc}
+The commutativity problem of SNTs (resp. reducer programs) can be decided in time exponential over the numbers of control and data variables, and exponential over the maximum number of simple cycles in nontrivial SCCs (resp. doubly exponential over the number of branching statements in reducer programs). 
+%On the other hand, the commutativity problem of reducer programs can be decided in time exponential over the number of control variables and the number of data variables, but .
+\end{corollary}
+
+\begin{remark}
+Though the decision procedure for the commutativity problem of reducer programs has a complexity exponential over the number of control resp. data variables, and doubly exponential over the number of branching statements, we believe that the decision procedure could still be implemented to automatically analyze the programs in practice, in which these numbers are usually small. 
+\end{remark}
+
+\vspace{-4mm}
 \subsection{Summarization of the computations on paths and cycles}\label{sec-sum}
-\vspace{-0.2cm}
+\vspace{-1mm}
 
 Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
 
