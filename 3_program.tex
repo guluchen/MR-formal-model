@@ -12,7 +12,7 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 	\centering
 	\begin{tabular}{rcl}
         $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x:=x'\mid s;s\mid \nnext \mid \ite{g}{s}{s}$\\
-		$ p\in Programs$&$\equiv$&$\loopL{s;\nnext};\mbox{ret }r \mid s;\nnext;p\mid \loopL{s;\nnext};s;\mbox{ret }r $		
+		$ p\in Programs$&$\equiv$&$\loopL{s;\nnext};\mbox{ret }r \mid s;\nnext;p$		
 	\end{tabular}
 	\label{fig:language}
 	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, $r$ is an expression in $\Ee_{X \cup Y}$, and $c\in \mathbb{Z}$.}
