@@ -416,8 +416,6 @@ $H_1, C_{1,1}, \dots, C_{1,n_1},H_2,\dots, H_r,C_{r,1},\dots, C_{r,n_r}$.
 
 \subsection{Decision procedure for SNTs}
 
-\zhilin{The rest to be cleaned.}
-
 We now consider the situation that the guards of the transitions in $\Ss$ may contain constants, that is, the atomic formulae of the form $cur \odot c$ for integer constants $c$. 
 
 We illustrate the arguments for generalized lassos and adapt the decision procedure Step I-III to Step I$''$-III$''$ below. The arguments for the SNTs whose transition graphs are not necessarily generalized lassos are similar.
@@ -436,14 +434,14 @@ From the guards and assignments of the transitions in $H$, we know that some of 
 	\end{minipage}
 }\bigskip
 
-For each $i_1 \in [n]$, let $J^{\circled{q_m}}$ denote the set of indices $j' \in [k]$ such that $\initval(x_{j'})$ has to be in $[c_{min}, c_{max}]$, which is enforced by the state $q_m$. Recall that the SNT $\Ss$ is state-dominating. Therefore, from the state $q_m$, we know which control variable should have a value in $[c_{min},c_{max}]$. For each $j' \in J^{\circled{q_m}}$, let $c^{\circled{q_m}}_{j'}$ denote this constant corresponding to $j'$. 
+Let $J^{\circled{q_m}}$ denote the set of indices $j' \in [k]$ such that $\initval(x_{j'})$ has to be in $[c_{min}, c_{max}]$, which is enforced by the state $q_m$. Recall that the SNT $\Ss$ is state-dominating. Therefore, from the state $q_m$, we know which control variable should have a value in $[c_{min},c_{max}]$. For each $j' \in J^{\circled{q_m}}$, let $c^{\circled{q_m}}_{j'}$ denote this constant corresponding to $j'$. 
 
 Let $\schm=C_{i_1}^{\ell_1} C^{\ell_2}_{i_2} \dots C^{\ell_t}_{i_t}$ be a cycle scheme. 
 For each $i_1 \in [n]$, let $J^{\circled{C_{i_1}}}$ denote the set of indices $j'' \in [r^{\circled{C_{i_1}}}]$ such that there is $c^{\circled{C_{i_1}}}_{j''} \in [c_{min}, c_{max}]$ satisfying that for each $i \in [\ell_1]$, $\vard^{\circled{C_{i_1}, i}}_{1, j''}$ has to be equal to $c^{\circled{C_{i_1}}}_{j''}$, as a result of the guards and assignments on $C_{i_1}$. (Recall that the SNT $\Ss$ is required to be normalized). Note that the definition of $J^{\circled{C_{i_1}}}$ is independent of the choices of $\schm$.
 
 Suppose $\schm=C_{i_1}^{\ell_1} C^{\ell_2}_{i_2} \dots C^{\ell_t}_{i_t}$ is a cycle scheme. Then for each $j' \in  I^{\circled{C_{i_1}}}_{pe} \setminus J^{\circled{q_m}}$, we can obtain $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ as in Step II of Section~\ref{sec-glasso}. 
 
-We then define $\mu'_{\schm,(i_1,0)} \ell_1 + \nu'_{\schm,(i_1,0)}$ as follows. Because $\initval(x_{j'})$ is a constant for each $j' \in J^{\circled{q_m}}$, and for each $j \in [r^{\circled{C_{i_1}}}]$ and $i \in [\ell_1]$, $\vard^{\circled{C_{i_1}, i}}_{1, j}$ is a constant, we should take as a group the constant atom of  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, the $\initval(x_{j'})$-atoms for $j' \in J^{\circled{q_m}}$, and the $\vard^{\circled{C_{i_1}, i}}_{1, j}$-atoms for $j \in [r^{\circled{C_{i_1}}}]$ and $i \in [\ell_1]$.
+We then define $\mu'_{\schm,(i_1,0)} \ell_1 + \nu'_{\schm,(i_1,0)}$ as follows. Because $\initval(x_{j'})$ is a constant for each $j' \in J^{\circled{q_m}}$, and for each $j'' \in J^{\circled{C_{i_1}}}$ and $i \in [\ell_1]$, $\vard^{\circled{C_{i_1}, i}}_{1, j''}$ is a constant, we should take as a group the constant atom of  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, the $\initval(x_{j'})$-atoms for $j' \in J^{\circled{q_m}}$, and the $\vard^{\circled{C_{i_1}, i}}_{1, j''}$-atoms for $j'' \in J^{\circled{C_{i_1}}}$ and $i \in [\ell_1]$.
 %
 Recall that the constant atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following  subexpression,
 \begin{center}
@@ -456,7 +454,7 @@ Recall that the constant atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ conta
 		\end{array}
 		$}
 \end{center}
-Moreover, for each $j' \in  J^{\circled{q_m}} \cap I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
+Moreover, for each $j' \in  J^{\circled{q_m}}\ \cap\ I^{\circled{C_{i_1}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ contains the following subexpression, 
 \begin{center}
 	\resizebox{0.8\hsize}{!}{$
 		e_{j'} := \sum \limits_{1 \le j \le l} 
@@ -513,4 +511,6 @@ If after Step II$''$, the algorithm has not return yet, then similarly to Sectio
 	\end{minipage}
 }\smallskip\\
 
-\noindent{\it Complexity analysis of Step I$''$-III$''$}.
+\noindent{\it Complexity analysis of Step I$''$-III$''$}. When constant comparisons are available in the guards of SNTs, though the computation of the coefficients of the atoms should be adjusted, the algorithm backbone is still the same as the situation that there are no constant comparisons. Therefore, the complexity of the Step I$''$-III$''$ is the same as that of Step I-III.
+%, more specifically, the complexity of Step I$''$ is polynomial over $H$, the complexity of Step II$''$ is exponential over the number of cycles in the generalized lasso, and the complexity of Step III$''$ is exponential over the number of data variables.
+
