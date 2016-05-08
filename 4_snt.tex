@@ -16,15 +16,18 @@ The set of transitions $\delta$ comprises the tuples $(q,  g, \eta, q')$, where 
 
 Moreover, we assume that an SNT $\Ss$ satisfies the following constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ which contains a state $q$ such that for each $i,j: 1 \le i < j \le n$, $q$ is the \emph{only} state shared by $C_i$ and $C_j$. (3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta) \cap Y$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
 
-The semantics of an SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(z)=0$ for each $z \in X\cup Y$.
+The semantics of an SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. An \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0$ assigns arbitrary but mutually distinct values to the variables from $X\cup Y$.
 A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
-a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a path (sequence of transitions) $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i \in [n]$, $\rho_{i-1}[d_i/\cur] \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$, then $\rho_i(x)=d_i$, otherwise, if $\eta_i(x)=x' \in X$, then $\rho_i(x)=\rho_{i-1}(x')$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)}{\rho_{i-1}[d_i/\cur]}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$.
-We call $(q_n,\rho_n)$ the \emph{final configuration} of the run. 
-We say that a path in $\Ss$ is \emph{feasible} iff there exists a corresponding run over some data word in~$\Ss$.
+a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a path (sequence of transitions) $P=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i \in [n]$, $\rho_{i-1}[d_i/\cur] \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$, then $\rho_i(x)=d_i$, otherwise, if $\eta_i(x)=x' \in X$, then $\rho_i(x)=\rho_{i-1}(x')$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)}{\rho_{i-1}[d_i/\cur]}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$.
+We call $(q_n,\rho_n)$ the \emph{final configuration} of the run. In this case, we also say that the run follows the path $P$.
+We say that a path $P$ in $\Ss$ is \emph{feasible} iff there exists a run of $\Ss$ following $P$. 
+An SNT $\Ss$ is said to be \emph{transition-enabled} if each path in $\Ss$ is feasible. We assume that all SNTs considered in this paper are transition enabled.
 %We say that $(q_i,\rho_i)$ is \emph{reachable} from $(q_0,\rho_0)$, for $i \in [n]$.
 
-We would like to remark that for each data word $w$, there is at most one run of $\Ss$ over $w$, since $\Ss$ is deterministic. 
-Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
+We would like to remark that since $\Ss$ is deterministic, for each data word $w$, if there is a run of $\Ss$ over $w$, then there is exactly one path $P$ of $\Ss$ (recall the aforementioned transition-enabled assumption) such that for each initial configuration $(q_0,\rho_0)$, the  run of $\Ss$ over $w$ starting from $(q_0,\rho_0)$ follows $P$. 
+
+Given a data word $w = d_1 \dots d_n$ and an initial configuration $(q_0, \rho_0)$, if there is a run of $\Ss$ over $w$ starting from $(q_0,\rho_0)$ and with the final configuration $(q_n,\rho_n)$, then the output of $\Ss$ over $w$ w.r.t. $\rho_0$, denoted by ${\Ss}_{\rho_0}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}_{\rho_0}(w)$ is undefined, denoted by $\bot$. 
+
 
 \begin{example}[SNT for max]
 The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is defined as $(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, where the set of transitions $\delta$ and the output function $O$ are illustrated in Fig.\ref{fig-snt-exmp}
@@ -52,15 +55,6 @@ For each reducer program $p$, one can construct an equivalent SNT $\Ss$ where th
 %We describe the procedure translating a program $p$ into an SNT $\Ss$ in the appendix. 
 Intuitively, the exponential blow-up in the construction is due to the following difference between reducer programs $p$ and SNTs $\Ss$: A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed, while an SNT advances the iterator in each transition. Therefore, a sequence of statements with $k$ branching points between each pair of consecutive $\nnext$ statements in the control flow of $p$ correspond to at most $2^k$ transitions of $\Ss$.
 
-\hide{
-\yfc{added some justifications}\zhilin{Not so convincible for me. It seems that you are arguing against guards in SNTs. I am thinking why it is harmful to extend the language and make it equivalent to SNTs}
-In fact, we can show that if we add guards at the entry points of loops and allow multiple loops in the reducer language, then the language becomes expressively equivalent to SNTs. However,  we do not allow guards before loops in the reducer language because it will not allow the language to express more commutative reducers. For all permutations of the input list, a guard before the loop separates the list to two sublists according to the ``position'' of the first element violating the guard. The program then apply two different sequence of programs commands to the two sublists. Unless the two sequence of programs commands essentially compute the same thing, the output of the program is expected to be different wrt. different permutations of the input list.
-}
-
-%\begin{example}[Example inspired by Pagerank]
-%The following transducer sum all the data values, except the last position, then it outputs a concatenation of the sum and the last tuple: $(q_0, 1, true, sum:= sum + p_1, q_0)$, $(q_0, k, true, (x_i:=p_i)_{1 \le i \le k}, q_1)$, $O(q_1)=(sum, x_1,\dots, x_k)$.
-%\end{example}
-
 
 
 %We first compute a fixed point $\defval$ inductively as follows. 
@@ -86,7 +80,8 @@ We first observe that the commutativity problem can be reduced to the equivalenc
 
 \vspace{-1mm}
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
-The commutativity problem of SNTs is reduced to the equivalence problem of SNTs, where the number of states of SNTs obtained after the reduction is at most exponential over the number of control variables. 
+The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in polynomial time.
+%, where the number of states of SNTs obtained after the reduction is at most exponential over the number of control variables. 
 \end{proposition}
 
 We briefly describe the idea of the reduction in Proposition~\ref{prop-snt-cmm-to-eqv} here. Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
@@ -95,13 +90,25 @@ We briefly describe the idea of the reduction in Proposition~\ref{prop-snt-cmm-t
 %
 \item Intuitively, over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_2$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving the first data value to the end. 
 \end{itemize}
-The correctness of this reduction follows from the fact that all the permutations of $d_1\dots d_n$ can be generated by composing the two aforementioned permutations corresponding to $\Ss_1$ and $\Ss_2$ respectively (cf. Proposition 1 in \cite{CHSW15}). The construction of $\Ss_1$ from $\Ss$ is linear over the size of $\Ss$, while the construction of $\Ss_2$ from $\Ss$ involves an exponential blow-up w.r.t. the number of control variables, which is attributed to the determinism of SNTs.
+The correctness of this reduction follows from the fact that all the permutations of $d_1\dots d_n$ can be generated by composing the two aforementioned permutations corresponding to $\Ss_1$ and $\Ss_2$ respectively (cf. Proposition 1 in \cite{CHSW15}). The construction of $\Ss_1$ (resp. $\Ss_2$) from $\Ss$ is in  polynomial time w.r.t. the size of $\Ss$.
+%, while the construction of $\Ss_2$ from $\Ss$ involves an exponential blow-up w.r.t. the number of control variables, which is attributed to the determinism of SNTs.
 
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
 From SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that there is a data word $w$ satisfying $\Ss_1(w) \neq \Ss_2(w)$ iff there is a data word $w$ satisfying $\Ss_3(w) \not\in \{\bot,0\}$. 
 \end{proposition}
 Proposition~\ref{prop-snt-eqv-to-nzero} can be proved by a straightforward product construction.
 
+In the end of this section, we state a property of SNTs, due to the fact that the guards are \emph{equality-free} (cf. the definition of guards in Section~\ref{sec:preliminaries}).
+
+\begin{proposition}\label{prop-snt-distinct-value}
+Let $\Ss$ be an SNT and $P$ be a path in $\Ss$. Then there is a data word $w$ such that 1) there is a run of $\Ss$ over $w$ which follows $P$, 2) no data values occur twice in $w$.
+\end{proposition}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \smallskip
 
 \noindent {\it Reachability graph}.
@@ -116,7 +123,7 @@ Our intention is that $G_\Ss$ encodes the reachability relation between configur
 %for any path $n_0 \xrightarrow{t_0} n_1 \xrightarrow{t_1} \ldots n_{m-1} \xrightarrow{t_{m-1}} n_m $ in $G_\Ss$, (1) $P=t_0t_1\ldots t_{m-1}$ is feasible in $\Ss$, and (2) let $n_m=(q,f)$, then for each run corresponding to P, the final configuration of the run conforms to $f$.
 Moreover, the size of $N$ is at most exponential in the size of $X$. 
 \end{proposition}
-
+}
 
 %
 %The idea of the construction is simple. 
