@@ -56,8 +56,7 @@ We are ready to present the decision procedure. At first, we observe that  after
 
 In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
-%We first find in the reachability graph $G_{\Ss}$ the set of paths $H_{G_{\Ss}}$ corresponding to $H$. Each path in $H_{G_{\Ss}}$ induces an equivalence relation between the subjects of the atoms. 
-%For each path $H_{G_{\Ss}}$, we first merge the coefficients of atoms with equivalent subjects. Then we report the output is not identical to zero if the coefficient of some atoms or the constant atom is not zero.
+%
 \smallskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
@@ -68,8 +67,7 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 
 \noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_0)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
 
-\smallskip
-
+\subsubsection{Step II:}
 The goal of Step II is either showing that in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$, all subexpressions containing the cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
 	\resizebox{0.7\hsize}{!}{$
@@ -124,19 +122,19 @@ We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression
 
 
 
-
-
-\begin{lemma}\label{prop-bnd-domain-2}
-Suppose that the decision procedure has not returned yet after Step II. 
-For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ (1)
-the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
-
-\end{lemma}
-
+\subsubsection{Step III:} 
 For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
 (1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. 
 (2)~control variable atom: $\{(j', (c_{j',1},\dots, c_{j', l})) \mid j' \in [k]\}$, where $c_{j', j}$ is the coefficient of the ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for $j\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})\mid x_{j'}\in X\}$.
-Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.\medskip\\
+Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.
+
+\begin{lemma}\label{prop-bnd-domain-2}
+	Suppose that the decision procedure has not returned yet after Step II. 
+	For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ (1)
+	the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
+	
+	
+\end{lemma}
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step III} We first construct the set $\mathscr{A}$ and then. 
