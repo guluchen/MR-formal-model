@@ -1,4 +1,3 @@
-\vspace{-0.7cm}
 \begin{figure}
 	\centering
 	\lstset{language=C,
@@ -26,8 +25,8 @@ int MAD() {
  loop{sum+=$\cur$;cnt+=1;$\nnext$;}
  avg:= sum/cnt;mad:=0;$\init$;
  loop{
-  if($\cur$<avg){mad=mad+(avg-$\cur$);}
-  else{mad+=($\cur$-avg);}$\nnext$;}
+  if($\cur$<avg){mad+=avg-$\cur$;}
+  else{mad+=$\cur$-avg;}$\nnext$;}
  ret mad/cnt;}
 \end{lstlisting}
 		\end{minipage}&
