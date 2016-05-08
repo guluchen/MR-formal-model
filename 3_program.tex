@@ -6,9 +6,9 @@ We discuss the rationale behind the design of the programming language for reduc
 %We focus on a language that only allows integer data type and hence the input is a data word. It is allowed to iterate though the input data word only once. 
 %
 Later in Section~\ref{sec:cases}, we will show an extension that allows resetting the iterators so that an input data word can be traversed multiple times.
-
+%
+\vspace{-2mm}
 \begin{figure}
-
 	\centering
 	\begin{tabular}{rcl}
         $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=x';\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
@@ -18,6 +18,8 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 	\label{fig:language}
 %		\vspace{-0.5cm}
 \end{figure}
+
+\vspace{-4mm}
 
 More concretely, we focus on the programming language in Fig.~\ref{fig:language}. The language includes the usual features of program languages, variable assignments, sequential compositions, and conditional branchings. It also includes a statement $\nnext;$ which is used to advance the data word iterator. The $\loopL{s\ \nnext;}$ statement repeatedly executes the loop body $s\ \nnext;$ until reaching the end of input data word.
 The novel feature of the language is that we partition the variables into two sets: \emph{control variables} $X$ and \emph{data variables} $Y$.
