@@ -1,9 +1,11 @@
+%!TEX root = main-cav.tex
+
 \vspace{-0.5cm}
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
 \vspace{-1mm}
 %
 %\yfc{newly added}
-In this section, we present a decision procedure for SNTs whose transition graphs are generalized lassos. From Proposition~\ref{prop-sum-cycle}, we know that the coefficients containing the loop counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be non-zero when $\cstl^{\circled{C}}_{j}=1$. The non-zero coefficients may propagate to the output expression.  In such a case, 
+In this section, we present a decision procedure for SNTs whose transition graphs are generalized lassos. From Proposition~\ref{prop-sum-cycle}, we know that the coefficients containing the cycle counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be non-zero when $\cstl^{\circled{C}}_{j}=1$. The non-zero coefficients may propagate to the output expression.  In such a case, 
 because the SNTs are ``transition-enabled'' (i.e. for any sequence of transitions, a corresponding run exists), %
 %if according to the reachability graph, for any $c>0$, there exists a run traversing $C$ more than $c$ times, then 
 intuitively, one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression and makes the output non-zero. 
@@ -18,7 +20,7 @@ A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{
 
 In the rest of this subsection, we assume that the transition graph of $\Ss$ comprises a handle $H=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{m-1} \xrightarrow{(g_m,\eta_m)} q_{m}$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
 
-A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j\in [t-1]$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
+A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j\in [t-1]$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by first iterating $C_{i_1}$ for $\ell_1$ times, then $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
 to summarize the computation of $\Ss$ on $\schm$. 
 
 
@@ -50,12 +52,12 @@ Therefore, both the constant atom and the coefficient of the $\initval(x_{j'})$-
 
 %We are ready to present the decision procedure. By the ``well-defined'' and ``uniquely-valued'' constraints of normalized SNTs, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
 %Under the assumption, 
-We are ready to present the decision procedure. At first, we observe that  after traversing $H$ with the initial values of the variables given by $\sval_0$ (recall that $\sval_0$ assigns zero to each variable), for each $j' \in I^{\circled{H}}_{tr}$, the value of the control variable $x_{j'}$ becomes $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$,  more formally, $\sumf^{(H,\sval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$.
+We are ready to present the decision procedure. At first, we observe that  after traversing $H$ with the initial values of the variables given by $\sval_0$ (recall that $\sval_0$ assigns mutually distinct values to the variables from $X \cup Y$), for each $j' \in I^{\circled{H}}_{tr}$, the value of the control variable $x_{j'}$ becomes $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$,  more formally, $\sumf^{(H,\sval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$.
 
 In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
-We first find in the reachability graph $G_{\Ss}$ the set of paths $H_{G_{\Ss}}$ corresponding to $H$. Each path in $H_{G_{\Ss}}$ induces an equivalence relation between the subjects of the atoms. 
-For each path $H_{G_{\Ss}}$, we first merge the coefficients of atoms with equivalent subjects. Then we report the output is not identical to zero if the coefficient of some atoms or the constant atom is not zero.
+%We first find in the reachability graph $G_{\Ss}$ the set of paths $H_{G_{\Ss}}$ corresponding to $H$. Each path in $H_{G_{\Ss}}$ induces an equivalence relation between the subjects of the atoms. 
+%For each path $H_{G_{\Ss}}$, we first merge the coefficients of atoms with equivalent subjects. Then we report the output is not identical to zero if the coefficient of some atoms or the constant atom is not zero.
 \smallskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
