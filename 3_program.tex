@@ -16,7 +16,7 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 	\end{tabular}
 	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional. }
 	\label{fig:language}
-		\vspace{-0.5cm}
+%		\vspace{-0.5cm}
 \end{figure}
 
 More concretely, we focus on the programming language in Fig.~\ref{fig:language}. The language includes the usual features of program languages, variable assignments, sequential compositions, and conditional branchings. It also includes a statement $\nnext;$ which is used to advance the data word iterator. The $\loopL{s\ \nnext;}$ statement repeatedly executes the loop body $s\ \nnext;$ until reaching the end of input data word.

@@ -6,10 +6,10 @@
 
 \input{example2}
 
-In this section, we discuss more challenging extensions. 
-For cases with multiplication, division, or other more complicated functions at the return point, e.g., the \texttt{avg} case, we can model them as an \emph{uninterpreted $k$-ary function} and verify that all $k$ parameters of the uninterpreted functions remain the same no matter how the input is permuted, e.g., the \texttt{avg} program always produces the same \texttt{sum} and \texttt{cnt} for all permutation of the same input data word. This is a \emph{sound} but \emph{incomplete} procedure for verifying programs of this type. Nevertheless, it is not often that a  practical program for data analytics produces, e.g., $2q/2r$ from some input and $q/r$ for its permutation. Hence this procedure is often enough for proving commutativity for real world programs.
+In this section, we discuss some extensions of our approach to deal with the more challenging examples. 
+For cases with multiplication, division, or other more complicated functions at the return point, e.g., the \texttt{avg} program, we can model them as an \emph{uninterpreted $k$-ary function} and verify that all $k$ parameters of the uninterpreted functions remain the same no matter how the input is permuted, e.g., the \texttt{avg} program always produces the same \texttt{sum} and \texttt{cnt} for all permutation of the same input data word. This is a \emph{sound} but \emph{incomplete} procedure for verifying programs of this type. Nevertheless, it is not often that a  practical program for data analytics produces, e.g., $2q/2r$ from some input and $q/r$ for its permutation. Hence this procedure is often enough for proving commutativity for real world programs.
 
-The case \texttt{MAD} (Mean Absolute Deviation) is a bit more involved. Beside the division operator $/$ that also occurs in the \texttt{avg} example, it uses a new iterator operation $\init$, which resets $\cur$ to the head of the input data word. The strategy to verify this program is to divide the task into two parts: (1) ensure that the value of \texttt{avg} is independent of the order of the input, (2) treat \texttt{avg} as a control variable whose value is never updated and then check if the 2nd half of the program (c.f., Fig.~\ref{fig:examples3}) is commutative. 
+The \texttt{MAD} (Mean Absolute Deviation) program is a bit more involved. Beside the division operator $/$ that also occurs in the \texttt{avg} example, it uses a new iterator operation $\init$, which resets $\cur$ to the head of the input data word. The strategy to verify this program is to divide the task into two parts: (1) ensure that the value of \texttt{avg} is independent of the order of the input, (2) treat \texttt{avg} as a control variable whose value is never updated and then check if the 2nd half of the program (c.f., Fig.~\ref{fig:examples3}) is commutative. 
 
 \begin{wrapfigure}{r}{0.4\textwidth}
 	\vspace{-0.8cm}
@@ -44,6 +44,6 @@ We handle the division at the end of the program in Fig.~\ref{fig:examples3} in 
 
 
 
-The case \texttt{SD} (Standard Deviation) is more challenging. The main difficulty comes from the use of multiplication in the middle of the program (instead of at the return point). In order to have a sound procedure to verify this kind of programs, we can extend the transitions of SNTs to include uninterpreted $k$-ary functions. However, this is not a trivial extension and we leave it as future work.
+The \texttt{SD} (Standard Deviation) program is even more challenging. The main difficulty comes from the use of multiplication in the middle of the program (instead of at the return point). In order to have a sound procedure to verify this kind of programs, we can extend the transitions of SNTs to include uninterpreted $k$-ary functions. However, this is not a trivial extension and we leave it as future work.
 
 

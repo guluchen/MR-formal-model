@@ -1,8 +1,8 @@
 %!TEX root = main-cav.tex
 
-\vspace{-0.5cm}
+
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
-\vspace{-1mm}
+
 %
 %\yfc{newly added}
 In this section, we present a decision procedure for SNTs whose transition graphs are generalized lassos. From Proposition~\ref{prop-sum-cycle}, we know that the coefficients containing the cycle counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be non-zero when $\cstl^{\circled{C}}_{j}=1$. The non-zero coefficients may propagate to the output expression.  In such a case, 
@@ -14,7 +14,7 @@ We then check in Step II the coefficients containing $\ell$ in the output expres
 
 Before presenting the decision procedure, we introduce some notations.
 Let $e$ be an expression consisting of symbolic values $\initval(z)$ for $z\in X\cup Y$ and variables $\vard_1, \dots, \vard_{s}$ corresponding to the values of the input data word. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{k+l} \initval(z_{k+l}) + \xi_1 \vard_1 + \dots + \xi_{s} \vard_{s}$,
-such that $\mu_0,\mu_1,\dots,\mu_{k+l}, \xi_1,\dots,\xi_{s}$ are expressions containing only constants and loop counter variables.
+such that $\mu_0,\mu_1,\dots,\mu_{k+l}, \xi_1,\dots,\xi_{s}$ are expressions containing only constants and cycle counter variables.
 Then we call $\mu_0$ the \emph{constant atom}, $\mu_i \initval(z_i)$ the $\initval(z_i)$-atom for $i\in[k+l]$, and $\xi_j \vard_j$ the $\vard_j$-atom for $j\in[s]$ of the expression $e$. Moreover, $\mu_1, \dots, \mu_{k+l}, \xi_1,\dots, \xi_{s}$ are called the \emph{coefficients} and $\initval(z_1), \dots, \initval(z_{k+l}), \vard_1. \dots, \vard_{s}$ the \emph{subjects} of these atoms.
 A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} identical to zero.
 
@@ -58,7 +58,7 @@ We are ready to present the decision procedure. At first, we observe that  after
 In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 %
-\medskip\\
+\bigskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
 \noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
@@ -93,7 +93,7 @@ $}
 \end{center}
 %
 The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.
-\medskip\\
+\bigskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
@@ -103,7 +103,7 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 	\end{minipage}
 }\bigskip
 
-\noindent{\it Complexity analysis of Step II}. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential over the number of cycles in the generalized lasso. Once the cycle scheme is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential over the number of cycles in the generalized lasso.
+\noindent{\it Complexity analysis of Step II}. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential in the number of cycles in the generalized lasso. Once the cycle scheme is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential in the number of cycles in the generalized lasso.
 
 \smallskip
 
@@ -111,12 +111,12 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 
 If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that
 $\mu_{\schm,(i_1,j')} \neq 0$, then $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains some nontrivial non-constant atom for $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ and some $\ell_1=s$. The guards in the path $C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
-Pick one of the nontrivial non-constant atoms with a maximal subject wrt. the preorder. Since the subject is the maximal, it can be assigned an arbitrarily large number. We can then assign it a very large number so the corresponding atom dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$.  This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero.
+Pick one of the nontrivial non-constant atoms with a maximal subject w.r.t the preorder. Since the subject is maximal, it can be assigned an arbitrarily large number so that the corresponding atom dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$.  This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero.
 Otherwise, if $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains some other nontrivial non-constant atoms, then we can apply a similar argument as above and conclude that $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ can be made non-zero. On the other hand, if $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains no nontrivial non-constant atoms, but $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero. Therefore, when there is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, or $\mu_{\schm,(i_1,0)} \neq 0$, we are able to conclude that there \emph{must be} an input to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero.  Similar arguments can be applied to $\ell_2\dots\ell_n$.
 
 \smallskip
 
-If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s1}$ by keeping just one copy for each duplicated index therein.  
+If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s_1}$ by keeping just one copy for each duplicated index therein.  
 In Step II we already checked a cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
 $\eval{O(q_m)}{\sumf^{(\schm_2,\initval)}}$ are identical to zero and hence can be removed.
 Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm_1$ and $\schm_2$.
@@ -125,7 +125,7 @@ Those subexpressions containing $\ell_2$ can also be removed by considering the 
 We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing the cycle counter variables, for all $y_j \in Y$. 
 
 \begin{lemma}\label{prop-bnd-domain-1}
-	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}^-}$. For all valuations $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
 \end{lemma}
 
 
@@ -157,7 +157,7 @@ For each cycle scheme $\schm$, let
  
 Note that the coefficients of the $\vard^{\circled{\schm}}_1$-atom, $\dots$, and $\vard^{\circled{\schm}}_{r^{\circled{\schm}}}$-atom in $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}(y_j)$ are the same as those in $\sumf^{(\schm,\sumf^{(H,\initval_0)})}(y_j)$.
 
-We first observe that the coefficients of the atoms in ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a bounded set.
+We first observe that the coefficients of the atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a bounded set.
 %
 \begin{lemma}\label{prop-bnd-domain-2}
 	Suppose that the decision procedure has not returned yet after Step II. 
