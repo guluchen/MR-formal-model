@@ -84,12 +84,12 @@ After Step II$'$, if the decision procedure has not returned yet, then similar t
 \item Moreover,  an abstraction of $\schm$, denoted by $\abs(\schm)$, can be defined, so that $\mathscr{A}$, which contains the set of $\abs(\schm)$ for the paths $\schm=H_1 \schm_1 H_2 \dots H_s \schm_s$ (where $s \in [r]$), can be computed effectively from 
 $H_1, C_{1,1}, \dots, C_{1,n_1},H_2,\dots, H_r,C_{r,1},\dots, C_{r,n_r}$.
 \end{itemize}
-\medskip
+\smallskip
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 \noindent {\bf Step III$'$}. We apply the same analysis to $\mathscr{A}$ as in Step III. If the procedure does not return during the analysis, then return $\lfalse$.
 	\end{minipage}
-}\bigskip\\
+}\medskip\\
 
 \noindent {\it Complexity analysis of Step I$'$-III$'$}. The complexity of Step I$'$ is polynomial in the the maximum length of generalized multi-lassos in $\Ss$. The complexity of Step II$''$ is exponential in the maximum number of simple cycles in generalized multi-lassos. The complexity of Step III$'$ is exponential in the number of data variables in $\Ss$.
 
