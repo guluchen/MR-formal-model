@@ -58,13 +58,13 @@ We are ready to present the decision procedure. At first, we observe that  after
 In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 %
-\smallskip\\
+\medskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
 \noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II.
 \end{minipage}
-}\bigskip
+}\medskip
 
 \noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_0)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
 
@@ -92,7 +92,8 @@ The only subexpression containing $\ell_1$ in the constant atom of  $\eval{O(q_m
 $}
 \end{center}
 %
-The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
+The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.
+\medskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
@@ -110,9 +111,10 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 
 If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that
 $\mu_{\schm,(i_1,j')} \neq 0$, then $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains some nontrivial non-constant atom for $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ and some $\ell_1=s$. The guards in the path $C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
-Pick one of the nontrivial non-constant atoms with a largest subject wrt. the preorder. Since the subject is the largest, it can be assigned an arbitrarily large number. We can then assign it a very largest number so the corresponding atom dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$.  This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
-Otherwise, if $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains no nontrivial non-constant atom and $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
-Similar arguments can be applied for $\ell_2\dots\ell_n$.
+Pick one of the nontrivial non-constant atoms with a maximal subject wrt. the preorder. Since the subject is the maximal, it can be assigned an arbitrarily large number. We can then assign it a very large number so the corresponding atom dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$.  This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero.
+Otherwise, if $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains some other nontrivial non-constant atoms, then we can apply a similar argument as above and conclude that $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ can be made non-zero. On the other hand, if $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ contains no nontrivial non-constant atoms, but $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero. Therefore, when there is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, or $\mu_{\schm,(i_1,0)} \neq 0$, we are able to conclude that there \emph{must be} an input to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ non-zero.  Similar arguments can be applied to $\ell_2\dots\ell_n$.
+
+\smallskip
 
 If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s1}$ by keeping just one copy for each duplicated index therein.  
 In Step II we already checked a cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
@@ -120,10 +122,10 @@ $\eval{O(q_m)}{\sumf^{(\schm_2,\initval)}}$ are identical to zero and hence can 
 Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm_1$ and $\schm_2$.
 Hence we can also remove all subexpressions containing $\ell_1$ from  $\eval{O(q_m)}{\sumf^{(\schm_1,\initval)}}$, without affecting its value.
 Those subexpressions containing $\ell_2$ can also be removed by considering the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{s_3}}$ and applying a similar reasoning, where the sequence ${i''_3} \dots {i''_{s_3}}$ is obtained from ${i_3} \dots  i_{s_1}$, similarly to the construction of ${i'_2} \dots {i'_{s_2}}$ from $i_2 \dots i_{s1}$. The same applies to all other cycle counter variables $\ell_3,\dots,\ell_{s_1}$.
-We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counter variables, for all $y_j \in Y$. 
+We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing the cycle counter variables, for all $y_j \in Y$. 
 
 \begin{lemma}\label{prop-bnd-domain-1}
-	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
 \end{lemma}
 
 
