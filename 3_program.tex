@@ -8,13 +8,13 @@ We discuss the rationale behind the design of the programming language for reduc
 Later in Section~\ref{sec:cases}, we will show an extension that allows resetting the iterators so that an input data word can be traversed multiple times.
 
 \begin{figure}
-	\vspace{-0.5cm}
+
 	\centering
 	\begin{tabular}{rcl}
         $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=x';\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
 		$ p\in Programs$&$::=$&$\loopL{s\ \nnext;}\mbox{ret }r; \mid s\ \nnext;p$		
 	\end{tabular}
-	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional.}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional. }
 	\label{fig:language}
 		\vspace{-0.5cm}
 \end{figure}
@@ -23,8 +23,8 @@ More concretely, we focus on the programming language in Figure~\ref{fig:languag
 The novel feature of the language is that we partition the variables into two sets: \emph{control variables} $X$ and \emph{data variables} $Y$.
 The variables from $X$ are used for guiding the control flow and the variables from $Y$ are used for storing aggregated intermediate data values.
 The variables from $X$ can store only values occurring in the input data word and can occur in guards $g$ or arithmetic expressions $e$.
-On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$.
-Given a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. The formal semantics of the language can be found in the full version~\cite{full-version}. In this paper, for convenience, we assume that the reducer programs $p$ satisfy the ``\emph{transition enabled}'' property: For each execution path in the control flow graph of $p$, there is an input $w$ so that the run of $p$ over $w$ follows the execution path. %\zhilin{to be polished here}
+On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$. The initial values of variables can be arbitrary.
+Given a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. The formal semantics of the language can be found in the full version~\cite{full-version}. In this paper, to simplify presentation, we assume that the reducer programs $p$ satisfy the ``\emph{transition enabled}'' property: For each execution path in the control flow graph of $p$, there is an input $w$ so that the run of $p$ over $w$ follows the execution path. %\zhilin{to be polished here}
 
 Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Petri nets with inhibitor arcs~\cite{Min71,Rei08}.
 %Intuitively, integer variables are used for remembering the number of tokens in each place. Transitions between places can be simulated by the loop body: The updates of the tokens of the places are simulated by variable assignments.
@@ -34,9 +34,8 @@ Then the reachability problem of Petri nets with inhibitor arcs is reduced to th
 \input{example1}
 
 Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
-We believe that this is sufficient for reducers performing data analytics operations.
-In Figure~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max\_abs} and \texttt{2nd\_largest} in Figure~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
-One may argue that allowing only additions and subtractions is too restrictive for data analytics. 
+In Figure~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max} and \texttt{2nd\_largest} in Figure~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
+Still, one may argue that allowing only additions and subtractions is too restrictive for data analytics. 
 In Section~\ref{sec:cases}, we will discuss the extensions of the language to support more challenging examples, such as \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
 
 
