@@ -1,0 +1,153 @@
+\vspace{-0.5cm}
+\subsection{Decision procedure for generalized lassos}\label{sec-glasso}
+\vspace{-1mm}
+%
+%\yfc{newly added}
+In this section, we present a decision procedure for SNTs whose transition graphs are generalized lassos. From Proposition~\ref{prop-sum-cycle}, we know that the coefficients containing the loop counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be non-zero when $\cstl^{\circled{C}}_{j}=1$. The non-zero coefficients may propagate to the output expression.  In such a case, 
+because the SNTs are ``transition-enabled'' (i.e. for any sequence of transitions, a corresponding run exists), %
+%if according to the reachability graph, for any $c>0$, there exists a run traversing $C$ more than $c$ times, then 
+intuitively, one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression and makes the output non-zero. 
+In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces a non-zero output in Step I.
+We then check in Step II the coefficients containing $\ell$ in the output expression is non-zero. If this does not happen, then we show in Step III that the non-zero ouput problem of SNT can be reduced to a finite state reachability problem and thus can be easily decided.
+
+Before presenting the decision procedure, we introduce some notations.
+Let $e$ be an expression consisting of symbolic values $\initval(z)$ for $z\in X\cup Y$ and variables $\vard_1, \dots, \vard_{s}$ corresponding to the values of the input data word. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{k+l} \initval(z_{k+l}) + \xi_1 \vard_1 + \dots + \xi_{s} \vard_{s}$,
+such that $\mu_0,\mu_1,\dots,\mu_{k+l}, \xi_1,\dots,\xi_{s}$ are expressions containing only constants and loop counter variables.
+Then we call $\mu_0$ the \emph{constant atom}, $\mu_i \initval(z_i)$ the $\initval(z_i)$-atom for $i\in[k+l]$, and $\xi_j \vard_j$ the $\vard_j$-atom for $j\in[s]$ of the expression $e$. Moreover, $\mu_1, \dots, \mu_{k+l}, \xi_1,\dots, \xi_{s}$ are called the \emph{coefficients} and $\initval(z_1), \dots, \initval(z_{k+l}), \vard_1. \dots, \vard_{s}$ the \emph{subjects} of these atoms.
+A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} identical to zero.
+
+In the rest of this subsection, we assume that the transition graph of $\Ss$ comprises a handle $H=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{m-1} \xrightarrow{(g_m,\eta_m)} q_{m}$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+
+A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j\in [t-1]$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
+to summarize the computation of $\Ss$ on $\schm$. 
+
+
+\begin{lemma}\label{prop-cycle-schm}
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
+For all $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, let $r_{j'}$ be the largest number $r \in [t]$ such that $j'\in\bigcap_{s\in[r]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_{j'}}}^{\ell_{r_{j'}}}$.
+Then for each $j\in [l]$ and $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ is 
+\begin{center}
+\resizebox{0.8\hsize}{!}{
+$e+\sum\limits_{s_1\in[r_{j'}]}  
+\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
+\end{center}
+where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'} \prod\limits_{{s'}\in[s+1,t]}\left(\lambda^{\circled{C_{i_{s'}}}}_{j}\right)^{\ell_{s'}}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
+The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
+\begin{center}
+\resizebox{0.7\hsize}{!}{$
+\sum\limits_{{s_1}\in[t]}
+\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right)
+\cste^{\circled{C_{i_{s_1}}}}_{j} 
+\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$}
+\end{center}
+Moreover, for all $j\!\in\! [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \!\in\!I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some~$\mu_\schm\in \intnum$.
+\end{lemma}
+Notice that above, $\lambda^{\circled{C_{i_{s_1}}}}_j\in\{0,1\}$ for $j\in[l]$ and $s_1\in [t]$. Hence the value of $(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} )$ can only be $1$ or $\ell_{s_1}$ and $\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}\in\{0,1\}$.
+Therefore, both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in I^{\circled{C_{i_{1}}}}_{pe}$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ might be zero.
+
+
+
+
+%We are ready to present the decision procedure. By the ``well-defined'' and ``uniquely-valued'' constraints of normalized SNTs, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
+%Under the assumption, 
+We are ready to present the decision procedure. At first, we observe that  after traversing $H$ with the initial values of the variables given by $\sval_0$ (recall that $\sval_0$ assigns zero to each variable), for each $j' \in I^{\circled{H}}_{tr}$, the value of the control variable $x_{j'}$ becomes $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$,  more formally, $\sumf^{(H,\sval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$.
+
+In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
+This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
+We first find in the reachability graph $G_{\Ss}$ the set of paths $H_{G_{\Ss}}$ corresponding to $H$. Each path in $H_{G_{\Ss}}$ induces an equivalence relation between the subjects of the atoms. 
+For each path $H_{G_{\Ss}}$, we first merge the coefficients of atoms with equivalent subjects. Then we report the output is not identical to zero if the coefficient of some atoms or the constant atom is not zero.
+\smallskip\\
+\framebox[\textwidth]{
+\begin{minipage}{0.95\textwidth}
+\noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
+If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II.
+\end{minipage}
+}\bigskip
+
+\noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_0)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
+
+\smallskip
+
+The goal of Step II is either showing that in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$, all subexpressions containing the cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
+\begin{center}
+	\resizebox{0.7\hsize}{!}{$
+\sum \limits_{1 \le j \le l} 
+b_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
+\left(1+\cstl^{\circled{C_{i_1}}}_{j} + \dots + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'}.
+\hspace{4mm} (\ast)
+$}
+\end{center}
+Since $\cstl^{\circled{C_{i_1}}}_{j}, \cstl^{\circled{C_{i_2}}}_{j}, \dots, \cstl^{\circled{C_{i_t}}}_{j} \in \{0, 1\}$, the expression $(\ast)$  can be rewritten as  
+ $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$ for some integer constants $\mu_{\schm, (i_1,j')}$ and $\nu_{\schm, (i_1,j')}$. 
+ 
+The only subexpression containing $\ell_1$ in the constant atom of  $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
+\begin{center}
+	\resizebox{0.7\hsize}{!}{$
+\sum \limits_{1 \le j \le l} b_j
+\begin{array}{l}
+ \left((\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_t}}}_{j})^{\ell_t}\right)
+\left(1+\lambda^{\circled{C_{i_1}}}_{j} + \dots + (\lambda^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \cste^{\circled{C_{i_1}}}_{j}. \hspace{2mm} (\ast\ast)
+\end{array}
+$}
+\end{center}
+%
+The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
+\framebox[\textwidth]{
+	\begin{minipage}{0.95\textwidth}
+		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
+		one of the following constraints is satisfied, then return $\ltrue$. \\(1) There is $j' \in  I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$. (2) $\mu_{\schm,(i_1,0)} \neq 0$.
+		%
+		If the decision procedure has not returned yet, then go to Step III.
+	\end{minipage}
+}\bigskip
+
+\noindent{\it Complexity analysis of Step II}. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential over the number of cycles in the generalized lasso. Once the cycle scheme is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential over the number of cycles in the generalized lasso.
+
+\smallskip
+
+If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
+Similar arguments can be applied for $\ell_2\dots\ell_n$.
+
+If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s,1}$ by keeping just one copy for each duplicated index therein.  
+In Step II we already checked a cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
+$\eval{O(q_m)}{\sumf^{(\schm_2,\initval)}}$ are identical to zero and hence can be removed.
+Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm_1$ and $\schm_2$.
+Hence we can also remove all subexpressions containing $\ell_1$ from  $\eval{O(q_m)}{\sumf^{(\schm_1,\initval)}}$, without affecting its value.
+Those subexpressions containing $\ell_2$ can also be removed by considering the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{s_3}}$ and applying a similar reasoning, where the sequence ${i''_3} \dots {i''_{s_3}}$ is obtained from ${i_3} \dots  i_{s_1}$, similarly to the construction of ${i'_2} \dots {i'_{s_2}}$ from $i_2 \dots i_{s,1}$. The same applies to all other cycle counter variables $\ell_3,\dots,\ell_{s_1}$.
+We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm,\initval)}(y_j)$ all subexpressions containing cycle counter variables, for all $y_j \in Y$. 
+
+\begin{lemma}\label{prop-bnd-domain-1}
+	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_\bot)})}}^-}$. For all valuation $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+\end{lemma}
+
+
+
+
+
+\begin{lemma}\label{prop-bnd-domain-2}
+Suppose that the decision procedure has not returned yet after Step II. 
+For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ (1)
+the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
+
+\end{lemma}
+
+For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
+(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. 
+(2)~control variable atom: $\{(j', (c_{j',1},\dots, c_{j', l})) \mid j' \in [k]\}$, where $c_{j', j}$ is the coefficient of the ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for $j\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})\mid x_{j'}\in X\}$.
+Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.\medskip\\
+\framebox[\textwidth]{
+	\begin{minipage}{0.95\textwidth}
+		\noindent {\bf Step III} We first construct the set $\mathscr{A}$ and then. 
+		\begin{enumerate}
+			\item Check whether there is $(0,(c_{0,1},\dots,c_{0,l})) \in \mathscr{A}$ such that $a_0+b_1 c_{0,1}+\dots + b_l c_{0,l} \neq 0$. If the answer is yes, then return $\ltrue$.
+			%
+			\item Check whether there are $j' \in [k]$ and $(j', (c_{j',1},\dots,c_{j',l})) \in \mathscr{A}$ such that $a_{j'} + b_1 c_{j',1} + \dots + b_l c_{j',l} \neq 0$. If the answer is yes, then return $\ltrue$. 
+			%
+			\item Check whether there is $(k+1,(c_1,\dots,c_l)) \in \mathscr{A}$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$. If the answer is yes, then return $\ltrue$. 
+		\end{enumerate}
+		If the decision procedure has not returned yet, return $\lfalse$.
+	\end{minipage}
+}\smallskip\\
+
+\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is polynomial over the size of the generalized lasso (i.e. the size of the transitions in the generalized lasso). The size of $\mathscr{A}$ is exponential over $l$, the number of data variables. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}$. In summary, the complexity of Step III is exponential over the number of data variables.
+
