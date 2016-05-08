@@ -4,19 +4,17 @@
 		basicstyle=\ttfamily\scriptsize}
 	\begin{tabular}{|c|c|c|}
 		\hline
-		\begin{minipage}[t]{0.39\textwidth}
+		\begin{minipage}[t]{0.23\textwidth}
 		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
-max_abs {
- if($\cur$>0){max:=$\cur$;}
- else{max:= -$\cur$;}
+max{
+ max:=$\cur$;
  $\nnext$;
  loop{
-  if ($\cur$>0)
-   {if ($\cur$>max) {max:=$\cur$;}}
-  else 
-   {if (-$\cur$>max){max:=-$\cur$;}}
-  $\nnext$;}
+  if ($\cur$> max)
+   {max:=$\cur$;}
+  $\nnext$;
+ }
  ret max;}
 	\end{lstlisting}
 		\end{minipage}&
