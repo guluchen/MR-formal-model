@@ -19,7 +19,7 @@ For a valuation $\rho$, a variable $z$, and $c \in \intnum$, define the valuatio
 We use $\rho_0$ (resp. $\Omega_0$) to denote an valuation (resp. symbolic valuation) where for each pair of distinct variables $z_1,z_2 \in Z$, $\rho_0(z_1) \neq \rho_0(z_2)$ (resp. $\Omega_0(z_1) \neq \Omega_0(z_2)$).
 
 In this paper, we use $X$ and $Y$ to denote the sets of \emph{control variables} and \emph{data variables}, respectively. We use the variable $\cur \notin X\cup Y$ to store the data value that is currently being processed in the input list and use $X^+$ to denote the set $X\cup \{\cur\}$.
-A \emph{guard} is a formula defined either by the rules $g::= \ltrue \mid \cur \odot_1 c \mid \cur \odot_2 x \mid g \wedge g$, where $\odot_1 \in \{=,\neq\}$ and $\odot_2 \in \{\le, >\}$, $x \in X$, and $c\in \intnum$. 
+A \emph{guard} is a formula defined either by the rules $g::= \ltrue \mid \cur \le x \mid \cur > x \mid g \wedge g$, or either by the rules $g::= \ltrue \mid \cur \ge x \mid \cur < x \mid g \wedge g$, where $x \in X$, and $c\in \intnum$. 
 %A \emph{guard} is a formula defined by the following rules, $g::= \ltrue \mid \cur\odot c \mid \cur\odot x \mid g \wedge g$, where $\odot \in \{=,\neq,<, >, \le, \ge\}$, $x \in X$, and $c\in \intnum$. 
 Let $\rho$ be a valuation of $X^+$ and $g$ be a guard. Then $\rho$ satisfies $g$, denoted by $\rho \models g$, iff $g$ is evaluated to $\ltrue$ under $\rho$. 
 Let $\interval{n}$ denote the set $\{ 1, 2, \dots, n \}$, and $\interval{a,b}$ denote the set $\{ a, a+1, \dots, b \}$ when $b\geq a$ and $\emptyset$ otherwise. A \emph{permutation} on
