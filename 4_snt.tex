@@ -7,19 +7,21 @@
 
 \section{Streaming Numerical Transducers}\label{sec:def-snt}
 
-In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. A SNT scans a data word from left to right, records and aggregates some information using control and data variables, and outputs an integer value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the reducer programs defined in Section~\ref{sec-mr-prog}. 
+In this section, we introduce \emph{streaming numerical transducers} (SNTs), whose inputs are data words and outputs are integer values. A SNT scans a data word from left to right, records and aggregates information using control and data variables, and outputs an integer value when it finishes reading the data word. We will use SNTs to decide the commutativity and equivalence problem of the reducer programs defined in Section~\ref{sec-mr-prog}. 
 Due to lack of space we omit most of the proofs in the conference version. The complete paper is available at~\cite{full-version}. 
 
 
 A SNT $\Ss$ is a tuple $(Q, X, Y, \delta, q_0, O)$ where $Q$ is a finite set of states, $X$ is a finite set of control variables to store data values that have been met, $Y$ is a finite set of data variables to aggregate information for the output, $\delta$ is the set of transitions, $q_0 \in Q$ is the initial state, $O$ is the output function, which is a partial function from $Q$ to $\Ee_{X \cup Y}$.%\zhilin{Here the variable $\cur$ should not be used.}
-The set of transitions $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (defined in Section~\ref{sec:preliminaries}), and $\eta$ is an assignment which is a partial function mapping $X \cup Y$  to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=\cur$ or $\eta(x) = x'$ for some $x' \in X$. We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience. 
+The set of transitions $\delta$ comprises the tuples $(q,  g, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (defined in Section~\ref{sec:preliminaries}), and $\eta$ is an assignment which is a partial function mapping $X \cup Y$  to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=x'$ for some $x' \in X^+$. We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience. 
 
-Moreover, we assume that an SNT $\Ss$ satisfies the following constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ which contains a state $q$ such that for each $i,j: 1 \le i < j \le n$, $q$ is the \emph{only} state shared by $C_i$ and $C_j$. (3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta)$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
+Moreover, we assume that an SNT $\Ss$ satisfies the following constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ which contains a state $q$ such that for each $i,j: 1 \le i < j \le n$, $q$ is the \emph{only} state shared by $C_i$ and $C_j$. (3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta) \cap Y$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
 
-The semantics of an SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(z)=\bot$ for each $z \in X\cup Y$.
+The semantics of an SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. The \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0(z)=0$ for each $z \in X\cup Y$.
 A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
 a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n$ iff there exists a path (sequence of transitions) $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n$ such that for each $i \in [n]$, $\rho_{i-1}[d_i/\cur] \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$, then $\rho_i(x)=d_i$, otherwise, if $\eta_i(x)=x' \in X$, then $\rho_i(x)=\rho_{i-1}(x')$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)}{\rho_{i-1}[d_i/\cur]}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$.
-We call $(q_n,\rho_n)$ the \emph{final configuration} of the run. %We say that $(q_i,\rho_i)$ is \emph{reachable} from $(q_0,\rho_0)$, for $i \in [n]$.
+We call $(q_n,\rho_n)$ the \emph{final configuration} of the run. 
+We say that a path in $\Ss$ is \emph{feasible} iff there exists a corresponding run over some data word in~$\Ss$.
+%We say that $(q_i,\rho_i)$ is \emph{reachable} from $(q_0,\rho_0)$, for $i \in [n]$.
 
 We would like to remark that for each data word $w$, there is at most one run of $\Ss$ over $w$, since $\Ss$ is deterministic. 
 Over a data word $w = d_1 \dots d_n$, if there is a run of $\Ss$ over $w$ with the final configuration $(q_n,\rho_n)$, and $O(q_n)$ is defined, then the output of $\Ss$ over $w$, denoted by ${\Ss}(w)$, is $\eval{O(q_n)}{\rho_n}$. Otherwise, ${\Ss}(w)$ is $\bot$.
@@ -45,10 +47,10 @@ The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is de
 %$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that %$\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and %$O(q_1)=\sumv$. 
 %\end{example
 \begin{proposition}\label{prop-mrprog-to-snt}
-For each reducer program $p$, one can construct an equivalent SNT $\Ss$ where the number of states and the maximum number of simple cycles in nontrivial SCCs of the transition graph are at most exponential w.r.t. the number of branching statements in $p$. 
+For each reducer program $p$, one can construct an equivalent SNT $\Ss$ where the number of states and the maximum number of simple cycles in an SCC of the transition graph are at most exponential w.r.t. the number of branching statements in $p$. 
 \end{proposition}
 %We describe the procedure translating a program $p$ into an SNT $\Ss$ in the appendix. 
-Intuitively, the exponential blow-up in the construction is due to the following difference between reducer programs $p$ and SNTs $\Ss$: A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed, while an SNT advances the iterator in each transition. Therefore, the statements between each pair of consecutive $\nnext$ statements in the control flow of $p$ correspond to one transition of $\Ss$. 
+Intuitively, the exponential blow-up in the construction is due to the following difference between reducer programs $p$ and SNTs $\Ss$: A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed, while an SNT advances the iterator in each transition. Therefore, a sequence of statements with $k$ branching points between each pair of consecutive $\nnext$ statements in the control flow of $p$ correspond to at most $2^k$ transitions of $\Ss$.
 
 \hide{
 \yfc{added some justifications}\zhilin{Not so convincible for me. It seems that you are arguing against guards in SNTs. I am thinking why it is harmful to extend the language and make it equivalent to SNTs}
@@ -80,7 +82,7 @@ In fact, we can show that if we add guards at the entry points of loops and allo
 
 We focus on three decision problems of SNTs: (1) \emph{Commutativity}: Given an SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w$ and each permutation $w'$ of $w$, $\Ss(w)=\Ss(w')$. (2) \emph{Equivalence}: Given two SNTs $\Ss_1,\Ss_2$, decide whether $\Ss_1$ and $\Ss_2$ are equivalent, that is, whether over each data word $w$, $\Ss_1(w)=\Ss_2(w)$. (3) \emph{Non-zero output}: Given an SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there is a data word $w$ such that $\Ss(w)\notin \{\bot, 0\}$. 
 
-We first observe that the commutativity problem can be reduced to the equivalence problem of SNTs, which can be further reduced to the non-zero output problem of SNTs. For analyzing the complexity of the decision procedure in the next section,  we state the complexity of the reductions w.r.t. the following factors of SNTs: the number of states, the number of control variables (resp. data variables), and the maximum number of simple cycles in nontrivial SCCs of transition graphs. We will adopt the convention that if in a reduction, some factor becomes exponential, then this fact will be stated explicitly, and on the other hand, if some factor is still polynomial after the reduction, then this fact will be made implicit and will not be stated explicitly. This convention is also adopted for normalizing SNTs later on.
+We first observe that the commutativity problem can be reduced to the equivalence problem of SNTs, which can be further reduced to the non-zero output problem of SNTs. For analyzing the complexity of the decision procedure in the next section,  we state the complexity of the reductions w.r.t. the following factors of SNTs: the number of states, the number of control variables (resp. data variables), and the maximum number of simple cycles in an SCC of the transition graph. We will adopt the convention that if after a reduction, some factor becomes exponential, then this fact will be stated explicitly, and on the other hand, if some factor is still polynomial after the reduction, then this fact will be made implicit and will not be stated explicitly. This convention is also adopted for normalizing SNTs later on.
 
 \vspace{-1mm}
 \begin{proposition}\label{prop-snt-cmm-to-eqv}
@@ -96,13 +98,31 @@ We briefly describe the idea of the reduction in Proposition~\ref{prop-snt-cmm-t
 The correctness of this reduction follows from the fact that all the permutations of $d_1\dots d_n$ can be generated by composing the two aforementioned permutations corresponding to $\Ss_1$ and $\Ss_2$ respectively (cf. Proposition 1 in \cite{CHSW15}). The construction of $\Ss_1$ from $\Ss$ is linear over the size of $\Ss$, while the construction of $\Ss_2$ from $\Ss$ involves an exponential blow-up w.r.t. the number of control variables, which is attributed to the determinism of SNTs.
 
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
-From SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that there is a data word $w$ that $\Ss_1(w) \neq \Ss_2(w)$ iff $\Ss_3(w) \not\in \{\bot,0\}$. 
+From SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that there is a data word $w$ satisfying $\Ss_1(w) \neq \Ss_2(w)$ iff there is a data word $w$ satisfying $\Ss_3(w) \not\in \{\bot,0\}$. 
+\end{proposition}
+Proposition~\ref{prop-snt-eqv-to-nzero} can be proved by a straightforward product construction.
+
+\smallskip
+
+\noindent {\it Reachability graph}.
+Given an SNT  $\Ss=(Q, X, Y, \delta, q_0, O)$, we define the \emph{reachability graph} to help deciding if a path in $\Ss$ is feasible.  Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions in $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$. Let $\sntcset$ be the set of all total preorders $\preceq$ over $X\cup[c_{min},c_{max}]$ such that $\preceq$ enforces the natural order between the constants in $[c_{min},c_{max}]$.  We use $\sim_{\preceq}$ to denote the equivalence relation induced by $\preceq$.
+Formally, a reachability graph $G_\Ss=(n_0,N, E)$ consists of the set of nodes $N \subseteq Q\times \sntcset$, the set of labeled arcs $E \subseteq N\times \delta\times N$, and the initial node $n_0=(q_0, \preceq_0)$, where $\preceq_0 \in \sntcset$ is the preorder that forces all variables in $X$ equivalent to zero. We write $n \xrightarrow{t} n'$ to denote $(n,t,n') \in E$.
+For $q \in Q$, we use $N_q$ to denote the set of nodes in $N$ corresponds to $q$, i.e., the set $\{(q, \preceq) \in N \mid \preceq \in \sntcset \}$.
+
+Our intention is that $G_\Ss$ encodes the reachability relation between configurations of $\Ss$. For this, we need relate the runs of $\Ss$ with the paths in $G_\Ss$, which is formally defined here. A configuration $\rho$ of $\Ss$ \emph{conforms to} $\preceq \in \sntcset$ if for each $x,x' \in X$ (resp. $x \in X$ and $c \in [c_{min}, c_{max}]$), $\rho(x) \le \rho(y)$ iff $x \preceq x'$ (resp. $\rho(x) \le c$ iff $x \preceq c$ and $c \le \rho(x)$ iff $c \preceq x$).   A run $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ corresponding to  a path $P= t_1 t_2 \ldots t_n$ in $\Ss$ is said to \emph{conform to}  a path in $G_\Ss$ if the path is of the form $(q_0, \preceq_0) \xrightarrow{t_1} (q_1, \preceq_1) \xrightarrow{t_2} \ldots \xrightarrow{t_n} (q_n, \preceq_n)$, and for each $j \in [0,n]$, $\rho_j$ conforms to $\preceq_j$.
+
+\begin{proposition}\label{prop-snt-norm}
+	From each SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, one can construct a  reachability graph $G_\Ss=(n_0,N, E)$ with the following property: Each run of $\Ss$ conforms to some path in $G_\Ss$, and each path of $G_\Ss$ has a run of $\Ss$ conforming to it.  
+%for any path $n_0 \xrightarrow{t_0} n_1 \xrightarrow{t_1} \ldots n_{m-1} \xrightarrow{t_{m-1}} n_m $ in $G_\Ss$, (1) $P=t_0t_1\ldots t_{m-1}$ is feasible in $\Ss$, and (2) let $n_m=(q,f)$, then for each run corresponding to P, the final configuration of the run conforms to $f$.
+Moreover, the size of $N$ is at most exponential in the size of $X$. 
 \end{proposition}
 
 
-We normalize SNTs in order to simplify the presentation of the decision procedure later.
-Suppose $\Ss=(Q,X,Y,\delta,q_0,O)$ is an SNT. Let $c_{min}$ and $c_{max}$ denote the minimum resp. maximum integer constant occurring in the guards of the transitions in $\delta$. If no integer constant occurs in the guards, then $c_{min}=c_{max}=0$.
-
+%
+%The idea of the construction is simple. 
+%To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the transitions and the output function accordingly.
+%To ensure the ``uniquely-valued'' constraint, we add the constraint $\bigwedge_{x \in X} \cur \neq x$ into the guard when $\cur$ is stored into some control variable. 
+%To ensure the ``transition-enabled'' constraint and ``state dominating'' constraint, we record in the states the equivalence relation and order relation between the control variables, as well as their relation with the constants from $[c_{min}, c_{max}]$, and enforce that the guards in the transitions conform to these relations recorded in the states, which guarantees that all the transitions are enabled.
 
 \hide{
 \yfc{Old version:}
@@ -110,15 +130,12 @@ An SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the followi
 (1) \emph{Well-defined}: For each run $(q_0,\rho_0) \dots (q_n,\rho_n)$ of $\Ss$ corresponding to the path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$, and each $i \in [n]$, it holds that $\rho_{i}(z) \neq \bot$ for all $z \in \dom(\eta_i)$, 
 %more formally, it holds that $\vars(\eta_i(z)) \subseteq \{z' \mid \rho_i(z') \neq \bot\} \cup \{\cur\}$, 
 %
-moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Uniquely-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{State-dominating}: For each state $q \in Q$, and every pair of valuations $\rho,\rho'$ such that $(q,\rho)$ and $(q,\rho')$ are reachable from the initial configuration $(q_0,\rho_0)$, it holds that $\rho,\rho'$ are equivalent in the following sense: For each guard $g \in \{x_i < x_j \mid 1 \le i, j \le k\} \cup \{x_i = c \mid 1 \le i \le k, c_{min} \le c \le c_{max} \} \cup \{x_i < c_{min},x_i > c_{max} \mid 1 \le i \le k\}$, $\rho \models g$ iff $\rho' \models g$.
-}
+moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Uniquely-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Transition-enabled}: Every sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$ in $\Ss$ has at least one corresponding run. (4) \emph{State-dominating}: For each state $q \in Q$, and every pair of valuations $\rho,\rho'$ such that $(q,\rho)$ and $(q,\rho')$ are reachable from the initial configuration $(q_0,\rho_0)$, it holds that $\rho,\rho'$ are equivalent in the following sense: For each guard $g \in \{x_i < x_j \mid 1 \le i, j \le k\} \cup \{x_i = c \mid 1 \le i \le k, c_{min} \le c \le c_{max} \} \cup \{x_i < c_{min},x_i > c_{max}  \mid 1 \le i \le k\}$, $\rho \models g$ iff $\rho' \models g$.
+
 
 %\yfc{New version:}
 An SNT $\Ss=(Q,X,Y,\delta,q_0,O)$ is said to be \emph{normalized} if the following constraints are satisfied:
-(1) \emph{Well-defined}: For each run $(q_0,\rho_0) \dots (q_n,\rho_n)$ of $\Ss$ corresponding to the path $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$, and each $i \in [n]$, it holds that $\rho_{i}(z) \neq \bot$ for all $z \in \dom(\eta_i)$, 
-%more formally, it holds that $\vars(\eta_i(z)) \subseteq \{z' \mid \rho_i(z') \neq \bot\} \cup \{\cur\}$, 
-%
-moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(O(q_n))$. (2) \emph{Uniquely-valued}: For each $(q,g,\eta,q') \in \delta$, if $\eta(x)=\cur$ for some $x \in X$, then the guard $g$ implies $\bigwedge_{x \in X} \cur \neq x$.  Intuitively, when the current data value $\cur$ is stored into some control variable, it is required that $\cur$ is distinct from all the data values that have already been stored in the control variables. (3) \emph{Transition-enabled}: Every sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$ in $\Ss$ has at least one corresponding run. (4) \emph{State-dominating}: For each state $q \in Q$, and every pair of valuations $\rho,\rho'$ such that $(q,\rho)$ and $(q,\rho')$ are reachable from the initial configuration $(q_0,\rho_0)$, it holds that $\rho,\rho'$ are equivalent in the following sense: For each guard $g \in \{x_i < x_j \mid 1 \le i, j \le k\} \cup \{x_i = c \mid 1 \le i \le k, c_{min} \le c \le c_{max} \} \cup \{x_i < c_{min},x_i > c_{max}  \mid 1 \le i \le k\}$, $\rho \models g$ iff $\rho' \models g$.
+(1) \emph{Transition-enabled}: Every sequence of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{n-1} \xrightarrow{(g_n,\eta_n)} q_n$ in $\Ss$ has at least one corresponding run. (2) \emph{State-dominating}: For each state $q \in Q$, and every pair of valuations $\rho,\rho'$ such that $(q,\rho)$ and $(q,\rho')$ are reachable from the initial configuration $(q_0,\rho_0)$, it holds that $\rho,\rho'$ are equivalent in the following sense: For each guard $g \in \{x_i < x_j \mid 1 \le i, j \le k\} \cup \{x_i = c \mid 1 \le i \le k, c_{min} \le c \le c_{max} \} \cup \{x_i < c_{min},x_i > c_{max}  \mid 1 \le i \le k\}$, $\rho \models g$ iff $\rho' \models g$.
 
 % $(q, g, \eta, q') \in \delta$, the guard $g$ implies one of the followings: $\cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, or $\cur > c_{max}$. 
 %
@@ -127,10 +144,9 @@ moreover, if $O(q_n)$ is defined, then $\rho_n(z)\neq\bot$ for all  $z\in \vars(
 	From each SNT, one can construct an equivalent normalized SNT whose number of states is at most exponential w.r.t. the number of control variables. 
 \end{proposition}
 %
-The idea of the construction is simple. To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the transitions and the output function accordingly.
-%by removing $q$ from the domain of $O$ if $O(q)$ contains some variable whose value is undefined (this information can be discovered from the states). 
-%
-To ensure the ``uniquely-valued'' constraint, we add the constraint $\bigwedge_{x \in X} \cur \neq x$ into the guard when $\cur$ is stored into some control variable. In addition, to ensure the ``transition-enabled'' constraint, we record in the states the equivalence relation and order relation between the control variables, as well as their relation with the constants from $[c_{min}, c_{max}]$, and enforce that the guards in the transitions conform to the these relations recorded in the states, which guarantees that all the transitions are enabled.
+The idea of the construction is simple. 
+%To ensure the constructed SNT is well-defined, we record in the states the set of variables whose values are defined, and change the transitions and the output function accordingly.
+%To ensure the ``uniquely-valued'' constraint, we add the constraint $\bigwedge_{x \in X} \cur \neq x$ into the guard when $\cur$ is stored into some control variable. 
+To ensure the ``transition-enabled'' constraint and ``state dominating'' constraint, we record in the states the equivalence relation and order relation between the control variables, as well as their relation with the constants from $[c_{min}, c_{max}]$, and enforce that the guards in the transitions conform to these relations recorded in the states, which guarantees that all the transitions are enabled.
 
-% and modify the transitions accordingly. To ensure the ``state-dominating'' constraint, we replace every transition $(q, g, \eta, q')$ with the following set of transitions 
-%$\{(q, g\wedge g', \eta, q') \mid g' \equiv \cur < c_{min}$, $\cur = c$ for $c_{min} \le c \le c_{max}$, \mbox{ or } $\cur > c_{max}\}$.
+}

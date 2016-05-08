@@ -11,31 +11,33 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 	\vspace{-0.5cm}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$\equiv$&$y := e\mid y \addeq e \mid x:=x'\mid s;s\mid \nnext \mid \ite{g}{s}{s}$\\
-		$ p\in Programs$&$\equiv$&$\loopL{s;\nnext};\mbox{ret }r \mid s;\nnext;p$		
+        $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=x';\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
+		$ p\in Programs$&$::=$&$\loopL{s\ \nnext;}\mbox{ret }r; \mid s\ \nnext;p$		
 	\end{tabular}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional.}
 	\label{fig:language}
-	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, $r$ is an expression in $\Ee_{X \cup Y}$, and $c\in \mathbb{Z}$.}
-	\vspace{-0.5cm}
+		\vspace{-0.5cm}
 \end{figure}
 
-More concretely, we focus on the programming language in Figure~\ref{fig:language}. The language includes the usual features of program languages, variable assignments, sequential compositions, branchings. It also includes a statement $\nnext$ which is used to advance the data word iterator. The $\loopL{s;\nnext}$ statement repeatedly executes the statement $s;\nnext$ until $\cur=\bot$, i.e., finished reading the entire input data word.
+More concretely, we focus on the programming language in Figure~\ref{fig:language}. The language includes the usual features of program languages, variable assignments, sequential compositions, and branchings. It also includes a statement $\nnext;$ which is used to advance the data word iterator. The $\loopL{s\ \nnext;}$ statement repeatedly executes the statement $s;\nnext$ until reaching the end of input data word.
 The novel feature of the language is that we partition the variables into two sets: \emph{control variables} $X$ and \emph{data variables} $Y$.
 The variables from $X$ are used for guiding the control flow and the variables from $Y$ are used for storing aggregated intermediate data values.
 The variables from $X$ can store only values occurring in the input data word and can occur in guards $g$ or arithmetic expressions $e$.
 On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$.
-Given a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. The formal semantics of the language is in the appendix.
+Given a program $p$ and a data word $w$, we use $p(w)$ to denote the output of $p$ w.r.t. $w$. The formal semantics of the language can be found in the full version~\cite{full-version}. In this paper, for convenience, we assume that the reducer programs $p$ satisfy the ``\emph{transition enabled}'' property: For each execution path in the control flow graph of $p$, there is an input $w$ so that the run of $p$ over $w$ follows the execution path. \zhilin{to be polished here}
 
 Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Petri nets with inhibitor arcs~\cite{Min71,Rei08}.
 Intuitively, integer variables are used for remembering the number of tokens in each place. Transitions between places can be simulated by the loop body: The updates of the tokens of the places are simulated by variable assignments.
 The inhibitor arcs are simulated by the guards on the integer variables in the branching statements (recall that we are discussing the version that we do not distinguishing the control and data variables). The non-determinism in the transitions of Petri nets is resolved by the guards on the current data values, e.g. $\cur = 2$. 
-Then the reachability problem of Petri-nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem.
-
-Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
-We argue that this is sufficient for reducers performing data analytics operations.
-In Figure~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max\_abs} and \texttt{2nd\_largest} in Figure~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
+Then the reachability problem of Petri nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem.
 
 \input{example1}
+
+Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
+We believe that this is sufficient for reducers performing data analytics operations.
+In Figure~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Figure~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max\_abs} and \texttt{2nd\_largest} in Figure~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
+One may argue that allowing only additions and subtractions is too restrictive for data analytics. 
+In Section~\ref{sec:cases}, we will discuss the extensions of the language to support more challenging examples, such as \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
 
 
 %The observation is actually not a big surprise. The \emph{reduce} operation in MapReduce has a tight connection with the \emph{fold} operation in functional languages, which aggregates the values in an input data word using a \emph{binary function}. We argue that our language is sufficient to describe the \emph{fold} operations in functional languages involving only additions and subtractions: The intermediate results of the fold operations can be stored in some data variables. The binary functions in the fold operations can be simulated by ``adds/assigns a value to data variables'' in our language. However, our language is far more flexible than the fold operations in the sense that we have the full control of what to do when iterating through an input data word (similar to Hadoop~\cite{Hadoop}).
@@ -43,8 +45,7 @@ In Figure~\ref{fig:examples} we demonstrate a few examples performing data analy
 
 We focus on the following problems: (1) \emph{Commutativity}: given a program $p$, decide whether for each data word $w$ and its permutation $w'$, $p(w) = p(w')$. (2) \emph{Equivalence:} given programs $p,p'$, decide whether for each data word $w$, $p(w)=p(w')$.
 
-One may argue that allowing only additions and subtractions is too restrictive for data analytics. 
-In Section~\ref{sec:cases}, we will discuss the extensions of the language to support more challenging examples, such as \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
+
 
 
 

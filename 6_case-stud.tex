@@ -26,7 +26,7 @@ int MAD2() {
   avg:= $\cur$;$\nnext$;
   loop{
     if($\cur$<avg){mad=mad+(avg-$\cur$);}
-    else{mad=mad+($\cur$-avg);};$\nnext$;};
+    else{mad=mad+($\cur$-avg);};$\nnext$;}
   ret mad/cnt;}
 	\end{lstlisting}	
 	\vspace{-0.4cm}
@@ -35,7 +35,7 @@ int MAD2() {
 	\vspace{-0.7cm}
 \end{wrapfigure}
 To verify the 2nd half of the MAD example, we model \texttt{avg} as a control variable and assign the first value of the data word to it (c.f., Figure~\ref{fig:examples3}). 
-Then we can reduce the program commutativity problem to the $1$-commutativity problem of the corresponding SNT. We handle the division at the end of the program in the same way as we did for the \texttt{avg} program. The guarantee we obtain after the corresponding SNT is checked to be $1$-commutative is that the program outputs the same value for any value of \texttt{avg} and any permutation of the rest of the input list. \yfc{added more explanations}
+Then we can reduce the program commutativity problem to the $1$-commutativity problem of the corresponding SNT. We handle the division at the end of the program in the same way as we did for the \texttt{avg} program. The guarantee we obtain after the corresponding SNT is checked to be $1$-commutative is that the program outputs the same value for any value of \texttt{avg} and any permutation of the rest of the input list. 
 
 The case \texttt{SD} (Standard Deviation) is more difficult to handle. The main difficulty comes from the use of multiplication in the middle of the program (instead of at the return point). In order to have a sound procedure to verify this kind of programs, we will need the support of uninterpreted $k$-ary functions also in the SNT transitions. However, this is not a trivial extension and we consider it as a future work.
 

@@ -14,7 +14,7 @@ int avg() {
  loop{
   sum+=$\cur$;
   cnt+=1;
-  $\nnext$;};
+  $\nnext$;}
  ret sum/cnt;}
 			\end{lstlisting}
 		\end{minipage}&
@@ -23,11 +23,11 @@ int avg() {
 \begin{lstlisting}[mathescape=true]
 int MAD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
- loop{sum+=$\cur$;cnt+=1;$\nnext$;};
+ loop{sum+=$\cur$;cnt+=1;$\nnext$;}
  avg:= sum/cnt;mad:=0;$\init$;
  loop{
   if($\cur$<avg){mad=mad+(avg-$\cur$);}
-  else{mad=mad+($\cur$-avg);};$\nnext$;};
+  else{mad+=($\cur$-avg);}$\nnext$;}
  ret mad/cnt;}
 \end{lstlisting}
 		\end{minipage}&
@@ -36,11 +36,11 @@ int MAD() {
 			\begin{lstlisting}[mathescape=true]
 int SD() {
  sum:=$\cur$;cnt:=0;$\nnext$;
- loop{sum+=$\cur$;cnt+=1;$\nnext$;};
+ loop{sum+=$\cur$;cnt+=1;$\nnext$;}
  avg:= sum/cnt;sd:=0;$\init$;
  loop{
   sd+=($\cur$-avg)*($\cur$-avg);$\nnext$;
- };
+ }
  ret SQRT(sd/cnt);}
 			\end{lstlisting}
 		\end{minipage}\\

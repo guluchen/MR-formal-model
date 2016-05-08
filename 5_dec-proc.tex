@@ -2,31 +2,35 @@
 
 \section{Decision procedure for the non-zero output problem}\label{sec:dec-snt}
 %
-We prove our main result, Theorem~\ref{thm:correctness}, by presenting a decision procedure for the non-zero output problem of SNTs. We fix a normalized SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general case in the full version.
-We define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}. We then present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. We will generalize the procedure to full SNTs in Section~\ref{sec-gflat}.
+We prove our main result, Theorem~\ref{thm:correctness}, by presenting a decision procedure for the non-zero output problem of SNTs. We fix an SNT $\Ss = (Q,X,Y,\delta,q_0,O)$ such that $X=\{ x_1,\dots, x_k\}$ and $Y = \{y_1,\dots,y_l\}$. 
+%Due to space constraint, we only present a simplified version where the transition guards are constant-free and leave the procedure for the general case in the full version.
+We first assume that the transition guards are constant-free. With this assumption, we define summaries of the computations of $\Ss$ on paths and cycles in Section~\ref{sec-sum}, then present a decision procedure for the case that the transition graph of $\Ss$ is a \emph{generalized lasso} in Section~\ref{sec-glasso}. The transition graph of $\Ss$ is said to be a generalized lasso if it comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. We extend the procedure to SNTs whose transition graphs are not necessarily generalized lassos  in Section~\ref{sec-gflat}. Finally,  in Section~\ref{sec-constant}, we consider the situation that the transition guards may contain constants.
 
 \begin{theorem}\label{thm:correctness}
-The non-zero output problem of normalized SNTs can be decided in time exponential over the number of data variables and the maximum number of simple cycles in nontrivial SCCs of transition graphs.
+The non-zero output problem of SNTs can be decided in time exponential over the number of control and data variables and the maximum number of simple cycles in an SCC of transition graphs.
 \end{theorem}
 \vspace{-2mm}
 
 \begin{corollary}\label{cor:snt-dec-proc}
-The commutativity problem of SNTs (resp. reducer programs) can be decided in time exponential over the numbers of control and data variables, and exponential over the maximum number of simple cycles in nontrivial SCCs (resp. doubly exponential over the number of branching statements in reducer programs). 
+The commutativity problem of  reducer programs can be decided in time exponential over the number of control and data variables, and doubly exponential over the number of branching statements in reducer programs. 
 %On the other hand, the commutativity problem of reducer programs can be decided in time exponential over the number of control variables and the number of data variables, but .
 \end{corollary}
 
 \begin{remark}
-Though the decision procedure for the commutativity problem of reducer programs has a complexity exponential over the number of control resp. data variables, and doubly exponential over the number of branching statements, we believe that the decision procedure could still be implemented to automatically analyze the programs in practice, in which these numbers are usually small. 
+Though the decision procedure for the commutativity problem of reducer programs has a complexity exponential over the number of control and data variables, and doubly exponential over the number of branching statements, we believe that the decision procedure could still be implemented to automatically analyze the programs in practice, in which these numbers are usually small. 
 \end{remark}
 
 \vspace{-4mm}
 \subsection{Summarization of the computations on paths and cycles}\label{sec-sum}
 \vspace{-1mm}
 
-Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ ``updated'' equivalence classes of $\sim$, that is, equivalence classes whose values are not enforced to be equivalent to some value of variables
-at the beginning of the path $P$. 
-we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the ``updated'' data values met when traversing $P$, one for each equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
-\yfc{maybe an example}
+Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ ``\emph{fresh}'' equivalence classes of $\sim$, that is, equivalence classes whose values are not enforced to be equivalent to the initial values of control variables. 
+We use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values corresponding to these ``fresh'' equivalence classes, one for each such equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
+
+\begin{example}
+Let $\Ss$ be an SNT where $X=\{x\}$, $Y=\{y\}$, and $P = p_0 \xrightarrow{(g_1,\eta_1)} p_1 \xrightarrow{(g_2,\eta_2)} p_2  \xrightarrow{(g_3,\eta_3)} p_3$ be a path of $\Ss$ such that $(g_1,\eta_1) = (\cur = x, y:= \cur)$, $(g_2,\eta_2)= (\ltrue, (x:=\cur, y:=y+\cur))$, $(g_3,\eta_3)= (\cur=x, y:=y+\cur)$. Then  the guards and assignments enforce that the data value in position $2$ is equal to that in position $3$, that is, $2 \sim 3$. Then the equivalence relation $\sim$ has two equivalence classes, $\{1\}$ and $\{2,3\}$. Moreover, since the data value in position $1$ is equal to the initial value of the control variable $x$, we know that $r^{\circled{P}}=1$, namely, there is only one ``fresh'' equivalence class of $\sim$ (i.e. $\{2,3\}$), and $\vard^{\circled{P}}_1$ is used to denote the data value corresponding to this equivalence class.
+\end{example}
+
 \begin{proposition}\label{prop-sum-path}
 Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
 \begin{itemize}
@@ -34,7 +38,7 @@ Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented 
 \item For each $x_j\in X$ such that $j\in I^{\circled{P}}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_j)$.
 %
 \item  For each $x_j\in X$ such that $j\in I^{\circled{P}}_{tr}$,
-$\sumf^{(P,\initval)}(x_j)=\vard^{\circled{P}}_{\pi^{\circled{P}}(j)}$, where $\pi^{\circled{P}}: I^{\circled{P}}_{tr} \rightarrow [r^{\circled{P}}]$ is an injective mapping from the index of a transient control variable to the index of the data value assigned to it.
+$\sumf^{(P,\initval)}(x_j)=\vard^{\circled{P}}_{\pi^{\circled{P}}(j)}$, where $\pi^{\circled{P}}: I^{\circled{P}}_{tr} \rightarrow [r^{\circled{P}}]$ is a mapping from the index of a transient control variable to the index of the data value assigned to it.
 % 
 \item For each $y_j \in Y$, 
 $
@@ -57,7 +61,8 @@ where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\d
 \end{itemize}
 \end{proposition}
 In Proposition~\ref{prop-sum-path}, the sets $I^{\circled{P}}_{pe}$, $I^{\circled{P}}_{tr}$, the mapping $\pi^{\circled{P}}$, and the constants $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \dots, \cstb^{\circled{P}}_{j,r^{\circled{P}}}$ only depend on $P$ and are independent of $\initval$. In addition, they can be computed in polynomial time from (the transitions in) $P$.
-Due to the uniquely-valued constraint of normalized SNTs, $\pi^{\circled{P}}$ is injective, and the inverse function of $\pi^{\circled{P}}$, denoted $(\pi^{\circled{P}})^{-1}$, exists.  
+%Due to the uniquely-valued constraint of normalized SNTs, $\pi^{\circled{P}}$ is injective, 
+We define $(\pi^{\circled{P}})^{-1}$ as the inverse function of $\pi^{\circled{P}}$, that is, for each $j' \in [r^{\circled{P}}]$, $(\pi^{\circled{P}})^{-1}(j')=\{j \in I^{\circled{P}}_{tr}  \mid \pi^{\circled{P}}(j)= j'\}$. 
 
 As a corollary of Proposition~\ref{prop-sum-path}, the following result demonstrates how to summarize the computations of $\Ss$ on the composition of two paths.
 
@@ -77,7 +82,7 @@ In order to get a better understanding of the relation between $\sumf^{(P_2,\ \s
 	& 
 	\sum \limits_{j' \in  I^{\circled{P_1}}_{tr}} 
 	\left(\cstl^{\circled{P_2}}_{j} \csta^{\circled{P_1}}_{j,j'} \right) \initval(x_{j'}) +
-	\sum \limits_{j' \in \rng(\pi^{\circled{P_1}})} \left( \csta^{\circled{P_2}}_{j,(\pi^{\circled{P_1}})^{-1}(j')}+\cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'} \right) \vard^{\circled{P_1}}_{j'} + 
+	\sum \limits_{j' \in \rng(\pi^{\circled{P_1}})} \left(\cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'}+\sum \limits_{j'' \in (\pi^{\circled{P_1}})^{-1}(j')} \csta^{\circled{P_2}}_{j,j''} \right) \vard^{\circled{P_1}}_{j'} + 
 	 \\
 	%
 	\smallskip
@@ -87,11 +92,11 @@ In order to get a better understanding of the relation between $\sumf^{(P_2,\ \s
 	\sum \limits_{j'\in[r^{\circled{P_2}}]} \cstb^{\circled{P_2}}_{j,j'} \vard^{\circled{P_2}}_{j'}.
 	\end{array}$
 }\medskip\\
-In the equation, $j'\in  I^{\circled{P_1}}_{pe}$ implies that $x_{j'}$ remains unchanged when traversing $P_1$, which means the initial value of $x_{j'}$ before traversing $P_2$ is still $\initval(x_{j'})$ and therefore we have the item $ (\csta^{\circled{P_2}}_{j,j'}) \initval(x_{j'})$. When $j' \in \rng(\pi^{\circled{P_1}})$, the initial value of $x_{(\pi^{\circled{P_1}})^{-1}(j')}$ before traversing $P_2$ is $\vard^{\circled{P_1}}_{j'}$ and therefore we have the item $( \csta^{\circled{P_2}}_{j,(\pi^{\circled{P_1}})^{-1}(j')}) \vard^{\circled{P_1}}_{j'}$.
+In the equation, $j'\in  I^{\circled{P_1}}_{pe}$ implies that $x_{j'}$ remains unchanged when traversing $P_1$, which means the initial value of $x_{j'}$ before traversing $P_2$ is still $\initval(x_{j'})$ and therefore we have the item $ (\csta^{\circled{P_2}}_{j,j'}) \initval(x_{j'})$. When $j' \in \rng(\pi^{\circled{P_1}})$, the initial value of $x_{j''}$ for each $j'' \in (\pi^{\circled{P_1}})^{-1}(j')$ before traversing $P_2$ is $\vard^{\circled{P_1}}_{j'}$ and therefore we have the item $\left(\sum \limits_{j'' \in (\pi^{\circled{P_1}})^{-1}(j')} \csta^{\circled{P_2}}_{j,j''} \right)\ \vard^{\circled{P_1}}_{j'}$.
 For all $j'\in [k] = I^{\circled{P_1}}_{pe} \cup I^{\circled{P_1}}_{tr}$, we have the item $(\cstl^{\circled{P_2}}_{j} \csta^{\circled{P_1}}_{j,j'}) \initval(x_{j'})$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$. Moreover, for all $j'\in [r^{\circled{P_1}}] = \rng(\pi^{\circled{P_1}}) \cup ([r^{\circled{P_1}}] \setminus \rng(\pi^{\circled{P_1}}))$, we have 
 the item $( \cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'}) \vard^{\circled{P_1}}_{j'}$, i.e. the coefficient of $\vard^{\circled{P_1}}_{j'}$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$.
 
-In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{loop counter variable}.
+In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{cycle counter variable}.
 
 \begin{proposition}\label{prop-sum-cycle}
 Suppose that $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
@@ -103,7 +108,7 @@ $\begin{array}{l c l}
 & & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
 %
 & & \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{s\in[\ell -1]}
-\left(  \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} +(\cstl^{\circled{C}}_{j})\cstb^{\circled{C}}_{j,j'} \right)
+\left(\cstl^{\circled{C}}_{j}\cstb^{\circled{C}}_{j,j'}+ \sum \limits_{j'' \in (\pi^{\circled{C}})^{-1}(j')} \csta^{\circled{C}}_{j, j''}  \right)
 (\cstl^{\circled{C}}_{j})^{\ell-s-1}
 \vard^{\circled{C , s}}_{j'} +\\
 %
@@ -121,7 +126,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 \item If $\cstl^{\circled{C}}_{j}=0$, then\medskip\\
 \resizebox{0.9\hsize}{!}{$
 \sumf^{(C^\ell,\initval)}(y_j)   =  \cste^{\circled{C}}_{j} +  \sum \limits_{j' \in I^{\circled{C}}_{pe}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +
-\sum \limits_{j'  \in \rng(\pi^{\circled{C}})} \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')}\ \vard^{\circled{C , \ell  -  1}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
+\sum \limits_{j'  \in \rng(\pi^{\circled{C}})} \left(\sum \limits_{j'' \in (\pi^{\circled{C}})^{-1}(j')} \csta^{\circled{C}}_{j, j''} \right) \vard^{\circled{C , \ell  -  1}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
 \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'}.$}
 
 
@@ -131,7 +136,7 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$
 \sumf^{(C^\ell,\initval)}(y_j)  =    \ell \cste^{\circled{C}}_{j}  + \initval(y_j) +   \sum  \limits_{j' \in I^{\circled{C}}_{pe}} \ell \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}) + 
 \sum \limits_{j' \in I^{\circled{C}}_{tr}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \smallskip\\
 \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{s\in[\ell -1]}
-\left(\csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} + \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}]  \setminus \rng(\pi^{\circled{C}}) }\sum \limits_{s\in[\ell -1]} 
+\left(\cstb^{\circled{C}}_{j,j'} + \sum \limits_{j'' \in (\pi^{\circled{C}})^{-1}(j')} \csta^{\circled{C}}_{j, j''}   \right) \vard^{\circled{C , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}]  \setminus \rng(\pi^{\circled{C}}) }\sum \limits_{s\in[\ell -1]} 
 \cstb^{\circled{C}}_{j,j'} \vard^{\circled{C , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
 \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'}.
 \end{array}
@@ -190,16 +195,20 @@ $}
 \vspace{-1mm}
 %
 %\yfc{newly added}
-From Proposition~\ref{prop-sum-cycle}, we know that the coefficients of the loop counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be none-zero when $\cstl^{\circled{C}}_{j}=1$. The none-zero coefficients may propagate to the output expression.  In such a case, due to the ``transition-enabled'' constraint of normalized SNTs (i.e. for any sequence of transitions, a corresponding run exists), one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression. Therefore the output of the SNT can be made none-zero. 
-In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces none-zero output in Step I.
-We then check in Step II whether the coefficient of $\ell$ in the output expression is none-zero. If the coefficient of $\ell$ is zero in the output expression, we show in Step III that testing the existence of an input so that the output is non-zero can be reduced to a finite state reachability problem and thus can be easily decided.
+In this section, we present a decision procedure for SNTs whose transition graphs are generalized lassos. From Proposition~\ref{prop-sum-cycle}, we know that the coefficients of the loop counter variable $\ell$ in $\sumf^{(C^\ell,\initval)}(y_j)$ can be non-zero when $\cstl^{\circled{C}}_{j}=1$. The non-zero coefficients may propagate to the output expression.  In such a case, 
+%due to the ``transition-enabled'' constraint of normalized SNTs (i.e. for any sequence of transitions, a corresponding run exists), 
+if according to the reachability graph, for any $c>0$, there exists a run traversing $C$ more than $c$ times, then one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression and makes the output non-zero. 
+In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces a non-zero output in Step I.
+We then check in Step II whether for any $c>0$, there exists a run traversing $C$ more than $c$ times, and the coefficient of $\ell$ in the output expression is non-zero. If this does not happen, then we show in Step III that testing the existence of an input so that the output is non-zero can be reduced to a finite state reachability problem and thus can be easily decided.
 
-Before presenting the decision procedure for generalized lassos, we introduce some notations.
-Let $e$ be an expression consists of symbolic values $\initval(z)$ for $z\in X\cup Y$ and data variables $\vard_1, \dots, \vard_{s_2}$. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{s_1} \initval(z_{s_1}) + \xi_1 \vard_1 + \dots + \xi_{s_2} \vard_{s_2}$,
-such that $\mu_0,\mu_1,\dots,\mu_{s_1}, \xi_1,\dots,\xi_{s_2}$ are expressions containing only constants and loop counter variables.
-Then we call $\mu_0$ as the \emph{constant atom}, $\mu_i \initval(z_i)$ the $\initval(z_i)$-atom for $i\in[s_1]$, and $\xi_j \vard_j$ the $\vard_j$-atom for $j\in[s_2]$ of the expression $e$. Moreover, $\mu_1, \dots, \mu_{s_1}, \xi_1,\dots, \xi_{s_2}$ are called the \emph{coefficients} of these atoms. A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} identical to zero.
+Before presenting the decision procedure, we introduce some notations.
+Let $e$ be an expression consisting of symbolic values $\initval(z)$ for $z\in X\cup Y$ and variables $\vard_1, \dots, \vard_{s}$ corresponding to the values of the input data word. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{k+l} \initval(z_{k+l}) + \xi_1 \vard_1 + \dots + \xi_{s} \vard_{s}$,
+such that $\mu_0,\mu_1,\dots,\mu_{k+l}, \xi_1,\dots,\xi_{s}$ are expressions containing only constants and loop counter variables.
+Then we call $\mu_0$ as the \emph{constant atom}, $\mu_i \initval(z_i)$ the $\initval(z_i)$-atom for $i\in[k+l]$, and $\xi_j \vard_j$ the $\vard_j$-atom for $j\in[s]$ of the expression $e$. Moreover, $\mu_1, \dots, \mu_{k+l}, \xi_1,\dots, \xi_{s}$ are called the \emph{coefficients} and $\initval(z_1), \dots, \initval(z_{k+l}), \vard_1. \dots, \vard_{s}$ the \emph{subjects} of these atoms.
 
-In the rest of this subsection, we assume that the transition graph of $\Ss$ comprises a handle $H=q_0 q_1 \dots q_m$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
+A non-constant atom is said to be \emph{nontrivial} if its coefficient is \emph{not} identical to zero.
+
+In the rest of this subsection, we assume that the transition graph of $\Ss$ comprises a handle $H=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \dots q_{m-1} \xrightarrow{(g_m,\eta_m)} q_{m}$ and a collection of simple cycles $C_1,\dots,C_n$ such that $q_m$ is the unique state shared by each pair of distinct cycles from $\{C_1,\dots,C_n\}$. Moreover, without loss of generality, we assume that $O(q_m) = a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l$, and $O(q)$ is undefined for all the other states $q$.
 
 A \emph{cycle scheme} $\schm$ is a path $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ such that $i_1,\dots,i_t \in [n]$, $\ell_1,\dots, \ell_t \ge 1$, and for each $j\in [t-1]$, $i_j \neq i_{j+1}$. Intuitively, $\schm$ is a path obtained by iterating $C_{i_1}$ for $\ell_1$ times, $C_{i_2}$ for $\ell_2$ times, and so on. From Proposition~\ref{prop-sum-cycle} and Corollary~\ref{cor-comp-two-paths}, a symbolic valuation $\sumf^{(\schm,\initval)}$ can be constructed 
 to summarize the computation of $\Ss$ on $\schm$. 
@@ -214,7 +223,7 @@ Then for each $j\in [l]$ and $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, the coeffic
 $e+\sum\limits_{s_1\in[r_{j'}]}  
 \left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
 \end{center}
-where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
+where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'} \prod\limits_{{s'}\in[s+1,t]}\left(\lambda^{\circled{C_{i_{s'}}}}_{j}\right)^{\ell_{s'}}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
 The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
 \begin{center}
 \resizebox{0.7\hsize}{!}{$
@@ -226,26 +235,32 @@ The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 Moreover, for all $j\!\in\! [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \!\in\!I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some~$\mu_\schm\in \intnum$.
 \end{lemma}
 Notice that above, $\lambda^{\circled{C_{i_{s_1}}}}_j\in\{0,1\}$ for $j\in[l]$ and $s_1\in [t]$. Hence the value of $(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} )$ can only be $1$ or $\ell_{s_1}$ and $\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}\in\{0,1\}$.
-Hence both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in I^{\circled{C_{i_{1}}}}_{pe}$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ might be zero.
+Therefore, both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in I^{\circled{C_{i_{1}}}}_{pe}$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ might be zero.
 
 
 
 
-We are ready to present the decision procedure. By the ``well-defined'' and ``uniquely-valued'' constraints of normalized SNTs, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
-Under the assumption, for all $j' \in [k]$, the symbolic value of $\sumf^{(H,\sval_\bot)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$\smallskip\\
+%We are ready to present the decision procedure. By the ``well-defined'' and ``uniquely-valued'' constraints of normalized SNTs, without loss of generality, we assume that $I^{\circled{H}}_{tr}=[k]$, that is, after traversing $H$, the values of all control variables become defined.
+%Under the assumption, 
+We are ready to present the decision procedure. At first, we observe that  after traversing $H$ with the initial values of the variables given by $\sval_0$ (recall that $\sval_0$ assigns zero to each variable), for each $j' \in I^{\circled{H}}_{tr}$, the value of the control variable $x_{j'}$ becomes $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$,  more formally, $\sumf^{(H,\sval_0)}(x_{j'})=\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$.
+
+In Step I, we check if $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
+This can be done by checking if the constant-atom or the coefficient of some non-constant atom of the output expression $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
+We first find in the reachability graph $G_{\Ss}$ the set of paths $H_{G_{\Ss}}$ corresponding to $H$. Each path in $H_{G_{\Ss}}$ induces an equivalence relation between the subjects of the atoms. 
+For each path $H_{G_{\Ss}}$, we first merge the coefficients of atoms with equivalent subjects. Then we report the output is not identical to zero if the coefficient of some atoms or the constant atom is not zero.
+\smallskip\\
 \framebox[\textwidth]{
 \begin{minipage}{0.95\textwidth}
-\noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_\bot)}}$ is not identical to zero.
-This can be done by checking if the constant-atom or the coefficient of some non-constant atom of $\eval{O(q_m)}{\sumf^{(H,\sval_\bot)}}$ is not identical to zero.
+\noindent {\bf Step I}. Decide whether $\eval{O(q_m)}{\sumf^{(H,\sval_0)}}$ is not identical to zero.
 If the answer is yes, then the decision procedure terminates and returns the answer $\ltrue$. Otherwise, go to Step II.
 \end{minipage}
 }\bigskip
 
-\noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_\bot)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
+\noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_0)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
 
 \smallskip
 
-The goal of Step II is either showing that in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, all subexpressions containing the cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
+The goal of Step II is either showing that in $f=\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$, all subexpressions containing the cycle counter variables are identical to zero and hence can be ignored or showing that $f$ is not identical to zero. Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
 	\resizebox{0.7\hsize}{!}{$
 \sum \limits_{1 \le j \le l} 
@@ -268,7 +283,7 @@ The only subexpression containing $\ell_1$ in the constant atom of  $\eval{O(q_m
 $}
 \end{center}
 %
-The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
+The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. If $\mu_{\schm,(i_1,0)}=0$ and $\mu_{\schm,(i_1,j')}=0$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.\smallskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
@@ -285,7 +300,7 @@ The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \n
 If there exists $j' \in I^{\circled{C_{i_1}}}_{pe}$ such that $\mu_{\schm,(i_1,j')} \neq 0$, then we let $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')} \neq 0$ and $\ell_1$ be arbitrarily large, so that the coefficient of the  $\vard^{\circled{H}}_{\pi^{\circled{H}}(j')}$-atom in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$, which includes the expression $\mu_{\schm, (i_1,j')} \ell_1 + \nu_{\schm, (i_1,j')}$, dominates $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$. This is sufficient to make $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero. Similarly, if $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ arbitrarily large to make the expression $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}$ non-zero.
 Similar arguments can be applied for $\ell_2\dots\ell_n$.
 
-If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s,1}$ by keeping jus tone copy for each duplicated index therein.  
+If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables in $\eval{O(q_m)}{\sumf^{(\schm,\initval)}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s,1}$ by keeping just one copy for each duplicated index therein.  
 In Step II we already checked a cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
 $\eval{O(q_m)}{\sumf^{(\schm_2,\initval)}}$ are identical to zero and hence can be removed.
 Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\schm_1$ and $\schm_2$.
@@ -331,7 +346,7 @@ Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. The
 
 
 \vspace{-2mm}
-\subsection{Decision procedure for SNTs without Constants}\label{sec-gflat}
+\subsection{Decision procedure for SNTs without constants in guards}\label{sec-gflat}
 \vspace{-1mm}
 
 We generalize the decision procedure for the case that the transition graphs of the SNTs are generalized lassos to the full class of SNTs.
@@ -416,7 +431,7 @@ $H_1, C_{1,1}, \dots, C_{1,n_1},H_2,\dots, H_r,C_{r,1},\dots, C_{r,n_r}$.
 
 \noindent {\it Complexity analysis of Step I$'$-III$'$}. The complexity of Step I$'$ is polynomial over the the maximum length of generalized multi-lassos in $\Ss$. The complexity of Step II$''$ is exponential over the maximum number of simple cycles in generalized multi-lassos. The complexity of Step III$'$ is still exponential over the number of data variables in $\Ss$.
 
-\subsection{Decision procedure for SNTs}
+\subsection{Decision procedure for SNTs}\label{sec-constant}
 
 We now consider the situation that the guards of the transitions in $\Ss$ may contain constants, that is, the atomic formulae of the form $cur \odot c$ for integer constants $c$. 
 

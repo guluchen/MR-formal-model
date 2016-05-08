@@ -112,6 +112,8 @@
 
 \newcommand\intnum{{\mathbb{Z} }}
 
+\newcommand\intnumnz{\mathbb{Z}^{\neq 0}}
+
 \newcommand\cur{\mathsf{cur}}
 \newcommand\nnext{\mathsf{next}}
 \newcommand\head{\mathsf{hd}}
@@ -119,7 +121,7 @@
 \newcommand\init{\mathsf{init}}
 
 \newcommand{\loopL}[1]{\mbox{loop\{} #1\mbox{\}}}
-\newcommand{\ite}[3]{\mbox{if } #1 \mbox{ then } #2 \mbox{ [else }#3\mbox{]} }
+\newcommand{\ite}[3]{\mbox{if } (#1) \{#2\} \mbox{ [else } \{#3\}\mbox{]} }
 
 \newcommand\vars{\mathsf{vars}}
 
@@ -216,14 +218,11 @@
 
 MapReduce is a popular programming model for data parallel computation. 
 In MapReduce, the \emph{reducer} produces an output from a list of inputs. Due to the scheduling policy of the platform, the inputs may arrive at the reducers in different order. The \emph{commutativity problem} of reducers asks if the output of a reducer is independent of the order of its inputs. Although the problem is undecidable in general,
-%due to Rice's theorem and thus is seemingly uninteresting. 
 the MapReduce programs in practice are usually used for data analytics and thus require very simple data and control flow. 
 By exploiting the simplicity, we propose a programming language for reducers where the commutativity problem is decidable.
- %The programming language is capable of modeling many daily tasks in practice, e.g. the aggregate functions $sum$, $max$, $min$, $count$, the filters like $age \ge 18$, as well as their compositions. 
 The decision procedure is obtained through a reduction to the equivalence problem of \emph{streaming numerical transducers} (SNTs), a novel automata model over infinite alphabets introduced in this paper. The design of SNTs is inspired by streaming transducers (Alur and Cerny, POPL 2011). Nevertheless, the two models are intrinsically different since the outputs of SNTs are integers while those of streaming transducers are data strings. 
-%The main ingredients of SNTs are to divide the set of variables into the set of control variables and data variables where the control variables can be used in the guards of transitions, but without arithmetics, on the other hand, the data variables are allowed to be updated with arithmetics, but they are forbidden to occur in the guards. 
 The decidability of the equivalence of SNTs is achieved with an involved combinatorial analysis of the evolvement of the values of the integer variables during the runs of SNTs.
-%We show that the language is expressive enough for common data analytics operations.
+
 \end{abstract}
 
 \vspace{-0.8cm}
