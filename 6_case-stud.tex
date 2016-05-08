@@ -1,3 +1,6 @@
+%!TEX root = main-cav.tex
+
+
 \section{Extensions}
 \label{sec:cases}
 
@@ -17,7 +20,8 @@ int MAD2() {
  avg:= $\cur$;$\nnext$;
  loop{
   if($\cur$<avg){mad+=avg-$\cur$;}
-  else{mad+=$\cur$-avg;};$\nnext$;}
+  else{mad+=$\cur$-avg;}
+  $\nnext$;}
  ret mad/cnt;}
 	\end{lstlisting}	
 	\vspace{-0.4cm}
@@ -25,7 +29,7 @@ int MAD2() {
 	\label{fig:examples3}
 	\vspace{-0.7cm}
 \end{wrapfigure}
-We handle the division at the end of the program in Fig.~\ref{fig:examples3} in the same way as we did for the \texttt{avg} program. The guarantee we obtain after the corresponding SNT is checked to be commutative is that the program outputs the same value for any value of \texttt{avg} and any permutation of the rest of the input data word. 
+We handle the division at the end of the program in Fig.~\ref{fig:examples3} in the same way as we did for the \texttt{avg} program. The guarantee we obtain after the corresponding SNT is checked to be commutative is that the program outputs the same value for any value of \texttt{avg} and any permutation of  the input data word. 
 
 
 %The latter requires an extension to the SNT decision problems. Given a data word $w$, we say a data word $w'$ is a $k$-permutation of $w$ iff there exists $\sigma_k\in S_{|w|}$ such that $\sigma_k(i)=i$ for $i \in [k]$ and $w'=\sigma_k(w)$. In words, $\sigma_k$ is a permutation of length $|w|$ such that it does not change the first $k$ elements. 
@@ -40,6 +44,6 @@ We handle the division at the end of the program in Fig.~\ref{fig:examples3} in 
 
 
 
-The case \texttt{SD} (Standard Deviation) is more difficult to handle. The main difficulty comes from the use of multiplication in the middle of the program (instead of at the return point). In order to have a sound procedure to verify this kind of programs, we will need the support of uninterpreted $k$-ary functions also in the SNT transitions. However, this is not a trivial extension and we consider it as a future work.
+The case \texttt{SD} (Standard Deviation) is more challenging. The main difficulty comes from the use of multiplication in the middle of the program (instead of at the return point). In order to have a sound procedure to verify this kind of programs, we can extend the transitions of SNTs to include uninterpreted $k$-ary functions. However, this is not a trivial extension and we consider it as a future work.
 
 
