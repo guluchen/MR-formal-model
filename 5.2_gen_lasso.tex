@@ -129,18 +129,53 @@ We use the notation ${\sumf^{(\schm,\initval)}}^-(y_j)$ to denote the expression
 
 
 \subsubsection{Step III:} 
-For each cycle scheme $\schm$, an abstraction of ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-$, denoted by $\abs(\schm)$,  is the union of the following three sets:
-(1)~constant atom: $\{(0, ( {\cste^{(\schm)}_{1}}^-,\dots, {\cste^{(\schm)}_l}^-))\}$. 
-(2)~control variable atom: $\{(j', (c_{j',1},\dots, c_{j', l})) \mid j' \in [k]\}$, where $c_{j', j}$ is the coefficient of the ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for $j\in[l]$. (3)~data variable atom: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})\mid x_{j'}\in X\}$.
-Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows. We first compute $\abs(HC_1), \ldots \abs(HC_n)$ and then compute the next abstract elements from them w.r.t. $C_1\ldots C_n$ until reached a fixed point.
 
+For each cycle scheme $\schm$, let
+%
+\[
+\small
+\def\arraystretch{2}
+\begin{array}{r l l}
+\smallskip
+\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}(y_j)  & & \\
+ & \hspace{-16mm} = & \hspace{-10mm}  \cste^{(\circled{\schm})^-}_{j} + \cstl^{\circled{\schm}}_j \sumf^{(H,\initval_0)}(y_j)  + \sum \limits_{j' \in [k]}  \csta^{(\circled{\schm})^-}_{j,j'}  \sumf^{(H,\initval_0)}(x_{j'}) + \sum \limits_{j' \in [r^{\circled{\schm}}]} \cstb^{\circled{\schm}}_{j,j'} \vard^{\circled{\schm}}_{j'}  \\
+% expanded expression
+	& \hspace{-16mm} = & \hspace{-10mm}  
+	\left( \cste^{(\circled{\schm})^-}_{j}+ \cstl^{\circled{\schm}}_{j} \cste^{\circled{H}}_{j}\right)+ \left(\cstl^{\circled{\schm}}_{j} \cstl^{\circled{H}}_{j} \right) \initval_0(y_j)+  \sum \limits_{j' \in I^{\circled{H}}_{pe}} 
+	\left(\csta^{(\circled{\schm})^-}_{j,j'} +\cstl^{\circled{\schm}}_{j} \csta^{\circled{H}}_{j,j'}\right) \initval_0(x_{j'}) \\
+	%
+	& &   \hspace{-16mm} + \sum \limits_{j' \in  I^{\circled{H}}_{tr}} 
+	\left(\cstl^{\circled{\schm}}_{j} \csta^{\circled{H}}_{j,j'} \right) \initval_0(x_{j'}) + 	\sum \limits_{j' \in \rng(\pi^{\circled{H}})} \left(\cstl^{\circled{\schm}}_{j} \cstb^{\circled{H}}_{j,j'}+  \sum \limits_{j'' \in (\pi^{\circled{H}})^{-1}(j')} \csta^{(\circled{\schm})^-}_{j,j''} \right) \vard^{\circled{H}}_{j'} \\
+	%
+	& & 
+\hspace{-16mm} +  \sum \limits_{j' \in [r^{\circled{H}}]\setminus \rng(\pi^{\circled{H}})} \left( \cstl^{\circled{\schm}}_{j} \cstb^{\circled{H}}_{j,j'} \right) \vard^{\circled{H}}_{j'} +
+	\sum \limits_{j'\in[r^{\circled{\schm}}]} \cstb^{\circled{\schm}}_{j,j'} \vard^{\circled{\schm}}_{j'}.
+	\end{array}
+\]
+ 
+Note that the coefficients of the $\vard^{\circled{\schm}}_1$-atom, $\dots$, and $\vard^{\circled{\schm}}_{r^{\circled{\schm}}}$-atom in $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}(y_j)$ are the same as those in $\sumf^{(\schm,\sumf^{(H,\initval_0)})}(y_j)$.
+
+We first observe that the coefficients of the atoms in ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a bounded set.
+%
 \begin{lemma}\label{prop-bnd-domain-2}
 	Suppose that the decision procedure has not returned yet after Step II. 
 	For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ (1)
 	the constant atom and the coefficients of the non-constant atoms in the expression ${\sumf^{(C^{\ell_i}_{i}, \sumf^{(H,\initval_\bot)})}}^-(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
-	
-	
 \end{lemma}
+
+
+We define the abstraction of $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}$, denoted by $\abs(\schm)$, as the union of the following three sets of tuples:
+\begin{itemize}
+\item the tuple for the constant atom: $\left\{\left(0, \left( \cste^{(\circled{\schm})^-}_{1}+ \cstl^{\circled{\schm}}_{1} \cste^{\circled{H}}_{1},\dots, \cste^{(\circled{\schm})^-}_{1}+ \cstl^{\circled{\schm}}_{1} \cste^{\circled{H}}_{1} \right) \right)\right\}$,
+% 
+\item tuples for the control variable atoms: $\{(j', (c_{j',1},\dots, c_{j', l})) \mid j' \in [k]\}$, where $c_{j', j}$ is the coefficient of the ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for $j\in[l]$,
+% 
+\item tuples for the other atoms: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the vector of coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_\bot)})}}^-(x_{j'})\mid x_{j'}\in X\}$.
+\end{itemize}
+
+Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed as follows: We first compute $\abs(HC_1), \ldots \abs(HC_n)$, put them into $\mathscr{A}$, then compute from them the abstractions $\abs(HC_1C_1),\dots, \abs(HC_1C_n), \abs(HC_2C_1), \dots$ by appending $C_1,\dots,C_n$, put them into $\mathscr{A}$, and so on, until reaching a fixed point.
+
+\bigskip
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
 		\noindent {\bf Step III} We first construct the set $\mathscr{A}$ and then. 
@@ -153,7 +188,7 @@ Let $\mathscr{A}=\bigcup \{\abs(\schm) \mid \schm \mbox{ a cycle scheme}\}$. The
 		\end{enumerate}
 		If the decision procedure has not returned yet, return $\lfalse$.
 	\end{minipage}
-}\smallskip\\
+}\medskip\\
 
 \noindent {\it Complexity analysis of Step III}. The size of the set $U$ is polynomial over the size of the generalized lasso (i.e. the size of the transitions in the generalized lasso). The size of $\mathscr{A}$ is exponential over $l$, the number of data variables. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}$. In summary, the complexity of Step III is exponential over the number of data variables.
 
