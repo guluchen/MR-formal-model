@@ -71,18 +71,18 @@ For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
 \smallskip
 
 \begin{proof}
-\yfc{To be fixed, need also complexity analysis}
 We introduce a few notations first.
 
 Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
 
 Let $p$ be a reducer program of the form $s_1; \nnext; \loopL{s_2;\nnext}$; ret $r$.  In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
 
-The loop body $s_2;\nnext$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $p_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=x'$ for $x' \in X^+$, and the assignments to the data variables are of the form $y:=e$ and $y {+=} e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
+The loop body $s_2;\nnext$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $p_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=\cur$, and the assignments to the data variables are of the form $y:=e$ and $y {+=} e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
 
 In addition, each execution path of $s_1;\nnext$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
 
-The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_0) = r$ and $O(\loc)$ is undefined for each other state $\loc$.\qed
+The return statement t is handled by adding a transition with guards of the form $\cur=\wend$ from the state $\loc_0$  to a state $\loc_o$.
+The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_o) = r$ and $O(\loc)$ is undefined for each other state $\loc$.\qed
 \end{proof}
 
 \hide{
@@ -119,7 +119,7 @@ The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized fla
 \vspace{4mm}
 
 \noindent {\bf Proposition~\ref{prop-snt-cmm-to-eqv}}. 
-\emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in exponential time}.
+\emph{The commutativity problem of SNTs is reduced to the equivalence problem of SNTs in polynomial time}.
 
 \begin{proof}
 Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
@@ -249,6 +249,8 @@ From the aforementioned construction and the assumption that $\Ss$ is well-defin
 
 \vspace{4mm}
 
+
+\hide{
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
 {\it From each SNT, an equivalent normalized SNT can be constructed in exponential time.} 
 
@@ -339,7 +341,7 @@ For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $
 \end{itemize}
 \qed
 \end{proof}
-
+}
 \section{Proofs in Section~\ref{sec-sum}}
 
 

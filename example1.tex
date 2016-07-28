@@ -2,9 +2,9 @@
 	\centering
 	\lstset{language=C,
 		basicstyle=\ttfamily\scriptsize}
-	\begin{tabular}{|c|c|c|}
+	\begin{tabular}{|c|c|}
 		\hline
-		\begin{minipage}[t]{0.23\textwidth}
+		\begin{minipage}[t]{0.4\textwidth}
 		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 max{
@@ -18,7 +18,7 @@ max{
  ret max;}
 	\end{lstlisting}
 		\end{minipage}&
-		\begin{minipage}[t]{0.27\textwidth}
+		\begin{minipage}[t]{0.4\textwidth}
 		\vspace{-0.5cm}
 			\begin{lstlisting}[mathescape=true]
 sum{
@@ -34,22 +34,6 @@ cnt{
  loop{cnt+=1;$\nnext$;}
  ret cnt;}
 			\end{lstlisting}			
-		\end{minipage}&
-		\begin{minipage}[t]{0.30\textwidth}
-		\vspace{-0.5cm}			
-			\begin{lstlisting}[mathescape=true]
-2nd_largest {
- a:=$\cur$;b:=$\cur$;$\nnext$;
- if($\cur$>a){a:=$\cur$;}
- else {b:=$\cur$;}$\nnext$;
- loop{
-  if ($\cur$>a)  
-   {b:=a;a:=$\cur$;}
-  else 
-   {if($\cur$>b){b:=$\cur$;}}
-  $\nnext$;}
- ret b;}
-			\end{lstlisting}		
 		\end{minipage}\\
 		\hline		
 	\end{tabular}

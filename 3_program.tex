@@ -11,7 +11,7 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=x';\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
+        $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=\cur;\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
 		$ p\in Programs$&$::=$&$\loopL{s\ \nnext;}\mbox{ret }r; \mid s\ \nnext;p$		
 	\end{tabular}
 	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional. }
@@ -26,7 +26,7 @@ The novel feature of the language is that we partition the variables into two se
 The variables from $X$ are used for guiding the control flow and the variables from $Y$ are used for storing aggregated intermediate data values.
 The variables from $X$ can store only either initial values of variables in $X$ or values  occurring in the input data word. They can occur both in guards $g$ or arithmetic expressions $e$.
 On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$. The initial values of variables can be arbitrary.
-Given a program $p$, a data word $w$, and a valuation $\rho_0$, we use $p_{\rho_0}(w)$ to denote the output of $p$ on $w$, with the initial values of variables given by $\rho_0$. The formal semantics of the language can be found in the full version~\cite{full-version}. 
+Given a program $p$, a data word $w$, and a valuation $\rho_0$, we use $p_{\rho_0}(w)$ to denote the output of $p$ on $w$, with the initial values of variables given by $\rho_0$. The formal semantics of the language can be found in the appendix. 
 
 In this paper, we assume that the reducer programs $p$ satisfy that \emph{all the guards between two consecutive $\nnext$ statements are mono-typed}, more specifically,
 for each execution path in the control flow graph of $p$ and each pair of consecutive $\nnext$ statements, either all the guards $g$ of the branching statements between them are of type 1, or all the guards between them are of type 2 (cf. Section~\ref{sec:preliminaries} for the definition of guards).
@@ -41,7 +41,7 @@ Note that we do not allow multiplications in the language, so the reduction from
 The reachability problem of Petri nets with inhibitor arcs is reduced to the reachability problem of the reducer programs, which is in turn easily reduced to the commutativity problem of reducer programs.
 
 Notice that in the programming language, we only allow additions ($\addeq$) or assignments ($:=$) of a new value computed from an expression over $X^+$ to data variables. 
-In Fig.~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Fig.~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max} and \texttt{2nd\_largest} in Fig.~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
+In Fig.~\ref{fig:examples} we demonstrate a few examples performing data analytics operations. Observe that all of them follow the same behavioral pattern: The program iterates through the input data word and aggregates some intermediate information into some variables. The operations used for the aggregation are usually rather simple: either a new value is added to the variable (e.g. \texttt{sum} and \texttt{cnt} in Fig.~\ref{fig:examples}) storing the aggregated information, or a new value is assigned to the variable (e.g. \texttt{max} in Fig.~\ref{fig:examples}). Actually, the similar behavioral pattern occurs in all programs we have investigated.
 Still, one may argue that allowing only additions and subtractions is too restrictive for data analytics. 
 In Section~\ref{sec:cases}, we will discuss the extensions of the language to support more challenging examples, such as \emph{Mean Absolute Deviation} and \emph{Standard Deviation}.
 

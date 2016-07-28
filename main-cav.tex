@@ -90,6 +90,8 @@
 
 \newcommand\univ{\mathsf{Univ}}
 
+\newcommand\wend{\rhd}
+
 \newcommand\op{\mathfrak{o}}
 
 \newcommand\dv{\mathtt{x}}
@@ -214,7 +216,7 @@ the MapReduce programs in practice are usually used for data analytics and thus 
 By exploiting the simplicity, we propose a programming language for reducers where the commutativity problem is decidable. The main idea of the reducer language is to separate the control and data flow of programs and disallow arithmetic operations in the control flow.
 The decision procedure for the commutativity problem is obtained through a reduction to the equivalence problem of \emph{streaming numerical transducers} (SNTs), a novel automata model over infinite alphabets introduced in this paper. The design of SNTs is inspired by streaming transducers (Alur and Cerny, POPL 2011). Nevertheless, the two models are intrinsically different since the outputs of SNTs are integers while those of streaming transducers are data words. 
 The decidability of the equivalence of SNTs is achieved with an involved combinatorial analysis of the evolvement of the values of the integer variables during the runs of SNTs.
-
+\footnote{We found some minor bugs in the conference version. They are fixed in the current version by adding to the end of each data word a special symbol $\wend$.}
 \end{abstract}
 
 %\vspace{-0.8cm}
@@ -243,9 +245,9 @@ The decidability of the equivalence of SNTs is achieved with an involved combina
 \bibliographystyle{abbrv}
 \bibliography{data}
 
-%\newpage
+\newpage
 
-%\input{8_append.tex}
+\input{8_append.tex}
 
 %Program =>SNT exp in number of branches in loop
 % Program communtativity to SNT non-zeroness => also exp in number of branches in loop and number of variables
