@@ -124,9 +124,9 @@ The SNT returned from Algorithm~\ref{fig:reducer2SNT} is not yet generalized fla
 \begin{proof}
 Suppose that $\Ss=(Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots,x_k\}$ and $Y=\{y_1,\dots,y_l\}$. Without loss of generality, we assume that the output of $\Ss$ is defined only for data words of length at least two. We will construct two SNTs $\Ss_1$ and $\Ss_2$ so that $\Ss$ is commutative iff $\Ss$ is equivalent to both $\Ss_1$ and $\Ss_2$.
 \begin{itemize}
-\item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$, that is, the data word obtained from $w$ by swapping the first two data values.
+\item The intuition of $\Ss_1$ is that over a data word $w=d_1 d_2 d_3 \dots d_n\wend$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n\wend$, that is, the data word obtained from $w$ by swapping the first two data values.
 %
-\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1$, that is, the data word obtained from $w$ by moving the first data value to the end. 
+\item The intuition of $\Ss_2$ is that over a data word $w=d_1 d_2 d_3 \dots d_n\wend$ with $n\ge 2$, $\Ss_1$ simulates the run of $\Ss$ over $d_2 d_3 \dots d_n d_1\wend$, that is, the data word obtained from $w$ by moving the first data value to the end. 
 \end{itemize}
 The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
 
@@ -134,16 +134,9 @@ The correctness of this reduction follows from Proposition 1 in \cite{CHSW15}.
 
 \noindent {\it The construction of $\Ss_1$}.
 
-Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n$ as follows: When reading $d_2$ in $w$, the data variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
+Intuitively, over a data word $w=d_1d_2 d_3 \dots d_n\wend$, we introduce an additional write-once variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2 d_1 d_3 \dots d_n\wend$ as follows: When reading $d_2$ in $w$, the variables are updated properly by letting $x'$ to represent $d_1$ and $\cur$ to represent $d_2$.
 
-Without loss of generality, we assume that for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ starting from the initial state $q_0$ in $\Ss$, the following constraints are satisfied,
-\begin{itemize}
-\item $g_1$ does not contain any variable from $X$ (otherwise, $g_1$ would be evaluated to $\lfalse$),
-%
-\item for each variable $x \in X$ such that $x$ occurs in $g_2$, it holds that $x \in \dom(\eta_1)$,
-%
-\item after these two transitions, the values of all the variables from $\dom(\eta_1) \cup \dom(\eta_2)$ are defined, more specifically, for each $y \in Y \cap \dom(\eta_2)$ and each $z \in \vars(\eta_2(y))$, it holds that $z \in \dom(\eta_1)$.
-\end{itemize}
+
 
 Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{0},q'_1\}, X \cup \{x'\}, Y, \delta_1, q'_{0}, O_1)$ such that 
 \begin{itemize}
@@ -153,20 +146,20 @@ Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{
 \begin{itemize}
 \item each element of $\delta$ is an element of $\delta_1$,
 %
-\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$, where $\eta'_1,g',\eta'_2$ are defined in the following. Suppose for each $y_j \in Y \cap \dom(\eta_1)$, $\eta_1(y_j)=a_{j} + b_{j}\cur$, and for each $y_j \in Y \cap \dom(\eta_2)$, 
-\[\eta_2(y_j)= y_j + a'_{j} + b'_{j,0}  \cur + \sum\limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} x_{j'},\] 
-or 
-\[
-\eta_2(y_j) = a'_{j} + b'_{j,0} \cur + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} x_{j'} .
-\]
-Then $\eta'_1, g', \eta'_2$ are defined as follows.
+\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q'_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$ and $d_2$ is stored in $\cur$.
+
+
+Formally, $\eta'_1, g', \eta'_2$ are defined as follows.
 \begin{itemize}
-\item $\eta'_1(x')=\cur$, for each $x \in X \cap \dom(\eta_2)$, $\eta'_1(x)=\cur$, and for all the other variables $z$ from $X \cup Y$, $\eta'_1(z)$ is undefined.
+\item $\eta'_1(x')=\cur$ and $\eta'_1(z)$ is undefined for all $z \in X\cup Y$.
 %
-\item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X$ with $\cur$.
+\item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$.
 %
-\item For each $x \in X$, if $x \in \dom(\eta_2)$, then $\eta'_2(x)$ is undefined, otherwise, if $x \in \dom(\eta_1)$, then $\eta'_2(x)=\cur$, otherwise, $\eta'_2(x)$ is undefined.
+\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, let $\eta_2^r(z)$ be the expression obtained by replacing all occurrences of $\cur$ in $\eta_2(x)$ with $x'$,
+then $\eta'_2(x)$ is obtained by substituting all occurrences of variables $z\in \dom{\eta_1}$ in $\eta_2^r(x)$ with $\eta_1(z)$. 
+\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2)$, then $\eta'_2(z)=\eta_1(z)$.
 %
+]\hide{
 \item For each $y_j \in Y$, if $y_j \in \dom(\eta_2)$, then 
 \[
 \begin{array}{l c l}
@@ -174,51 +167,57 @@ Then $\eta'_1, g', \eta'_2$ are defined as follows.
 & = & (a_{j} + a'_{j}) + b'_{j,0} x' + (b_{j}  + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} )\cur,
 \end{array}
 \]
-or 
+(or 
 \[
 \begin{array}{l c l}
 \eta'_2(y_j) & = & a'_{j} + b'_{j,0} x' + \sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'} \cur  \\
 & = & a'_{j} + b_{j,0} x' + (\sum \limits_{x_{j'} \in \dom(\eta_1)} b'_{j,j'}  )\cur.
 \end{array}
-\]
+\], respectively).
+
 %
-Otherwise, if $y_j \in \dom(\eta_1)$, then $\eta'_2(y_j)= a_{j} + b_{j} \cur$. Otherwise, $\eta'_2(y_j)$ is undefined.
+Otherwise, if $y_j \in \dom(\eta_1)$, then $\eta'_2(y_j)= a_{j} + b_{j} \cur$. Otherwise, $\eta'_2(y_j)$ is undefined.}
 \end{itemize}
 \end{itemize}
 \end{itemize}
-It is easy to see that the size of $\Ss_1$ is polynomial with respect to the size of $\Ss$.
 
 \smallskip
 
 \noindent {\it The construction of $\Ss_2$}.
 
-Intuitively, over a data word $w=d_1\dots d_n$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reaching the end of $w$, $\Ss_2$ outputs immediately by using $x'$ to represent $d_1$ and simulating the last transition of $\Ss$ over $d_2 \dots d_n d_1$. In order to simulate \emph{deterministically} the last transition of $\Ss$ over $d_2 \dots d_n d_1$ when reading the end of $w$ (since SNTs are required to be deterministic), we need record in the states of $\Ss_2$ the relationship between $d_1$ and all the values stored in the control variables. This implies an exponential blow-up of the size of $\Ss_2$ with respect to $\Ss$.
+Intuitively, over a data word $w=d_1\dots d_n\wend$, we introduce an additional write-once variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reading $\wend$ in $w$, the variables are updated properly by letting $x'$ to represent $d_1$.
 
-Let $c_{max}$ and $c_{min}$ denote the maximum resp. minimum constant occurring the guards of the transitions of $\Ss$. As a convention, let $c_{max}=c_{min}=0$ if no constants occur in $\Ss$.
+Since we only accept data words end at $\wend$, it is safe to assume that in the SNT $\Ss$, the target state of any transition with the guard $\cur = \wend$ is a sink state, i.e., a state without any outgoing transitions.
 
-Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (Q', Y, \delta_2, q'_{0}, O_2)$, where $O',\delta_2,O_2$ are defined as follows. 
+
+Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (\{q'_0\} \cup Q, X\cup\{x'\}, Y, \delta_2, q'_{0}, O_2)$ such that  
 \begin{itemize}
-\item $Q' = \{q'_0\} \cup \left(Q \times \left([c_{\min}, c_{\max}] \cup \{-\infty,+\infty\}\right) \times X^{\{=, <, >,\bot\}} \right)$, where in a state $(q,(c, o)) \in Q'$, the third component $o$ denotes the relationship between $x'$ and $x$, e.g. $o(x)=<$ means that $x' < x$.
-%
-\item $\delta_2$ is defined as follows, 
-\begin{itemize}
-\item for each $c \in [c_{min}, c_{max}] \cup \{-\infty,+\infty\}$, $\delta_2$ contains $(q'_0,\ltrue,\eta, (q_0,(c, o_0)))$, where $\dom(\eta)=\{x'\}$, $\eta(x')=\cur$, and $o_0(x) = \bot$ for each $x \in X$,
-%
-\item for each $(q,g,\eta,q') \in \delta$ and $(q,(c,o)) \in Q'$ such that $g \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} x'\ o(x)\ x$ is satisfiable, $\delta_2$ contains the following three transitions, 
-$(q,(c,o)) \xrightarrow{(g \wedge \cur = x', \eta)} (q',(c,o'_1))$, 
-$(q,(c,o)) \xrightarrow{(g \wedge \cur< x', \eta)}  (q',(c,o'_2))$,
-and  $(q,(c,o)) \xrightarrow{(g \wedge \cur > x', \eta)} (q',(c,o'_3))$, where 
-for each $x \in X$, if $x \in \dom(\eta)$, then $o'_1(x) := \ =$, $o'_2(x):=\ >$, and $o'_3(x) :=\ <$, otherwise, $o'_1(x) = o'_2(x) = o'_3(x) := o(x)$.
+\item $O_2(q'_0)$ is undefined, and for each $q \in Q$, $O_2(q)=O(q)$,	
+	
+\item $\delta_2$ is constructed from $\delta$ as follows
+	\begin{itemize}
+	\item for each element of $\delta$ without $\cur = \wend$ in the guard is an element of $\delta_2$,
+	%
+
+	\item we add the transition $q'_0 \xrightarrow{(\ltrue,\eta'_1)} q_0$ to $\delta_2$, where $\eta'_1(x') =\cur$ and $\eta'_1(z)$ is undefined for all $z \in X\cup Y$.
+
+	\item for each pair of transitions $q_1 \xrightarrow{(g_1,\eta_1)} q_2 \xrightarrow{(g_2\wedge(\cur=\wend),\eta_2)} q_3$ in $\Ss$, we add the transition $(q_1, g', \eta'_2, q_3)$ into $\delta_2$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$.
+
+
+	Formally, $g',\eta'_2$ are defined in the following. 
+		\begin{itemize}
+		\item $g' = g'_1 \wedge g'_2 \wedge(\cur=\wend)$, where $g'_1$ is obtained from $g_1$ by replacing all occurrence of $\cur$ with $x'$ and $g'_2$ is obtained from $g_2$ by replacing each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$.
+		%
+		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, $\eta'_2(x)$ is obtained by substituting all occurrences of variables $z\in \dom{\eta_1}$ in $\eta_2(x)$ with $\eta_1(z)$ and then substituting all occurrences of $\cur$ with $x'$. 
+		\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2) \wedge z \in \dom(\eta_1)$, then $\eta'_2(z)$ is obtained by substituting all occurrences of $\cur$ in $\eta_1(z)$ with $x'$.
+		\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2) \wedge z \notin \dom(\eta_1)$, then $\eta'_2(z)$ is undefined.
+		%
+
+		\end{itemize}
+	\end{itemize}
 \end{itemize}
-%
-\item $O_2$ is defined as follows: Let $(q,(c,o)) \in Q'$  such that there is $(q,g,\eta,q') \in \delta$ satisfying that $\left(g_c \wedge \bigwedge \limits_{x \in X, o(x) \neq \bot} \cur\ o(x)\ x \right) \models g$, and $O(q')$ is defined, where $g_c := \cur = c$ if $c \in [c_{min}, c_{max}]$, $g_c:=\cur < c_{min}$ if $c=-\infty$, and $g_c:=\cur > c_{max}$ otherwise. Suppose 
-\[O(q')=a_0 + a_1 x_1 + \dots + a_k x_k + b_1 y_1 + \dots + b_l y_l.\]
-Then let
-\[O_2((q,(c,o)))=a_0 + a_1 \eta'(x_1) + \dots + a_k \eta'(x_k) + b_1 \eta'(y_1) + \dots + b_l \eta'(y_l),\]
-where for each $z \in \dom(\eta)$, $\eta'(z)=\eta(z)$, and for all the other variables $z' \in X \cup Y$, $\eta'(z')=z'$.  \\
-We would like to remark that $O_2$ is well-defined since for each $(q,(c,o)) \in Q'$, there is a unique $(q,g,\eta,q') \in \delta$ satisfying the aforementioned constraint, as a result of the determinism of $\Ss$.
-\end{itemize}
-%
+
+It is easy to see that the size of both $\Ss_1$ and $\Ss_2$ are polynomial with respect to the size of $\Ss$.
 Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
 \qed
 \end{proof}
