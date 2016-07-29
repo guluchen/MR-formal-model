@@ -38,7 +38,7 @@ Given a data word $w = d_1 \dots d_n\wend$ and an initial configuration $(q_0, \
 
 
 \begin{example}[SNT for max]
-The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is defined as $(\{q_0,q_1\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, where the set of transitions $\delta$ and the output function $O$ are illustrated in Fig.\ref{fig-snt-exmp}
+The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is defined as $(\{q_0,q_1,q_2\}, \{\maxv\}, \emptyset, \delta, q_0, O)$, where the set of transitions $\delta$ and the output function $O$ are illustrated in Fig.\ref{fig-snt-exmp}
 %such that $\delta = \{(q_0, \ltrue, \maxv:=\cur, q_1), (q_1, \maxv < \cur, \maxv:=\cur,q_1), (q_1, \maxv \ge \cur, \emptyset, q_1)\}$ and $O(q_1)=\maxv$, 
 %
 (here $X=\{\maxv\}$, $Y=\emptyset$, and $\maxv:=\cur$ denotes the assignment of $\cur$ to the variable $\maxv$).
