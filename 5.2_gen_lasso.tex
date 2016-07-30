@@ -71,8 +71,8 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 \subsubsection{Step II:}
 The goal of Step II is to show that 
 \begin{itemize}
-\item either for each cycle scheme $\schm$, all subexpressions in $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ containing the cycle counter variables are identical to zero and hence can be ignored, 
-\item or  there exists a cycle scheme $\schm$ such that $\eval{O(q_m)}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ is not identical to zero. 
+\item either for each cycle scheme $\schm$, all subexpressions in $\eval{O(q_{m+1})}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ containing the cycle counter variables are identical to zero and hence can be ignored, 
+\item or  there exists a cycle scheme $\schm$ such that $\eval{O(q_{m+1})}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ is not identical to zero. 
 \end{itemize}
 Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_{m+1})}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
@@ -99,7 +99,7 @@ $}
 %
 The expression $(\ast\ast)$ can be rewritten as $\mu_{\schm,(i_1,0)} \ell_1 + \nu_{\schm,(i_1,0)}$ for some integer constants $\mu_{\schm, (i_1,0)}$ and $\nu_{\schm, (i_1,0)}$. 
 
-We use $\sim_\initval$ to denote an equivalence relation over $[k]$, that is, over the set of indices for control variables. The intention of $\sim_\initval$ is as follows: $j'_1 \sim_\initval j'_2$ iff $\initval(x_{j'_1})=\initval(x_{j'_2})$, that is, the values of the control variables $x_{j'_1}$ and $x_{j'_2}$ assigned by $\initval$ are the same. 
+We use $\sim_\initval$ to denote an equivalence relation over $[k]$, that is, over the set of indices of control variables. The intention of $\sim_\initval$ is as follows: $j'_1 \sim_\initval j'_2$ iff $\initval(x_{j'_1})=\initval(x_{j'_2})$, that is, the values of the control variables $x_{j'_1}$ and $x_{j'_2}$ assigned by $\initval$ are the same. 
 
 Suppose $\initval$ is a symbolic valuation associated with an equivalence relation $\sim_\initval$.  If $\mu_{\schm,(i_1,0)}=0$, in addition, for each equivalence class $J$ of $\sim_\initval$ such that $J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$, it holds $\sum \limits_{j' \in J \cap I^{\circled{C_{i_1}}}_{pe} } \mu_{\schm,(i_1,j')}=0$, then we can ignore all subexpressions containing the cycle counter variable $\ell_1$ in   $\eval{O(q_{m+1})}{\sumf^{(\schm,\initval)}}$, i.e., the subexpressions $\mu_{\schm,(i_1,0)}\ell_1$ and $\mu_{\schm,(i_1,j')}\ell_1$ for all $j' \in I^{\circled{C_{i_1}}}_{pe}$.
 %
@@ -108,7 +108,7 @@ In the following, we compute inductively the set $\Ee$ of all the possible equiv
 \begin{enumerate}
 \item Initially, let $\Ee_0 = \{\sim_H\}$, where $\sim_H$ is the reflexive, symmetric and transitive closure of the set of tuples $(j_1,j_2)$ such that $\pi^{\circled{H}}(j_1) = \pi^{\circled{H}}({j_2})$.
 %
-\item For $i \ge 0$, $\Ee_{i+1}$ is the union of $\Ee_i$ and the set of equivalence relations $\sim'$, which is the reflexive, symmetric and transitive closure of $\left(\sim \cap\ (I^{\circled{C_j}}_{pe} \times I^{\circled{C_j}}_{pe})\right) \cup \{(j_1,j_2) \in I^{\circled{C_j}}_{tr} \times I^{\circled{C_j}}_{tr} \mid \pi^{\circled{C_j}}(j_1) = \pi^{\circled{C_j}}(j_2) \}$, for some $\sim \in \Ee_i$ and some cycle $C_j$ (where $j \in [n]$).
+\item For $i \ge 0$, $\Ee_{i+1}$ is the union of $\Ee_i$ and the set of $\sim'\ = \left(\sim \cap\ (I^{\circled{C_{i'}}}_{pe} \times I^{\circled{C_{i'}}}_{pe})\right) \cup \left\{(j_1,j_2) \in I^{\circled{C_{i'}}}_{tr} \times I^{\circled{C_{i'}}}_{tr} \mid \pi^{\circled{C_{i'}}}(j_1) = \pi^{\circled{C_{i'}}}(j_2) \right\}$, for some $\sim \in \Ee_i$ and some cycle $C_{i'}$ (where $i' \in [n]$).
 %
 \item If $\Ee_{i+1} = \Ee_i$, then let $\Ee = \Ee_i$ and stop the computation.
 \end{enumerate}
@@ -121,7 +121,7 @@ We are ready to present Step II.
 		\noindent {\bf Step II}. For each $\sim \in \Ee$ and $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
 		one of the following constraints is satisfied, then return $\ltrue$. 
 		\begin{enumerate}
-		\item There is an equivalence class $J$ of $\sim$ such that $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$. 
+		\item There is an equivalence class $J$ of $\sim$ such that $ J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$ and $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$. 
 		\item $\mu_{\schm,(i_1,0)} \neq 0$.
 		\end{enumerate}
 		If the decision procedure has not returned yet, then go to Step III.
@@ -131,36 +131,41 @@ We are ready to present Step II.
 \noindent{\it Complexity analysis of Step II}. $\Ee$ contains at most $2^{k^2}$ equivalence relations. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential in the number of cycles in the generalized lasso. Once the equivalence relation $\sim$ and the cycle scheme $\schm$ is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential in the number of control variables and the number of cycles in the generalized lasso.
 
 \smallskip
-In the following, we present the arguments for the correctness of Step II.
-
-If there exist an equivalence relation $\sim \in \Ee$ and an equivalence class $J$ of $\sim$ such that 
+In the following, we present the arguments for the correctness of Step II. Suppose $\schm = \schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.
+\begin{itemize}
+\item If there exist an equivalence relation $\sim \in \Ee$ and an equivalence class $J$ of $\sim$ such that $J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$ and 
 $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$, let $P$ be any path of $\Ss$ starting from the initial state $q_0$ and ending at the state $q_m$ such that $\sim$ is the reflexive, symmetric and transitive closure of $\{(j_1, j_2) \in I^{\circled{P}}_{tr} \times I^{\circled{P}}_{tr} \mid  \pi^{\circled{P}}(j_1) = \pi^{\circled{P}}(j_2)\}$. Note that the existence of such a path $P$ follows from the definition of $\Ee$. 
-Then from $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$, we can assign a sufficiently large value $s$ to $\ell_1$ so that the sum of the coefficients of the $\initval(x_{j'})$-atoms for $j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}$ in $\eval{O(q_{m+1})}{\sumf^{(P\schm ,\sval_0})}$, which is equal to the sum of the term $\ell_1 \left(\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')}\right)$ and some constant,  becomes non-zero.  The guards in the path $P C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
+Then from $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$, we can assign a sufficiently large value $s$ to $\ell_1$ so that the sum of the coefficients of the $\initval(x_{j'})$-atoms for $j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}$ in $\eval{O(q_{m+1})}{\sumf^{(P\schm ,\sval_0})}$, which is equal to the sum of the expression $\ell_1 \left(\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')}\right)$ and some constant,  becomes non-zero.  The guards in the path $P C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
 Pick one of the nontrivial non-constant atoms with a maximal subject w.r.t the preorder. Since the subject is maximal, it can be assigned an arbitrarily large number so that the corresponding atom, or the sum of the $\initval(x_{j'})$-atoms for $j' \in J$ (where $J$ is an equivalence class of $\sim$), dominates $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$.  This is sufficient to make $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ non-zero.
-Otherwise, if $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ contains some other nontrivial non-constant atoms, then we can apply a similar argument as above and conclude that $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ can be made non-zero. On the other hand, if $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ contains no nontrivial non-constant atoms, but $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ sufficiently large to make the expression $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ non-zero. Therefore, when there exist an equivalence relation $\sim \in \Ee$ and an equivalence class $J$ of $\sim$ such that $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$, we are able to conclude that there \emph{must be} a path $P$ and an input to make $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ non-zero.  
+%
+\item Otherwise, if $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ contains some other nontrivial non-constant atoms, then we can apply a similar argument as above and conclude that $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ can be made non-zero. 
+
+\item On the other hand, if $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ contains no nontrivial non-constant atoms, but $\mu_{\schm,(i_1,0)} \neq 0$, then we can let $\ell_1$ sufficiently large to make the expression $\eval{O(q_{m+1})}{\sumf^{(P\schm,\sval_0)}}$ non-zero. 
+\end{itemize} 
+Therefore, when Step II returns $\ltrue$, that is, at least one of the two conditions in Step II holds, then we are able to conclude that there \emph{must be}  an input data word $w$ and an initial valuation $\rho_0$ such that $ \Ss_{\rho_0}(w) \not \in \{\bot, 0\}$. 
 %Similar arguments can be applied to $\ell_2\dots\ell_n$.
 
 \smallskip
 
-If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{s_1}}^{\ell_{s_1}}$ with $i_1,i_2,\dots,i_{s_1} \in [n]$, all subexpressions containing cycle counter variables $\ell_1,\dots, \ell_{s_1}$ in $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{s_2}}$ be the sequence obtained from $i_2 \dots i_{s_1}$ by keeping just one copy for each duplicated index therein.  
-In Step II we already checked the equivalence relation $\sim_H$ and the cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{s_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
+If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{t_1}}^{\ell_{t_1}}$ with $i_1,i_2,\dots,i_{t_1} \in [n]$, all subexpressions containing cycle counter variables $\ell_1,\dots, \ell_{t_1}$ in $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{t_2}}$ be the sequence obtained from $i_2 \dots i_{t_1}$ by keeping just one copy for each duplicated index therein.  
+In Step II we already checked the equivalence relation $\sim_H$ and the cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{t_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
 $\eval{O(q_{m+1})}{\sumf^{(\schm_2, \sumf^{(H,\sval_0)}))}}$ are identical to zero and hence can be removed.
-Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{s_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ and $\eval{O(q_{m+1})}{\sumf^{(\schm_2, \sumf^{(H,\sval_0)}))}}$.
+Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{t_1}}}}_{j})^{\ell_{t_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{t_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ and $\eval{O(q_{m+1})}{\sumf^{(\schm_2, \sumf^{(H,\sval_0)}))}}$.
 Hence we can also remove all subexpressions containing $\ell_1$ from  $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$, without affecting its value.
-Those subexpressions containing $\ell_2$ can also be removed by considering the equivalence relation induced by the path $HC_{i_1}$ the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{s_3}}$ and applying a similar reasoning, where the sequence ${i''_3} \dots {i''_{s_3}}$ is obtained from ${i_3} \dots  i_{s_1}$, similarly to the construction of ${i'_2} \dots {i'_{s_2}}$ from $i_2 \dots i_{s1}$. The same applies to all other cycle counter variables $\ell_3,\dots,\ell_{s_1}$.
+Those subexpressions containing $\ell_2$ can also be removed by considering the equivalence relation induced by the path $HC_{i_1}$ the cycle scheme $\schm_3=C_{i_2}^{\ell_2} C_{i''_3} \dots C_{i''_{t_3}}$ and applying a similar reasoning, where the sequence ${i''_3} \dots {i''_{t_3}}$ is obtained from ${i_3} \dots  i_{t_1}$, similarly to the construction of ${i'_2} \dots {i'_{t_2}}$ from $i_2 \dots i_{t_1}$. The same applies to all other cycle counter variables $\ell_3,\dots,\ell_{t_1}$.
 For each $y_j \in Y$, we use the notation ${\sumf^{(\schm_1,\initval)}}^-(y_j)$ to denote the expression obtained by removing from the constant atom and coefficients of the non-constant atoms of $\sumf^{(\schm_1,\initval)}(y_j)$ all subexpressions containing the cycle counter variables. 
 
 \begin{lemma}\label{prop-bnd-domain-1}
-	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_m)}{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}$ and $f'=\eval{O(q_m)}{{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}^-}$. For all valuations $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
+	Suppose that the decision procedure has not returned $\ltrue$ after Step~II. For each cycle scheme $\schm$, let $f=\eval{O(q_{m+1})}{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}$ and $f'=\eval{O(q_{m+1})}{{\sumf^{(\schm, \sumf^{(H,\sval_0)})}}^-}$. For all valuations $\rho$, $\eval{f}{\rho}\neq 0$ iff $\eval{f'}{\rho} \neq 0$.
 \end{lemma}
 
 
 
 \subsubsection{Step III:} 
 
-From Proposition~\ref{prop-sum-cycle},  we can observe that for each cycle $C_i$ (where $1 \le i \le n$),  the expression $\sumf^{(C^\ell_i, \initval)^-}(y_j)$ for $y_j \in Y$ is of one of the the following forms.
+From Proposition~\ref{prop-sum-cycle},  we can observe that for each cycle $C_i$ (where $1 \le i \le n$),  the expression $\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^-}(y_j)$ for $y_j \in Y$ is of one of the the following forms.
 \begin{itemize}
-\item If $\cstl^{\circled{C_i}}_{j}=0$, then $\sumf^{(C^\ell_i,\initval)^{-}}(y_j) = \sumf^{(C^\ell_i,\initval)}(y_j)$.
+\item If $\cstl^{\circled{C_i}}_{j}=0$, then $\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^{-}}(y_j) = \sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})}(y_j)$.
 %\medskip\\
 %\resizebox{0.9\hsize}{!}{$
 %\sumf^{(C^\ell_i,\initval)}(y_j)   =  \cste^{\circled{C_i}}_{j} +  \sum \limits_{j' \in I^{\circled{C_i}}_{pe}} \csta^{\circled{C_i}}_{j,j'} \initval(x_{j'}) +
@@ -171,8 +176,8 @@ From Proposition~\ref{prop-sum-cycle},  we can observe that for each cycle $C_i$
 \medskip\\
 \resizebox{0.95\hsize}{!}{$
 \begin{array}{l }
-\sumf^{(C^\ell_i,\initval)^-}(y_j)  =    \initval(y_j) +   
-\sum \limits_{j' \in I^{\circled{C_i}}_{tr}} \csta^{\circled{C_i}}_{j,j'} \initval(x_{j'}) +  \sum \limits_{j' \in \rng(\pi^{\circled{C_i}})} \sum \limits_{s\in[\ell -1]}
+\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^-}(y_j)  =    \sumf^{(H,\sval_0)}(y_j) +   
+\sum \limits_{j' \in I^{\circled{C_i}}_{tr}} \csta^{\circled{C_i}}_{j,j'} \sumf^{(H,\sval_0)}(x_{j'}) +  \sum \limits_{j' \in \rng(\pi^{\circled{C_i}})} \sum \limits_{s\in[\ell -1]}
 \left(\cstb^{\circled{C_i}}_{j,j'} + \sum \limits_{j'' \in (\pi^{\circled{C_i}})^{-1}(j')} \csta^{\circled{C_i}}_{j, j''}   \right) \vard^{\circled{C_i , s}}_{j'} + \smallskip \\
  \sum \limits_{j' \in [r^{\circled{C_i}}]  \setminus \rng(\pi^{\circled{C_i}}) }\sum \limits_{s\in[\ell -1]} 
 \cstb^{\circled{C_i}}_{j,j'} \vard^{\circled{C_i , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C_i}}] }  
@@ -180,6 +185,7 @@ From Proposition~\ref{prop-sum-cycle},  we can observe that for each cycle $C_i$
 \end{array}
 $}
 \end{itemize}
+Note that if $\cstl^{\circled{C_i}}_{j}=1$, then the expressions containing the cycle counter variable $\ell$, e.g. $\ell \cste^{\circled{C_i}}_j$, are removed from $\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^-}(y_j)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -212,14 +218,6 @@ Note that the coefficients of the $\vard^{\circled{\schm}}_1$-atom, $\dots$, and
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Going one step further, we are able to show that the coefficients of the atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ for all cycle schemes $\schm$ are from a bounded set.
-%
-\begin{lemma}\label{prop-bnd-domain-2}
-	Suppose that the decision procedure has not returned yet after Step II. 
-	For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising \\ (1)
-	the constant atom and the coefficients of the non-constant atoms in the expression $\sumf^{(C^{\ell_i}_{i}, \sumf^{(H, \initval_0)})^-}(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,\smallskip\\(2) the numbers $\csta^{\circled{C_{s_2}}}_{j,j'} + \cstb^{\circled{C_{s_1}}}_{j,\pi^{\circled{C_{s_1}}}(j')}$ and $\csta^{\circled{C_{s_1}}}_{j, j''} + \csta^{\circled{C_{s_2}}}_{j,j''}$, where  $s_1,s_2 \in [n], j\in[l],j' \in I^{\circled{C_{s_1}}}_{tr} \cap I^{\circled{C_{s_2}}}_{tr},  j'' \in [k]$. 
-\end{lemma}
-
 
 We define the abstraction of $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}$, denoted by $\abs(H\schm)$, as a pair $(\sim, \Lambda)$, where $\sim $ is the reflexive, symmetric and transitive closure of $\{(j_1, j_2) \in I^{\circled{H\schm}}_{tr} \times I^{\circled{H\schm}}_{tr} \mid \pi^{\circled{H\schm}}(j_1)= \pi^{\circled{H\schm}}(j_2)\}$, and $\Lambda$ is the union of the following three sets of tuples:
 \begin{itemize}
@@ -227,8 +225,9 @@ We define the abstraction of $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}$, denoted
 % 
 \item tuples for the control variable atoms: $\{(j', (c_{j',1},\dots, c_{j', l})) \mid j' \in [k]\}$, where $c_{j', j}$ is the coefficient of the ${\sumf^{(\schm,\sumf^{(H,\sval_0)})}}(x_{j'})$-atom in ${\sumf^{(\schm,\sumf^{(H,\sval_0)})}}^-(y_{j})$ for $j\in[l]$,
 % 
-\item tuples for the other atoms: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l) \in U^l$ is the vector of coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_0)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}(x_{j'})\mid x_{j'}\in X\}$.
+\item tuples for the other atoms: $\{(k+1, (c_1,\dots,c_l))\}$, where $(c_1,\dots,c_l)$ is the vector of coefficients of the $\vard'$-atom in ${(\sumf^{(\schm,\sumf^{(H,\sval_0)})}}^-(y_{j})$ for all $j \in [l]$ and $\vard'\not\in \{{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}(x_{j'})\mid x_{j'}\in X\}$.
 \end{itemize}
+Note that in $\abs(H\schm)$, if $j_1, j_2 \in [k]$ and $j_1 \sim j_2$, then we have $\sumf^{(\schm,\sumf^{(H,\initval_0)})}(x_{j_1})=\sumf^{(\schm,\sumf^{(H,\initval_0)})}(x_{j_2})$. Therefore, $(c_{j_1, 1}, \dots, c_{j_1, l}) = (c_{j_2,1}, \dots, c_{j_2, l})$.
 
 Let $\mathscr{A}=\bigcup \{\abs(H\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed inductively as follows, until $\mathscr{A}_{i+1}= \mathscr{A}_i$. 
 \begin{enumerate}
@@ -240,23 +239,48 @@ Let $\mathscr{A}=\bigcup \{\abs(H\schm) \mid \schm \mbox{ a cycle scheme}\}$. Th
 %
 \item Moreover, $\Lambda'$ is obtained from $\Lambda$ and $C_{i'}$ as follows. 
 \begin{itemize}
-\item Suppose $(0, c_1, \dots, c_l) \in \Lambda$. Then $(0, c'_1, \dots, c'_l) \in \Lambda'$, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_j = \cste^{\circled{C_{i'}}}_{j}$, otherwise, $c'_j = c_j$.
+\item Suppose $(0, (c_1, \dots, c_l)) \in \Lambda$. Then $(0, (c'_1, \dots, c'_l)) \in \Lambda'$, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_j = \cste^{\circled{C_{i'}}}_{j}$, otherwise, $c'_j = c_j$ (in this case, the expression $\cste^{\circled{C_{i'}}}_{j}$ is removed).  
 %
-\item For each $j' \in [k]$, suppose $(j', c_{j',1}, \dots, c_{j',l}) \in \Lambda$, do the following. 
+\item For each $j' \in [k]$, suppose $(j', (c_{j',1}, \dots, c_{j',l})) \in \Lambda$, do the following. 
 \begin{itemize}
-\item If $j' \in I^{\circled{C_{i'}}}_{pe}$, then $(j', c'_{j', 1}, \dots, c'_{j', l}) \in \Lambda'$,  where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \csta^{\circled{C_{i'}}}_{j, j'}$, otherwise, $c'_{j', j} = c_{j',j}$.
+\item If $j' \in I^{\circled{C_{i'}}}_{pe}$, then $(j', (c'_{j', 1}, \dots, c'_{j', l})) \in \Lambda'$,  where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \sum \limits_{j'' \sim j'} \csta^{\circled{C_{i'}}}_{j, j''}$, otherwise, $c'_{j', j} = c_{j',j} + \sum \limits_{j'' \sim j', j'' \in I^{\circled{C_{i'}}}_{tr}} \csta^{\circled{C_{i'}}}_{j, j''}$ (in this case, the expressions $\csta^{\circled{C_{i'}}}_{j,j''}$ for $j'' \in  I^{\circled{C_{i'}}}_{pe}$ such that $j'' \sim j'$ are removed).
 %
-\item If $j' \in I^{\circled{C_{i'}}}_{tr}$, then {\small $(k+1, c'_{j',1}, \dots, c'_{j',l}), (j', \cstb^{\circled{C_{i'}}}_{1, \pi^{\circled{C_{i'}}}(j')}, \dots, \cstb^{\circled{C_{i'}}}_{l, \pi^{\circled{C_{i'}}}(j')}) \in \Lambda'$}, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \csta^{\circled{C_{i'}}}_{j, j'}$, otherwise, $c'_{j', j} = c_{j',j} +  \csta^{\circled{C_{i'}}}_{j, j'}$.
+\item If $j' \in I^{\circled{C_{i'}}}_{tr}$ and $[j']_\sim \cap I^{\circled{C_{i'}}}_{pe} = \emptyset$ (where $[j']_\sim$ is the equivalence class of $\sim$ containing $j'$), then 
+$$(k+1, (c'_{j', 1}, \dots, c'_{j', l})), \left(j', \left(\cstb^{\circled{C_{i'}}}_{1, \pi^{\circled{C_{i'}}}(j')}, \dots, \cstb^{\circled{C_{i'}}}_{l, \pi^{\circled{C_{i'}}}(j')} \right) \right) \in \Lambda',$$ 
+where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \sum \limits_{j'' \sim j'} \csta^{\circled{C_{i'}}}_{j, j''} $, otherwise, $c'_{j', j} = c_{j',j} +  \sum \limits_{j'' \sim j'} \csta^{\circled{C_{i'}}}_{j, j''}$.
 %
 \end{itemize}
 
-\item For each tuple $(k+1, c_1, \dots, c_l) \in \Lambda$, $(k+1, c_1, \dots, c_l) \in \Lambda'$. In addition, for each $j' \in [r^{\circled{C_{i'}}}] \setminus \rng(\pi^{\circled{C_{i'}}})$, $(k+1, \cstb^{\circled{C_{i'}}}_{1, j'}, \dots, \cstb^{\circled{C_{i'}}}_{l, j'}) \in \Lambda'$. 
+\item For each tuple $(k+1, (c_1, \dots, c_l)) \in \Lambda$, $(k+1, (c'_1, \dots, c'_l)) \in \Lambda'$, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j}= 0$, otherwise, $c'_{j} = c_j$. In addition, for each $j' \in [r^{\circled{C_{i'}}}] \setminus \rng(\pi^{\circled{C_{i'}}})$, $(k+1, (\cstb^{\circled{C_{i'}}}_{1, j'}, \dots, \cstb^{\circled{C_{i'}}}_{l, j'})) \in \Lambda'$. 
 \end{itemize}
 \end{itemize}
 \end{enumerate}
+
+
+In order to show that the inductive computation of $\mathscr{A}$ terminates, it is sufficient to show that all the tuples $(j', (c_1, \dots, c_l))$ occurring in $\mathscr{A}$ satisfy that $c_1,\dots, c_l$ are from a bounded domain $U$.
+
+\begin{lemma}\label{prop-bnd-domain-2}
+	Suppose that the decision procedure has not returned yet after Step II. 
+	For all cycle scheme $\schm$ and $y_j \in Y$, the constant atom and the coefficients of all non-constant atoms in ${\sumf^{(\schm, \sumf^{(H,\initval_0)})}}^-(y_j)$ are from a finite set $U \subset \intnum$ comprising
+	\begin{enumerate}
+	\item the constant atom and the coefficients of the non-constant atoms in the expression $\sumf^{(C^{\ell_i}_{i}, \sumf^{(H, \initval_0)})^-}(y_j)$ for $i\in [n]$ and $\ell_i \in \{1,2\}$,
+	%
+	\item the numbers  $\sum \limits_{j' \in J} \csta^{\circled{C_{i}}}_{j,j'}$ for $i \in [n]$ and $J \subseteq [k]$, 
+	%
+	\item the numbers $\cstb^{\circled{H}}_{j,\pi^{\circled{H}}(j')} + \sum \limits_{j'' \in J} \csta^{\circled{C_{i'_{j''}}}}_{j,j''}$ for $j' \in I^{\circled{H}}_{tr}$, $J \subseteq \{j'' \in I^{\circled{H}}_{tr} \mid  \pi^{\circled{H}}(j'') = \pi^{\circled{H}}(j')\}$, and $i'_{j''} \in [n]$ for each $j'' \in J$, 
+	%
+	\item the numbers $\cstb^{\circled{C_i}}_{j,\pi^{\circled{C_i}}(j')} + \sum \limits_{j'' \in J} \csta^{\circled{C_{i'_{j''}}}}_{j,j''}$ for $j' \in I^{\circled{C_i}}_{tr}$, $J \subseteq \{j'' \in I^{\circled{C_i}}_{tr} \mid  \pi^{\circled{C_i}}(j'') = \pi^{\circled{C_i}}(j')\}$, and $i'_{j''} \in [n]$  for each $j'' \in J$. 
+	\end{enumerate}
+\end{lemma}
+
+Lemma~\ref{prop-bnd-domain-2} follows from the observation that there are only the following two situations that the coefficients may get unbounded, 
+\begin{itemize}
+\item  $j' \in I^{\circled{C_{i'}}}_{pe}$, $(j', (c_{j',1}, \dots, c_{j',l})) \in \Lambda$, $(j', (c'_{j', 1}, \dots, c'_{j', l})) \in \Lambda'$, $\cstl^{\circled{C_{i'}}}_j = 1$, and $c'_{j', j} = c_{j',j} + \sum \limits_{j'' \sim j', j'' \in I^{\circled{C_{i'}}}_{tr}} \csta^{\circled{C_{i'}}}_{j, j''}$,
 %
-%We first compute $\abs(HC_1), \ldots \abs(HC_n)$, put them into $\mathscr{A}$, then compute from them the abstractions $\abs(HC_1C_1),\dots, \abs(HC_1C_n), \abs(HC_2C_1), \dots$ by appending $C_1,\dots,C_n$, put them into $\mathscr{A}$, and so on, until reaching a fixed point.
-We are ready to present Step III.
+\item $j' \in I^{\circled{C_{i'}}}_{tr}$, $[j']_\sim \cap I^{\circled{C_{i'}}}_{pe} = \emptyset$, $(j', (c_{j',1}, \dots, c_{j',l})) \in \Lambda$, $(k+1, (c'_{j', 1}, \dots, c'_{j', l})) \in \Lambda'$, $\cstl^{\circled{C_{i'}}}_j = 1$, and $c'_{j', j} = c_{j',j} +  \sum \limits_{j'' \sim j'} \csta^{\circled{C_{i'}}}_{j, j''}$.
+\end{itemize}
+For the former situation above, if $[j']_{\sim} \cap I^{\circled{C_{i'}}}_{tr} \neq \emptyset$, then after going through the cycle $C_{i'}$, none of $j'' \in [j']_{\sim} \cap I^{\circled{C_{i'}}}_{tr}$ would be equivalent to $j'$. Therefore, after going through the cycle $C_{i'}$, the size of the equivalence class containing $j'$ decreases. From this, we deduce that this situation can only happen for at most $k-1$ times, while keeping the control variable $x_{j'}$ persistent. On the other hand, for each $j' \in I^{\circled{C_{i'}}}_{tr}$, the latter situation can only happen once. Therefore, the addition to $c_{j', j}$ with some constant can only happen for at most $k$ times. This justifies the 3rd and 4th item in Lemma~\ref{prop-bnd-domain-2}.
+%
 \bigskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
@@ -278,5 +302,5 @@ In order to reduce the size of $\mathscr{A}$, we can restructure $\mathscr{A}$ i
 \item For each $(\sim, \Lambda) \in \mathscr{A}$, do the following: Let $\Lambda' = \Lambda \setminus \{(k+1, c_1, \dots, c_l) \in \Lambda\}$. Then $\Xi := \Xi \cup \{(\sim, \Lambda')\}$ and $\Delta:= \Delta \cup \{(k+1,c_1,\dots, c_l) \in \Lambda\}$.
 \end{enumerate}
 
-\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is polynomial over the size of the generalized lasso (i.e. the size of the transitions in the generalized lasso). The size of $\Xi$ in $\mathscr{A}'$ is at most exponential over $k$ and $l$, and the size of $\Delta$ in $\mathscr{A}'$ is exponential over $l$. Therefore, the computation of $\mathscr{A}'$ takes time exponential over $k$ and $l$. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}'$. In summary, the complexity of Step III is exponential over the number of control and data variables.
+\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is exponential in $O(k)$. From this, we infer that the size of $\Xi$ in $\mathscr{A}'$ is at most exponential in $O(k^2l)$, and the size of $\Delta$ in $\mathscr{A}'$ is exponential in $O(kl)$. Therefore, the computation of $\mathscr{A}'$ takes time exponential in $O(k^2l)$. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}'$. In summary, the complexity of Step III is exponential over the number of control and data variables.
 
