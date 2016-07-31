@@ -68,6 +68,13 @@ If the answer is yes, then the decision procedure terminates and returns the ans
 
 \noindent{\it Complexity analysis of Step I}. Since $\sumf^{(H,\sval_0)}$ can be computed in polynomial time from $H$, it follows that Step I can be done in polynomial time.
 
+
+\begin{example}\label{exmp-step-1}
+Let $\Ss'_{\sf max}$ be the SNT in Example~\ref{exmp-sum}. The handle $H$ comprises exactly one transition. Thus $r^{\circled{H}}=1$ and 
+\[\eval{O(q_2)}{\sumf^{(H, \initval_0)}} = \vard^{\circled{H}}_1 - 2 \vard^{\circled{H}}_1 + \vard^{\circled{H}}_1=0.\]
+Therefore, the handle $H$ does not produce a non-zero output.
+\end{example}
+
 \subsubsection{Step II:}
 The goal of Step II is to show that 
 \begin{itemize}
@@ -130,8 +137,55 @@ We are ready to present Step II.
 
 \noindent{\it Complexity analysis of Step II}. $\Ee$ contains at most $2^{k^2}$ equivalence relations. Since $i_1,\dots, i_t$ are mutually distinct, the number of cycle schemes $\schm = C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ in Step II is exponential in the number of cycles in the generalized lasso. Once the equivalence relation $\sim$ and the cycle scheme $\schm$ is fixed, the two constraints in Step II can be decided in polynomial time. Therefore, the complexity of Step II is exponential in the number of control variables and the number of cycles in the generalized lasso.
 
+
+
+\begin{example}\label{exmp-step-2}
+Let $\Ss'_{\sf max}$ be the SNT in Example~\ref{exmp-step-1}. Since there is just one control variable, the set $\Ee$ of equivalence relations is trivial. We need consider the following cycle schemes, $C^{\ell_1}_1$, $C^{\ell_1}_2$, $C^{\ell_1}_1 C_2$, $C^{\ell_1}_2 C_1$, $C^{\ell_1}_1 C_2 C_1$, $C^{\ell_1}_2 C_1 C_2$. We use $\schm_1 = C^{\ell_1}_1$, $\schm_2 = C^{\ell_1}_1 C_2$, and $\schm_3 = C^{\ell_1}_1 C_2 C_1$ to illustrate Step II.
+\begin{itemize}
+\item In $\eval{O(q_2)}{\sumf^{(\schm_1, \initval)}}$,  the subexpression containing $\ell_1$ in the coefficient of the $\initval(x_1)$-atom is
+\[
+\begin{array} {l}
+\sum \limits_{1 \le j \le 3} b_j
+\begin{array}{l}
+\left(1+\lambda^{\circled{C_{1}}}_{j} + \dots + (\lambda^{\circled{C_{1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{1}}}_{j, 1}
+\end{array}
+\\
+= 1 \times \ell_1 \times 4 +  (-2) \times \ell_1 \times 2 + 1 \times 1 \times 0 = 0.
+\end{array}
+\]
+%
+\item In $\eval{O(q_2)}{\sumf^{(\schm_2, \initval)}}$, the subexpression containing $\ell_1$ in the coefficient of the $\initval(x_1)$-atom is 
+\[
+\begin{array}{l}
+\sum \limits_{1 \le j \le 3} b_j
+\begin{array}{l}
+ \lambda^{\circled{C_{2}}}_{j}
+\left(1+\lambda^{\circled{C_{1}}}_{j} + \dots + (\lambda^{\circled{C_{1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{1}}}_{j, 1}
+\end{array}
+\\
+= 1 \times 1 \times \ell_1 \times 4 + (-2) \times 1 \times \ell_1 \times 2 + 1 \times 1 \times 1 \times 0 =0.
+\end{array}
+\]
+%
+\item In $\eval{O(q_2)}{\sumf^{(\schm_3, \initval)}}$, the subexpression containing $\ell_1$ in the coefficient of the $\initval(x_1)$-atom is 
+\[
+\begin{array}{l}
+\sum \limits_{1 \le j \le 3} b_j
+\begin{array}{l}
+ (\lambda^{\circled{C_{2}}}_{j}\lambda^{\circled{C_{1}}}_{j})
+\left(1+\lambda^{\circled{C_{1}}}_{j} + \dots + (\lambda^{\circled{C_{1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{1}}}_{j, 1}
+\end{array}
+\\
+= 1 \times 1 \times \ell_1 \times 4 + (-2) \times 1 \times \ell_1 \times 2 + 1 \times 0 \times 1 \times 0 =0.
+\end{array}
+\]
+\end{itemize}
+From Example~\ref{exmp-sum}, we know that if $\schm=C^{\ell_1}_2, C^{\ell_1}_2 C_1$, or $C^{\ell_1}_2 C_1 C_2$, then for each $j =1, 2,3$, the coefficient of the $\initval(x_1)$-atom in $\sumf^{(\schm, \initval)}(y_j)$ does not contain the cycle counter variable $\ell_1$. Therefore, the coefficient of the $\initval(x_1)$-atom in $\eval{O(q_2)}{\sumf^{(\schm, \initval)}}$ does not contain $\ell_1$ as well. From this, we conclude that with $\Ss'_{\sf max}$ as the input, the decision procedure does not return in Step II and it will go to Step III.
+\end{example}
+
+
 \smallskip
-In the following, we present the arguments for the correctness of Step II. Suppose $\schm = \schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.
+In the following, we present the arguments for the correctness of Step II. Suppose $\schm =C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.
 \begin{itemize}
 \item If there exist an equivalence relation $\sim \in \Ee$ and an equivalence class $J$ of $\sim$ such that $J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$ and 
 $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$, let $P$ be any path of $\Ss$ starting from the initial state $q_0$ and ending at the state $q_m$ such that $\sim$ is the reflexive, symmetric and transitive closure of $\{(j_1, j_2) \in I^{\circled{P}}_{tr} \times I^{\circled{P}}_{tr} \mid  \pi^{\circled{P}}(j_1) = \pi^{\circled{P}}(j_2)\}$. Note that the existence of such a path $P$ follows from the definition of $\Ee$. 
@@ -147,7 +201,7 @@ Therefore, when Step II returns $\ltrue$, that is, at least one of the two condi
 
 \smallskip
 
-If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{t_1}}^{\ell_{t_1}}$ with $i_1,i_2,\dots,i_{t_1} \in [n]$, all subexpressions containing cycle counter variables $\ell_1,\dots, \ell_{t_1}$ in $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{t_2}}$ be the sequence obtained from $i_2 \dots i_{t_1}$ by keeping just one copy for each duplicated index therein.  
+If Step II does not return $\ltrue$, we show below that for all cycle schemes $\schm_1=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{t_1}}^{\ell_{t_1}}$ with $i_1,i_2,\dots,i_{t_1} \in [n]$, all subexpressions containing cycle counter variables $\ell_1,\dots, \ell_{t_1}$ in $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)})}}$ are identical to zero and hence can be removed. Let ${i'_2} \dots {i'_{t_2}}$ be the sequence obtained from $i_2 \dots i_{t_1}$ by keeping just one copy for each duplicated index therein.  
 In Step II we already checked the equivalence relation $\sim_H$ and the cycle scheme $\schm_2=C_{i_1}^{\ell_1} C_{i'_2} \dots C_{i'_{t_2}}$. Step II guarantees that all subexpressions containing $\ell_1$ in 
 $\eval{O(q_{m+1})}{\sumf^{(\schm_2, \sumf^{(H,\sval_0)}))}}$ are identical to zero and hence can be removed.
 Because for all $j\in[l]$, $\cstl^{^{\circled{C_1}}}_j, \dots, \cstl^{^{\circled{C_n}}}_j \in \{0,1\}$,   $(\lambda^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\lambda^{\circled{C_{i_{t_1}}}}_{j})^{\ell_{t_1}} = \lambda^{\circled{C_{i'_2}}}_{j} \dots \lambda^{\circled{C_{i'_{t_2}}}}_{j}$. We proved that the $(\ast)$ and $(\ast\ast)$ style expressions are equivalent in both $\eval{O(q_{m+1})}{\sumf^{(\schm_1, \sumf^{(H,\sval_0)}))}}$ and $\eval{O(q_{m+1})}{\sumf^{(\schm_2, \sumf^{(H,\sval_0)}))}}$.
@@ -229,11 +283,11 @@ We define the abstraction of $\sumf^{(\schm,\sumf^{(H,\initval_0)})^-}$, denoted
 \end{itemize}
 Note that in $\abs(H\schm)$, if $j_1, j_2 \in [k]$ and $j_1 \sim j_2$, then we have $\sumf^{(\schm,\sumf^{(H,\initval_0)})}(x_{j_1})=\sumf^{(\schm,\sumf^{(H,\initval_0)})}(x_{j_2})$. Therefore, $(c_{j_1, 1}, \dots, c_{j_1, l}) = (c_{j_2,1}, \dots, c_{j_2, l})$.
 
-Let $\mathscr{A}=\bigcup \{\abs(H\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\mathscr{A}$ can be constructed inductively as follows, until $\mathscr{A}_{i+1}= \mathscr{A}_i$. 
+Let $\absset=\bigcup \{\abs(H\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $\absset$ can be constructed inductively as follows, until $\absset_{i+1}= \absset_i$. 
 \begin{enumerate}
-\item $\mathscr{A}_0 = \{\abs(HC_1), \ldots \abs(HC_n)\}$,
+\item $\absset_0 = \{\abs(HC_1), \ldots \abs(HC_n)\}$,
 
-\item For $i \ge 0$, $\mathscr{A}_{i+1}$ is the union of $\mathscr{A}_i$ and the set of pairs $(\sim', \Lambda')$ such that $(\sim', \Lambda')$ is constructed from some $(\sim, \Lambda) \in \mathscr{A}_i$ and some cycle $C_{i'}$ (where $ i' \in [n]$) as follows.
+\item For $i \ge 0$, $\absset_{i+1}$ is the union of $\absset_i$ and the set of pairs $(\sim', \Lambda')$ such that $(\sim', \Lambda')$ is constructed from some $(\sim, \Lambda) \in \absset_i$ and some cycle $C_{i'}$ (where $ i' \in [n]$) as follows.
 \begin{itemize}
 \item $\sim' = \left(\sim \cap\ I^{\circled{C_{i'}}}_{pe} \times I^{\circled{C_{i'}}}_{pe} \right) \cup \left\{(j_1,j_2) \in I^{\circled{C_{i'}}}_{tr} \times I^{\circled{C_{i'}}}_{tr} \mid \pi^{\circled{C_{i'}}}(j_1) = \pi^{\circled{C_{i'}}}(j_2)\right\}$. 
 %
@@ -251,13 +305,13 @@ where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j
 %
 \end{itemize}
 
-\item For each tuple $(k+1, (c_1, \dots, c_l)) \in \Lambda$, $(k+1, (c'_1, \dots, c'_l)) \in \Lambda'$, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j}= 0$, otherwise, $c'_{j} = c_j$. In addition, for each $j' \in [r^{\circled{C_{i'}}}] \setminus \rng(\pi^{\circled{C_{i'}}})$, $(k+1, (\cstb^{\circled{C_{i'}}}_{1, j'}, \dots, \cstb^{\circled{C_{i'}}}_{l, j'})) \in \Lambda'$. 
+\item For each tuple $(k+1, (c_1, \dots, c_l)) \in \Lambda$, we have $(k+1, (c'_1, \dots, c'_l)) \in \Lambda'$, where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j}= 0$, otherwise, $c'_{j} = c_j$. In addition, for each $j' \in [r^{\circled{C_{i'}}}] \setminus \rng(\pi^{\circled{C_{i'}}})$, $(k+1, (\cstb^{\circled{C_{i'}}}_{1, j'}, \dots, \cstb^{\circled{C_{i'}}}_{l, j'})) \in \Lambda'$. 
 \end{itemize}
 \end{itemize}
 \end{enumerate}
 
 
-In order to show that the inductive computation of $\mathscr{A}$ terminates, it is sufficient to show that all the tuples $(j', (c_1, \dots, c_l))$ occurring in $\mathscr{A}$ satisfy that $c_1,\dots, c_l$ are from a bounded domain $U$.
+In order to show that the inductive computation of $\absset$ terminates, it is sufficient to show that all the tuples $(j', (c_1, \dots, c_l))$ occurring in $\absset$ satisfy that $c_1,\dots, c_l$ are from a bounded domain $U$.
 
 \begin{lemma}\label{prop-bnd-domain-2}
 	Suppose that the decision procedure has not returned yet after Step II. 
@@ -284,23 +338,55 @@ For the former situation above, if $[j']_{\sim} \cap I^{\circled{C_{i'}}}_{tr} \
 \bigskip\\
 \framebox[\textwidth]{
 	\begin{minipage}{0.95\textwidth}
-		\noindent {\bf Step III.} We first construct the set $\mathscr{A}$. Then for each $(\sim, \Lambda) \in \mathscr{A}$, do the following.
+		\noindent {\bf Step III.} We first construct the set $\absset$. Then for each $(\sim, \Lambda) \in \absset$, do the following.
 		\begin{enumerate}
 			\item If $(0,(c_{0,1},\dots,c_{0,l})) \in \Lambda$ such that $a_0+b_1 c_{0,1}+\dots + b_l c_{0,l} \neq 0$, then return $\ltrue$.
 			%
 			\item If there is an equivalence class $J$ of $\sim$ such that $\sum \limits_{j' \in J} (a_{j'} + b_1 c_{j',1} + \dots + b_l c_{j',l}) \neq 0$, then   return $\ltrue$, where  $(j', (c_{j',1},\dots,c_{j',l})) \in \Lambda$ for each $j' \in J$.
 			%
-			\item If there is $(k+1,(c_1,\dots,c_l)) \in \mathscr{A}$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$, then return $\ltrue$. 
+			\item If there is $(k+1,(c_1,\dots,c_l)) \in \absset$ such that $b_1 c_1 + \dots + b_l c_l \neq 0$, then return $\ltrue$. 
 		\end{enumerate}
 		If the decision procedure has not returned yet, return $\lfalse$.
 	\end{minipage}
 }\medskip\\
 
-In order to reduce the size of $\mathscr{A}$, we can restructure $\mathscr{A}$ into a pair $\mathscr{A}'=(\Xi, \Delta)$ as follows, without affecting the computation in Step III.
+In order to reduce the size of $\absset$, we can restructure $\absset$ into a pair $\absset'=(\Xi, \Delta)$ as follows, without affecting the computation in Step III.
 \begin{enumerate}
 \item Initially, let $\Xi = \Delta = \emptyset$.
-\item For each $(\sim, \Lambda) \in \mathscr{A}$, do the following: Let $\Lambda' = \Lambda \setminus \{(k+1, c_1, \dots, c_l) \in \Lambda\}$. Then $\Xi := \Xi \cup \{(\sim, \Lambda')\}$ and $\Delta:= \Delta \cup \{(k+1,c_1,\dots, c_l) \in \Lambda\}$.
+\item For each $(\sim, \Lambda) \in \absset$, do the following: Let $\Lambda' = \Lambda \setminus \{(k+1, c_1, \dots, c_l) \in \Lambda\}$. Then $\Xi := \Xi \cup \{(\sim, \Lambda')\}$ and $\Delta:= \Delta \cup \{(k+1,c_1,\dots, c_l) \in \Lambda\}$. 
 \end{enumerate}
 
-\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is exponential in $O(k)$. From this, we infer that the size of $\Xi$ in $\mathscr{A}'$ is at most exponential in $O(k^2l)$, and the size of $\Delta$ in $\mathscr{A}'$ is exponential in $O(kl)$. Therefore, the computation of $\mathscr{A}'$ takes time exponential in $O(k^2l)$. The three conditions in Step III can be checked in time polynomial over the size of $\mathscr{A}'$. In summary, the complexity of Step III is exponential in the number of control and data variables.
+\noindent {\it Complexity analysis of Step III}. The size of the set $U$ is exponential in $O(k)$. From this, we infer that the size of $\Xi$ in $\absset'$ is at most exponential in $O(k^2l)$, and the size of $\Delta$ in $\absset'$ is exponential in $O(kl)$. Therefore, the computation of $\absset'$ takes time exponential in $O(k^2l)$. The three conditions in Step III can be checked in time polynomial over the size of $\absset'$. In summary, the complexity of Step III is exponential in the number of control and data variables.
 
+\begin{example}\label{exmp-step-3}
+Let $\Ss'_{\sf max}$ be the SNT in Example~\ref{exmp-step-2}. Then
+\[
+\begin{array}{l c l}
+\sumf^{(C^\ell_1, \initval)^{-}}(y_1) &= & \initval(y_1) + 0 \initval(x_1) +\ \ \vard^{\circled{C_1, 1}}_1 + \dots +\ \ \vard^{\circled{C_1, \ell}}_1,\\
+%
+\sumf^{(C^\ell_1, \initval)^-}(y_2) &=& \initval(y_2) + 0 \initval(x_1) + 2 \vard^{\circled{C_1, 1}}_1 + \dots + 2 \vard^{\circled{C_1, \ell}}_1,\\
+%
+\sumf^{(C^\ell_1, \initval)^-}(y_3) &=& \hspace{5.1cm} 3 \vard^{\circled{C_1, \ell}}_1,
+\end{array}
+\] 
+and $\sumf^{(C^\ell_2, \initval)^-}(y_j) = \sumf^{(C^\ell_2, \initval)}(y_j)$ for each $j=1,2,3$.
+The computation of $\absset$ starts with the set $\absset_0 = \{\abs(HC_1), \abs(HC_2)\}$. We illustrate how to compute $\abs(HC_1)$ and $\abs(HC_2)$. 
+\begin{itemize}
+\item Since none of $\sumf^{(H, \initval_0)}(y_j)$'s , $\sumf^{(C^\ell_1, \initval)^{-}}(y_j)$'s and $\sumf^{(C^\ell_2, \initval)^{-}}(y_j)$'s contains constant atoms, we know that $(0, (0,0,0))$ occurs in $\abs(HC_1)$ and  $\abs(HC_2)$. 
+%
+\item After going through $H$, each of $y_1,y_2,y_3$ is assigned the first data value, and after going through $HC_1$, $x_1$ holds the first data value. From $\sumf^{(C^\ell_1, \initval)^{-}}(y_j)$'s mentioned above, we know that each of $\sumf^{(C_1, \sumf^{(H, \initval_0)^{-}})}(y_1)$ and $\sumf^{(C_1, \sumf^{(H, \initval_0)^{-}})}(y_2)$ holds one copy of the first data value,  and $\sumf^{(C_1, \sumf^{(H, \initval_0)^{-}})}(y_3)$ contains no copies of the first data value. Therefore, $(1, (1,1,0))$ occurs in $\abs(HC_1)$. Similarly, since $x_1$ holds the second data value after going through $HC_2$, we have $(1, (3, 2, 1))$ occurs in $\abs(HC_2)$. 
+%
+\item In addition, by a simple calculation, we know that $\abs(HC_1)$ contains another tuple $(2,(1, 2, 3))$ and $\abs(HC_2)$ contains another tuple $(2, (2, 4, 6))$.
+\end{itemize}
+To summarize, $\abs(HC_1)=(\{(1,1)\}, \{(0, (0,0,0)), (1, (1, 1, 0)), (2, (1, 2, 3))\})$ and $\abs(HC_2) = (\{(1,1)\}, \{(0, (0, 0, 0)), (1, (3, 2,1)), (2, (2, 4, 6))\})$. Then starting from $\absset_0$, we compute $\absset_1 = \absset_0 \cup \{\absset(HC_{i_1}C_{i_2}) \mid i_1, i_2 = 1, 2\}$, and so on. We illustrate how to compute $\abs(HC_1 C_2)$ from $\abs(HC_1)$. Suppose $\abs(HC_1C_2) = (\{(1,1)\}, \Lambda')$. 
+\begin{itemize}
+\item Since $(0, (0,0,0))$ occurs in $\abs(HC_1)$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we know that $(0, (0,0,0)) \in \Lambda'$.
+
+\item From $1 \in I^{\circled{C_2}}_{tr}$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we have $(2, (1 + \csta^{\circled{C_2}}_{1, 1}, 1+\csta^{\circled{C_2}}_{2, 1}, 0 + \csta^{\circled{C_2}}_{3, 1})) = (2, (1+1, 1+3, 0 +5))= (2, (2, 4, 5)) \in \Lambda'$. In addition, we have $(1, (\cstb^{\circled{C_2}}_{1, 1}, \dots, \cstb^{\circled{C_2}}_{3, 1}))=(1, (3, 2, 1)) \in \Lambda'$.
+
+\item Since $(2, (2, 4, 6))$ occurs in $\abs(HC_1)$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we have $(2, (2, 4, 6)) \in \Lambda'$. Moreover, because $[r^{\circled{C_2}}] \setminus \rng(\pi^{\circled{C_2}})=\emptyset$, no other tuples are added into $\Lambda'$.
+\end{itemize}
+In summary, 
+$$\abs(HC_1C_2)=(\{(1,1)\}, \{(0,(0,0,0)), (1, (3,2,1)), (2, (2,4,5)), (2, (2, 4,6))\}).$$
+From the fact that $(1, (1, 1, 0))$ occurs in $\abs(HC_1)$, we know that $a_1 + b_1 \times 1 + b_2 \times 1 + b_3 \times 0 = 0 + 1 \times 1 + (-2) \times 1 + 1 \times 0 = -1 \neq 0$. Therefore, Step III returns $\ltrue$ and a non-zero output can be produced by following the path $HC_1$.
+\end{example}

@@ -179,8 +179,8 @@ $}
 %\item for each data value $d^{(C , i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C , i)}_{j'}$ is either $0$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}+\gamma^{\circled{C}}_{j,j'}$, or $\gamma^{\circled{C}}_{j,j'}$.
 %\end{itemize}
 
-\begin{example}
-Let $\Ss'_{\sf max}$ be the SNT illustrated in Fig.~\ref{fig-dec-proc-snt-exmp}, which is obtained from $\Ss_{\sf max}$ by replacing  the control variable $\sf max$ with  $x_1$ and introducing the data variables $y_1,y_2, y_3$. Consider the cycle $C_1$ in $\Ss'_{\sf max}$. Then $I^{\circled{C_1}}_{pe} = \{1\}$, $I^{\circled{C_1}}_{tr} = \emptyset$, $\cstl^{\circled{C_1}}_1 = \cstl^{\circled{C_1}}_2 = 1$, $\cstl^{\circled{C_1}}_3 = 0$, moreover, suppose $\ell \ge 2$, let $ \vard^{\circled{C_1, 1}}_1, \dots, \vard^{\circled{C_1, \ell}}_1$ represent the data values introduced when traversing the path $C^\ell_1$, then
+\begin{example}\label{exmp-sum}
+Let $\Ss'_{\sf max}$ be the SNT illustrated in Fig.~\ref{fig-dec-proc-snt-exmp}, which is obtained from $\Ss_{\sf max}$ by replacing  the control variable $\sf max$ with  $x_1$ and introducing the data variables $y_1,y_2, y_3$. Consider the cycle $C_1$ in $\Ss'_{\sf max}$. Then $O(q_2)= a_0 + a_1 x_1 + b_1 y_1 + b_2 y_2 + b_3 y_3 = y_1 - 2y_2 + y_3$, $I^{\circled{C_1}}_{pe} = \{1\}$, $I^{\circled{C_1}}_{tr} = \emptyset$, $\cstl^{\circled{C_1}}_1 = \cstl^{\circled{C_1}}_2 = 1$, $\cstl^{\circled{C_1}}_3 = 0$, moreover, suppose $\ell \ge 2$, let $ \vard^{\circled{C_1, 1}}_1, \dots, \vard^{\circled{C_1, \ell}}_1$ represent the data values introduced when traversing the path $C^\ell_1$, then
 \[
 \begin{array}{l c l}
 \sumf^{(C^\ell_1, \initval)}(y_1) &= & \initval(y_1) + (4 \ell) \initval(x_1) +\ \ \vard^{\circled{C_1, 1}}_1 + \dots +\ \ \vard^{\circled{C_1, \ell}}_1,\\
