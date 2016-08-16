@@ -4,6 +4,7 @@
 
 \section{Formal Semantics of the Programming Language}
 \begin{figure}
+\begin{center}
 	\hspace{-0.4cm}
 	\scalebox{0.9}{
 		\begin{tabular}{|l|l|}
@@ -26,10 +27,10 @@
 			$(\ite{g}{s_1}{s_2};p, w, \rho) \longrightarrow (s_2;p, w, \rho)$& $\rho \not \models g$\\
 			
 			$(\nnext;p, w, \rho) \longrightarrow (p, \tail(w), \rho')$&
-			$\rho'=\rho[\head(w)/\cur]$ if $\rho(\cur) \neq \bot$ \\
+			$\rho'=\rho[\head(w)/\cur]$ if $w \neq \varepsilon$ \\
 			
-			$(x':=x;p, w, \rho) \longrightarrow (p, w, \rho')$&
-			$\rho'  =\rho[\rho(x)/x']$\\
+			$(x:=\cur;p, w, \rho) \longrightarrow (p, w, \rho')$&
+			$\rho'  =\rho[\rho(\cur)/x]$\\
 			
 			$(\loopL{s};\mbox{ret }r, w, \rho) \longrightarrow (s;\loopL{s};\mbox{ret }r, w, \rho)$& \\
 			
@@ -45,14 +46,15 @@
 	}
 	\caption{The Semantics of the Programming Language}
 	\label{fig:semantics}
+\end{center}
 \end{figure}
 
 
-Formally, the semantics of a program $p$ in the programming language is defined as a transition system in Fig.~\ref{fig:semantics}. Let $p$ be a reducer program and $w$ be an input data word.  Each configuration of the transition system is a triple $(p', w', \rho)$, where $p'$ is a program, $w'$ is a suffix of $w$, and $\rho$ is an valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(w')$. 
-Let $\rho_w$ be an assignment such that $\rho_w(\cur)=\head(w)$ and $\rho_w(z)=\bot$ for $z \in X \cup Y$.
+Formally, the semantics of a program $p$ in the programming language is defined as a transition system in Fig.~\ref{fig:semantics}. Let $p$ be a reducer program and $w$ be an input data word.  Each configuration of the transition system is a triple $(p', w', \rho)$, where $p'$ is a program, $w'$ is a suffix of $w$, and $\rho$ is a valuation over $X^+\cup Y$ such that $\rho(\cur)=\head(w')$ (where if $w'=\varepsilon$, then $\head(w')=\bot$). 
+Let $\rho_0$ denote a valuation which assigns each control and data variable an initial value, and $\rho_w$ be the valuation such that $\rho_w(\cur)=\head(w)$ and $\rho_w(z) = \rho_0(z)$ for each $z \in X \cup Y$.
 The initial configuration is $(p, \tail(w), \rho_w)$.
-We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there exists a path from the initial configuration $(p, w, \rho_w)$ to some return configuration $(\mbox{ret }r,  \epsilon, \rho_r)$ such that $
-\eval{r}{\rho_r}=d$. Otherwise, $p(w)=\bot$. Since the program is deterministic, i.e., each input data word has at most one output, the semantics of $p$ is well-defined.
+We use $p_{\rho_0}(w)$ to denote the \emph{output} of $p$ on $w$ wrt. $\rho_0$. Then $p_{\rho_0}(w) =d$ if there exists a path from the initial configuration $(p, w, \rho_w)$ to some return configuration $(\mbox{ret }r,  \epsilon, \rho_r)$ such that $
+\eval{r}{\rho_r}=d$. Otherwise, $p_{\rho_0}(w)=\bot$. Since the program is deterministic, i.e., given an initial valuation $\rho_0$, each input data word has at most one output, the semantics of $p$ is well-defined.
 
 \section{Proofs in Section~\ref{sec:def-snt}}
 
@@ -65,7 +67,7 @@ We use $p(w)$ to denote the \emph{output} of $p$ on $w$. Then $p(w) =d$ if there
 
 \noindent {\bf Proposition~\ref{prop-mrprog-to-snt}}.
 {\it 
-For each reducer program $p$, an equivalent SNT $\Ss$ can be constructed.
+For each reducer program $p$, one can construct an equivalent SNT $\Ss$ where the number of states and the maximum number of simple cycles in an SCC of the transition graph are at most exponential in the number of branching statements in $p$. 
 }
 
 \smallskip
@@ -75,14 +77,18 @@ We introduce a few notations first.
 
 Let $s$ be a loop-free program. An \emph{execution path} $\pi$ of $s$ is a maximal path in the control flow graph of $s$ (here we use the standard definition of control flow graphs). Each execution path $\pi$ corresponds to a program $s_\pi$ obtained by sequentially composing the statements in $\pi$, where the statements $\assume(g)$ are used to represent the guards $g$. Then $s$ can be seen as a union of $s_\pi$, where $\pi$ ranges over the execution paths of $s$. 
 
-Let $p$ be a reducer program of the form $s_1; \nnext; \loopL{s_2;\nnext}$; ret $r$.  In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
+Let $p$ be a reducer program of the form $s_1; \nnext; \loopL{s_2;\nnext;}$; ret $r$.  In the following, we show how to construct an SNT $\Ss_p$ to simulate $p$.
 
-The loop body $s_2;\nnext$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $P_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition $(\loc_0, g', \eta', \loc_1)$ resp. $(\loc_1, g', \eta', \loc_2)$ of $p_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=\cur$, and the assignments to the data variables are of the form $y:=e$ and $y {+=} e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
+The loop body $s_2;\nnext$ can be seen as a union of programs $p_\pi$ for execution paths $\pi$. We assume that no two distinct programs $p_\pi$ share locations. We first transform the loop into a collection of state-disjoint (except the state $\loc_0$, the entry point of the loop)  cycles $C_\pi$, one for each program $p_\pi$.  Let us focus on a program $p_\pi$. The set of states in $C_\pi$ comprises the location $\loc_0$ which is the entry point of the loop, and the locations succeeding each $\nnext$ statement in $p_\pi$. Moreover, we identify the location succeeding the last $\nnext$ statement and the entry point. The effect of the subprogram $s'$ between two successive $\nnext$ statements in the locations $\loc_1,\loc_2$ can be summarized into a transition  $(\loc_1, g', \eta', \loc_2)$ of $p_\pi$. This is possible due to the following two constraints: 1) the conditions $g$ in the statements $\ite{g}{s'_1}{s'_2}$  of $p_\pi$ are the conjunctions of $\cur \odot c$ and $\cur \odot x$, 2) the assignments to the control variables are of the form $x:=\cur$, and the assignments to the data variables are of the form $y:=e$ and $y {+=} e$, where $e$ contains only control variables or $\cur$. As a result of the two constraints, we can trace the evolvement of the values of the control variables and simulate all the statements $\assume(g)$ occurring in $s'$ by a guard $g'$ (obtained from these guards $g$ by some variable substitutions),  moreover, the effects of all the assignments therein can be summarized into an assignment function $\eta'$.  Similarly, we can do the same for the subprogram between the entry point and the first $\nnext$ statement of $p_\pi$.
 
-In addition, each execution path of $s_1;\nnext$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
+In addition, each execution path of $s_1;\nnext;$ can be simulated by a simple path of transitions of $\Ss_p$, which ends in the state $\loc_0$, the entry point of the loop.
 
-The return statement t is handled by adding a transition with guards of the form $\cur=\wend$ from the state $\loc_0$  to a state $\loc_o$.
-The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc_o) = r$ and $O(\loc)$ is undefined for each other state $\loc$.\qed
+The return statement t is handled by adding a transition with guards of the form $\cur=\wend$ from the state $\loc_0$  to a sink state $\loc'$.
+The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc') = r$ and $O(\loc)$ is undefined for all the other states $\loc$.
+
+
+The fact that the SNT $\Ss_p$ is generalized flat follows from the requirement that in each statement of the form $\mbox{if}\ (g)\ \{s'_1\}$, $\mbox{if}\ (g)\ \{s'_1\}\ \mbox{else}\ \{s'_2\}$, it holds that the statement $\nnext;$ does not occur in $s'_1$ or $s'_2$. This requirement guarantees that in a program $p$ of the form $s_1; \nnext; \loopL{s_2;\nnext;}$; ret $r$, it holds that every execution path in $s_1;\nnext;$ (resp. $s_2;\nnext;$) contain the same number of $\nnext;$ statements, which implies that all the maximal paths in the SCC-graph of the transition graph of $\Ss_p$ have the same length.
+\qed
 \end{proof}
 
 \hide{
@@ -151,15 +157,16 @@ Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{
 
 Formally, $\eta'_1, g', \eta'_2$ are defined as follows.
 \begin{itemize}
-\item $\eta'_1(x')=\cur$ and $\eta'_1(z)$ is undefined for all $z \in X\cup Y$.
+\item $\eta'_1(x')=\cur$ and $\eta'_1(z)$ is undefined for all $z \in X\cup Y$. This implies that after the transition $(q'_0, \ltrue, \eta'_1, q'_1)$, each variable $z \in X \cup Y$ still holds the initial value.  
 %
 \item $g' = g_1 \wedge g'_2$, where $g'_2$ is obtained from $g_2$ by replacing $\cur$ with $x'$, and each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$.
 %
-\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, let $\eta_2^r(z)$ be the expression obtained by replacing all occurrences of $\cur$ in $\eta_2(x)$ with $x'$,
-then $\eta'_2(x)$ is obtained by substituting all occurrences of variables $z\in \dom{\eta_1}$ in $\eta_2^r(x)$ with $\eta_1(z)$. 
+\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, let $\eta_2^r(z)$ be the expression obtained by replacing all occurrences of $\cur$ in $\eta_2(z)$ with $x'$,
+then $\eta'_2(z)$ is obtained by substituting all occurrences of variables $z' \in \dom(\eta_1)$ in $\eta_2^r(z)$ with $\eta_1(z')$. 
 \item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2)$, then $\eta'_2(z)=\eta_1(z)$.
 %
-]\hide{
+
+\hide{
 \item For each $y_j \in Y$, if $y_j \in \dom(\eta_2)$, then 
 \[
 \begin{array}{l c l}
@@ -206,11 +213,11 @@ Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (\{q'_0\} \cup Q,
 
 	Formally, $g',\eta'_2$ are defined in the following. 
 		\begin{itemize}
-		\item $g' = g'_1 \wedge g'_2 \wedge(\cur=\wend)$, where $g'_1$ is obtained from $g_1$ by replacing all occurrence of $\cur$ with $x'$ and $g'_2$ is obtained from $g_2$ by replacing each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$.
+		\item $g' = g'_1 \wedge g'_2 \wedge(\cur=\wend)$, where $g'_1$ and $g'_2$ are obtained from $g_1,g_2$ as follows: $g'_1$ is obtained from $g_1$ by replacing all occurrences of $\cur$ with $x'$, and $g'_2$ be obtained from $g_2$ by replacing each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$, then substituting all occurrences of $\cur$ with $x'$.
 		%
-		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, $\eta'_2(x)$ is obtained by substituting all occurrences of variables $z\in \dom{\eta_1}$ in $\eta_2(x)$ with $\eta_1(z)$ and then substituting all occurrences of $\cur$ with $x'$. 
-		\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2) \wedge z \in \dom(\eta_1)$, then $\eta'_2(z)$ is obtained by substituting all occurrences of $\cur$ in $\eta_1(z)$ with $x'$.
-		\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2) \wedge z \notin \dom(\eta_1)$, then $\eta'_2(z)$ is undefined.
+		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, then $\eta'_2(z)$ is the expression obtained from $\eta_2(z)$ by replacing all occurrences of variables $z' \in \dom(\eta_1)$ therein with $\eta_1(z')$ and then substituting all occurrences of $\cur$ with $x'$. 
+		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_1) \setminus \dom(\eta_2)$, then $\eta'_2(z)$ is the expression obtained from $\eta_1(z)$ by substituting all occurrences of $\cur$ with $x'$.
+		\item For each $z \in X\cup Y$, if $z \notin \dom(\eta_2) \cup \dom(\eta_1)$, then $\eta'_2(z)$ is undefined.
 		%
 
 		\end{itemize}
@@ -224,12 +231,12 @@ Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatnes
 
 
 \noindent {\bf Proposition \ref{prop-snt-eqv-to-nzero}}.
-\emph{From SNT $\Ss_1$ and $\Ss_2$, a SNT $\Ss_3$ can be constructed in polynomial time such that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss_3$ over $w$ is nonzero.}
+\emph{From monotone SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in exponential time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w \wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$.}
 
 \begin{proof}
-Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
+Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two monotone SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
 
-Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
+We first construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
 \begin{itemize}
 \item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$ and $(q_2,g_2,\eta_2,q'_2) \in \delta_2$,
 %
@@ -242,7 +249,88 @@ Intuitively, we construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifica
 \item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
 \end{itemize}
 \end{itemize}
-From the aforementioned construction and the assumption that $\Ss$ is well-defined, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.\qed
+From the aforementioned construction, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.
+
+In the following, we show that each monotone SNT $\Ss=(Q, X, Y, \delta, q_0, O)$ can be normalized into a monotone SNT $\Ss'=(Q', X, Y, \delta', q'_0, O')$ so that $\Ss'$ is transition-enabled and at the same time still generalized-flat. We assume that in the guards are a conjunction of the atomic formulae of the form $\cur \le x$ or $\cur > x$ for $x \in X$. The situation that the guards are a conjunction of the atomic formulae of the form $\cur \ge x$  or $\cur < x$ can be considered similarly.
+
+
+\newcommand{\po}{\mathsf{PO}}
+%\newcommand{\toec}[1]{\mathsf{toEqClass(#1)}}
+
+Let $\po_{X}$ denote the set of preorders between control variables (Recall that a preorder $\le$ over $X$ is a reflexive and transitive relation over $X$). 
+
+\hide{
+Before presenting the construction, we introduce some notations first.
+
+Let $\sntcset_\Ss=\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\} \cup [c_{min}, c_{max}] \cup \{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$ and $\cabs_\Ss$ denote the set of partial functions from some $X$ to $\sntcset_\Ss$. Intuitively, $\cabs_\Ss$ is the set of abstractions of the control variables, where $\sntc^{<}_{1},\dots, \sntc^{<}_{k}$ (resp. $\sntc^{>}_{1},\dots, \sntc^{>}_{k}$) are the $k$ colors to denote the control variables whose values are less than $c_{min}$ (resp. greater than $c_{max}$). For $f \in \cabs_\Ss$ and $x, x' \in X$, $x'$ is said to be a \emph{successor} of $x$ wrt. $f$ if one of the following holds: 
+\begin{itemize}
+\item either $f(x)=c$ and $f(x')=c+1$ for $c \in \intnum$ such that $c, c+1 \in [c_{min},c_{max}]$, or
+
+\item $f(x) = \sntc^{<}_i$ and $f(x') = \sntc^{<}_{j}$ for $i,j: 1 \le i < j \le k$, and the range of $f$ does not contain any color from $\{\sntc^{<}_{i+1},\dots, \sntc^{<}_{j-1}\}$, or
+
+\item $f(x) = \sntc^{>}_i$ and $f(x') = \sntc^{>}_{j}$ for some $i,j: 1 \le i < j \le k$, and and the range of $f$ does not contain any color from $\{\sntc^{>}_{i+1},\dots, \sntc^{>}_{j-1}\}$. 
+\end{itemize}
+For $x \in X$, $x$ is said to be the \emph{maximum} (resp. \emph{minimum}) control variable wrt. $f$ if $x \in \dom(f)$ and there is no $x' \in X$ such that $f(x')$ is a successor of $f(x)$ (resp. $f(x)$ is a successor of $f(x')$). Let $\sntcset^{<}_\Ss$ denote $\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\}$, similarly, let $\sntcset^{>}_\Ss$ denote $\{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$. Two colors from $\sntcset^{<}_\Ss$ are said to be \emph{adjacent} if they are $\sntc^{<}_i$ and $\sntc^<_{i+1}$ for some $i: 1 \le i < k$. Similarly for two colors from $\sntcset^>_\Ss$. A linear order can be defined on $\sntcset^<_\Ss$ as follows: A color $\sntc^<_i$ is said to be less than $\sntc^<_j$ if $i<j$. A similar order relation can be defined over $\sntcset^>_\Ss$. Moreover, these two linear orders can be extended to a linear order on $\sntcset_\Ss$ in a natural way.
+
+For $f \in \cabs_\Ss$, let $\varphi_f$ denote the constraint over control variables represented by $f$.
+\[
+\begin{array}{l c l }
+\varphi_f  &:=& \bigwedge \limits_{f(x_i)=c,  c_{min} \le c \le c_{max}} x_i = c \ \wedge \\
+&  & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}, f(x_j)=\sntc^{<}_{j'}, i' < j' } (x_i < x_j \wedge x_j < c_{min})\  \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}= f(x_j)}(x_i = x_j \wedge x_j < c_{min})\ \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}, f(x_j)=\sntc^{>}_{j'}, i' < j' } (x_i < x_j \wedge x_i > c_{max})\ \wedge \\
+& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}= f(x_j)} (x_i = x_j  \wedge x_i > c_{max}).
+\end{array}
+\]
+}
+
+Then $Q'= Q \times \po_X$, and $q'_0=(q_0, \preceq_0)$ such that $\preceq_0 = \{(x,x)\}$. Moreover, $O'$ is defined as follows: For each $(q, \preceq) \in Q'$, $O'((q, \preceq))=O(q)$. It remains to define $\delta'$.
+
+The transition set $\delta'$ is defined by the following rules, 
+For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g,\eta)} (q', \preceq')$ satisfying the following constraints. 
+\begin{itemize}
+\item $\preceq$ and $g$ are compatible, more precisely,  for each pair of control variables $x_1, x_2$ such that $x_1 \preceq x_2$, it holds that  $g \not \models x_2 < x_1$.
+%
+\item $\preceq'$ is obtained from $\preceq,g,\eta$ by the following (nondeterministic) procedure, 
+\begin{enumerate}
+\item initially, let $\preceq'_1 :=\preceq$,
+
+\item for each conjunct $\cur \le x$ of $g$, let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x), (x, \cur)\}$ or $\preceq'_1 := \preceq'_1 \cup \{(\cur, x)\}$, moreover, for each conjunct $\cur > x$ of $g$, let  $\preceq'_1 := \preceq'_1 \cup \{(x, \cur)\}$,
+
+\item let $\preceq'_1$ be the reflexive and transitive closure of $\preceq'_1$,
+
+\item let $\preceq':=\{(x,x) \mid x \in X\}$, and for each pair of variables $x_1, x_2 \in X$, 
+\begin{itemize}
+\item if $x_1, x_2 \not \in \dom(\eta)$ such that $(x_1, x_2) \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1,x_2)\}$, 
+%
+\item if $x_1 \in \dom(\eta)$ and $x_2 \not \in \dom(\eta)$ such that either $\eta(x_1) = \cur$ and $(\cur, x_2) \in \preceq'_1$, or $\eta(x_1) = x'$ and $(x', x_2) \in \preceq'_1$ for some $x' \in X_s$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$,
+%
+\item if $x_1 \not \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that either $\eta(x_2) = \cur$ and $(x_1, \cur) \in \preceq'_1$, or $\eta(x_2) = x'$ and $(x_1, x') \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$,
+%
+\item if $x_1 \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that $\eta(x_1) = x'_1$, $\eta(x_2) = x'_2$, and $(x'_1, x'_2) \in \preceq'_1$  (where $x'_1, x'_2 \in X_s \cup \{\cur\}$), then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$.
+\end{itemize}
+%
+\end{enumerate}
+\end{itemize}
+
+At first, from the construction, we know that $\Ss'$ is transition-enabled. It remains to show that $\Ss'$ is still generalized-flat. It is sufficient to show that for each state $q$ such that there is a self-loop around $q$ in $\Ss$, there does not exist  a cycle in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+
+To the contrary, suppose that there is a state $q$ in $\Ss$ such that there is a self-loop around $q$ in $\Ss$ and there exists a cycle in $\Ss'$ that includes two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+
+Since $\preceq_1 \neq \preceq_2$, without loss of generality, we assume that there are a pair of control variables $x_1,x_2$ such that $(x_1, x_2) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_2$. 
+
+Let $S$ be the SCC of $\Ss$ that contains the state $q$. From the definition of monotone SNTs, each of $x_1,x_2$ computes the minimum or maximum value  in $S$. We distinguish between the following situations.
+\begin{itemize}
+\item Suppose $x_1$ computes the minimum value in $S$, $x_2$ computes the minimum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since both $x_1$ and $x_2$ compute the minimum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that either $\rho' \models x_1 = x_2$ or $\rho' \models x_1 < x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+%
+\item Suppose $x_1$ computes the minimum value in $S$, $x_2$ computes the maximum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the minimum value and $x_2$ compute the maximum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that $\rho' \models x_1 \le x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+%
+\item Suppose $x_1$ computes the maximum value in $S$, $x_2$ computes the minimum value in $S$.  Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the maximum value, $x_2$ compute the minimum value in $S$, we know that in $S$, the value $x_1$ is always increased and the value of $x_2$ is always decreased.  From $(x_1, x_2) \not \in \preceq_2$, we know that starting from the configuration $(q, \rho)$ and when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the value of $x_1$ becomes strictly greater than that of $x_2$, and this fact persists afterwards. Therefore, we have $(x_2, x_1) \in \preceq_2$ and $(x_1, x_2) \not \in \preceq_2$. Nevertheless, this implies that in each state $(q, \preceq')$ reachable from $(q, \preceq_2)$, it holds that $(x_1, x_2) \not \in \preceq'$, which contradicts to the fact that $(x_1, x_2) \in \preceq_1$.
+%
+\item Suppose $x_1$ computes the maximum value in $S$, $x_2$ computes the maximum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the maximum value and $x_2$ compute the maximum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that $\rho' \models x_1 = x_2$ or $\rho' \models x_1 < x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+\end{itemize}
+Consequently, in each of the four situations aforementioned, we always get a contradiction. We conclude that the assumption is false and $\Ss'$ is indeed generalized-flat.
+\qed
 \end{proof}
 
 

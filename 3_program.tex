@@ -11,10 +11,12 @@ Later in Section~\ref{sec:cases}, we will show an extension that allows resettin
 \begin{figure}
 	\centering
 	\begin{tabular}{rcl}
-        $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=\cur;\mid s\ s\mid \nnext; \mid \ite{g}{s}{s}$\\
+        $ s \in Statements$&$::=$&$y := e;\mid y \addeq e; \mid x:=\cur;\mid s\ s \mid \ite{g}{s}{s}$\\
 		$ p\in Programs$&$::=$&$\loopL{s\ \nnext;}\mbox{ret }r; \mid s\ \nnext;p$		
 	\end{tabular}
-	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional. Moreover, it is required that in each statement of the form ``$\mbox{if}\ (g)\{s_1\}$'' or ``$\mbox{if}\ (g)\{s_1\}\ \mbox{else}\ \{s_2\}$'', the statement $\nnext;$ occurs in neither $s_1$ nor $s_2$.}
+	\caption{A Simple Programming Language for Reducers. Here $x\in X$ are control variables, $y\in Y$ are data variables, $x' \in X^+$, $e\in \Ee_{X^+}$ are expressions, and $r$ is an expression in $\Ee_{X \cup Y}$. The square brackets mean that the else branch is optional. 
+	%Moreover, it is required that in each statement of the form ``$\mbox{if}\ (g)\{s_1\}$'' or ``$\mbox{if}\ (g)\{s_1\}\ \mbox{else}\ \{s_2\}$'', the statement $\nnext;$ occurs in neither $s_1$ nor $s_2$.
+	}
 	\label{fig:language}
 %		\vspace{-0.5cm}
 \end{figure}
