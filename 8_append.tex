@@ -87,7 +87,7 @@ The return statement t is handled by adding a transition with guards of the form
 The output function $O_p$ of $\Ss_p$ is defined as follow: $O_p(\loc') = r$ and $O(\loc)$ is undefined for all the other states $\loc$.
 
 
-The fact that the SNT $\Ss_p$ is generalized flat follows from the requirement that in each statement of the form $\mbox{if}\ (g)\ \{s'_1\}$, $\mbox{if}\ (g)\ \{s'_1\}\ \mbox{else}\ \{s'_2\}$, it holds that the statement $\nnext;$ does not occur in $s'_1$ or $s'_2$. This requirement guarantees that in a program $p$ of the form $s_1; \nnext; \loopL{s_2;\nnext;}$; ret $r$, it holds that every execution path in $s_1;\nnext;$ (resp. $s_2;\nnext;$) contain the same number of $\nnext;$ statements, which implies that all the maximal paths in the SCC-graph of the transition graph of $\Ss_p$ have the same length.
+Because in the program ``$s_1; \nnext; \loopL{s_2;\nnext;}$; ret $r$'', the subprogram $s_2$ contains no occurrences of $\nnext;$, we know that each nontrivial SCC  in $\Ss_p$ comprises a collection of self-loops around a unique state. Therefore, $\Ss_p$ is generalized-flat.
 \qed
 \end{proof}
 
@@ -329,7 +329,7 @@ Let $S$ be the SCC of $\Ss$ that contains the state $q$. From the definition of 
 %
 \item Suppose $x_1$ computes the maximum value in $S$, $x_2$ computes the maximum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the maximum value and $x_2$ compute the maximum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that $\rho' \models x_1 = x_2$ or $\rho' \models x_1 < x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
 \end{itemize}
-Consequently, in each of the four situations aforementioned, we always get a contradiction. We conclude that the assumption is false and $\Ss'$ is indeed generalized-flat.
+Consequently, in each of the four situations aforementioned, we always get a contradiction. We conclude that the assumption is false $\Ss'$ is indeed generalized-flat.
 \qed
 \end{proof}
 
