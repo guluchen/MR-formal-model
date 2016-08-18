@@ -231,14 +231,14 @@ Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatnes
 
 
 \noindent {\bf Proposition \ref{prop-snt-eqv-to-nzero}}.
-\emph{From monotone SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in exponential time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w \wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$.}
+\emph{From two SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w \wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$.}
 
 \begin{proof}
 Let $\Ss_1 = (Q_1,X_1,Y_1,\delta_1,q_{1,0}, O_1)$ and  $\Ss_2 = (Q_2,X_2,Y_2,\delta_2,q_{2,0}, O_2)$ be two monotone SNTs. Without loss of generality, we assume that $Q_1 \cap Q_2 = \emptyset$, $X_1 \cap X_2 = \emptyset$, and $Y_1 \cap Y_2 = \emptyset$. 
 
 We first construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\Ss=(Q_1 \times Q_2, X_1 \cup X_2, Y_1 \cup Y_2, \delta, (q_{1,0},q_{2,0}), O)$, where
 \begin{itemize}
-\item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$ and $(q_2,g_2,\eta_2,q'_2) \in \delta_2$,
+\item $\delta$ comprises $((q_1,q_2), g_1 \wedge g_2, \eta_1 \cup \eta_2, (q'_1,q'_2))$ such that $(q_1,g_1,\eta_1,q'_1) \in \delta_1$, $(q_2,g_2,\eta_2,q'_2) \in \delta_2$, and $g_1 \wedge g_2$ is satisfiable,
 %
 \item for each $(q_1,q_2) \in Q_1 \times Q_2$, 
 \begin{itemize}
@@ -249,40 +249,22 @@ We first construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\
 \item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
 \end{itemize}
 \end{itemize}
-From the aforementioned construction, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero.
+From the aforementioned construction, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero. Moreover, since both $\Ss_1$ and $\Ss_2$ are generalized flat and monotone, we know that $\Ss$ is generalized-flat and monotone as well.   \qed
+\end{proof}
 
-In the following, we show that each monotone SNT $\Ss=(Q, X, Y, \delta, q_0, O)$ can be normalized into a monotone SNT $\Ss'=(Q', X, Y, \delta', q'_0, O')$ so that $\Ss'$ is transition-enabled and at the same time still generalized-flat. We assume that in the guards are a conjunction of the atomic formulae of the form $\cur \le x$ or $\cur > x$ for $x \in X$. The situation that the guards are a conjunction of the atomic formulae of the form $\cur \ge x$  or $\cur < x$ can be considered similarly.
-
+\noindent {\bf Proposition~\ref{prop-snt-norm}}.
+{
+For each SNT $\Ss$, an equivalent normalized SNT $\Ss'$ can be constructed in exponential time.
+}
+\smallskip
 
 \newcommand{\po}{\mathsf{PO}}
-%\newcommand{\toec}[1]{\mathsf{toEqClass(#1)}}
+
+
+\begin{proof}
+Suppose $\Ss = (Q, X, Y, \delta, q_0, O)$ is an SNT. Our goal is to construct an equivalent normalized SNT $\Ss'=(Q', X, Y, \delta', q'_0, O')$.
 
 Let $\po_{X}$ denote the set of preorders between control variables (Recall that a preorder $\le$ over $X$ is a reflexive and transitive relation over $X$). 
-
-\hide{
-Before presenting the construction, we introduce some notations first.
-
-Let $\sntcset_\Ss=\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\} \cup [c_{min}, c_{max}] \cup \{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$ and $\cabs_\Ss$ denote the set of partial functions from some $X$ to $\sntcset_\Ss$. Intuitively, $\cabs_\Ss$ is the set of abstractions of the control variables, where $\sntc^{<}_{1},\dots, \sntc^{<}_{k}$ (resp. $\sntc^{>}_{1},\dots, \sntc^{>}_{k}$) are the $k$ colors to denote the control variables whose values are less than $c_{min}$ (resp. greater than $c_{max}$). For $f \in \cabs_\Ss$ and $x, x' \in X$, $x'$ is said to be a \emph{successor} of $x$ wrt. $f$ if one of the following holds: 
-\begin{itemize}
-\item either $f(x)=c$ and $f(x')=c+1$ for $c \in \intnum$ such that $c, c+1 \in [c_{min},c_{max}]$, or
-
-\item $f(x) = \sntc^{<}_i$ and $f(x') = \sntc^{<}_{j}$ for $i,j: 1 \le i < j \le k$, and the range of $f$ does not contain any color from $\{\sntc^{<}_{i+1},\dots, \sntc^{<}_{j-1}\}$, or
-
-\item $f(x) = \sntc^{>}_i$ and $f(x') = \sntc^{>}_{j}$ for some $i,j: 1 \le i < j \le k$, and and the range of $f$ does not contain any color from $\{\sntc^{>}_{i+1},\dots, \sntc^{>}_{j-1}\}$. 
-\end{itemize}
-For $x \in X$, $x$ is said to be the \emph{maximum} (resp. \emph{minimum}) control variable wrt. $f$ if $x \in \dom(f)$ and there is no $x' \in X$ such that $f(x')$ is a successor of $f(x)$ (resp. $f(x)$ is a successor of $f(x')$). Let $\sntcset^{<}_\Ss$ denote $\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\}$, similarly, let $\sntcset^{>}_\Ss$ denote $\{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$. Two colors from $\sntcset^{<}_\Ss$ are said to be \emph{adjacent} if they are $\sntc^{<}_i$ and $\sntc^<_{i+1}$ for some $i: 1 \le i < k$. Similarly for two colors from $\sntcset^>_\Ss$. A linear order can be defined on $\sntcset^<_\Ss$ as follows: A color $\sntc^<_i$ is said to be less than $\sntc^<_j$ if $i<j$. A similar order relation can be defined over $\sntcset^>_\Ss$. Moreover, these two linear orders can be extended to a linear order on $\sntcset_\Ss$ in a natural way.
-
-For $f \in \cabs_\Ss$, let $\varphi_f$ denote the constraint over control variables represented by $f$.
-\[
-\begin{array}{l c l }
-\varphi_f  &:=& \bigwedge \limits_{f(x_i)=c,  c_{min} \le c \le c_{max}} x_i = c \ \wedge \\
-&  & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}, f(x_j)=\sntc^{<}_{j'}, i' < j' } (x_i < x_j \wedge x_j < c_{min})\  \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}= f(x_j)}(x_i = x_j \wedge x_j < c_{min})\ \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}, f(x_j)=\sntc^{>}_{j'}, i' < j' } (x_i < x_j \wedge x_i > c_{max})\ \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}= f(x_j)} (x_i = x_j  \wedge x_i > c_{max}).
-\end{array}
-\]
-}
 
 Then $Q'= Q \times \po_X$, and $q'_0=(q_0, \preceq_0)$ such that $\preceq_0 = \{(x,x)\}$. Moreover, $O'$ is defined as follows: For each $(q, \preceq) \in Q'$, $O'((q, \preceq))=O(q)$. It remains to define $\delta'$.
 
@@ -291,15 +273,19 @@ For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $
 \begin{itemize}
 \item $\preceq$ and $g$ are compatible, more precisely,  for each pair of control variables $x_1, x_2$ such that $x_1 \preceq x_2$, it holds that  $g \not \models x_2 < x_1$.
 %
-\item $\preceq'$ is obtained from $\preceq,g,\eta$ by the following (nondeterministic) procedure, 
+\item $\preceq'$ is obtained from $\preceq,g,\eta$ by the following procedure. We first compute a preorder relation $\preceq'_1$. 
 \begin{enumerate}
-\item initially, let $\preceq'_1 :=\preceq$,
+\item Initially, let $\preceq'_1 :=\preceq$,
 
-\item for each conjunct $\cur \le x$ of $g$, let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x), (x, \cur)\}$ or $\preceq'_1 := \preceq'_1 \cup \{(\cur, x)\}$, moreover, for each conjunct $\cur > x$ of $g$, let  $\preceq'_1 := \preceq'_1 \cup \{(x, \cur)\}$,
+\item for each conjunct $\cur = x$ of $g$ (resp. $x' = x$ for some $x' \in X_s$), let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x), (x, \cur)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x', x), (x, x')\}$), 
 
-\item let $\preceq'_1$ be the reflexive and transitive closure of $\preceq'_1$,
+\item for each conjunct $\cur < x$ of $g$ (resp. $x' < x$ for some $x' \in X_s$), let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x', x)\}$), 
 
-\item let $\preceq':=\{(x,x) \mid x \in X\}$, and for each pair of variables $x_1, x_2 \in X$, 
+\item for each conjunct $\cur > x$ of $g$ (resp. $x' > x$ for some $x' \in X_s$), let  $\preceq'_1 := \preceq'_1 \cup \{(x, \cur)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x,x')\}$),
+
+\item let $\preceq'_1$ be the reflexive and transitive closure of $\preceq'_1$.
+\end{enumerate}
+Then we compute $\preceq'$ as follows: Let $\preceq':=\{(x,x) \mid x \in X\}$ first. For each pair of variables $x_1, x_2 \in X$, 
 \begin{itemize}
 \item if $x_1, x_2 \not \in \dom(\eta)$ such that $(x_1, x_2) \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1,x_2)\}$, 
 %
@@ -307,29 +293,49 @@ For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $
 %
 \item if $x_1 \not \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that either $\eta(x_2) = \cur$ and $(x_1, \cur) \in \preceq'_1$, or $\eta(x_2) = x'$ and $(x_1, x') \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$,
 %
-\item if $x_1 \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that $\eta(x_1) = x'_1$, $\eta(x_2) = x'_2$, and $(x'_1, x'_2) \in \preceq'_1$  (where $x'_1, x'_2 \in X_s \cup \{\cur\}$), then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$.
+\item if $x_1 \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that $\eta(x_1) = x'_1$, $\eta(x_2) = x'_2$, and $(x'_1, x'_2) \in \preceq'_1$  for some $x'_1, x'_2 \in X_s \cup \{\cur\}$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$.
 \end{itemize}
 %
-\end{enumerate}
 \end{itemize}
 
-At first, from the construction, we know that $\Ss'$ is transition-enabled. It remains to show that $\Ss'$ is still generalized-flat. It is sufficient to show that for each state $q$ such that there is a self-loop around $q$ in $\Ss$, there does not exist  a cycle in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+At first, from the construction, we know that $\Ss'$ is path-feasible and state order-enforced. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss_0$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
 
-To the contrary, suppose that there is a state $q$ in $\Ss$ such that there is a self-loop around $q$ in $\Ss$ and there exists a cycle in $\Ss'$ that includes two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+To the contrary, suppose that there are a state $q$ in some nontrivial SCC $S$ of $\Ss_0$ and two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$ in some nontrivial SCC of $\Ss'$.
 
 Since $\preceq_1 \neq \preceq_2$, without loss of generality, we assume that there are a pair of control variables $x_1,x_2$ such that $(x_1, x_2) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_2$. 
-
-Let $S$ be the SCC of $\Ss$ that contains the state $q$. From the definition of monotone SNTs, each of $x_1,x_2$ computes the minimum or maximum value  in $S$. We distinguish between the following situations.
+%We first assume that all the guards $\cur > x_1$, $\cur < x_1$, $\cur > x_2$ and $\cur < x_2$ occur in $S$. 
+We introduce some notations first. For $x \in \{x_1, x_2\}$, we say that $x$ computes the minimum (resp. maximum) value in $S$ if whenever $\cur < x$ (resp. $\cur > x$) occurs in a transition $(q, g, \eta, q)$ of $S$, it holds that $\eta(x)=\cur$. 
+We distinguish between the following situations.
 \begin{itemize}
-\item Suppose $x_1$ computes the minimum value in $S$, $x_2$ computes the minimum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since both $x_1$ and $x_2$ compute the minimum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that either $\rho' \models x_1 = x_2$ or $\rho' \models x_1 < x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+\item Suppose that both $x_1$ and $x_2$ compute the minimum value in $S$. Since both $x_1$ and $x_2$ compute the minimum value in $S$, when starting from some configuration $(q, \rho)$ such that $\rho \models x_1 \le x_2$ and keep applying the transitions in $S$, we know that in each transition, 
+\begin{itemize}
+\item either the current data value is less or equal to both $x_1$ and $x_2$, then both $x_1$ and $x_2$ are assigned to the current data value and become equal, 
 %
-\item Suppose $x_1$ computes the minimum value in $S$, $x_2$ computes the maximum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the minimum value and $x_2$ compute the maximum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that $\rho' \models x_1 \le x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+\item or the current data value is greater than $x_1$ and less or equal to $x_2$, then the current data value is assigned to $x_2$ (with the value of $x_1$ unchanged), then $x_1 < x_2$ holds after the transition,
 %
-\item Suppose $x_1$ computes the maximum value in $S$, $x_2$ computes the minimum value in $S$.  Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the maximum value, $x_2$ compute the minimum value in $S$, we know that in $S$, the value $x_1$ is always increased and the value of $x_2$ is always decreased.  From $(x_1, x_2) \not \in \preceq_2$, we know that starting from the configuration $(q, \rho)$ and when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the value of $x_1$ becomes strictly greater than that of $x_2$, and this fact persists afterwards. Therefore, we have $(x_2, x_1) \in \preceq_2$ and $(x_1, x_2) \not \in \preceq_2$. Nevertheless, this implies that in each state $(q, \preceq')$ reachable from $(q, \preceq_2)$, it holds that $(x_1, x_2) \not \in \preceq'$, which contradicts to the fact that $(x_1, x_2) \in \preceq_1$.
-%
-\item Suppose $x_1$ computes the maximum value in $S$, $x_2$ computes the maximum value in $S$. Since $(x_1, x_2) \in \preceq_1$, we know that for each configuration $(q, \rho)$ reachable by traversing a path from the initial state to the state $(q, \preceq_1)$, we have $\rho \models x_1 \le x_2$. Since $x_1$ computes the maximum value and $x_2$ compute the maximum value in $S$, we know that for each configuration $(q, \rho')$ reachable from $(q, \rho)$ in $\Ss$, it holds that $\rho' \models x_1 = x_2$ or $\rho' \models x_1 < x_2$. This implies that $(x_1, x_2) \in \preceq_2$, contradicting to the assumption.
+\item or the current data value is greater than both $x_1$ and $x_2$, then both the value of $x_1$ and that of $x_2$ are unchanged.
 \end{itemize}
-Consequently, in each of the four situations aforementioned, we always get a contradiction. We conclude that the assumption is false $\Ss'$ is indeed generalized-flat.
+Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+%
+\item Suppose that both $x_1$ and $x_2$ compute the maximum value in $S$. Similarly to the arguments in the previous situation, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+%
+\item Suppose that $x_1$ computes the minimum value in $S$ and $x_2$ computes the maximum value in $S$. Since $x_1$ computes the minimum value and $x_2$ computes the maximum value in $S$, we know that the value of $x_1$ is non-increasing and the value of $x_2$ is non-decreasing. Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+%
+\item Suppose that $x_1$ computes the minimum value in $S$ and $x_2$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_1$ is non-increasing and the value of $x_2$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_1$ computes neither the minimum value nor the maximum value and $x_2$ computes the maximum value in $S$. Then the value of $x_1$ is unchanged and the value of $x_2$ is non-decreasing when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_1$ computes the maximum value in $S$ and $x_2$ computes the minimum value in $S$.  Then in $S$, the value of $x_1$ is non-decreasing and the value of $x_2$ is non-increasing.  From $(x_1, x_2) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_2$, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, sometime the value of $x_1$ becomes strictly greater than that of $x_2$, and this fact persists afterwards. Therefore, we have $(x_2, x_1) \in \preceq_2$ and $(x_1, x_2) \not \in \preceq_2$. Since in $S$, the value of $x_1$ is non-decreasing and the value of $x_2$ is non-increasing, we know that when following a path from $(q, \preceq_2)$ to $(q, \preceq_1)$ in $\Ss'$, $x_2 < x_1$ persists. Therefore, $(x_2, x_1) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_1$, a contradiction.
+%
+\item Suppose that $x_1$ computes the maximum value and  $x_2$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_1$ is non-decreasing and the value of $x_2$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_1$ computes neither the minimum value nor the maximum value in $S$ and $x_2$ computes the minimum value in $S$. Then the value of $x_1$ is unchanged and the value of $x_2$ is non-increasing when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose $x_1$ (resp. $x_2$) computes neither  the minimum value nor the maximum value in $S$. Then the value of $x_1$ and $x_2$ are unchanged when staying in $S$. Therefore, if $x_1 \le x_2$ holds in the state $(q, \preceq_1)$, then it holds in each state belonging to the same SCC as $(q, \preceq_1)$ in $\Ss'$. In particular, $(x_1, x_2) \in \preceq_2$, a contradiction.
+\end{itemize}
+Consequently, in each of the situations aforementioned, we always get a contradiction. 
+%
+We conclude that the assumption is false and $\Ss'$ is indeed generalized-flat.
 \qed
 \end{proof}
 

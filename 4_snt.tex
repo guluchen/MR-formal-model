@@ -20,14 +20,24 @@ The set of transitions $\delta$ comprises
 %
 \item and the tuples $(q, \cur = \wend, \emptyset, q')$, where $q,q' \in Q$, and $\emptyset$ is the assignment function with the empty domain (they are called the $\triangleright$-transitions).
 \end{itemize}
-We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience.  We would like to remark that the guards in the transitions can be of both types, that is, of type 1 or type 2.
+We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience.  
+%We would like to remark that the guards in the transitions can be of both types, that is, of type 1 or type 2.
 
 In the following, we assume that for each $\triangleright$-transition $(q, \cur = \wend, \emptyset, q')$, $q'$ is a sink-state, that is, that are no transitions out of $q'$. Moreover, we adopt the convention that when we mention the transition graph of an SNT $\Ss$, we always \emph{ignore} the $\triangleright$-transitions. 
 
-In this paper, we assume that an SNT $\Ss$ satisfies the following additional constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) $S$ of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ such that there is a state $q$ satisfying that each cycle $C_i$ (where $1 \le i \le n$) is of length one and is a self-loop around $q$,
+In this paper, if not explicitly stated, we always assume that an SNT $\Ss$ satisfies the following additional constraints. (1) \emph{Deterministic:} For each pair of distinct transitions originating from $q$, say $(q, g_1, \eta_1,q'_1)$ and $(q, g_2,\eta_2,q'_2)$, it holds that $g_1 \wedge g_2$ is unsatisfiable. (2) \emph{Generalized flat:} Each SCC (strongly connected component) $S$ of the transition graph of $\Ss$ is either a single state or a set of simple cycles $\{C_1,\dots, C_n\}$ such that there is a state $q$ satisfying that each cycle $C_i$ (where $1 \le i \le n$) is of length one and is a self-loop around $q$,
 %c) only the state $q$ in $S$ is allowed to be connected to the other SCCs by some incoming or outgoing arcs. In addition, all the \emph{maximal} paths in the SCC-graph\footnote{An SCC-graph of a directed graph $G=(V,E)$ is the directed acyclic graph $G'$ defined as follows: the  set of vertices of $G'$ is the set of SCCs of $G$, and for each pair of SCCs $S_1, S_2$ of $G$, there is an arc from $S_1$ to $S_2$ in $G'$ iff there is an arc from a vertex belonging to $S_1$ to some vertex belonging to $S_2$ in $G$.} of the transition graph of $\Ss$ have the \emph{same} length. 
 %
-(3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta) \cap Y$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$.
+(3) \emph{Independently evolving and copyless:} For each $(q, g, \eta, q') \in \delta$ and for each $y \in \dom(\eta) \cap Y$, $\eta(y)=e$ or $\eta(y)=y+e$ for some expression $e$ over $X^+$, (4) \emph{Monotone:}   For each control variable $x \in X$ and each nontrivial SCC $S$ of the transition graph,  when staying in $S$, either the value of $x$ is unchanged, or $x$ computes the maximum or minimum value. Formally, 
+for each control variable $x \in X$ and each nontrivial SCC $S$ of the transition graph, the following conditions hold, 
+\begin{enumerate}
+\item for each self-loop $(q, g, \eta, q)$ in $S$, it holds that $\cur = x$, $\cur< x$, or $\cur > x$ is a conjunct of $g$, 
+%
+\item either all the self-loops $(q, g, \eta, q)$ such that $\cur > x $ is a conjunct of $g$ satisfy that $\eta(x)=\cur$, or none of them satisfies this constraint,  similarly for $\cur < x$,
+%
+\item if both $\cur < x$ and $\cur > x$ occur in $S$,  then exactly one of the following constraint holds: a) all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur > x$ is a conjunct of $g$ satisfy that $\eta(x)=\cur$, b) all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur < x$ is a conjunct of $g$ satisfy that $\eta(x) = \cur$.
+\end{enumerate}
+
 
 The semantics of an SNT $\Ss$  is defined as follows. A \emph{configuration} of $\Ss$ is a pair $(q,\rho)$, where $q \in Q$ and $\rho$ is a valuation of $X \cup Y$. An \emph{initial} configuration of $\Ss$ is $(q_0,\rho_0)$, where $\rho_0$ assigns arbitrary values to the variables from $X\cup Y$.
 A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
@@ -63,10 +73,12 @@ The SNT $\Ss_{\max}$ for computing the maximum value of an input data word is de
 %$\Ss_{\mathrm{sum}}=(\{q_0,q_1\}, \emptyset, \{\sumv\}, \delta, q_0, O)$ such that %$\delta=\{(q_0, \ltrue, \sumv:=\cur, q_1), (q_1, \ltrue, \sumv:=\sumv + \cur, q_1)$, and %$O(q_1)=\sumv$. 
 %\end{example
 \begin{proposition}\label{prop-mrprog-to-snt}
-For each reducer program $p$, one can construct an equivalent SNT $\Ss$ where the number of states and the maximum number of simple cycles in an SCC of the transition graph are at most exponential in the number of branching statements in $p$. 
+For each reducer program $p$, one can construct an equivalent SNT $\Ss_p$ which satisfies all the additional four constraints of SNTs, except the ``Monotone'' constraint.  Moreover, the number of states of $\Ss_p$ and the maximum number of simple cycles in an SCC of the transition graph of $\Ss_p$ are at most exponential in the number of branching statements in $p$. 
 \end{proposition}
 %We describe the procedure translating a program $p$ into an SNT $\Ss$ in the appendix. 
-Intuitively, the exponential blow-up in the construction is due to the following difference between reducer programs $p$ and SNTs $\Ss$: A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed, while an SNT advances the iterator in each transition. Therefore, a sequence of statements with $k$ branching points between each pair of consecutive $\nnext$ statements in the control flow of $p$ correspond to at most $2^k$ transitions of $\Ss$.
+Intuitively, the main difference between reducer programs and SNTs are as follows: A reducer program moves to the next value of an input data word only when a $\nnext$ statement is executed, while an SNT advances the iterator in each transition.
+As a result of this difference, when constructing $\Ss_p$ in Proposition~\ref{prop-mrprog-to-snt}, for each pair of consecutive ``$\nnext;$'' statements in $p$, the subprogram between them is transformed into a collection of transitions in $\Ss_p$, one for each execution path in the subprogram. Since the number of execution paths in a program is exponential in the number of branching statements therein, there is an exponential blow-up in the construction. For a reducer program $p$, the SNT $\Ss_p$ constructed in Proposition~\ref{prop-mrprog-to-snt} is not necessarily monotone. We define the class of \emph{monotone programs} as the class of reducer programs $p$ such that $\Ss_p$ is monotone. All the examples in Fig.~\ref{fig:examples} are monotone programs. 
+
 
 
 
@@ -86,12 +98,16 @@ Intuitively, the exponential blow-up in the construction is due to the following
 
 We focus on three decision problems of SNTs: (1) \emph{Commutativity}: Given an SNT $\Ss$, decide whether $\Ss$ is commutative, that is, whether for each data word $w\wend$ and each permutation $w'$ of $w$, $\Ss_{\rho_0}(w\wend)=\Ss_{\rho_0}(w'\wend)$ for all initial valuations $\rho_0$. (2) \emph{Equivalence}: Given two SNTs $\Ss,\Ss'$, decide whether $\Ss$ and $\Ss'$ are equivalent, that is, whether over each data word $w\wend$, $\Ss_{\rho_0}(w\wend)=\Ss'_{\rho_0}(w\wend)$ for all initial valuations $\rho_0$. (3) \emph{Non-zero output}: Given an SNT $\Ss$, decide whether $\Ss$ has a non-zero output, that is, whether there are a data word $w\wend$ and an initial valuation $\rho_0$ such that $\Ss_{\rho_0}(w\wend)\notin \{\bot, 0\}$. 
 
-We first observe that the commutativity problem can be reduced to the equivalence problem of SNTs, which can be further reduced to the non-zero output problem of SNTs. For the reduction from the commutativity problem to the equivalence problem, we need slightly extend the definition of SNTs as follows: We assume that $X$ is divided into $X_c, X_s$, where the variables from $X_c$ are called the \emph{common} control variables, and the variables from $X_s$ are called the \emph{write-once} control variables, such that in every run, each write-once variable $x' \in X_s$ can only be \emph{written at most once} (that is, occur in the domain of an assignment function at most once), moreover, 
+We first observe that the commutativity problem of SNTs can be reduced to the equivalence problem, which can be further reduced to the non-zero output problem of SNTs. For analyzing the complexity of the decision procedure in the next section,  we will state the complexity of the reductions w.r.t. the following factors of SNTs: the number of states, the number of control variables (resp. data variables), and the number of simple cycles of the transition graph. We will adopt the convention that if after a reduction, some factor becomes exponential, then this fact will be stated explicitly, and on the other hand, if some factor is still polynomial after the reduction, then this fact will be made implicit and will not be stated explicitly. 
+
+For the reduction from the commutativity problem to the equivalence problem, we need slightly extend the definition of SNTs as follows: We assume that $X$ is divided into $X_{\sf n}, X_{\sf w}$, where the variables from $X_{\sf n}$ are called the \emph{normal} control variables, and the variables from $X_{\sf w}$ are called the \emph{write-once} control variables, such that in every run, each write-once variable $x' \in X_{\sf w}$ can be \emph{written at most once}, more precisely, there is at most one transition $(q, g, \eta, g)$ such that $x' \in \dom(\eta)$, moreover, if this happens, then the transition  $(q, g, \eta, g)$ does not  belong to any nontrivial SCC of the transition graph, in addition,  the definition of guards and transitions and the ``Monotone'' constraint are adapted as follows,
 \begin{itemize}
-\item the definition rules of the guards are adjusted into $g'::= \ltrue \mid \cur \le x \mid \cur > x \mid x' \le x \mid x' > x \mid g' \wedge g'$, or $g'::= \ltrue \mid \cur \ge x \mid \cur < x \mid x' \ge x \mid x' < x \mid g' \wedge g'$, where $x \in X_c$ and $x' \in X_s$,
-\item for each transition $(q,\cur \neq \triangleright \wedge g', \eta, q')$ (resp. $(q,\cur = \triangleright \wedge g', \eta, q')$), it holds that for each $x \in X_c \cap \dom(\eta)$, $\eta(x)  = \cur$ or $\eta(x)=x'$ for some $x' \in X_s$ (resp. $\eta(x)=x'$ for some $x' \in X_s$).
+\item the definition rules of the guards are adjusted into $g'::= \ltrue \mid \cur = x \mid \cur > x \mid \cur < x \mid x' = x \mid x' > x \mid x' < x \mid g' \wedge g'$, where $x \in X_{\sf n}$ and $x' \in X_{\sf w}$,
+%
+\item for each transition $(q,\cur \neq \triangleright \wedge g', \eta, q')$ (resp. $(q,\cur = \triangleright \wedge g', \eta, q')$), it holds that for each $x \in X_{\sf n} \cap \dom(\eta)$, $\eta(x)  = \cur$ or $\eta(x)=x'$ for some $x' \in X_{\sf w}$ (resp. $g'$ contains no occurrences of $\cur$ and $\eta(x)=x'$ for some $x' \in X_{\sf w}$),
+\item the ``Monotone'' constraint is adapted by replacing $X$ with $X_{\sf n}$.
 \end{itemize}
-Intuitively, in the guards and transitions, the write-once control variables can occur in the same places as the special variable $\cur$. Each transition is either of the form $(q, \cur \neq \triangleright \wedge g'_1, \eta, q')$ or $(q, \cur = \triangleright \wedge g'_2, \emptyset, q')$ such that $g'_2$ contains no occurrences of $\cur$. 
+Intuitively, in the guards and transitions, the write-once control variables can occur in the same places as the special variable $\cur$. Each transition is either of the form $(q, \cur \neq \triangleright \wedge g'_1, \eta, q')$ or $(q, \cur = \triangleright \wedge g'_2, \eta, q')$ such that $g'_2$ contains no occurrences of $\cur$. 
 %Note that the assignments $\eta$ are not extended in the sense that $\eta$ does not assign a write-once control variable $x'$ to $x \in X$, that is, the following fact still hods,  for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$.
 
 From now on, by abusing the notation a little, when we mention SNTs, we always mean the extension of SNTs with write-once control variables.
@@ -114,28 +130,61 @@ The correctness of this reduction follows from the fact that all the permutation
 %, while the construction of $\Ss_2$ from $\Ss$ involves an exponential blow-up w.r.t. the number of control variables, which is attributed to the determinism of SNTs.
 %In the construction of $\Ss_1$ and $\Ss_2$, an additional write-once control variable $x'$ is introduced to store the data value $d_1$.
 
-Next, we reduce the equivalence problem of two SNTs $\Ss_1, \Ss_2$ to the non-zero output problem of another SNT $\Ss_3$. A natural idea is to obtain $\Ss_3$ by the product construction. The issue for this idea is that the resulting SNT $\Ss_3$ may not be transition-enabled even if $\Ss_1$ and $\Ss_2$ are. In order to guarantee the ``transition-enabled'' property of $\Ss_3$, it is necessary to normalize $\Ss_3$, that is, to encode in the states the order relation between control variables. Nevertheless, the normalization procedure may split a state into a collection of states and destroy the ``generalized flat'' constraint. In the following, we show that for a reasonably expressive class of SNTs, called monotone SNTs, the normalization procedure preserves the ``generalized flat'' constraint. Intuitively, each control variable in a monotone SNT computes the maximum or minimum value, possibly after some pre-processing in the first few data values in the input data word. Formally, a \emph{monotone} SNT is an SNT $\Ss$ such that
-%1)  in the transition graph of $\Ss$, for each nontrivial SCC $S$, there are no arcs going to a state outside $S$ (except the $\triangleright$-transitions), 
-for each control variable $x \in X_c$ and each nontrivial SCC $S$ in the transition graph of $\Ss$, $x$ computes the maximum or minimum value in $S$, more precisely, for each self-loop $(q, g, \eta, q)$ in $S$, it holds that $\cur\ \op_1\ x$ or $\cur\ \op_2\ x$ is a conjunct of $g$, moreover, either all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur\ \op_1\ x$ is a conjunct of $g$ satisfy that $\eta(x)=\cur$, or all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur\ \op_2\ x$ is a conjunct of $g$ satisfy that $\eta(x)=\cur$ (where $\op_1 = \le, \op_2 = >$, or $\op_1 = \ge, \op_2 = <$). All the examples we have seen so far, e.g. the SNTs for computing the maximum value and the sum, as well as the SNTs constructed from them in Proposition~\ref{prop-snt-cmm-to-eqv}, are all monotone SNTs.
+Next, we reduce the equivalence problem of two SNTs $\Ss_1, \Ss_2$ to the non-zero output problem of another SNT $\Ss_3$. 
 
 \begin{proposition}\label{prop-snt-eqv-to-nzero}
-From monotone SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in exponential time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w \wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$.
+From two SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w \wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$.
 \end{proposition}
+The SNT $\Ss_3$ can be constructed by the product construction. Note that the product construction preserves both the ``Generalized-flat'' and ``Monotone'' constraint. 
+
+To facilitate the decision procedure in the next section, in the following, we will show that each SNT $\Ss$ can be transformed into an equivalent \emph{normalized} SNT $\Ss'$ which enjoys some nice properties. To this end, we introduce some additional notations below.
+
+
+Let $P$ be a path in $\Ss$ from $q_0$ to some state $q$. We define ${\sf Conf}_P$ as the set of configurations $(q, \rho)$ such that there are a data word $w$ and an initial valuation $\rho_0$ satisfying that the run of $\Ss$ over $w$, starting from the initial configuration $(q_0, \rho_0)$, follows a path $P P'$ (i.e. $P$ is a prefix of the path $PP'$), and reaches the configuration $(q,\rho)$ after going through $P$. Let $x_1, x_2 \in X$. Then $P$ is said to \emph{enforce} $x_1 < x_2$ (resp. $x_1 = x_2, x_1 > x_2$) if for each $(q,\rho) \in {\sf Conf}_P$, it holds that $\rho \models x_1 < x_2$ (resp. $\rho \models x_1 = x_2$, $\rho \models x_1 > x_2$). 
+
+An SNT $\Ss=(Q, X, Y, \delta, q_0, O)$ is said to be \emph{normalized} if 1) {\it Path-feasible:} for each path $P$ starting from $q_0$, ${\sf Conf}_P \neq \emptyset$, 2) {\it State order-enforced:} all the paths ending at a given state $q$ enforce the same order relation between control variables, more precisely, for each state $q$ and each pair of control variables $x_1, x_2 \in X$, there do not exist two paths $P_1, P_2$ from $q_0$ to $q$ such that $P_1$ enforces $x_1 < x_2$ (or $x_1 = x_2$, $x_1 > x_2$), but $P_2$ does not.
+%
+%\begin{itemize}
+%\item all the paths from  $q_0$ to $q$ enforce $x_1 < x_2$, 
+%
+%\item all the paths from $q_0$ to $q$ enforce $x_1 = x_2$, 
+%
+%\item all the paths from $q_0$ to $q$ enforce $x_1 > x_2$, 
+%
+%\item each path from $q_0$ to $q$ enforces none of $x_1 < x_2$, $x_1 = x_2$, and $x_1 > x_2$.
+%\end{itemize}
+
+In the following, we show that from an SNT $\Ss$, an equivalent normalized SNT $\Ss'$ can be constructed. The main idea of the construction is to record in the states the order relation between control variables, which is enforced by the path that has been traversed so far. Since a state in $\Ss$ may be split into several states in $\Ss'$, the transition graph of $\Ss'$ might not be generalized flat any more. Nevertheless, we can show that this will not happen and the ``Monotone  constraint'' guarantees that $\Ss'$ is still generalized flat. 
+
 
 \hide{
-\begin{proposition}\label{prop-snt-eqv-to-nzero}
-From SNTs $\Ss_1$ and $\Ss_2$, an SNT $\Ss_3$ can be constructed in polynomial time such that  $(\Ss_1)_{\rho_0}(w\wend) \neq (\Ss_2)_{\rho_0}(w\wend)$ for some  data word $w\wend$ and valuation $\rho_0$  iff $(\Ss_3)_{\rho_0}(w\wend) \not\in \{\bot,0\}$ for some data word $w\wend$ and valuation $\rho_0$. 
-\end{proposition}
-Proposition~\ref{prop-snt-eqv-to-nzero} can be proved by a straightforward product construction. We would like to remark that the following property in the ``generalized flat'' constraint is essential for Proposition~\ref{prop-snt-eqv-to-nzero}: All the maximal paths in the SCC-graph of the transition graph of $\Ss$ have the same length. If this property is removed from the ``generalized flat'' constraint, then the SNT $\Ss_3$ obtained by product construction may not be generalized flat any more.
+Nevertheless, this idea is that the resulting SNT $\Ss_3$ may not be transition-enabled even if $\Ss_1$ and $\Ss_2$ are. In order to guarantee the ``transition-enabled'' property of $\Ss_3$, it is necessary to normalize $\Ss_3$, that is, to encode in the states the order relation between control variables. Nevertheless, the normalization procedure may split a state into a collection of states and destroy the ``generalized flat'' constraint. In the following, we show that for a reasonably expressive class of SNTs, called monotone SNTs, the normalization procedure preserves the ``generalized flat'' constraint. Intuitively, each control variable in a monotone SNT computes the maximum or minimum value, possibly after some pre-processing in the first few data values in the input data word. Formally, a \emph{monotone} SNT is an SNT $\Ss$ such that
+%1)  in the transition graph of $\Ss$, for each nontrivial SCC $S$, there are no arcs going to a state outside $S$ (except the $\triangleright$-transitions), 
+for each control variable $x \in X_c$ and each nontrivial SCC $S$ in the transition graph of $\Ss$, $x$ computes the maximum or minimum value in $S$, more precisely, 
+\begin{enumerate}
+\item for each self-loop $(q, g, \eta, q)$ in $S$, it holds that $\cur = x$, $\cur< x$, or $\cur > x$ is a conjunct of $g$, 
+%
+\item either all the self-loops $(q, g, \eta, q)$ such that $\cur > x $ is a conjunct of $g$ satisfy that $\eta(x)=\cur$, or none of them satisfies this constraint,  similarly for $\cur < x$,
+%
+\item if both $\cur < x$ and $\cur > x$ occur in $S$,  then exactly one of the following constraint holds: a) all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur > x$ is a conjunct of $g$ satisfy that $\eta(x)=\cur$, b) all the self-loops $(q, g, \eta, q)$ in $S$ such that $\cur < x$ is a conjunct of $g$ satisfy that $\eta(x)=\cur$.
+\end{enumerate}
+All the examples we have seen so far, e.g. the SNTs for computing the maximum value and the sum, as well as the SNTs constructed from them in Proposition~\ref{prop-snt-cmm-to-eqv}, are all monotone SNTs. Moreover, we can define the class of \emph{monotone programs} as the class of reducer programs $p$ such that the SNT $\Ss_p$ constructed in Proposition~\ref{prop-mrprog-to-snt} is monotone.
 }
 
+\begin{proposition}\label{prop-snt-norm}
+For each SNT $\Ss$, an equivalent normalized SNT $\Ss'$ can be constructed in exponential time.
+\end{proposition}
+
+In the rest of this paper, we assume that all the SNTs are normalized.
+
+\hide{
 The result below states a property of SNTs, due to the fact that the SNTs are assumed to be transition-enabled and the guards are equality-free (cf. the definition of guards in Section~\ref{sec:preliminaries}).
 
 \begin{proposition}\label{prop-snt-distinct-value}
 Let $\Ss$ be an SNT and $P$ be a path in $\Ss$. There is a data word $w\wend$ such that (1) there is a run of $\Ss$ over $w\wend$ which follows $P$, (2) no data values occur twice in~$w\wend$.
 \end{proposition}
+}
 
-For analyzing the complexity of the decision procedure in the next section,  we state the complexity of the reductions w.r.t. the following factors of SNTs: the number of states, the number of control variables (resp. data variables), and the number of simple cycles of the transition graph. We will adopt the convention that if after a reduction, some factor becomes exponential, then this fact will be stated explicitly, and on the other hand, if some factor is still polynomial after the reduction, then this fact will be made implicit and will not be stated explicitly. 
 
 
 
