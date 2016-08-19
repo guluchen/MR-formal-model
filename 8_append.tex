@@ -192,28 +192,28 @@ Otherwise, if $y_j \in \dom(\eta_1)$, then $\eta'_2(y_j)= a_{j} + b_{j} \cur$. O
 
 \noindent {\it The construction of $\Ss_2$}.
 
-Intuitively, over a data word $w=d_1\dots d_n\wend$, we introduce an additional write-once variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reading $\wend$ in $w$, the variables are updated properly by letting $x'$ to represent $d_1$.
+Intuitively, over a data word $w=d_1\dots d_n\wend$, we introduce an additional control variable $x'$ to store $d_1$, then simulates the run of $\Ss$ over $d_2\dots d_n d_1$: When reading $\wend$ in $w$, the variables are updated properly by letting $x'$ to represent $d_1$.
 
-Since we only accept data words end at $\wend$, it is safe to assume that in the SNT $\Ss$, the target state of any transition with the guard $\cur = \wend$ is a sink state, i.e., a state without any outgoing transitions.
+%Since we only accept data words end at $\wend$, it is safe to assume that in the SNT $\Ss$, the target state of any transition with the guard $\cur = \wend$ is a sink state, i.e., a state without any outgoing transitions.
 
 
 Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (\{q'_0\} \cup Q, X\cup\{x'\}, Y, \delta_2, q'_{0}, O_2)$ such that  
 \begin{itemize}
 \item $O_2(q'_0)$ is undefined, and for each $q \in Q$, $O_2(q)=O(q)$,	
 	
-\item $\delta_2$ is constructed from $\delta$ as follows
+\item $\delta_2$ is constructed from $\delta$ as follows,
 	\begin{itemize}
-	\item for each element of $\delta$ without $\cur = \wend$ in the guard is an element of $\delta_2$,
+	\item each element of $\delta$ whose guard does not contain $\cur = \wend$ is an element of $\delta_2$,
 	%
 
 	\item we add the transition $q'_0 \xrightarrow{(\ltrue,\eta'_1)} q_0$ to $\delta_2$, where $\eta'_1(x') =\cur$ and $\eta'_1(z)$ is undefined for all $z \in X\cup Y$.
 
-	\item for each pair of transitions $q_1 \xrightarrow{(g_1,\eta_1)} q_2 \xrightarrow{(g_2\wedge(\cur=\wend),\eta_2)} q_3$ in $\Ss$, we add the transition $(q_1, g', \eta'_2, q_3)$ into $\delta_2$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$.
+	\item for each pair of transitions $q_1 \xrightarrow{(g_1 \wedge \cur \neq \wend, \eta_1)} q_2 \xrightarrow{(g_2\wedge \cur=\wend, \eta_2)} q_3$ in $\Ss$, we add the transition $(q_1, g', \eta'_2, q_3)$ into $\delta_2$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$.
 
 
 	Formally, $g',\eta'_2$ are defined in the following. 
 		\begin{itemize}
-		\item $g' = g'_1 \wedge g'_2 \wedge(\cur=\wend)$, where $g'_1$ and $g'_2$ are obtained from $g_1,g_2$ as follows: $g'_1$ is obtained from $g_1$ by replacing all occurrences of $\cur$ with $x'$, and $g'_2$ be obtained from $g_2$ by replacing each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$, then substituting all occurrences of $\cur$ with $x'$.
+		\item $g' = g'_1 \wedge g'_2 \wedge(\cur=\wend)$, where $g'_1$ and $g'_2$ are obtained from $g_1,g_2$ as follows: $g'_1$ is obtained from $g_1$ by replacing all occurrences of $\cur$ with $x'$, and $g'_2$ is obtained from $g_2$ by replacing each $x \in X\cap \dom(\eta_1)$ with $\eta_1(x)$, then substituting all occurrences of $\cur$ with $x'$.
 		%
 		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_2)$, then $\eta'_2(z)$ is the expression obtained from $\eta_2(z)$ by replacing all occurrences of variables $z' \in \dom(\eta_1)$ therein with $\eta_1(z')$ and then substituting all occurrences of $\cur$ with $x'$. 
 		\item For each $z \in X\cup Y$, if $z \in \dom(\eta_1) \setminus \dom(\eta_2)$, then $\eta'_2(z)$ is the expression obtained from $\eta_1(z)$ by substituting all occurrences of $\cur$ with $x'$.
@@ -225,7 +225,7 @@ Suppose $q'_{0} \not \in Q$ and $x' \not \in X$. Then $\Ss_2 = (\{q'_0\} \cup Q,
 \end{itemize}
 
 It is easy to see that the size of both $\Ss_1$ and $\Ss_2$ are polynomial with respect to the size of $\Ss$.
-Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized flatness of $\Ss$.
+Note that $\Ss_1$ and $\Ss_2$ constructed above preserve the generalized-flatness and mononicity of $\Ss$, since the constructions do not modify the transitions in the nontrivial SCCs of the transition graph.
 \qed
 \end{proof}
 
@@ -249,192 +249,273 @@ We first construct $\Ss$ as the product of $\Ss_1$ and $\Ss_2$. Specifically, $\
 \item otherwise (both $O_1(q_1)$ and $O_2(q_2)$ are undefined), $O((q_1,q_2))$ is undefined. 
 \end{itemize}
 \end{itemize}
-From the aforementioned construction, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero. Moreover, since both $\Ss_1$ and $\Ss_2$ are generalized flat and monotone, we know that $\Ss$ is generalized-flat and monotone as well.   \qed
+From the aforementioned construction, it is easy to see that $\Ss_1$ and $\Ss_2$ are  inequivalent iff there is a data word $w$ such that the output of $\Ss$ over $w$ is non-zero. Moreover, since both $\Ss_1$ and $\Ss_2$ are generalized-flat and monotone, we know that $\Ss$ is generalized-flat and monotone as well.   \qed
 \end{proof}
+
 
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
 {
-For each SNT $\Ss$, an equivalent normalized SNT $\Ss'$ can be constructed in exponential time.
+For each SNT $\Ss$, the nonzero-output problem of $\Ss$ can be reduced to a series of the nonzero-output problems of normalized SNTs $\Ss'$ in exponential time.
 }
 \smallskip
 
-\newcommand{\po}{\mathsf{PO}}
+\newcommand{\tpo}{\mathsf{TPO}}
 
+%\newcommand{\fn}{\mathsf{FN}}
 
 \begin{proof}
-Suppose $\Ss = (Q, X, Y, \delta, q_0, O)$ is an SNT. Our goal is to construct an equivalent normalized SNT $\Ss'=(Q', X, Y, \delta', q'_0, O')$.
+Suppose $\Ss = (Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots, x_k\}$. Our goal is to reduce the nonzero-output problem of $\Ss$ to a series of  nonzero-output problems of normalized SNTs $\Ss'  = (Q', X, Y, \delta', q'_0, O')$.
 
-Let $\po_{X}$ denote the set of preorders between control variables (Recall that a preorder $\le$ over $X$ is a reflexive and transitive relation over $X$). 
+%Without loss of generality, we assume that the set of write-once control variables of $\Ss$ satisfies that $X_{\sf w} = \{x_1,\dots, x_{k'} \}$ for some $k' \ge 0$ (If $k'=0$, then $X_{\sf w} = \emptyset$).
 
-Then $Q'= Q \times \po_X$, and $q'_0=(q_0, \preceq_0)$ such that $\preceq_0 = \{(x,x)\}$. Moreover, $O'$ is defined as follows: For each $(q, \preceq) \in Q'$, $O'((q, \preceq))=O(q)$. It remains to define $\delta'$.
+%We divide the reduction into two steps. At first, we construct a collection of SNTs $\Ss'' = (Q'', X, Y, \delta'', q''_0, O'')$ that are path-feasible and state-dominating, but not necessarily storage-irredundant. Then, we transform each SNT $\Ss''$ into a normalized $\Ss'$.
+
+Let $\tpo_{X}$ denote the set of total preorders between control variables (Recall that a total preorder over $X$ is reflexive and transitive relation $\preceq$  over $X$ such that for each $x_i, x_j \in X$, either $(x_i, x_j) \in \preceq$ or $(x_j, x_i) \in \preceq$). For $\preceq \in \tpo_X$ and $x_i, x_j \in X$,  $x_i$ is said to be a \emph{$\preceq$-successor} of  $x_j$ or $x_j$ is said to be a \emph{$\preceq$-predecessor} of $x_i$, if $(x_j, x_i) \in \preceq$, $(x_i, x_j) \not \in \preceq$, and for each $x_{i'} \in X$ such that $(x_j, x_{i'}) \in \preceq$, it holds that $(x_i, x_{i'}) \in \preceq$. 
+%In addition, let $\fn_X$ denote the set of functions over $X$.
+
+Then for each $\preceq_0 \in \tpo_X$, we construct an SNT $\Ss'= (Q', X, Y, \delta', q'_0, O')$ as follows: $Q'= Q \times \tpo_X$, and $q'_0=(q_0,  \preceq_0)$. Moreover, $O'$ is defined as follows: For each $(q, \preceq) \in Q'$, $O'((q, \preceq)) = O(q)$. It remains to define $\delta'$.
 
 The transition set $\delta'$ is defined by the following rules, 
-For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g,\eta)} (q', \preceq')$ satisfying the following constraints. 
+For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g', \eta)} (q', \preceq')$ satisfying the following constraints. 
 \begin{itemize}
-\item $\preceq$ and $g$ are compatible, more precisely,  for each pair of control variables $x_1, x_2$ such that $x_1 \preceq x_2$, it holds that  $g \not \models x_2 < x_1$.
+\item  $g'$ is of the form $\cur = x_i$ where $x_i \in X$, or of the form $\cur > x_j \wedge \cur < x_i$ such that $x_i \in X$ is a $\preceq$-successor of $x_j \in X$, or of the form $\cur > x_i$ such that there does not exist a $\preceq$-successor of $x_i$, or of the form $\cur < x_i$ such that there does not exist a $\preceq$-predecessor of $x_i$.
 %
-\item $\preceq'$ is obtained from $\preceq,g,\eta$ by the following procedure. We first compute a preorder relation $\preceq'_1$. 
-\begin{enumerate}
-\item Initially, let $\preceq'_1 :=\preceq$,
+\item $\preceq$, $g$ and $g'$ are compatible, more precisely, $\varphi_{\preceq} \wedge g \wedge g'$ is satisfiable, where $\varphi_{\preceq} \equiv \bigwedge \limits_{ i< j} \psi_{x_i, x_j}$, and for each pair of indices $i, j \in [k]$ such that $i < j$,  if $(x_i, x_j), (x_j, x_i) \in \preceq$, then $\psi_{x_i, x_j} \equiv x_i = x_j$, otherwise, if $(x_i, x_j) \in \preceq$ and $(x_j, x_i) \not \in \preceq$, then $\psi_{x_i, x_j} \equiv x_i < x_j$, otherwise, $\psi_{x_i, x_j} \equiv x_i > x_j$. 
 
-\item for each conjunct $\cur = x$ of $g$ (resp. $x' = x$ for some $x' \in X_s$), let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x), (x, \cur)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x', x), (x, x')\}$), 
-
-\item for each conjunct $\cur < x$ of $g$ (resp. $x' < x$ for some $x' \in X_s$), let $\preceq'_1 := \preceq'_1 \cup \{(\cur, x)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x', x)\}$), 
-
-\item for each conjunct $\cur > x$ of $g$ (resp. $x' > x$ for some $x' \in X_s$), let  $\preceq'_1 := \preceq'_1 \cup \{(x, \cur)\}$ (resp. $\preceq'_1 := \preceq'_1 \cup \{(x,x')\}$),
-
-\item let $\preceq'_1$ be the reflexive and transitive closure of $\preceq'_1$.
-\end{enumerate}
-Then we compute $\preceq'$ as follows: Let $\preceq':=\{(x,x) \mid x \in X\}$ first. For each pair of variables $x_1, x_2 \in X$, 
+%$g \wedge g'$ is satisfiable, and for each pair of control variables $x_i, x_j \in X$, if $g \wedge g' \models x_i = x_j$ (resp. $g \wedge g' \models x_i < x_j$), then $f(x_i)=f(x_j)$ (resp. $(x_i, x_j) \in \preceq$).
+%
+% one of the following conditions,
+%\begin{itemize}
+%\item $g'$ is of the form $\cur  = x_i$ for some $x_i \in X$,
+%
+%\item $g'$ is of the form $\cur > x_j \wedge \cur < x_i$ for some $x_i, x_j \in X$ such that $x_i$ is the $\preceq$-successor of $x_j$. Let $\preceq'_1$ be the reflexive and transitive closure of $\preceq \cup \{(x_j, \cur), (\cur, x_i)\}$.
+%\end{itemize} 
+%
+%\item $g \wedge g'$ is satisfiable.
+%
+\item $\preceq'$ is constructed as follows.
 \begin{itemize}
-\item if $x_1, x_2 \not \in \dom(\eta)$ such that $(x_1, x_2) \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1,x_2)\}$, 
-%
-\item if $x_1 \in \dom(\eta)$ and $x_2 \not \in \dom(\eta)$ such that either $\eta(x_1) = \cur$ and $(\cur, x_2) \in \preceq'_1$, or $\eta(x_1) = x'$ and $(x', x_2) \in \preceq'_1$ for some $x' \in X_s$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$,
-%
-\item if $x_1 \not \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that either $\eta(x_2) = \cur$ and $(x_1, \cur) \in \preceq'_1$, or $\eta(x_2) = x'$ and $(x_1, x') \in \preceq'_1$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$,
-%
-\item if $x_1 \in \dom(\eta)$ and $x_2 \in \dom(\eta)$ such that $\eta(x_1) = x'_1$, $\eta(x_2) = x'_2$, and $(x'_1, x'_2) \in \preceq'_1$  for some $x'_1, x'_2 \in X_s \cup \{\cur\}$, then let $\preceq':= \preceq' \cup \{(x_1, x_2)\}$.
+\item Case $g' \equiv \cur = x_i$: At first, for each $x_{i'} \in X$, introduce a fresh variable $x'_{i'}$ to denote the value of $x_{i'}$ after the transition $(q, g, \eta,q)$. Let $X'$ denote the set of fresh variables. Let $\preceq''$ be the reflexive and transitive closure of the relation
+\[
+\begin{array}{l}
+\preceq \cup\ \{(x_{i'}, x'_{i'}), (x'_{i'}, x_{i'}) \mid x_{i'} \in X \setminus \dom(\eta)\}\ \cup\ \{(\cur, x_i), (x_i, \cur)\}\ \cup \\
+ \{(x_{i'}, x'_{i''}), (x'_{i''}, x_{i'}) \mid \eta(x_{i'})=x_{i''}\} \cup \{(x'_{i'}, \cur), (\cur, x'_{i'}) \mid \eta(x_{i'}) = \cur \}.
+\end{array}
+\] 
+Then $\preceq'$ is the total preorder obtained from $\preceq'' \ \cap\ X' \times X'$ by replacing each $x'_i \in X'$ with $x_i \in X$.
+
+\item Case $g' \equiv \cur > x_j \wedge \cur < x_i$, or $g' \equiv  \cur > x_i$, or $g' \equiv \cur < x_i$:
+At first, for each $x_{i'} \in X$, introduce a fresh variable $x'_{i'}$ to denote the value of $x_{i'}$ after the transition $(q, g, \eta,q)$. Let $X'$ denote the set of fresh variables. Let $\preceq''$ be the reflexive and transitive closure of the relation
+\[
+\begin{array}{l}
+\preceq \cup\ \{(x_{i'}, x'_{i'}), (x'_{i'}, x_{i'}) \mid x_{i'} \in X \setminus \dom(\eta)\}\ \cup\ \{(x_j, \cur), (cur, x_i)\}\ \cup \\
+\{(x_{i'}, x'_{i''}), (x'_{i''}, x_{i'}) \mid \eta(x_{i'})=x_{i''}\} \cup \{(x'_{i'}, \cur), (\cur, x'_{i'}) \mid \eta(x_{i'}) = \cur \}.
+\end{array}
+\] 
+Then $\preceq'$ is the total preorder obtained from $\preceq'' \ \cap\ X' \times X'$ by replacing each $x'_i \in X'$ with $x_i \in X$.
 \end{itemize}
 %
+%\item Case $g' \equiv \cur > x_i$: 
+%
+%\item Case $g' \equiv \cur < x_i$: 
 \end{itemize}
 
-At first, from the construction, we know that $\Ss'$ is path-feasible and state order-enforced. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss_0$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+At first, from the construction, we know that $\Ss'$ is path-feasible and state-dominating. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
 
-To the contrary, suppose that there are a state $q$ in some nontrivial SCC $S$ of $\Ss_0$ and two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$ in some nontrivial SCC of $\Ss'$.
+To the contrary, suppose that there are a state $q$ in some nontrivial SCC $S$ of $\Ss$ and two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$ in some nontrivial SCC of $\Ss'$.
 
-Since $\preceq_1 \neq \preceq_2$, without loss of generality, we assume that there are a pair of control variables $x_1,x_2$ such that $(x_1, x_2) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_2$. 
-%We first assume that all the guards $\cur > x_1$, $\cur < x_1$, $\cur > x_2$ and $\cur < x_2$ occur in $S$. 
-We introduce some notations first. For $x \in \{x_1, x_2\}$, we say that $x$ computes the minimum (resp. maximum) value in $S$ if whenever $\cur < x$ (resp. $\cur > x$) occurs in a transition $(q, g, \eta, q)$ of $S$, it holds that $\eta(x)=\cur$. 
+Since $\preceq_1 \neq \preceq_2$, without loss of generality, we assume that there are a pair of distinct control variables $x_i, x_j$ such that $(x_i, x_j) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_2$. 
+We introduce some notations first. For $x \in \{x_i, x_j\}$, we say that $x$ computes the minimum (resp. maximum) value in $S$ if whenever $\cur < x$ (resp. $\cur > x$) occurs in a transition $(q, g, \eta, q)$ of $S$, it holds that $\eta(x)=\cur$. 
 We distinguish between the following situations.
 \begin{itemize}
-\item Suppose that both $x_1$ and $x_2$ compute the minimum value in $S$. Since both $x_1$ and $x_2$ compute the minimum value in $S$, when starting from some configuration $(q, \rho)$ such that $\rho \models x_1 \le x_2$ and keep applying the transitions in $S$, we know that in each transition, 
+\item Suppose that both $x_i$ and $x_j$ compute the minimum value in $S$. Since both $x_i$ and $x_j$ compute the minimum value in $S$, when starting from some configuration $(q, \rho)$ such that $\rho \models x_i \le x_j$ and keep applying the transitions in $S$, we know that in each transition, 
 \begin{itemize}
-\item either the current data value is less or equal to both $x_1$ and $x_2$, then both $x_1$ and $x_2$ are assigned to the current data value and become equal, 
+\item either the current data value is less or equal to both $x_i$ and $x_j$, then both $x_i$ and $x_j$ are assigned to the current data value and become equal, 
 %
-\item or the current data value is greater than $x_1$ and less or equal to $x_2$, then the current data value is assigned to $x_2$ (with the value of $x_1$ unchanged), then $x_1 < x_2$ holds after the transition,
+\item or the current data value is greater than $x_i$ and less or equal to $x_j$, then the current data value is assigned to $x_j$ (with the value of $x_i$ unchanged), then $x_i < x_j$ holds after the transition,
 %
-\item or the current data value is greater than both $x_1$ and $x_2$, then both the value of $x_1$ and that of $x_2$ are unchanged.
+\item or the current data value is greater than both $x_i$ and $x_j$, then both the value of $x_i$ and that of $x_j$ are unchanged.
 \end{itemize}
-Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
 %
-\item Suppose that both $x_1$ and $x_2$ compute the maximum value in $S$. Similarly to the arguments in the previous situation, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+\item Suppose that both $x_i$ and $x_j$ compute the maximum value in $S$. Similarly to the arguments in the previous situation, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
 %
-\item Suppose that $x_1$ computes the minimum value in $S$ and $x_2$ computes the maximum value in $S$. Since $x_1$ computes the minimum value and $x_2$ computes the maximum value in $S$, we know that the value of $x_1$ is non-increasing and the value of $x_2$ is non-decreasing. Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the fact $x_1 \le x_2$ persists. This implies that $(x_1, x_2) \in \preceq_2$, a contradiction.
+\item Suppose that $x_i$ computes the minimum value in $S$ and $x_j$ computes the maximum value in $S$. Since $x_i$ computes the minimum value and $x_j$ computes the maximum value in $S$, we know that the value of $x_i$ is non-increasing and the value of $x_j$ is non-decreasing. Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
 %
-\item Suppose that $x_1$ computes the minimum value in $S$ and $x_2$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_1$ is non-increasing and the value of $x_2$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+\item Suppose that $x_i$ computes the minimum value in $S$ and $x_j$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_i$ is non-increasing and the value of $x_j$ is unchanged when staying in $S$. The arguments are similar to the previous case.
 %
-\item Suppose that $x_1$ computes neither the minimum value nor the maximum value and $x_2$ computes the maximum value in $S$. Then the value of $x_1$ is unchanged and the value of $x_2$ is non-decreasing when staying in $S$. The arguments are similar to the previous case.
+\item Suppose that $x_i$ computes neither the minimum value nor the maximum value and $x_j$ computes the maximum value in $S$. Then the value of $x_i$ is unchanged and the value of $x_j$ is non-decreasing when staying in $S$. The arguments are similar to the previous case.
 %
-\item Suppose that $x_1$ computes the maximum value in $S$ and $x_2$ computes the minimum value in $S$.  Then in $S$, the value of $x_1$ is non-decreasing and the value of $x_2$ is non-increasing.  From $(x_1, x_2) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_2$, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, sometime the value of $x_1$ becomes strictly greater than that of $x_2$, and this fact persists afterwards. Therefore, we have $(x_2, x_1) \in \preceq_2$ and $(x_1, x_2) \not \in \preceq_2$. Since in $S$, the value of $x_1$ is non-decreasing and the value of $x_2$ is non-increasing, we know that when following a path from $(q, \preceq_2)$ to $(q, \preceq_1)$ in $\Ss'$, $x_2 < x_1$ persists. Therefore, $(x_2, x_1) \in \preceq_1$ and $(x_1, x_2) \not \in \preceq_1$, a contradiction.
+\item Suppose that $x_i$ computes the maximum value in $S$ and $x_j$ computes the minimum value in $S$.  Then in $S$, the value of $x_i$ is non-decreasing and the value of $x_j$ is non-increasing.  From $(x_i, x_j) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_2$, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, sometime the value of $x_i$ becomes strictly greater than that of $x_j$, and this fact persists afterwards. Therefore, we have $(x_j, x_i) \in \preceq_2$ and $(x_i, x_j) \not \in \preceq_2$. Since in $S$, the value of $x_i$ is non-decreasing and the value of $x_j$ is non-increasing, we know that when following a path from $(q, \preceq_2)$ to $(q, \preceq_1)$ in $\Ss'$, $x_j < x_i$ persists. Therefore, $(x_j, x_i) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_1$, a contradiction.
 %
-\item Suppose that $x_1$ computes the maximum value and  $x_2$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_1$ is non-decreasing and the value of $x_2$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+\item Suppose that $x_i$ computes the maximum value and  $x_j$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_i$ is non-decreasing and the value of $x_j$ is unchanged when staying in $S$. The arguments are similar to the previous case.
 %
-\item Suppose that $x_1$ computes neither the minimum value nor the maximum value in $S$ and $x_2$ computes the minimum value in $S$. Then the value of $x_1$ is unchanged and the value of $x_2$ is non-increasing when staying in $S$. The arguments are similar to the previous case.
+\item Suppose that $x_i$ computes neither the minimum value nor the maximum value in $S$ and $x_j$ computes the minimum value in $S$. Then the value of $x_i$ is unchanged and the value of $x_j$ is non-increasing when staying in $S$. The arguments are similar to the previous case.
 %
-\item Suppose $x_1$ (resp. $x_2$) computes neither  the minimum value nor the maximum value in $S$. Then the value of $x_1$ and $x_2$ are unchanged when staying in $S$. Therefore, if $x_1 \le x_2$ holds in the state $(q, \preceq_1)$, then it holds in each state belonging to the same SCC as $(q, \preceq_1)$ in $\Ss'$. In particular, $(x_1, x_2) \in \preceq_2$, a contradiction.
+\item Suppose $x_i$ (resp. $x_j$) computes neither  the minimum value nor the maximum value in $S$. Then the value of $x_i$ and $x_j$ are unchanged when staying in $S$. Therefore, if $x_i \le x_j$ holds in the state $(q, \preceq_1)$, then it holds in each state belonging to the same SCC as $(q, \preceq_1)$ in $\Ss'$. In particular, $(x_i, x_j) \in \preceq_2$, a contradiction.
 \end{itemize}
 Consequently, in each of the situations aforementioned, we always get a contradiction. 
 %
 We conclude that the assumption is false and $\Ss'$ is indeed generalized-flat.
+\hide{
+In the following, we transform $\Ss''$ into an SNT $\Ss' = (Q', X, Y, \delta', q'_0, O')$ which has the same set of states and the same transition graph as $\Ss''$, but becomes storage-irredundant, and thus normalized. More specifically, 
+$Q' = Q''$ and
+$q'_0 = q''_0$.
+In addition, $O'$ is obtained from $O''$ as follows: Let $(q, \preceq) \in Q''$ such that $O''((q, \preceq))$ is defined, then $O'((q, \preceq))$ is obtained from $O''((q, \preceq))$ by replacing each control variable $x_i \in X$ with $x_j \in X$, where $x_j$ is the control variable of the \emph{minimum} index such that $(x_i, x_j), (x_j, x_i) \in \preceq$. Finally, $\delta'$ are obtained from $\delta''$ as follows: For each transition $(q, \preceq) \xrightarrow{(g,\eta)} (q, \preceq') \in \delta''$, let $(q, \preceq) \xrightarrow{(g', \eta')} (q, \preceq') \in \delta'$, where 
+\begin{itemize}
+\item $g'$ is obtained from $g$ by replacing each $x_i \in X$ with $x_j \in X$, where $x_j$ is the control variable of the \emph{minimum} index such that $(x_i, x_j), (x_j, x_i) \in \preceq$, 
+\item 
+$\eta'$ is obtained from $\eta$ as follows: for each $x_i \in \dom(\eta)$, if there is $x_j \in X$ such that $j < i$ and $(x_i, x_j), (x_j, x_i) \in \preceq'$, then $\eta'(x_i)$ is undefined, otherwise, $\eta'(x_i) = \eta(x_i)$.
+\end{itemize}
+The intuition of the construction of $g', \eta'$ is as follows: When $x_i$ is replaced by $x_j$ in $g$, $x_i$ is not referred to any more in the guard of any transition out of the state $(q, \preceq)$, which makes it possible to remove the redundancy of the assignments $\eta$.
+}
 \qed
 \end{proof}
 
 
-\vspace{4mm}
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
 \noindent {\bf Proposition~\ref{prop-snt-norm}}.
-{\it From each SNT, an equivalent normalized SNT can be constructed in exponential time.} 
+{
+For each SNT $\Ss$, the nonzero-output problem of $\Ss$ can be reduced to a series of the nonzero-output problems of normalized SNTs $\Ss'$ in exponential time.
+}
+\smallskip
 
+\newcommand{\lo}{\mathsf{LO}}
 
-\newcommand{\tog}[1]{\mathsf{toGuard(#1)}}
-\newcommand{\toec}[1]{\mathsf{toEqClass(#1)}}
+\newcommand{\fn}{\mathsf{FN}}
+
 \begin{proof}
-Given an SNT $\Ss=(Q, X, Y, \delta, q_0, O)$, we show that an equivalent normalized SNT ${\Ss}'=(Q', X, Y, \delta', q'_0, O')$  can be constructed.
+Suppose $\Ss = (Q, X, Y, \delta, q_0, O)$ is an SNT such that $X=\{x_1,\dots, x_k\}$. Our goal is to reduce the nonzero-output problem of $\Ss$ to a series of  nonzero-output problems of normalized SNTs $\Ss'  = (Q', X, Y, \delta', q'_0, O')$.
 
-Before presenting the construction, we introduce some notations first.
+%Without loss of generality, we assume that the set of write-once control variables of $\Ss$ satisfies that $X_{\sf w} = \{x_1,\dots, x_{k'} \}$ for some $k' \ge 0$ (If $k'=0$, then $X_{\sf w} = \emptyset$).
 
-Let $\sntcset_\Ss=\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\} \cup [c_{min}, c_{max}] \cup \{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$ and $\cabs_\Ss$ denote the set of partial functions from some $X$ to $\sntcset_\Ss$. Intuitively, $\cabs_\Ss$ is the set of abstractions of the control variables, where $\sntc^{<}_{1},\dots, \sntc^{<}_{k}$ (resp. $\sntc^{>}_{1},\dots, \sntc^{>}_{k}$) are the $k$ colors to denote the control variables whose values are less than $c_{min}$ (resp. greater than $c_{max}$). For $f \in \cabs_\Ss$ and $x, x' \in X$, $x'$ is said to be a \emph{successor} of $x$ wrt. $f$ if one of the following holds: 
+%We divide the reduction into two steps. At first, we construct a collection of SNTs $\Ss'' = (Q'', X, Y, \delta'', q''_0, O'')$ that are path-feasible and state-dominating, but not necessarily storage-irredundant. Then, we transform each SNT $\Ss''$ into a normalized $\Ss'$.
+
+Let $\lo_{X}$ denote the set of linear orders between control variables (Recall that a linear order over $X$ is partial order $\preceq$  over $X$ such that for each $x_i, x_j \in X$, either $(x_i, x_j) \in \preceq$ or $(x_j, x_i) \in \preceq$). For $\preceq \in \lo_X$ and $x_i, x_j \in X$,  $x_i$ is said to be the \emph{$\preceq$-successor} of  $x_j$ or $x_j$ is said to be the \emph{$\preceq$-predecessor} of $x_i$, if $(x_j, x_i) \in \preceq$, $(x_i, x_j) \not \in \preceq$, and for each $x_{i'} \in X$ such that $(x_j, x_{i'}) \in \preceq$, it holds that $(x_i, x_{i'}) \in \preceq$. In addition, let $\fn_X$ denote the set of functions over $X$.
+
+Then for each $\preceq_0 \in \lo_X$, we construct an SNT $\Ss'= (Q', X, Y, \delta', q'_0, O')$ as follows: $Q'= Q \times \fn_X \times \lo_X$, and $q'_0=(q_0, f_0, \preceq_0)$, where $f_0(x_i)=x_i$ for each $x_i \in X$. Moreover, $O'$ is defined as follows: For each $(q, f, \preceq) \in Q'$, $O'((q, f, \preceq)) = f(O(q))$, where $f(O(q))$ is the expression obtained from $O(q)$ by replacing simultaneously each $x_i \in X$ with $f(x_i)$. It remains to define $\delta'$.
+
+The transition set $\delta'$ is defined by the following rules, 
+For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, f, \preceq) \xrightarrow{(g', \eta')} (q', f', \preceq')$ satisfying the following constraints. 
 \begin{itemize}
-\item either $f(x)=c$ and $f(x')=c+1$ for $c \in \intnum$ such that $c, c+1 \in [c_{min},c_{max}]$, or
-
-\item $f(x) = \sntc^{<}_i$ and $f(x') = \sntc^{<}_{j}$ for $i,j: 1 \le i < j \le k$, and the range of $f$ does not contain any color from $\{\sntc^{<}_{i+1},\dots, \sntc^{<}_{j-1}\}$, or
-
-\item $f(x) = \sntc^{>}_i$ and $f(x') = \sntc^{>}_{j}$ for some $i,j: 1 \le i < j \le k$, and and the range of $f$ does not contain any color from $\{\sntc^{>}_{i+1},\dots, \sntc^{>}_{j-1}\}$. 
-\end{itemize}
-For $x \in X$, $x$ is said to be the \emph{maximum} (resp. \emph{minimum}) control variable wrt. $f$ if $x \in \dom(f)$ and there is no $x' \in X$ such that $f(x')$ is a successor of $f(x)$ (resp. $f(x)$ is a successor of $f(x')$). Let $\sntcset^{<}_\Ss$ denote $\{\sntc^{<}_{1},\dots, \sntc^{<}_{k}\}$, similarly, let $\sntcset^{>}_\Ss$ denote $\{\sntc^{>}_{1},\dots, \sntc^{>}_{k}\}$. Two colors from $\sntcset^{<}_\Ss$ are said to be \emph{adjacent} if they are $\sntc^{<}_i$ and $\sntc^<_{i+1}$ for some $i: 1 \le i < k$. Similarly for two colors from $\sntcset^>_\Ss$. A linear order can be defined on $\sntcset^<_\Ss$ as follows: A color $\sntc^<_i$ is said to be less than $\sntc^<_j$ if $i<j$. A similar order relation can be defined over $\sntcset^>_\Ss$. Moreover, these two linear orders can be extended to a linear order on $\sntcset_\Ss$ in a natural way.
-
-For $f \in \cabs_\Ss$, let $\varphi_f$ denote the constraint over control variables represented by $f$.
-\[
-\begin{array}{l c l }
-\varphi_f  &:=& \bigwedge \limits_{f(x_i)=c,  c_{min} \le c \le c_{max}} x_i = c \ \wedge \\
-&  & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}, f(x_j)=\sntc^{<}_{j'}, i' < j' } (x_i < x_j \wedge x_j < c_{min})\  \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{<}_{i'}= f(x_j)}(x_i = x_j \wedge x_j < c_{min})\ \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}, f(x_j)=\sntc^{>}_{j'}, i' < j' } (x_i < x_j \wedge x_i > c_{max})\ \wedge \\
-& & \bigwedge \limits_{f(x_i)=\sntc^{>}_{i'}= f(x_j)} (x_i = x_j  \wedge x_i > c_{max}).
-\end{array}
-\]
-
-Then $Q'= Q \times 2^Y \times \cabs_\Ss$, and $q'_0=(q_0, \emptyset, f_0)$ such that $\dom(f_0)=\emptyset$. Moreover, $O'$ is defined as follows: For each $(q, Z, f) \in Q'$, if $O(q)$  is defined and $\vars(O(q)) \subseteq \dom(f) \cup Z$, then $O'((q, Z, f))=O(q)$, otherwise, $O((q, Z, f))$ is undefined. It remains to define $\delta'$.
-
-The transition set $\delta'$ is defined by the following rule: 
-For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, Z, f) \xrightarrow{(g',\eta')} (q', Z', f')$ satisfying the following constraints. 
-\begin{itemize}
-\item For each $x \in \dom(f) \cap \dom(\eta)$, it holds that $\eta(x) \in \{\cur\} \cup \dom(f)$.  Intuitively, this means that if the original value of $x$ is defined  and $x$ is updated by $\eta$, then the value of $x$ after the update should be defined as well.
-
-\item  For each $y \in Z \cap \dom(\eta)$, it holds that $\vars(\eta(y)) \subseteq \{\cur\} \cup  \dom(f) \cup Z$.  Intuitively, this means that if the original value of $y$ is defined and $y$ is updated by $\eta$, then the value of $y$ after the update should be defined as well.
-
-\item $Z'$ is the union of $Z$ and the set of $y \in Y \cap \dom(\eta)$ such that $\vars(\eta(y)) \subseteq \{\cur\} \cup  \dom(f) \cup Z$.
-
-\item $g',\eta', f'$ satisfy one of the following constraints.
-\begin{itemize}
-\item The guard $g' := g \wedge \cur = c$ such that $g' \wedge \varphi_f$ is satisfiable. The assignment $\eta'$ is the restriction of  $\eta$ to $Y$, that is, $\dom(\eta') = \dom(\eta) \cap Y$ and for each $y \in \dom(\eta')$, $\eta'(y)=\eta(y)$. The abstraction function $f'$ is defined as follows: For each $x \in X$ such that $\eta(x)=\cur$,  let $f'(x) = c$. Moreover, for each $x \in X$ such that $\eta(x) = x'$, let $f'(x)=f(x')$. For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.
- 
-\item The guard $g' := g \wedge \cur < c_{min} \wedge \cur = x$ such that $g' \wedge \varphi_f$ is satisfiable and $f(x)=\sntc^{<}_i$ for some $i$.  The assignment $\eta'$ is the restriction of  $\eta$ to $Y$. The abstraction function $f'$ is defined as follows: For each $x' \in X$ such that $\eta(x')=\cur$, let $f'(x')=f(x)$. Moreover, for each $x' \in X$ such that $\eta(x')=x''$, let $f'(x')=f(x'')$. For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.
-
-\item The guard $g': = g \wedge \cur < c_{min} \wedge  x_i < \cur \wedge \cur < x_j$ such that $g' \wedge \varphi_f$ is satisfiable and $x_j$ is a successor of $x_i$ wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^{<}_{i'}$ and $f(x_j)=\sntc^{<}_{j'}$. 
-\begin{itemize}
-\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+\item  $g'$ is of the form $\cur = x_i$ where $x_i \in X$, or of the form $\cur > x_j \wedge \cur < x_i$ such that $x_i \in X$ is the $\preceq$-successor of $x_j \in X$, or of the form $\cur > x_i$ such that there does not exist the $\preceq$-successor of $x_i$, or of the form $\cur < x_i$ such that there does not exist the $\preceq$-predecessor of $x_i$.
 %
-\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i'+1 < j'$, then let $f'(x)= \sntc^{<}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^<_\Ss$,  we can remove $\{x\mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ and $f(x_j)$ become non-adjacent, while preserving the order relation on $\sntcset^<_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^<_{i''}$. Then let $f'(x)=\sntc^<_{i''+1}$  for each $x \in X$ such that $\eta(x)=\cur$.
+\item $f$, $\preceq$, $g$ and $g'$ are compatible, more precisely, $\varphi_{f, \preceq} \wedge g \wedge g'$ is satisfiable, where $\varphi_{f, \preceq} \equiv \bigwedge \limits_{x_i \neq x_j} \psi_{x_i, x_j}$, and for each pair of distinct variables $x_i, x_j \in X$,  if $f(x_i) = f(x_j)$, then $\psi_{x_i, x_j} \equiv x_i = x_j$, otherwise, if $(f(x_i), f(x_j)) \in \preceq$, then $\psi_{x_i, x_j} \equiv x_i < x_j$, otherwise, $\psi_{x_i, x_j} \equiv x_i > x_j$. 
+
+%$g \wedge g'$ is satisfiable, and for each pair of control variables $x_i, x_j \in X$, if $g \wedge g' \models x_i = x_j$ (resp. $g \wedge g' \models x_i < x_j$), then $f(x_i)=f(x_j)$ (resp. $(x_i, x_j) \in \preceq$).
 %
-\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
+% one of the following conditions,
+%\begin{itemize}
+%\item $g'$ is of the form $\cur  = x_i$ for some $x_i \in X$,
+%
+%\item $g'$ is of the form $\cur > x_j \wedge \cur < x_i$ for some $x_i, x_j \in X$ such that $x_i$ is the $\preceq$-successor of $x_j$. Let $\preceq'_1$ be the reflexive and transitive closure of $\preceq \cup \{(x_j, \cur), (\cur, x_i)\}$.
+%\end{itemize} 
+%
+%\item $g \wedge g'$ is satisfiable.
+%
+\item $\eta'$, $\preceq'$, and $f'$ are constructed as follows.
+\begin{itemize}
+\item Case $g' \equiv \cur = x_i$: Then let $\preceq' = \preceq$ and $\dom(\eta')=\emptyset$. In addition, $f'$ is constructed as follows:
+for each $x_{i'} \in X$, 
+\begin{itemize}
+\item if $x_{i'} \in \dom(\eta)$ and $\eta(x_{i'}) = \cur$, then $f'(x_{i'}) = f(x_i)$, 
+%
+\item if $x_{i'} \in \dom(\eta)$ and $\eta(x_{i'}) = x_{i''}$, then $f'(x_{i'})=f(x_{i''})$,
+%
+\item if $x_{i'} \not \in \dom(\eta)$, then $f'(x_{i'})=f(x_{i'})$.
 \end{itemize}
 
-\item The guard $g' := g \wedge \cur < c_{min} \wedge  \cur < x_i$ such that $g' \wedge \varphi_f$ is satisfiable and $x_i$ is the minimum control variable wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^<_{i'}$.
+\item Case $g' \equiv \cur > x_j \wedge \cur < x_i$, or $g' \equiv  \cur > x_i$, or $g' \equiv \cur < x_i$:
 \begin{itemize}
-\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+\item If there does not exist $x_{i'} \in \dom(\eta)$ such that $\eta(x_{i'})=\cur$, then let $\preceq' = \preceq$ and $\dom(\eta')=\emptyset$. In addition, $f'$ is constructed as follows: for each $x_{i'} \in X$, if $x_{i'} \in \dom(\eta)$ such that $\eta(x_{i'})=x_{i''}$, then let $f'(x_{i'})=f(x_{i''})$, otherwise, let $f'(x_{i'})=f(x_{i'})$.
 %
-\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i' > 1$, then let $f'(x)= \sntc^{<}_{i'-1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^<_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ become different from $1$, while preserving the order relation on $\sntcset^<_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^<_{i''}$. Then let $f'(x)=\sntc^<_{i''-1}$ for each $x \in X$ such that $\eta(x)=\cur$. 
-
-\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
-\end{itemize}
-%
-\item The guard $g' := g \wedge \cur > c_{max} \wedge \cur = x$ for some $x$ such that $g' \wedge \varphi_f$ is satisfiable and $f(x)=\sntc^{>}_i$ for some $i$.  The assignment $\eta'$ is the restriction of  $\eta$ to $Y$. The abstraction function $f'$ is defined as follows: For each $x' \in X$ such that $\eta(x')=\cur$, let $f'(x')=f(x)$. Moreover, for each $x' \in X$ such that $\eta(x')=x''$, let $f'(x')=f(x'')$. 
-%
-\item The guard $g' := g \wedge \cur > c_{max} \wedge  x_i < \cur \wedge \cur < x_j$ such that $x_j$ is the successor of $x_i$ wrt. $f$ and $g' \wedge \varphi_f$ is satisfiable. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^{>}_{i'}$ and $f(x_j)=\sntc^{>}_{j'}$. 
+\item Otherwise, the set of control variables whose original values should be preserved for the future use is $f((X \setminus \dom(\eta))  \cup (\rng(\eta) \cap X))$. Since $|\rng(\eta) \cap X| \le |\rng(\eta)|-1 \le |\dom(\eta)|-1$, we deduce that $|(X \setminus \dom(\eta))  \cup (\rng(\eta) \cap X)| \le |X|- |\dom(\eta)| +|\dom(\eta)|-1 = |X|-1$. Therefore, $|f((X \setminus \dom(\eta))  \cup (\rng(\eta) \cap X))| \le |X|-1$.
+This implies that $f((X \setminus \dom(\eta))  \cup (\rng(\eta) \cap X))$ is a proper subset of $X$. Suppose $x_{i'_0}$ is the control variable of the minimum index such that $x_{i'_0} \in X \setminus f((X \setminus \dom(\eta))  \cup (\rng(\eta) \cap X))$. Let $\dom(\eta')=\{x_{i'_0}\}$ and $\eta'(x_{i'_0})=\cur$. Moreover, $\preceq'$ is obtained from $\preceq$ by first removing all pairs involving $x_{i'_0}$ (except $(x_{i'_0}, x_{i'_0})$), then adding the set of the following pairs $R$,
 \begin{itemize}
-\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+\item if $g' \equiv \cur > x_j \wedge \cur < x_i$, then $R$ comprises the pairs $(x_{i'_0}, x_{i''})$ such that $(x_i, x_{i''}) \in \preceq$ and $x_{i''} \neq x_{i'_0}$, and the pairs $(x_{i''}, x_{i'_0})$ such that $(x_{i''}, x_j) \in \preceq$ and $x_{i''} \neq x_{i'_0}$,
 %
-\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i'+1 < j'$, then let $f'(x)= \sntc^{>}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^>_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ and $f(x_j)$ become non-adjacent, while preserving the order relation on $\sntcset^>_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^>_{i''}$. Then let $f'(x)=\sntc^>_{i''+1}$ for each $x \in X$ such that $\eta(x)=\cur$.
-
-\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$.  
+\item if $g' \equiv \cur > x_i$, then $R$ comprises the pairs $(x_{i''}, x_{i'_0})$ such that $(x_{i''}, x_i) \in \preceq$ and $x_{i''} \neq x_{i'_0}$,
+%
+\item  if $g' \equiv \cur < x_i$, then $R$ comprises the pairs $(x_{i'_0}, x_{i''})$ such that $(x_i, x_{i''}) \in \preceq$ and $x_{i''} \neq x_{i'_0}$.
 \end{itemize}
-%
-\item The guard $g' := g \wedge \cur > c_{max} \wedge  \cur > x_i$ such that $g' \wedge \varphi_f$ is satisfiable and $x_i$ is the maximum control variable wrt. $f$. The assignment $\eta'$ is the same as $\eta$, except that for each $x \in X$ such that $\eta(x)=x'$, let $\eta'(x)$ undefined.  The abstraction function $f'$ is defined as follows: Let $f(x_i)=\sntc^>_{i'}$.
+Finally, $f'$ is constructed as follows:
+For each $x_{i'} \in X$, 
 \begin{itemize}
-\item For each $x \in X$ such that $\eta(x)=x'$, let $f'(x)=f(x')$.
+\item if $x_{i'} \in \dom(\eta)$ and $\eta(x_{i'}) = \cur$, then $f'(x_{i'}) = x_{i'_0}$, 
 %
-\item If there is $x \in X$ such that $\eta(x)=\cur$, we do the following: If $i' < k$, then let $f'(x)= \sntc^{>}_{i'+1}$. Otherwise, since $\rng(f) \setminus \{f(x) \mid \eta(x)=\cur\}$ contains at most $k-1$ colors from $\sntcset^>_\Ss$,  we can remove $\{x \mid \eta(x)=\cur\}$ from the domain of $f$ and adjust $f$ a bit so that $f(x_i)$ become different from $k$, while preserving the order relation on $\sntcset^>_\Ss$. Let $f''$ denote the resulting function. Suppose $f''(x_i)=\sntc^>_{i''}$. Then let $f'(x)=\sntc^>_{i''+1}$ for each $x \in X$ such that $\eta(x)=\cur$. 
+\item if $x_{i'} \in \dom(\eta)$ and $\eta(x_{i'}) = x_{i''}$, then $f'(x_{i'})=f(x_{i''})$,
+%
+\item if $x_{i'} \not \in \dom(\eta)$, then $f'(x_{i'})=f(x_{i'})$.
+\end{itemize}
+%
+\end{itemize}
+\end{itemize}
+%
+%\item Case $g' \equiv \cur > x_i$: 
+%
+%\item Case $g' \equiv \cur < x_i$: 
+\end{itemize}
 
-\item For each $x \in X \setminus \dom(\eta)$, let $f'(x)=f(x)$. 
+At first, from the construction, we know that $\Ss'$ is path-feasible, state-dominating, storage-irredundant, and control-variable-copyless. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss_0$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, f_1, \preceq_1)$ and $(q, f_2, \preceq_2)$.
+
+To the contrary, suppose that there are a state $q$ in some nontrivial SCC $S$ of $\Ss_0$ and two distinct states $(q, f_1, \preceq_1)$ and $(q, f_2, \preceq_2)$ in some nontrivial SCC of $\Ss''$.
+
+Since $\preceq_1 \neq \preceq_2$, without loss of generality, we assume that there are a pair of distinct control variables $x_i, x_j$ such that $(x_i, x_j) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_2$. Since the values of write-once control variables are unchanged in $S$, we deduce that either $x_i$ or $x_j$ is a normal control variable, that is,  in $X_{\sf n}$.
+%We first assume that all the guards $\cur > x_1$, $\cur < x_1$, $\cur > x_2$ and $\cur < x_2$ occur in $S$. 
+We introduce some notations first. For $x \in \{x_i, x_j\}$, we say that $x$ computes the minimum (resp. maximum) value in $S$ if whenever $\cur < x$ (resp. $\cur > x$) occurs in a transition $(q, g, \eta, q)$ of $S$, it holds that $\eta(x)=\cur$. 
+We distinguish between the following situations.
+\begin{itemize}
+\item Suppose that both $x_i$ and $x_j$ compute the minimum value in $S$. Since both $x_i$ and $x_j$ compute the minimum value in $S$, when starting from some configuration $(q, \rho)$ such that $\rho \models x_i \le x_j$ and keep applying the transitions in $S$, we know that in each transition, 
+\begin{itemize}
+\item either the current data value is less or equal to both $x_i$ and $x_j$, then both $x_i$ and $x_j$ are assigned to the current data value and become equal, 
+%
+\item or the current data value is greater than $x_i$ and less or equal to $x_j$, then the current data value is assigned to $x_j$ (with the value of $x_i$ unchanged), then $x_i < x_j$ holds after the transition,
+%
+\item or the current data value is greater than both $x_i$ and $x_j$, then both the value of $x_i$ and that of $x_j$ are unchanged.
 \end{itemize}
+Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
+%
+\item Suppose that both $x_i$ and $x_j$ compute the maximum value in $S$. Similarly to the arguments in the previous situation, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
+%
+\item Suppose that $x_i$ computes the minimum value in $S$ and $x_j$ computes the maximum value in $S$. Since $x_i$ computes the minimum value and $x_j$ computes the maximum value in $S$, we know that the value of $x_i$ is non-increasing and the value of $x_j$ is non-decreasing. Therefore, when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$, the fact $x_i \le x_j$ persists. This implies that $(x_i, x_j) \in \preceq_2$, a contradiction.
+%
+\item Suppose that $x_i$ computes the minimum value in $S$ and $x_j$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_i$ is non-increasing and the value of $x_j$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_i$ computes neither the minimum value nor the maximum value and $x_j$ computes the maximum value in $S$. Then the value of $x_i$ is unchanged and the value of $x_j$ is non-decreasing when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_i$ computes the maximum value in $S$ and $x_j$ computes the minimum value in $S$.  Then in $S$, the value of $x_i$ is non-decreasing and the value of $x_j$ is non-increasing.  From $(x_i, x_j) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_2$, we know that when following a path from $(q, \preceq_1)$ to $(q, \preceq_2)$ in $\Ss'$, sometime the value of $x_i$ becomes strictly greater than that of $x_j$, and this fact persists afterwards. Therefore, we have $(x_j, x_i) \in \preceq_2$ and $(x_i, x_j) \not \in \preceq_2$. Since in $S$, the value of $x_i$ is non-decreasing and the value of $x_j$ is non-increasing, we know that when following a path from $(q, \preceq_2)$ to $(q, \preceq_1)$ in $\Ss'$, $x_j < x_i$ persists. Therefore, $(x_j, x_i) \in \preceq_1$ and $(x_i, x_j) \not \in \preceq_1$, a contradiction.
+%
+\item Suppose that $x_i$ computes the maximum value and  $x_j$ computes neither the minimum value nor the maximum value in $S$. Then the value of $x_i$ is non-decreasing and the value of $x_j$ is unchanged when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose that $x_i$ computes neither the minimum value nor the maximum value in $S$ and $x_j$ computes the minimum value in $S$. Then the value of $x_i$ is unchanged and the value of $x_j$ is non-increasing when staying in $S$. The arguments are similar to the previous case.
+%
+\item Suppose $x_i$ (resp. $x_j$) computes neither  the minimum value nor the maximum value in $S$. Then the value of $x_i$ and $x_j$ are unchanged when staying in $S$. Therefore, if $x_i \le x_j$ holds in the state $(q, \preceq_1)$, then it holds in each state belonging to the same SCC as $(q, \preceq_1)$ in $\Ss'$. In particular, $(x_i, x_j) \in \preceq_2$, a contradiction.
 \end{itemize}
+Consequently, in each of the situations aforementioned, we always get a contradiction. 
+%
+We conclude that the assumption is false and $\Ss''$ is indeed generalized-flat.
+
+In the following, we transform $\Ss''$ into an SNT $\Ss' = (Q', X, Y, \delta', q'_0, O')$ which has the same set of states and the same transition graph as $\Ss''$, but becomes storage-irredundant, and thus normalized. More specifically, 
+$Q' = Q''$ and
+$q'_0 = q''_0$.
+In addition, $O'$ is obtained from $O''$ as follows: Let $(q, \preceq) \in Q''$ such that $O''((q, \preceq))$ is defined, then $O'((q, \preceq))$ is obtained from $O''((q, \preceq))$ by replacing each control variable $x_i \in X$ with $x_j \in X$, where $x_j$ is the control variable of the \emph{minimum} index such that $(x_i, x_j), (x_j, x_i) \in \preceq$. Finally, $\delta'$ are obtained from $\delta''$ as follows: For each transition $(q, \preceq) \xrightarrow{(g,\eta)} (q, \preceq') \in \delta''$, let $(q, \preceq) \xrightarrow{(g', \eta')} (q, \preceq') \in \delta'$, where 
+\begin{itemize}
+\item $g'$ is obtained from $g$ by replacing each $x_i \in X$ with $x_j \in X$, where $x_j$ is the control variable of the \emph{minimum} index such that $(x_i, x_j), (x_j, x_i) \in \preceq$, 
+\item 
+$\eta'$ is obtained from $\eta$ as follows: for each $x_i \in \dom(\eta)$, if there is $x_j \in X$ such that $j < i$ and $(x_i, x_j), (x_j, x_i) \in \preceq'$, then $\eta'(x_i)$ is undefined, otherwise, $\eta'(x_i) = \eta(x_i)$.
 \end{itemize}
+The intuition of the construction of $g', \eta'$ is as follows: When $x_i$ is replaced by $x_j$ in $g$, $x_i$ is not referred to any more in the guard of any transition out of the state $(q, \preceq)$, which makes it possible to remove the redundancy of the assignments $\eta$.
 \qed
 \end{proof}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \section{Proofs in Section~\ref{sec-sum}}
 
 

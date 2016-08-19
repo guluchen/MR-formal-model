@@ -1,12 +1,20 @@
 %!TEX root = main-cav.tex
 
-\vspace{-4mm}
+%\vspace{-4mm}
 \subsection{Summarization of the computations on paths and cycles}\label{sec-sum}
-\vspace{-1mm}
+%\vspace{-1mm}
 
+Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ ``\emph{fresh}'' equivalence classes of $\sim$, that is, equivalence classes whose values are not enforced to be equivalent to the initial values of control variables. 
+We use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values corresponding to these ``fresh'' equivalence classes, one for each such equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
+
+\begin{example}
+Let $\Ss$ be an SNT where $X=\{x\}$, $Y=\{y\}$, and $P = p_0 \xrightarrow{(g_1,\eta_1)} p_1 \xrightarrow{(g_2,\eta_2)} p_2  \xrightarrow{(g_3,\eta_3)} p_3$ be a path of $\Ss$ such that $(g_1,\eta_1) = (\cur = x, y:= \cur)$, $(g_2,\eta_2)= (\ltrue, (x:=\cur, y:=y+\cur))$, $(g_3,\eta_3)= (\cur=x, y:=y+\cur)$. Then  the guards and assignments enforce that the data value in position $2$ is equal to that in position $3$, that is, $2 \sim 3$. Then the equivalence relation $\sim$ has two equivalence classes, $\{1\}$ and $\{2,3\}$. Moreover, since the data value in position $1$ is required to be equal to the initial value of the control variable $x$, we know that $r^{\circled{P}}=1$, namely, there is only one ``fresh'' equivalence class of $\sim$ (i.e. $\{2,3\}$), and $\vard^{\circled{P}}_1$ is used to denote the data value corresponding to this equivalence class.
+\end{example}
+
+\hide{
 Suppose $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$. We assume that the initial values of the control and data variables are represented by a symbolic valuation $\sval$ over $X \cup Y$. 
 We use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values introduced while traversing $P$. Notice that according to Proposition~\ref{prop-snt-distinct-value}, one can choose different values for different positions of $P$. Therefore, for each position of $P$, a fresh variable is introduced to represent the data value in that position. Thus we have $r^{\circled{P}}=n$. Here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$. 
-
+}
 
 %for variables $\vard^{\circled{P}}_i,\vard^{\circled{P}}_j$ for $1\leq i< j \leq r^{\circled{P}}$ according to our definition of guards; they will never force the values of $\vard^{\circled{P}}_i$ and $\vard^{\circled{P}}_j$ to be equivalent.
 
@@ -14,11 +22,6 @@ We use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{
 %When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be (un)equal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must be equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ ``\emph{fresh}'' equivalence classes of $\sim$, that is, equivalence classes whose values are not enforced to be equivalent to the initial values of control variables. 
 %We use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values corresponding to these ``fresh'' equivalence classes, one for each such equivalence class. Note here we use the superscript ${\circled{P}}$ to denote the fact that $r^{\circled{P}}$ (resp. $\vard^{\circled{P}}_1$, $\dots$) is associated with the path $P$.
 
-\hide{ \yfc{hided, we do not have equivalent classes anymore}
-\begin{example}
-Let $\Ss$ be an SNT where $X=\{x\}$, $Y=\{y\}$, and $P = p_0 \xrightarrow{(g_1,\eta_1)} p_1 \xrightarrow{(g_2,\eta_2)} p_2  \xrightarrow{(g_3,\eta_3)} p_3$ be a path of $\Ss$ such that $(g_1,\eta_1) = (\cur = x, y:= \cur)$, $(g_2,\eta_2)= (\ltrue, (x:=\cur, y:=y+\cur))$, $(g_3,\eta_3)= (\cur=x, y:=y+\cur)$. Then  the guards and assignments enforce that the data value in position $2$ is equal to that in position $3$, that is, $2 \sim 3$. Then the equivalence relation $\sim$ has two equivalence classes, $\{1\}$ and $\{2,3\}$. Moreover, since the data value in position $1$ is equal to the initial value of the control variable $x$, we know that $r^{\circled{P}}=1$, namely, there is only one ``fresh'' equivalence class of $\sim$ (i.e. $\{2,3\}$), and $\vard^{\circled{P}}_1$ is used to denote the data value corresponding to this equivalence class.
-\end{example}
-}
 
 \begin{proposition}\label{prop-sum-path}
 Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
@@ -85,10 +88,13 @@ In the equation, $j'\in  I^{\circled{P_1}}_{pe}$ implies that $x_{j'}$ remains u
 For all $j'\in [k] = I^{\circled{P_1}}_{pe} \cup I^{\circled{P_1}}_{tr}$, we have the item $(\cstl^{\circled{P_2}}_{j} \csta^{\circled{P_1}}_{j,j'}) \initval(x_{j'})$, i.e. the coefficient of $\initval(x_{j'})$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$. Moreover, for all $j'\in [r^{\circled{P_1}}] = \rng(\pi^{\circled{P_1}}) \cup ([r^{\circled{P_1}}] \setminus \rng(\pi^{\circled{P_1}}))$, we have 
 the item $( \cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'}) \vard^{\circled{P_1}}_{j'}$, i.e. the coefficient of $\vard^{\circled{P_1}}_{j'}$ in $\sumf^{(P_1, \initval)}$ multiplied by $\cstl^{\circled{P_2}}_{j}$.
 
-In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a cycle $C$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{cycle counter variable}.
+In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ which is obtained by iterating a simple cycle $C$ (in fact a self-loop) for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{cycle counter variable}.
 
 \begin{proposition}\label{prop-sum-cycle}
-Suppose that $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
+Suppose that $C$ is a simple cycle (i.e. a self-loop) and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows:  
+\begin{itemize}
+\item If $r^{\circled{C}}=1$, then
+\medskip\\
 \resizebox{\hsize}{!}{
 $\begin{array}{l c l}
 \sumf^{(C^\ell,\initval)}(y_j)  & = & 
@@ -106,8 +112,19 @@ $\begin{array}{l c l}
  \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
 $}\medskip\\
-where the variables $\vard^{\circled{C , s}}_{1},\dots, \vard^{\circled{C ,s}}_{r^{\circled{C}}}$ for $s\in [\ell]$
- represent the data values introduced when traversing $C$ for the $s$-th time.
+where the variables $\vard^{\circled{C , s}}_{1}$ for $s\in [\ell]$
+ represent the data values introduced when traversing $C$ for the $s$-th time. 
+\item If $r^{\circled{C}}=0$, then
+\medskip\\
+\resizebox{\hsize}{!}{
+$\begin{array}{l c l}
+\sumf^{(C^\ell,\initval)}(y_j)  & = & 
+\left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
+%
+& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}). \\
+\end{array} 
+$}\medskip\\
+\end{itemize}
 \end{proposition}
 
 From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl_{j} \in \{0, 1\}$, we have the following observation.
