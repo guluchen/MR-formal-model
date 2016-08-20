@@ -275,8 +275,9 @@ Let $\tpo_{X}$ denote the set of total preorders between control variables (Reca
 
 Then for each $\preceq_0 \in \tpo_X$, we construct an SNT $\Ss'= (Q', X, Y, \delta', q'_0, O')$ as follows: $Q'= Q \times \tpo_X$, and $q'_0=(q_0,  \preceq_0)$. Moreover, $O'$ is defined as follows: For each $(q, \preceq) \in Q'$, $O'((q, \preceq)) = O(q)$. It remains to define $\delta'$.
 
-The transition set $\delta'$ is defined by the following rules, 
-For each $(q, g, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g', \eta)} (q', \preceq')$ satisfying the following constraints. 
+The transition set $\delta'$ is defined by the following rules:
+\begin{itemize}
+\item For each $(q, g \wedge \cur \neq \triangleright, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g' \wedge \cur \neq \triangleright, \eta)} (q', \preceq')$ satisfying the following constraints. 
 \begin{itemize}
 \item  $g'$ is of the form $\cur = x_i$ where $x_i \in X$, or of the form $\cur > x_j \wedge \cur < x_i$ such that $x_i \in X$ is a $\preceq$-successor of $x_j \in X$, or of the form $\cur > x_i$ such that there does not exist a $\preceq$-successor of $x_i$, or of the form $\cur < x_i$ such that there does not exist a $\preceq$-predecessor of $x_i$.
 %
@@ -320,7 +321,24 @@ Then $\preceq'$ is the total preorder obtained from $\preceq'' \ \cap\ X' \times
 %\item Case $g' \equiv \cur < x_i$: 
 \end{itemize}
 
-At first, from the construction, we know that $\Ss'$ is path-feasible and state-dominating. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
+\item For each $(q, g \wedge \cur = \triangleright, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(\cur = \triangleright, \eta)} (q', \preceq')$ satisfying the following constraints.
+\begin{itemize}
+\item $\preceq$ and $g$ are compatible, more precisely, $\varphi_{\preceq} \wedge g$ is satisfiable, where $\varphi_{\preceq} \equiv \bigwedge \limits_{ i< j} \psi_{x_i, x_j}$, and for each pair of indices $i, j \in [k]$ such that $i < j$, $\psi_{x_i, x_j}$ is defined as above. 
+%
+\item $\preceq'$ is constructed as follows.
+At first, for each $x_{i'} \in X$, introduce a fresh variable $x'_{i'}$ to denote the value of $x_{i'}$ after the transition $(q, g \wedge \cur = \triangleright, \eta, q)$. Let $X'$ denote the set of fresh variables. Let $\preceq''$ be the reflexive and transitive closure of the relation
+$
+%\begin{array}{l}
+\preceq \cup\ \{(x_{i'}, x'_{i'}), (x'_{i'}, x_{i'}) \mid x_{i'} \in X \setminus \dom(\eta)\}  \cup 
+%\\
+ \{(x_{i'}, x'_{i''}), (x'_{i''}, x_{i'}) \mid \eta(x_{i'})=x_{i''}\}.
+%\end{array}
+$ 
+Then $\preceq'$ is the total preorder obtained from $\preceq'' \ \cap\ X' \times X'$ by replacing each $x'_i \in X'$ with $x_i \in X$.
+\end{itemize}
+\end{itemize}
+
+At first, from the construction, we know that $\Ss'$ is path-feasible, state-dominating, and $\triangleright$-transition-guard-tree. We then show that $\Ss'$ is generalized-flat. It is sufficient to prove that for each state $q$ in some nontrivial SCC $S$ of $\Ss$, there does not exist a nontrivial SCC in $\Ss'$ that includes at least two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$.
 
 To the contrary, suppose that there are a state $q$ in some nontrivial SCC $S$ of $\Ss$ and two distinct states $(q, \preceq_1)$ and $(q, \preceq_2)$ in some nontrivial SCC of $\Ss'$.
 

@@ -92,8 +92,8 @@ In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\re
 
 \begin{proposition}\label{prop-sum-cycle}
 Suppose that $C$ is a simple cycle (i.e. a self-loop) and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows:  
-\begin{itemize}
-\item If $r^{\circled{C}}=1$, then
+%\begin{itemize}
+%\item If $r^{\circled{C}}=1$, then
 
 \noindent
 \medskip
@@ -119,6 +119,9 @@ $
 \medskip\\
 where the variables $\vard^{\circled{C , s}}_{1}$ for $s\in [\ell]$
  represent the data values introduced when traversing $C$ for the $s$-th time. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \item If $r^{\circled{C}}=0$ (no fresh data value introduced when traversing $C$), then
 \medskip\\
 \resizebox{0.8\hsize}{!}{
@@ -131,26 +134,36 @@ $\begin{array}{l c l}
 \end{array} 
 $}\medskip\\
 \end{itemize}
+}
 \end{proposition}
 
 From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl^{\circled{C}}_{j} \in \{0, 1\}$, we have the following observation.
 \begin{itemize}
-\item If $r^{\circled{C}}=1$ and $\cstl^{\circled{C}}_{j}=0$, then\medskip\\
+\item If $\cstl^{\circled{C}}_{j}=0$, then
+%
+%If $r^{\circled{C}}=1$ and $\cstl^{\circled{C}}_{j}=0$, then
+\medskip\\
 \resizebox{0.9\hsize}{!}{$
 \sumf^{(C^\ell,\initval)}(y_j)   =  \cste^{\circled{C}}_{j} +  \sum \limits_{j' \in I^{\circled{C}}_{pe}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +
 \sum \limits_{j'  \in \rng(\pi^{\circled{C}}_{tr})} \left(\sum \limits_{j'' \in (\pi^{\circled{C}}_{tr})^{-1}(j')} \csta^{\circled{C}}_{j, j''} \right) \vard^{\circled{C , \ell  -  1}}_{j'} +  
-\cstb^{\circled{C}}_{j, 1} \vard^{\circled{C , \ell}}_{1}.$}
+\sum \limits_{j' \in [r^{\circled{C}}] }  
+ \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'}.$
+}
 %
+\hide{
 \item If $r^{\circled{C}}=0$ and $\cstl^{\circled{C}}_{j}=0$, then 
 \[
 \sumf^{(C^\ell,\initval)}(y_j)   =  \cste^{\circled{C}}_{j} +  \sum \limits_{j' \in I^{\circled{C}}_{pe}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}).
 \]
+}
 %
-\item If $r^{\circled{C}}=1$ and $\cstl^{\circled{C}}_{j}=1$, then\medskip\\
+\item If $\cstl^{\circled{C}}_{j}=1$, then
+%If $r^{\circled{C}}=1$ and $\cstl^{\circled{C}}_{j}=1$, then\medskip\\
+\medskip\\
 \resizebox{0.95\hsize}{!}{$
 \begin{array}{l }
 \sumf^{(C^\ell,\initval)}(y_j)  =    \ell \cste^{\circled{C}}_{j}  + \initval(y_j) +   \sum  \limits_{j' \in I^{\circled{C}}_{pe}} \ell \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}) + 
-\sum \limits_{j' \in I^{\circled{C}}_{tr}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \smallskip\\
+\sum \limits_{j' \in I^{\circled{C}}_{tr}} \csta^{\circled{C}}_{j,j'} \initval(x_{j'})\ +  \smallskip\\
 \sum \limits_{j' \in \rng(\pi^{\circled{C}}_{tr})} \sum \limits_{s\in[\ell -1]}
 \left(\cstb^{\circled{C}}_{j,j'} + \sum \limits_{j'' \in (\pi^{\circled{C}}_{tr})^{-1}(j')} \csta^{\circled{C}}_{j, j''}   \right) \vard^{\circled{C , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}]  \setminus \rng(\pi^{\circled{C}}_{tr}) }\sum \limits_{s\in[\ell -1]} 
 \cstb^{\circled{C}}_{j,j'} \vard^{\circled{C , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C}}] }  
@@ -159,10 +172,12 @@ From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl^{\circled{C}}_{j}
 $
 }
 %
+\hide{
 \item If $r^{\circled{C}}=0$ and $\cstl^{\circled{C}}_{j}=1$, then
 \[
 \sumf^{(C^\ell,\initval)}(y_j)  =    \ell \cste^{\circled{C}}_{j}  + \initval(y_j) +   \sum  \limits_{j' \in I^{\circled{C}}_{pe}} \ell \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}).
 \]
+}
 %
 \end{itemize}
 
@@ -178,6 +193,7 @@ $
 %\item for each data value $d^{(C , i)}_{j'}$ with $i \ge 1$, the coefficient of $d^{(C , i)}_{j'}$ is either $0$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}$, or $\beta^{\circled{C}}_{j, \pi_C^{-1}(j'+k)}+\gamma^{\circled{C}}_{j,j'}$, or $\gamma^{\circled{C}}_{j,j'}$.
 %\end{itemize}
 
+\zhilin{this example should be revised, to make the SNT normalized}
 \begin{example}\label{exmp-sum}
 Let $\Ss'_{\sf max}$ be the SNT illustrated in Fig.~\ref{fig-dec-proc-snt-exmp}, which is obtained from $\Ss_{\sf max}$ by replacing  the control variable $\sf max$ with  $x_1$ and introducing the data variables $y_1,y_2, y_3$. Consider the cycle $C_1$ in $\Ss'_{\sf max}$. Then $O(q_2)= a_0 + a_1 x_1 + b_1 y_1 + b_2 y_2 + b_3 y_3 = y_1 - 2y_2 + y_3$, $I^{\circled{C_1}}_{pe} = \{1\}$, $I^{\circled{C_1}}_{tr} = \emptyset$, $\cstl^{\circled{C_1}}_1 = \cstl^{\circled{C_1}}_2 = 1$, $\cstl^{\circled{C_1}}_3 = 0$, moreover, suppose $\ell \ge 2$, let $ \vard^{\circled{C_1, 1}}_1, \dots, \vard^{\circled{C_1, \ell}}_1$ represent the data values introduced when traversing the path $C^\ell_1$, then
 \[
