@@ -199,7 +199,7 @@
 \newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
 
 
-\title{The~Commutativity~Problem~of~the~MapReduce Framework: A Transducer-based Approach}
+\title{The~Commutativity~Problem~of~the~MapReduce Framework: A Transducer-based Approach\thanks{We found some inaccuracies in the conference version, which are fixed in this long version. We suggest the readers to refer to this version.}}
 \titlerunning{Commutativity of MapReduce: A Transducer-based Approach}
 
 \institute{Institute of Information Science, Academia Sinica \and State Key Laboratory of Computer Science,\\ Institute of Software, Chinese Academy of Sciences }
@@ -214,6 +214,8 @@
 
 \maketitle
 
+\vspace{-4mm}
+
 \begin{abstract}
 
 MapReduce is a popular programming model for data parallel computation. 
@@ -222,31 +224,31 @@ the MapReduce programs in practice are usually used for data analytics and thus 
 By exploiting the simplicity, we propose a programming language for reducers where the commutativity problem is decidable. The main idea of the reducer language is to separate the control and data flow of programs and disallow arithmetic operations in the control flow.
 The decision procedure for the commutativity problem is obtained through a reduction to the equivalence problem of \emph{streaming numerical transducers} (SNTs), a novel automata model over infinite alphabets introduced in this paper. The design of SNTs is inspired by streaming transducers (Alur and Cerny, POPL 2011). Nevertheless, the two models are intrinsically different since the outputs of SNTs are integers while those of streaming transducers are data words. 
 The decidability of the equivalence of SNTs is achieved with an involved combinatorial analysis of the evolvement of the values of the integer variables during the runs of SNTs.
-\footnote{We found some minor bugs in the conference version. They are fixed in the current version by adding to the end of each data word a special symbol $\wend$.}
 \end{abstract}
 
-%\vspace{-0.8cm}
+\vspace{-8mm}
 \input{1_intro.tex}
 
 \vspace{-2mm}
 \input{2_prel.tex}
 
-%\vspace{-0.3cm}
+\vspace{-2mm}
 \input{3_program.tex}
 
-%\vspace{-0.3cm}
+\vspace{-0.3cm}
 \input{4_snt.tex}
 
-%\vspace{-0.3cm}
+\vspace{-0.3cm}
 \input{5_dec-proc.tex}
 
 \input{6_case-stud.tex}
 %\vspace{-0.3cm}
 
-%\vspace{-0.2cm}
+\vspace{-0.2cm}
 \input{7_conc.tex}
 %\vspace{-0.5cm}
 
+\vspace{-2mm}
 
 \bibliographystyle{abbrv}
 \bibliography{data}

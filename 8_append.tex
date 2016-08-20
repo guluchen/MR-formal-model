@@ -538,13 +538,14 @@ The intuition of the construction of $g', \eta'$ is as follows: When $x_i$ is re
 
 
 \noindent {\bf Proposition~\ref{prop-sum-path}}.
-{\it Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
+{
+\it Suppose that $P$ is a path and the initial values of $X \cup Y$ are represented by a symbolic valuation $\initval$. Then the values of $X \cup Y$ after traversing the path $P$ are specified by a symbolic valuation $\sumf^{(P,\initval)}$ satisfying the following conditions.
 \begin{itemize}
-\item The set of indices of $X$, i.e., $[k]$, is partitioned into $I^{\circled{P}}_{pe}$ and $I^{\circled{P}}_{tr}$, the indices of \emph{persistent} and \emph{transient} control variables, respectively. A control variable is persistent if its value has not been changed while traversing $P$, otherwise, it is transient.
-\item For each $x_j\in X$ such that $j\in I^{\circled{P}}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_j)$.
+\item The set of indices of $X$, i.e., $[k]$, is partitioned into $I^{\circled{P}}_{pe}$ and $I^{\circled{P}}_{tr}$, the indices of \emph{persistent} and \emph{transient} control variables, respectively. A control variable is persistent if it stores the initial value of some control variable after traversing $P$, otherwise, it is transient.
+\item For each $x_j\in X$ such that $j\in I^{\circled{P}}_{pe}$, $\sumf^{(P,\initval)}(x_j)=\sval(x_{\pi^{\circled{P}}_{pe}(j)})$, where $\pi^{\circled{P}}_{pe}: I^{\circled{P}}_{pe} \rightarrow [k]$ is a mapping from the index of a persistent control variable $x_j$ to the index of the control variable whose value is assigned to $x_j$ after traversing $P$.
 %
 \item  For each $x_j\in X$ such that $j\in I^{\circled{P}}_{tr}$,
-$\sumf^{(P,\initval)}(x_j)=\vard^{\circled{P}}_{\pi^{\circled{P}}(j)}$, where $\pi^{\circled{P}}: I^{\circled{P}}_{tr} \rightarrow [r^{\circled{P}}]$ is an injective mapping from the index of a transient control variable to the index of the data value assigned to it.
+$\sumf^{(P,\initval)}(x_j)=\vard^{\circled{P}}_{\pi^{\circled{P}}_{tr}(j)}$, where $\pi^{\circled{P}}_{tr}: I^{\circled{P}}_{tr} \rightarrow [r^{\circled{P}}]$ is a mapping from the index of a transient control variable to the index of the data value assigned to it.
 % 
 \item For each $y_j \in Y$, 
 $
@@ -568,52 +569,82 @@ where $\cste^{\circled{P}}_j,\cstl^{\circled{P}}_j, \csta^{\circled{P}}_{j,1},\d
 }
 
 \begin{proof}
-Suppose that $\Ss=(Q,X,Y, \delta,q_0,O)$ is an (normalized) SNT. Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$ and $\initval$ is a symbolic valuation representing the  initial values of the control and data variables.  When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be equal or unequal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. 
+Suppose that $\Ss=(Q,X,Y, \delta,q_0,O)$ is a normalized SNT. Suppose that $P=p_0 \xrightarrow{(g_1,\eta_1)} p_1 \dots p_{n-1} \xrightarrow{(g_n,\eta_n)} p_{n}$ is a path of $\Ss$ and $\initval$ is a symbolic valuation representing the  initial values of the control and data variables.  When $P$ is traversed in a run of $\Ss$ over a data word $w$,  the data value in a position of $w$ may have to be equal or unequal to the initial value of some control variable or some other data value in $w$ that have been met before (enforced by the guards and assignments in $P$). Let $\sim$ denote the equivalence relation on $[n]$ induced by $P$ such that $i \sim j$ iff the guards and assignments on $P$ enforce that the data value in the $i$-th position of $w$ must equal to that in the $j$-th position of $w$. Assuming that there are $r^{\circled{P}}$ equivalence classes of $\sim$, we use the variables $\vard^{\circled{P}}_1,\vard^{\circled{P}}_2,\dots, \vard^{\circled{P}}_{r^{\circled{P}}}$ to denote the data values met when traversing $P$, one for each equivalence class. 
 
-We show by an induction that for each $i: 1 \le i \le n$, a symbolic valuation $\sumf_i$ over $X^+ \cup Y$ can be constructed  to describe the value of $x_j$ (resp. $y_j$) after going through the first $i$ transitions of $P$. Moreover, an index set $I_i \subseteq [k]$ is computed as well.
+We show by an induction that for each $i: 1 \le i \le n$, a symbolic valuation $\sumf_i$ over $X^+ \cup Y$ can be constructed  to describe the value of $x_j$ (resp. $y_j$) after going through the first $i$ transitions of $P$. Moreover, an index set $I_i \subseteq [k]$ is computed as well. For each state $q_i$,  we define $\varphi_{q_i}$ as the conjunction of the formulae $\psi_{x_{j_1}, x_{j_2}}$ for each $x_{j_1}, x_{j_2} \in X$, where if $(x_{j_1}, x_{j_2}), (x_{j_2}, x_{j_1}) \in \preceq_{q_i}$ (resp. $(x_{j_1}, x_{j_2}) \in \preceq_{q_i}$ and $(x_{j_2}, x_{j_1}) \not \in \preceq_{q_i}$), then $\psi_{x_{j_1}, x_{j_2}} := x_{j_1} = x_{j_2}$ (resp. $\psi_{x_{j_1}, x_{j_2}} := x_{j_1} < x_{j_2}$).
 %
 \begin{itemize}
-\item Let $\sumf_0=\initval[\vard^{\circled{P}}_1/\cur]$ and $I_0 = \emptyset$.
+\item If $\varphi_{q_0} \wedge g_1 \models \cur = x_j$ for some $x_j \in X$, then let $\sumf_0:=\initval[ \initval(x_j) / \cur]$ and $s:=0$, otherwise, let $\sumf_0:=\initval[\vard^{\circled{P}}_1/\cur]$ and $s := 1$. In addition, let $I_0 = \emptyset$.
 %
 %\item For each $x_j \in X$, if $x_j \in \dom(\eta_1)$, then $e_{1,x_j}=d^{(1)}_1$, otherwise, $e_{1,x_j}=d^{(0)}_j$. For each $y_j \in Y$, if $y_j \in \dom(\eta_1)$, then $e_{1,y_j} = \theta_0(\eta_{1}(y_j))$,
 %otherwise, $e_{1,y_j}=o_j$. 
 %
-\item Let $i: 1 \le i \le n$. 
-\begin{itemize}
-\item For each $x_j \in X$, if $x_j \in \dom(\eta_i)$, then $\sumf_i(x_j)=\sumf_{i-1}(\cur)$ and $I_i= I_{i-1} \cup \{j\}$, otherwise, $\sumf_i(x_j) = \sumf_{i-1}(x_j)$ and and $I_i= I_{i-1}$. If $i < n$, suppose  the data value in the $(i+1)$-th position is represented by $\vard^{\circled{P}}_s$ for $1 \le s \le r^{\circled{P}}$, then let $\sumf_i(\cur)=\vard^{\circled{P}}_s$. Otherwise, $\sumf_i(\cur)=\bot$.
+\item Let $i: 1 \le i \le n$.  
+ Then $\sumf_i$ and $I_i$ are computed as follows: 
+\begin{enumerate}
+\item Initially, let $I_i := \emptyset$. 
+
+\item For each $x_j \in X$, we distinguish among the following situations,
 %
-\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then $\sumf_i(y_j) = \eval{\eta_i(y_j)}{\sumf_{i-1}}$, otherwise, $\sumf_i(y_j) =\sumf_{i-1}(y_j)$.
+\begin{itemize}
+\item if $x_j \not \in \dom(\eta_i)$, then $\sumf_i(x_j) := \sumf_{i-1}(x_j)$, in addition, if $j \in I_{i-1}$, let $I_i:=I_i \cup \{j\}$, 
+
+\item  if $x_j \in \dom(\eta_i)$, in addition, either $\eta_i(x_j) = x_{j'}$ for some $x_{j'} \in X$, or $\eta_i(x_j) = \cur$ and $\varphi_{q_{i-1}} \wedge g_i \models \cur = x_{j'}$ for some $x_{j'} \in X$, then let $\sumf_i(x_j) := \sumf_{i-1}(x_{j'})$, in addition, if $x_{j'} \in I_{i-1}$,  then let $I_i := I_i \cup \{j\}$,
+
+\item if $\eta_i(x_j) = \cur$ and there do not exist $x_{j'} \in X$ such that $\varphi_{q_{i-1}} \wedge g_i \models \cur = x_{j'}$, then let $\sumf_i(x_j):=\sumf_{i-1}(\cur)$ and $I_i := I_i \cup \{j\}$. 
+\end{itemize}
+%
+\item Compute $\sumf_i(\cur)$ as follows:
+\begin{itemize}
+\item If $i< n$ and there exists $x_j \in X$ such that $\varphi_{q_i} \wedge g_{i+1} \models \cur = x_j$, then let $\sumf_i(\cur):=\sumf_{i}(x_{j})$.
+%
+\item If $i < n$ and there do not exist $x_j \in X$ such that $\varphi_{q_i} \wedge g_{i+1} \models \cur = x_j$, then let $s:=s+1$ and $\sumf_i(\cur) :=\vard^{\circled{P}}_s$. 
+
+\item If $i = n$, then let $\sumf_i(\cur) := \bot$.
+\end{itemize}
+
+\item For each $y_j \in Y$, if $y_j \in \dom(\eta_i)$, then let $\sumf_i(y_j) := \eval{\eta_i(y_j)}{\sumf_{i-1}}$, otherwise, let $\sumf_i(y_j) :=\sumf_{i-1}(y_j)$.
+\end{enumerate}
+%
 %
 %\item For each $x_{j} \in X$ (resp. $y_j \in Y$), $\theta_i(x_{j})=e_{i,x_{j}}$ (resp. $\theta_i(y_{j})=e_{i, y_{j}}$). If $i < n$, then $\theta_i(\cur)=d^{(1)}_{s}$, where $1\le s \le r$ and $k+i + 1 \in I_s$, otherwise, $\theta_i(\cur)=\bot$.
 \end{itemize} 
-\end{itemize}
-Then let $I^{\circled{P}}_{tr}:=I_n$ and $I^{\circled{P}}_{pe}:=[k] \setminus I^{\circled{P}}_{tr}$. The injective mapping $\pi^{\circled{P}}$ is defined as follows: For each $j \in I^{\circled{P}}_{tr}$, there is $s \in [r^{\circled{P}}]$ such that $\sumf_n(x_j)=\vard^{\circled{P}}_{s}$, let $\pi^{\circled{P}}(j)=s$. The symbolic valuation $\sumf^{(P,\initval)}$ can be defined as the restriction of $\sumf_n$ to $X \cup Y$. Since for each assignment $\eta_i$ and $y_j \in Y$, $\eta_i(y_j) = e$ or $\eta_i(y_j) = y_j +e$ for $e \in \Ee_{X^+}$, it follows that $\sumf^{(P,\initval)}(y_j)$ is of the form required by the proposition.
+%\end{itemize}
+Then let $I^{\circled{P}}_{tr}:=I_n$, $I^{\circled{P}}_{pe}:=[k] \setminus I^{\circled{P}}_{tr}$, and $r^{\circled{P}}:=s$. The mapping $\pi^{\circled{P}}_{pe}$ and $\pi^{\circled{P}}_{tr}$ are defined as follows: For each $j \in I^{\circled{P}}_{pe}$, there is $x_{j'} \in X$ such that $\sumf_n(x_j) = \initval(x_{j'})$, let $\pi^{\circled{P}}_{pe}(j) := j'$. For each $j \in I^{\circled{P}}_{tr}$, there is $s' \in [r^{\circled{P}}]$ such that $\sumf_n(x_j)=\vard^{\circled{P}}_{s'}$, let $\pi^{\circled{P}}_{tr}(j):=s'$. The symbolic valuation $\sumf^{(P,\initval)}$ can be defined as the restriction of $\sumf_n$ to $X \cup Y$. Since for each assignment $\eta_i$ and $y_j \in Y$, $\eta_i(y_j) = e$ or $\eta_i(y_j) = y_j +e$ for $e \in \Ee_{X^+}$, it follows that $\sumf^{(P,\initval)}(y_j)$ is of the form required by the proposition.
 \qed
 \end{proof}
 
 
 \noindent {\bf Proposition~\ref{prop-sum-cycle}}.
 {\it 
-Suppose that $C$ is a cycle and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows,\medskip\\
-\resizebox{\hsize}{!}{
-$\begin{array}{l c l}
-\sumf^{(C^\ell,\initval)}(y_j)  & = & 
+Suppose that $C$ is a simple cycle (i.e. a self-loop) and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows:  
+%\begin{itemize}
+%\item If $r^{\circled{C}}=1$, then
+
+\noindent
+\medskip
+\resizebox{0.95\hsize}{!}{
+$
+\begin{array}{l}
+\sumf^{(C^\ell,\initval)}(y_j)  = 
 \left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
 %
-& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
+\sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}) +  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}) +  \\
 %
-& & \sum \limits_{j' \in \rng(\pi^{\circled{C}})} \sum \limits_{m\in[\ell -1]}
-\left(  \csta^{\circled{C}}_{j, (\pi^{\circled{C}})^{-1}(j')} +(\cstl^{\circled{C}}_{j})\cstb^{\circled{C}}_{j,j'} \right)
-(\cstl^{\circled{C}}_{j})^{\ell-m-1}
-\vard^{\circled{C , m}}_{j'} +\\
+\sum \limits_{j' \in \rng(\pi^{\circled{C}}_{tr})} \sum \limits_{s\in[\ell -1]}
+\left(\cstl^{\circled{C}}_{j}\cstb^{\circled{C}}_{j,j'}+ \sum \limits_{j'' \in (\pi^{\circled{C}}_{tr})^{-1}(j')} \csta^{\circled{C}}_{j, j''}  \right)
+(\cstl^{\circled{C}}_{j})^{\ell-s-1}
+\vard^{\circled{C , s}}_{j'} +\\
 %
-& & \sum \limits_{j' \in [r^{\circled{C}}] \setminus \rng(\pi^{\circled{C}})}\sum \limits_{m\in[\ell -1]} \left((\cstl^{\circled{C}}_{j})^{\ell - m} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , m}}_{j'} + 
+\sum \limits_{j' \in [r^{\circled{C}}] \setminus \rng(\pi^{\circled{C}}_{tr})}\sum \limits_{s\in[\ell -1]} \left((\cstl^{\circled{C}}_{j})^{\ell - s} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C , s}}_{j'} + 
 \sum \limits_{j' \in [r^{\circled{C}}] }  
  \cstb^{\circled{C}}_{j, j'} \vard^{\circled{C , \ell}}_{j'},
 \end{array} 
-$}\medskip\\
-where the variables $\vard^{\circled{C , m}}_{1},\dots, \vard^{\circled{C , m}}_{r^{\circled{C}}}$ for $m\in [\ell-1]$
- represent the data values introduced when traversing $C$ for the $m$-th time.
+$
+}
+\medskip\\
+where the variables $\vard^{\circled{C , s}}_{1}$ for $s\in [\ell]$
+ represent the data values introduced when traversing $C$ for the $s$-th time. 
 }
 
 %
@@ -637,12 +668,12 @@ Let $\vard^{(\circled{C, 2})}_{1}, \dots, \vard^{(\circled{C, 2})}_{r^{\circled{
 	& 
 	\sum \limits_{j' \in  I^{\circled{C}}_{tr}} 
 	 \cstl^{\circled{C}}_{j} \csta^{\circled{C}}_{j,j'}  \initval(x_{j'}) +
-	\sum \limits_{j' \in \rng(\pi^{\circled{C}})} \left( \csta^{\circled{C}}_{j,(\pi^{\circled{C}})^{-1}(j')}+\cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} + 
+	\sum \limits_{j' \in \rng(\pi^{\circled{C}}_{tr})} \left( \csta^{\circled{C}}_{j,(\pi^{\circled{C}}_{tr})^{-1}(j')}+\cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} + 
 	 \\
 	%
 	\smallskip
 	& 
-	\sum \limits_{j' \in [r^{\circled{C}}]\setminus \rng(\pi^{\circled{C}})} \left( \cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} +
+	\sum \limits_{j' \in [r^{\circled{C}}]\setminus \rng(\pi^{\circled{C}}_{tr})} \left( \cstl^{\circled{C}}_{j} \cstb^{\circled{C}}_{j,j'} \right) \vard^{\circled{C,1}}_{j'} +
 	
 	\sum \limits_{j'\in[r^{\circled{C}}]} \cstb^{\circled{C}}_{j,j'} \vard^{\circled{C,2}}_{j'}.
 \end{array}
