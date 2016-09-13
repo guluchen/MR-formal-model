@@ -152,7 +152,7 @@ Let $q'_{0},q'_{1} \not \in Q$ and $x' \not \in X$. Then $\Ss_1 = (Q \cup \{q'_{
 \begin{itemize}
 \item each element of $\delta$ is an element of $\delta_1$,
 %
-\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q'_0, \ltrue, \eta'_1, q'_1)$ and $(q'_1, g', \eta'_2, q_2)$ into $\delta_1$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$ and $d_2$ is stored in $\cur$.
+\item for each pair of transitions $q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2$ in $\Ss$, we add the transitions $(q'_0, \cur\neq \wend, \eta'_1, q'_1)$ and $(q'_1, g'\wedge \cur \neq \wend, \eta'_2, q_2)$ into $\delta_1$. Intuitively, we use $x'$ to store the value of $d_1$ in $ \eta'_1$ and summarize the computation of $\eta_1$ and $\eta_2$ in $\eta'_2$ with the information that $d_1$ is stored in $x'$ and $d_2$ is stored in $\cur$.
 
 
 Formally, $\eta'_1, g', \eta'_2$ are defined as follows.
@@ -278,6 +278,8 @@ Then for each $\preceq_0 \in \tpo_X$, we construct an SNT $\Ss'= (Q', X, Y, \del
 The transition set $\delta'$ is defined by the following rules:
 \begin{itemize}
 \item For each $(q, g \wedge \cur \neq \triangleright, \eta, q') \in \delta$, $\delta'$ includes all the transitions $(q, \preceq) \xrightarrow{(g' \wedge \cur \neq \triangleright, \eta)} (q', \preceq')$ satisfying the following constraints. 
+
+\yfc{You need the guard $g$ to make the transition deterministic, i.e., $(q, \preceq) \xrightarrow{(g\wedge g' \wedge \cur \neq \triangleright, \eta)} (q', \preceq')$}
 \begin{itemize}
 \item  $g'$ is of the form $\cur = x_i$ where $x_i \in X$, or of the form $\cur > x_j \wedge \cur < x_i$ such that $x_i \in X$ is a $\preceq$-successor of $x_j \in X$, or of the form $\cur > x_i$ such that there does not exist a $\preceq$-successor of $x_i$, or of the form $\cur < x_i$ such that there does not exist a $\preceq$-predecessor of $x_i$.
 %

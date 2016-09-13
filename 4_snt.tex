@@ -18,7 +18,7 @@ The set of transitions $\delta$ comprises
 \begin{itemize}
 \item the tuples $(q,  g \wedge \cur \neq \wend, \eta, q')$, where $q,q'\in Q$, $g$ is a guard over $X^+$ (defined in Section~\ref{sec:preliminaries}), and $\cur \neq \wend$ denotes the fact that the current position is not the end of the input,  and $\eta$ is an assignment function which is a partial function mapping $X \cup Y$  to $\Ee_{X^+ \cup Y}$ such that for each $x \in \dom(\eta) \cap X$, $\eta(x)=\cur$,
 %
-\item and the tuples $(q, g \wedge \cur = \wend, \eta, q')$, where $q,q' \in Q$, $g$ is a guard where $\cur$ does not occur, and $\eta$ is an assignment function such that $\cur \not \in \rng(\eta)$ (they are called the $\triangleright$-transitions).
+\item and the tuples $(q, g \wedge \cur = \wend, \eta, q')$, where $q,q' \in Q$, $g$ is a guard over $X$, and $\eta$ is an assignment function such that $\cur \not \in \rng(\eta)$ (they are called the $\triangleright$-transitions).
 \end{itemize}
 We write $q \xrightarrow{(g,\eta)} q'$ to denote $(q,g,\eta,q') \in \delta$ for convenience.  
 %We would like to remark that the guards in the transitions can be of both types, that is, of type 1 or type 2.
@@ -53,7 +53,7 @@ A sequence of configurations $(q_0,\rho_0)(q_1,\rho_1)\ldots(q_n,\rho_n)$ is
 a \emph{run} of $\Ss$ over a data word $w=d_1 \dots d_n \wend$ iff there exists a path (sequence of transitions) $P=q_0 \xrightarrow{(g_1,\eta_1)} q_1 \xrightarrow{(g_2,\eta_2)} q_2 \dots q_{n-1} \xrightarrow{(g_n, \eta_n)} q_n \xrightarrow{(g_{n+1}, \eta_{n+1})} q_{n+1}$ such that for each $i \in [n+1]$, $\rho_{i-1}[d_i/\cur] \models g_i$, and $\rho_i$ is obtained from $\rho_{i-1}$ as follows: (1) For each $x \in X$, if $\eta_i(x)=\cur$ then $\rho_i(x)=d_i$,  otherwise $\rho_i(x)=\rho_{i-1}(x)$. (2) For each $y \in Y$, if $y \in \dom(\eta_i)$, then $\rho_i(y)=\eval{\eta_i(y)}{\rho_{i-1}[d_i/\cur]}$, otherwise, $\rho_i(y)=\rho_{i-1}(y)$.
 We call $(q_{n+1},\rho_{n+1})$ the \emph{final configuration} of the run. In this case, we also say that the run follows the path $P$.
 We say that a path $P$ in $\Ss$ is \emph{feasible} iff there exists a run of $\Ss$ following $P$. 
-An SNT $\Ss$ is said to be \emph{transition-enabled} if each path $P$ in $\Ss$ such that $P$ ends with a $\triangleright$-transition and this transition is the unique $\triangleright$-transition on $P$,  is feasible. We assume that all SNTs considered in this paper are transition-enabled, unless it is explicitly stated.
+%An SNT $\Ss$ is said to be \emph{transition-enabled} if each path $P$ in $\Ss$ such that $P$ ends with a $\triangleright$-transition and this transition is the unique $\triangleright$-transition on $P$,  is feasible. We assume that all SNTs considered in this paper are transition-enabled, unless it is explicitly stated.
 %We say that $(q_i,\rho_i)$ is \emph{reachable} from $(q_0,\rho_0)$, for $i \in [n]$.
 
 %We would like to remark that since $\Ss$ is deterministic, for each data word $w$, if there is a run of $\Ss$ over $w$, then there is exactly one path $P$ of $\Ss$ (recall the aforementioned transition-enabled assumption) such that for each initial configuration $(q_0,\rho_0)$, the  run of $\Ss$ over $w$ starting from $(q_0,\rho_0)$ follows $P$. 
@@ -112,21 +112,6 @@ We focus on three decision problems of SNTs: (1) \emph{Commutativity}: Given an 
 
 We first observe that the commutativity problem of SNTs can be reduced to the equivalence problem, which can be further reduced to the non-zero output problem of SNTs. For analyzing the complexity of the decision procedure in the next section,  we will state the complexity of the reductions w.r.t. the following factors of SNTs: the number of states, the number of control variables (resp. data variables), and the number of simple cycles of the transition graph. We will adopt the convention that if after a reduction, some factor becomes exponential, then this fact will be stated explicitly, and on the other hand, if some factor is still polynomial after the reduction, then this fact will be made implicit and will not be stated explicitly. 
 
-\hide{
-For the reduction from the commutativity problem to the equivalence problem, we need slightly extend the definition of SNTs as follows: We assume that $X$ is divided into $X_{\sf n}, X_{\sf w}$, where the variables from $X_{\sf n}$ are called the \emph{normal} control variables, and the variables from $X_{\sf w}$ are called the \emph{write-once} control variables, such that in every run, each write-once variable $x' \in X_{\sf w}$ can be \emph{written at most once}, more precisely, there is at most one transition $(q, g, \eta, g)$ such that $x' \in \dom(\eta)$, moreover, if this happens, then $\eta(x') = \cur$ and  the transition  $(q, g, \eta, g)$ does not  belong to any nontrivial SCC of the transition graph, in addition,  the definition of guards and transitions and the ``Monotone'' constraint are adapted as follows,
-\begin{itemize}
-\item the definition rules of the guards are adjusted into $g'::= \ltrue \mid \cur = x \mid \cur > x \mid \cur < x \mid x' = x \mid x' > x \mid x' < x \mid g' \wedge g'$, where $x \in X$ and $x' \in X_{\sf w}$,
-%
-\item for each transition $(q,\cur \neq \triangleright \wedge g', \eta, q')$ (resp. $(q,\cur = \triangleright \wedge g', \eta, q')$), it holds that for each $x \in X_{\sf n} \cap \dom(\eta)$, $\eta(x)  = \cur$ or $\eta(x)=x'$ for some $x' \in X_{\sf w}$ (resp. $g'$ contains no occurrences of $\cur$ and $\eta(x)=x'$ for some $x' \in X_{\sf w}$),
-\item the ``Monotone constraint'' is adapted by replacing $X$ with $X_{\sf n}$.
-\end{itemize}
-Intuitively, in the guards and transitions, the write-once control variables can occur in the same places as the special variable $\cur$.
-
- %Each transition is either of the form $(q, \cur \neq \triangleright \wedge g'_1, \eta, q')$ or $(q, \cur = \triangleright \wedge g'_2, \eta, q')$ such that $g'_2$ contains no occurrences of $\cur$. 
-%Note that the assignments $\eta$ are not extended in the sense that $\eta$ does not assign a write-once control variable $x'$ to $x \in X$, that is, the following fact still hods,  for each $x \in X \cap \dom(\eta)$, $\eta(x)=\cur$.
-
-From now on, by abusing the notation a little, when we mention SNTs, we always mean the extension of SNTs with write-once control variables.
-}
 
 %We use WO-SNT to denote the extension of SNTs with write-once control variables.
 
@@ -159,17 +144,6 @@ To facilitate the decision procedure in the next section, in the following, we w
 Let $P$ be a path in $\Ss$ from $q_0$ to some state $q$. We define ${\sf Conf}_P$ as the set of configurations $(q, \rho)$ such that there are a data word $w$ and an initial valuation $\rho_0$ satisfying that the run of $\Ss$ over $w$, starting from the initial configuration $(q_0, \rho_0)$, follows a path $P P'$ (i.e. $P$ is a prefix of the path $PP'$), and reaches the configuration $(q,\rho)$ after going through $P$. Let $x_1, x_2 \in X$. Then $P$ is said to \emph{enforce} $x_1 < x_2$ (resp. $x_1 = x_2, x_1 > x_2$) if for each $(q,\rho) \in {\sf Conf}_P$, it holds that $\rho \models x_1 < x_2$ (resp. $\rho \models x_1 = x_2$, $\rho \models x_1 > x_2$). 
 
 An SNT $\Ss=(Q, X, Y, \delta, q_0, O)$ is said to be \emph{normalized} if (1) {\it Path-feasible:} for each path $P$ starting from $q_0$, ${\sf Conf}_P \neq \emptyset$, (2) {\it State-dominating:} all the paths ending at a given state $q$ enforce the same order relation between control variables, more precisely, for each state $q$ and each pair of distinct control variables $x_1, x_2 \in X$, all the paths  from $q_0$ to $q$ enforce $x_1 > x_2$, or all the paths from $q_0$ to $q$ enforce $x_1 < x_2$, or all the nonempty paths from $q_0$ to $q$ enforce $x_1 = x_2$, (3) {\it $\triangleright$-transition-guard-free}: Each $\triangleright$-transition $(q, g \wedge \cur = \triangleright, \eta, q')$ satisfies that $g = \ltrue$.
-%, (3) {\it Control-variable-copyless:} for each transition $(q, g, \eta, q') \in \delta$ such that $x \in \dom(\eta)$, it holds that $\eta(x)=\cur$.
-%
-%\begin{itemize}
-%\item all the paths from  $q_0$ to $q$ enforce $x_1 < x_2$, 
-%
-%\item all the paths from $q_0$ to $q$ enforce $x_1 = x_2$, 
-%
-%\item all the paths from $q_0$ to $q$ enforce $x_1 > x_2$, 
-%
-%\item each path from $q_0$ to $q$ enforces none of $x_1 < x_2$, $x_1 = x_2$, and $x_1 > x_2$.
-%\end{itemize}
 
 \begin{proposition}\label{prop-snt-norm}
 For each SNT $\Ss$, the nonzero-output problem of $\Ss$ can be reduced to a series of the nonzero-output problems of normalized SNTs $\Ss'$ in exponential time.

@@ -30,13 +30,6 @@ The variables from $X$ can store only either initial values of variables in $X$ 
 On the other hand, the variables from $Y$ can aggregate the results obtained from arithmetic expressions $e$, but cannot occur in guards $g$ or arithmetic expressions $e$. The initial values of variables can be arbitrary.
 Given a program $p$, a data word $w$, and a valuation $\rho_0$, we use $p_{\rho_0}(w)$ to denote the output of $p$ on $w$, with the initial values of variables given by $\rho_0$. The formal semantics of the language can be found in the appendix. 
 
-\hide{
-In this paper, we assume that the reducer programs $p$ satisfy that \emph{all the guards between two consecutive $\nnext$ statements are mono-typed}, more specifically,
-for each execution path in the control flow graph of $p$ and each pair of consecutive $\nnext$ statements, either all the guards $g$ of the branching statements between them are of type 1, or all the guards between them are of type 2 (cf. Section~\ref{sec:preliminaries} for the definition of guards).
-In addition, to simplify the presentation, we assume that the reducer programs $p$ are \emph{transition-enabled} in the following sense, 
-%
-for each execution path in the control flow graph of $p$, there is an input $w$ and initial valuations of variables $\rho_0$ so that the run of $p$ over $w$ and $\rho_0$ follows the execution path.
-}
 
 Note that we do not allow multiplications in the language, so the reduction from the Diophantine equations in \cite{CHSW15} no longer works. Even though, if we do not distinguish the control and data variables, we can show easily that commutativity problem for this language is still undecidable, by a reduction from the reachability problem of Petri nets with inhibitor arcs~\cite{Min71,Rei08}.
 %Intuitively, integer variables are used for remembering the number of tokens in each place. Transitions between places can be simulated by the loop body: The updates of the tokens of the places are simulated by variable assignments.
