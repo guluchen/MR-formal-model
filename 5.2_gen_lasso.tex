@@ -1,6 +1,5 @@
 %!TEX root = main-cav.tex
 
-\zhilin{I stopped here}
 
 \subsection{Decision procedure for generalized lassos}\label{sec-glasso}
 
@@ -11,7 +10,7 @@ because the SNTs are ``transition-enabled'' (i.e. for any sequence of transition
 %if according to the reachability graph, for any $c>0$, there exists a run traversing $C$ more than $c$ times, then 
 intuitively, one can pick a run corresponding to a very large $\ell$ so that it dominates the value of the output expression and makes the output non-zero. 
 In the decision procedure we are going to present, we first check if the handle of the generalized lasso produces a non-zero output in Step I.
-We then check in Step II the coefficients containing $\ell$ in the output expression is non-zero. If this does not happen, then we show in Step III that the non-zero ouput problem of SNT can be reduced to a finite state reachability problem and thus can be easily decided.
+We then check in Step II the coefficients containing $\ell$ in the output expression is non-zero. If this does not happen, then we show in Step III that the non-zero ouput problem of SNTs can be reduced to a finite state reachability problem and thus can be easily decided.
 
 Before presenting the decision procedure, we introduce some notations.
 Let $e$ be an expression consisting of symbolic values $\initval(z)$ for $z\in X\cup Y$ and variables $\vard_1, \dots, \vard_{s}$ corresponding to the values of the input data word. More specifically, let $e:=\mu_0 + \mu_1 \initval(z_1) +\dots + \mu_{k+l} \initval(z_{k+l}) + \xi_1 \vard_1 + \dots + \xi_{s} \vard_{s}$,
@@ -26,15 +25,15 @@ to summarize the computation of $\Ss$ on $\schm$.
 
 
 \begin{lemma}\label{prop-cycle-schm}
-Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables. 
-For all $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, let $r_{j'}$ be the largest number $r \in [t]$ such that $j'\in\bigcap_{s\in[r]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_{j'}}}^{\ell_{r_{j'}}}$.
-Then for each $j\in [l]$ and $j' \in  I^{\circled{C_{i_{1}}}}_{pe}$, the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ is 
+Suppose $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ is a cycle scheme, and $\initval$ is a symbolic valuation representing the initial values of the control and data variables such that for each $x_i, x_j \in X$, $\initval(x_i) = \initval(x_j)$ iff $i \sim_{q_m} j$. 
+For all $j' \in  I^{\circled{C_{i_{1}}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$, let $r_{j'}$ be the largest number $r \in [t]$ such that $j'\in\bigcap_{s\in[r]} I^{\circled{C_{i_{s}}}}_{pe}$, i.e., $x_{j'}$ remains persistent when traversing $C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_{r_{j'}}}^{\ell_{r_{j'}}}$.
+Then for each $j\in [l]$ and $j' \in I^{\circled{C_{i_1}}}_{pe}  \cap \rng(\pi^{\circled{q_m}})$, the coefficient of the $\initval(x_{j'})$-atom in $\sumf^{(\schm,\initval)}(y_j)$ is 
 \begin{center}
 \resizebox{0.8\hsize}{!}{
 $e+\sum\limits_{s_1\in[r_{j'}]}  
-\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,j'}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
+\left(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} \right) \csta^{\circled{C_{i_{s_1}}}}_{j,(\pi^{\circled{q_m}})^{-1}(j')}\prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$},
 \end{center}
-where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j,j'} \prod\limits_{{s'}\in[s+1,t]}\left(\lambda^{\circled{C_{i_{s'}}}}_{j}\right)^{\ell_{s'}}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
+where (1) $e\!=\!0$ when $r_{j'}\!=\!t$ and (2) $e=(\lambda^{\circled{C_{i_s}}}_{j})^{\ell_s-1} \csta^{\circled{C_{i_{s}}}}_{j, (\pi^{\circled{q_m}})^{-1}(j')} \prod\limits_{{s'}\in[s+1,t]}\left(\lambda^{\circled{C_{i_{s'}}}}_{j}\right)^{\ell_{s'}}$ with $s=r_{j'}+1$ when $r_{j'}<t$.\\
 The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is 
 \begin{center}
 \resizebox{0.7\hsize}{!}{$
@@ -43,10 +42,10 @@ The constant atom of $\sumf^{(\schm,\initval)}(y_j)$ is
 \cste^{\circled{C_{i_{s_1}}}}_{j} 
 \prod\limits_{{s_2}\in[{s_1}+1,t]}\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}$}
 \end{center}
-Moreover, for all $j\!\in\! [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \!\in\!I^{\circled{C_{i_{1}}}}_{pe}$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some~$\mu_\schm\in \intnum$.
+Moreover, for all $j\!\in\! [l]$, in $\sumf^{(\schm,\initval)}(y_j)$, only the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \!\in\! I^{\circled{C_{i_1}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$ contain a subexpression of the form $ \mu_\schm \ell_1$ for some~$\mu_\schm\in \intnum$.
 \end{lemma}
 Notice that above, $\lambda^{\circled{C_{i_{s_1}}}}_j\in\{0,1\}$ for $j\in[l]$ and $s_1\in [t]$. Hence the value of $(1+\lambda^{\circled{C_{i_{s_1}}}}_{j} + \dots + (\lambda^{\circled{C_{i_{s_1}}}}_{j})^{\ell_{s_1}-1} )$ can only be $1$ or $\ell_{s_1}$ and $\left(\lambda^{\circled{C_{i_{s_2}}}}_{j}\right)^{\ell_{s_2}}\in\{0,1\}$.
-Therefore, both the constant atom and the coefficient of the $\initval(x_{j'})$-atom with $j'\in I^{\circled{C_{i_{1}}}}_{pe}$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ might be zero.
+Therefore, both the constant atom and the coefficients of the $\initval(x_{j'})$-atoms with $j' \!\in\! I^{\circled{C_{i_1}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$ can be rewritten to the form of $c_0+c_1\ell_1+c_2\ell_2+\dots+c_t\ell_t$ for $c_0\ldots c_t\in \intnum$. Note that some of $c_0\ldots c_t$ might be zero.
 
 
 
@@ -83,12 +82,12 @@ The goal of Step II is to show that
 \item or  there exists a cycle scheme $\schm$ such that $\eval{O(q_{m})}{\sumf^{(\schm,\sumf^{(H,\sval_0)})}}$ is not identical to zero. 
 \end{itemize}
 %
-Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe}$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_{m})}{\sumf^{(\schm,\initval)}}$ is
+Let $\schm=C_{i_1}^{\ell_1} C_{i_2}^{\ell_2} \dots C_{i_t}^{\ell_t}$ be a cycle scheme. From Lemma~\ref{prop-cycle-schm}, for each $j'\in I^{\circled{C_{i_1}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$ and symbolic valuation $\sval$, the only subexpression containing $\ell_1$ in the coefficient of $\initval(x_{j'})$-atom of $\eval{O(q_{m})}{\sumf^{(\schm,\initval)}}$ is
 \begin{center}
 	\resizebox{0.7\hsize}{!}{$
 \sum \limits_{1 \le j \le l} 
 b'_j \left((\cstl^{\circled{C_{i_2}}}_{j})^{\ell_2} \dots (\cstl^{\circled{C_{i_t}}}_{j})^{\ell_t}\right) 
-\left(1+\cstl^{\circled{C_{i_1}}}_{j} + \dots + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j,j'}.
+\left(1+\cstl^{\circled{C_{i_1}}}_{j} + \dots + (\cstl^{\circled{C_{i_1}}}_{j})^{\ell_1-1} \right) \csta^{\circled{C_{i_1}}}_{j, (\pi^{\circled{q_m}})^{-1}(j')}.
 \hspace{4mm} (\ast)
 $}
 \end{center}
@@ -132,7 +131,7 @@ We are ready to present Step II.
 		\noindent {\bf Step II}. For each $i_1 \in [n]$, check all cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$ such that $i_2,\dots,i_t$ are mutually distinct. There are only finitely many this kind of cycle schemes. If 
 		one of the following constraints is satisfied, then return $\ltrue$. 
 		\begin{enumerate}
-		\item There is an equivalence class $J$ of $\sim_{q_m}$ such that $ J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$ and $\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$. 
+		\item There is  $ j' \in I^{\circled{C_{i_1}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$ such that $ \mu_{\schm,(i_1,j')} \neq 0$. 
 		\item $\mu_{\schm,(i_1,0)} \neq 0$.
 		\end{enumerate}
 		If the decision procedure has not returned yet, then go to Step III.
@@ -191,10 +190,10 @@ From Example~\ref{exmp-sum}, we know that if $\schm=C^{\ell_1}_2, C^{\ell_1}_2 C
 \medskip
 In the following, we present the arguments for the correctness of Step II. Suppose $\schm =C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$.
 \begin{itemize}
-\item If there exists an equivalence class $J$ of the equivalence relation $\sim_{q_m}$ such that $J \cap I^{\circled{C_{i_1}}}_{pe} \neq \emptyset$ and 
-$\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')} \neq 0$. 
-Then from $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$, we can assign a sufficiently large value $s$ to $\ell_1$ so that the sum of the coefficients of the $\initval(x_{j'})$-atoms for $j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}$ in $\eval{O(q_{m})}{\sumf^{(H\schm ,\sval_0)}}$, which is equal to the sum of the expression $\ell_1 \left(\sum \limits_{j' \in  J \cap I^{\circled{C_{i_1}}}_{pe}} \mu_{\schm,(i_1,j')}\right)$ and some constant,  becomes non-zero.  The guards and assignments in the path $H C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
-Pick one of the nontrivial non-constant atoms with a maximal subject w.r.t. the preorder. Since the subject is maximal, it can be assigned an arbitrarily large number so that the corresponding atom, or the sum of the $\initval(x_{j'})$-atoms for $j' \in J'$ (where $J'$ is an equivalence class of $\sim_{q_m}$), dominates $\eval{O(q_{m})}{\sumf^{(P\schm,\sval_0)}}$.  This is sufficient to make $\eval{O(q_{m})}{\sumf^{(H\schm,\sval_0)}}$ non-zero.
+\item If there exists $j' \in I^{\circled{C_{i_1}}}_{pe} \cap \rng(\pi^{\circled{q_m}})$ and 
+$\mu_{\schm,(i_1,j')} \neq 0$. 
+Then from the cycle scheme $\schm=C_{i_1}^{\ell_1} C_{i_2} \dots C_{i_t}$, we can assign a sufficiently large value $s$ to $\ell_1$ so that the coefficient of the $\initval(x_{j'})$-atom in $\eval{O(q_{m})}{\sumf^{(H\schm ,\sval_0)}}$, which is equal to the sum of  $\ell_1 \mu_{\schm,(i_1,j')}$ and some constant,  becomes non-zero.  The guards and assignments in the path $H C_{i_1}^{s} C_{i_2} \dots C_{i_t}$ enforce a preorder over the subjects of those nontrivial non-constant atoms.
+Pick one of the nontrivial non-constant atoms with a maximal subject w.r.t. the preorder. Since the subject is maximal, it can be assigned an arbitrarily large number so that the corresponding atom dominates $\eval{O(q_{m})}{\sumf^{(P\schm,\sval_0)}}$.  This is sufficient to make $\eval{O(q_{m})}{\sumf^{(H\schm,\sval_0)}}$ non-zero.
 %
 \item Otherwise, if $\eval{O(q_{m})}{\sumf^{(H\schm,\sval_0)}}$ contains some other nontrivial non-constant atoms, then we can apply a similar argument as above and conclude that $\eval{O(q_{m})}{\sumf^{(H\schm,\sval_0)}}$ can be made non-zero. 
 
@@ -234,11 +233,14 @@ From Proposition~\ref{prop-sum-cycle},  we can observe that for each cycle $C_i$
 %
 \medskip\\
 \resizebox{0.95\hsize}{!}{$
-\begin{array}{l }
-\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^-}(y_j)  =    \sumf^{(H,\sval_0)}(y_j) +   
-\sum \limits_{j' \in I^{\circled{C_i}}_{tr}} \csta^{\circled{C_i}}_{j,j'} \sumf^{(H,\sval_0)}(x_{j'})\ +   \\
-\sum \limits_{j' \in \rng(\pi^{\circled{C_i}}_{tr})} \sum \limits_{s\in[\ell -1]}
-\left(\cstb^{\circled{C_i}}_{j,j'} + \sum \limits_{j'' \in (\pi^{\circled{C_i}}_{tr})^{-1}(j')} \csta^{\circled{C_i}}_{j, j''}   \right) \vard^{\circled{C_i , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C_i}}]  \setminus \rng(\pi^{\circled{C_i}}_{tr}) }\sum \limits_{s\in[\ell -1]} 
+\begin{array}{l c l}
+\sumf^{(C^\ell_i, \sumf^{(H,\sval_0)})^-}(y_j)  &=&    \sumf^{(H,\sval_0)}(y_j) +   
+\sum \limits_{j' \in [s^{\circled{q_m}}] \setminus \rng(\pi^{\circled{C_i}}_{pe})} \csta^{\circled{C_i}}_{j,j'} \initval(x_{\pi^{\circled{q_m}}(j')})\ +   \\
+\medskip
+& & \sum \limits_{j' \in \rng(\pi^{\circled{C_i}}_{tr})} \sum \limits_{s\in[\ell -1]}
+\left(\cstb^{\circled{C_i}}_{j,j'} + \sum \limits_{j'' \in (\pi^{\circled{C_i}}_{tr})^{-1}(j') \cap \rng(\pi^{\circled{q_m}})} \csta^{\circled{C_i}}_{j, (\pi^{\circled{q_m}})^{-1}(j'')}  \right) \vard^{\circled{C_i , s}}_{j'}\ + \\
+\medskip
+& & \sum \limits_{j' \in [r^{\circled{C_i}}]  \setminus \rng(\pi^{\circled{C_i}}_{tr}) }\sum \limits_{s\in[\ell -1]} 
 \cstb^{\circled{C_i}}_{j,j'} \vard^{\circled{C_i , s}}_{j'} + \sum \limits_{j' \in [r^{\circled{C_i}}] }  
 \cstb^{\circled{C_i}}_{j, j'} \vard^{\circled{C_i , \ell}}_{j'}.
 \end{array}
@@ -304,15 +306,15 @@ Let $\absset=\bigcup \{\abs(H\schm) \mid \schm \mbox{ a cycle scheme}\}$. Then $
 \begin{itemize}
 \item If $j' \in I^{\circled{C_{i'}}}_{pe}$, then $(j', (c'_{j', 1}, \dots, c'_{j', l})) \in \Lambda'$,  where for each $j \in [l]$, 
 \begin{itemize}
-\item if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \sum \limits_{j'' \sim_{q_m} j'} \csta^{\circled{C_{i'}}}_{j, j''}$, 
+\item if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}=  \csta^{\circled{C_{i'}}}_{j, \pi^{\circled{C_{i'}}}_{pe}(j')}$, 
 %
-\item otherwise, $c'_{j', j} = c_{j',j} $ (in this case, the expressions $\csta^{\circled{C_{i'}}}_{j,j''}$ for $j'' \in  I^{\circled{C_{i'}}}_{pe}$ such that $j'' \sim_{q_m} j'$ are removed).
+\item otherwise, $c'_{j', j} = c_{j',j} $ (in this case, the expressions $\csta^{\circled{C_{i'}}}_{j, \pi^{\circled{C_{i'}}}_{pe}(j')}$ is removed).
 %+ \sum \limits_{j'' \sim_{q_m} j', j'' \in I^{\circled{C_{i'}}}_{tr}} \csta^{\circled{C_{i'}}}_{j, j''}
 \end{itemize}
 %
 \item If $j' \in I^{\circled{C_{i'}}}_{tr}$, then 
 $$(k+1, (c'_{j', 1}, \dots, c'_{j', l})), \left(j', \left(\cstb^{\circled{C_{i'}}}_{1, \pi^{\circled{C_{i'}}}_{tr}(j')}, \dots, \cstb^{\circled{C_{i'}}}_{l, \pi^{\circled{C_{i'}}}_{tr}(j')} \right) \right) \in \Lambda',$$ 
-where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \sum \limits_{j'' \sim_{q_m} j'} \csta^{\circled{C_{i'}}}_{j, j''} $, otherwise, $c'_{j', j} = c_{j',j} +  \sum \limits_{j'' \sim_{q_m} j'} \csta^{\circled{C_{i'}}}_{j, j''}$. In this case, after going through $C_{i'}$, the control variable $x_{j'}$ stores a fresh value and the initial value of $x_{j'}$ is not stored in any control variable, thus the $(j',\dots)$-tuple is updated and a $(k+1,\dots)$-tuple is added for the initial value of $x_{j'}$.
+where for each $j \in [l]$, if $\cstl^{\circled{C_{i'}}}_j = 0$, then $c'_{j', j}= \csta^{\circled{C_{i'}}}_{j, (\pi^{\circled{q_m}})^{-1}(j''_0)}$,  otherwise, $c'_{j', j} = c_{j',j} +   \csta^{\circled{C_{i'}}}_{j, (\pi^{\circled{q_m}})^{-1}(j''_0)}$, where $j''_0 = \min(\{j'' \in [k] \mid j'' \sim_{q_m} j' \})$. In this case, after going through $C_{i'}$, the control variable $x_{j'}$ stores a fresh value and the initial value of $x_{j'}$ is not stored in any control variable, thus the $(j',\dots)$-tuple is updated and a $(k+1,\dots)$-tuple is added for the initial value of $x_{j'}$.
 %
 \end{itemize}
 
