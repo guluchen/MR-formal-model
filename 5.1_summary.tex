@@ -109,8 +109,11 @@ the item $( \cstl^{\circled{P_2}}_{j} \cstb^{\circled{P_1}}_{j,j'}) \vard^{\circ
 In the following, by utilizing Proposition~\ref{prop-sum-path} and Corollary~\ref{cor-comp-two-paths}, for each path $C^{\ell}$ ($\ell \ge 1$) which is obtained by iterating a simple cycle $C = (q, g, \eta, q)$ for $\ell$ times, we illustrate how $\sumf^{(C^\ell,\initval)}$ is related to $\sumf^{(C, \initval)}$ and $\ell$. For convenience, we call $\ell$ a \emph{cycle counter variable}. It is easy to observe that both $I^{\circled{C}}_{pe}$ and $I^{\circled{C}}_{tr}$ are the union of the equivalence classes of $\sim_{q}$. From the ``Monotone'' constraint, we know that for each $x \in \dom(\eta)$, it holds that $\eta(x)=\cur$. Therefore, if $j \in I^{\circled{C}}_{pe}$, then $x_j$ still stores the initial value of $x_j$ after traversing $C$. 
 %
 This implies that for each $j' \in \rng(\pi^{\circled{C}}_{pe})$, let $\pi^{\circled{q}}(j')=j$, then $\pi^{\circled{C}}_{pe}(j)=j'$.  Therefore, for each $j' \in \rng(\pi^{\circled{C}}_{pe})$, the value of $x_{\pi^{\circled{q}}(j')}$ is unchanged after traversing $C$.
+
+%
+%
 \begin{proposition}\label{prop-sum-cycle}
-Suppose that $C$ is a simple cycle (i.e. a self-loop) and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows:  
+Suppose that $C$ is a simple cycle (i.e. a self-loop around a state $q$) and $P=C^{\ell}$ such that $\ell \ge 2$. Then the symbolic valuation $\sumf^{(C^\ell,\initval)}$ to summarize the computation of $\Ss$ on $P$ is as follows:  
 %\begin{itemize}
 %\item If $r^{\circled{C}}=1$, then
 
@@ -143,21 +146,6 @@ $
 where the variables $\vard^{\circled{C , s}}_{1}$ for $s\in [\ell]$
  represent the data values introduced when traversing $C$ for the $s$-th time. 
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-\item If $r^{\circled{C}}=0$ (no fresh data value introduced when traversing $C$), then
-\medskip\\
-\resizebox{0.8\hsize}{!}{
-$\begin{array}{l c l}
-\sumf^{(C^\ell,\initval)}(y_j)  & = & 
-\left(1 + \cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right)\cste^{\circled{C}}_{j} + (\cstl^{\circled{C}}_{j})^\ell \initval(y_j) + \smallskip\\
-%
-& & \sum \limits_{j' \in I^{\circled{C}}_{pe}} \left(1+\cstl^{\circled{C}}_{j} + \dots +(\cstl^{\circled{C}}_{j})^{\ell - 1} \right) \csta^{\circled{C}}_{j,j'}\initval(x_{j'}). \\
-%+  \sum \limits_{j' \in I^{\circled{C}}_{tr}}  (\cstl^{\circled{C}}_{j})^{\ell - 1} \csta^{\circled{C}}_{j,j'} \initval(x_{j'}). \\
-\end{array} 
-$}\medskip\\
-\end{itemize}
-}
 \end{proposition}
 
 From Proposition~\ref{prop-sum-cycle} and the fact that $\cstl^{\circled{C}}_{j} \in \{0, 1\}$, we have the following observation.

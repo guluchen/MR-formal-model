@@ -405,14 +405,14 @@ The computation of $\absset$ starts with the set $\absset_0 = \{\abs(HC_1), \abs
 %
 \item In addition, by a simple calculation, we know that $\abs(HC_1)$ contains another tuple $(2,(1, 2, 3))$ and $\abs(HC_2)$ contains another tuple $(2, (2, 4, 6))$.
 \end{itemize}
-To summarize, $\abs(HC_1)=(\{(1,1)\}, \{(0, (0,0,0)), (1, (1, 1, 0)), (2, (1, 2, 3))\})$ and $\abs(HC_2) = (\{(1,1)\}, \{(0, (0, 0, 0)), (1, (3, 2,1)), (2, (2, 4, 6))\})$. Then starting from $\absset_0$, we compute $\absset_1 = \absset_0 \cup \{\absset(HC_{i_1}C_{i_2}) \mid i_1, i_2 = 1, 2\}$, and so on. We illustrate how to compute $\abs(HC_1 C_2)$ from $\abs(HC_1)$. 
+To summarize, we have $\abs(HC_1)=\{(0, (0,0,0)), (1, (1, 1, 0)), (2, (1, 2, 3))\}$ and $\abs(HC_2) = \{(0, (0, 0, 0)), (1, (3, 2,1)), (2, (2, 4, 6))\}$. Then starting from $\absset_0$, we compute $\absset_1 = \absset_0\ \cup\ \{\absset(HC_{i_1}C_{i_2}) \mid i_1, i_2 = 1, 2\}$, and so on. We illustrate how to compute $\abs(HC_1 C_2)$ from $\abs(HC_1)$. 
 %Suppose $\abs(HC_1C_2) = (\{(1,1)\}, \Lambda')$. 
 \begin{itemize}
 \item Since $(0, (0,0,0))$ occurs in $\abs(HC_1)$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we know that $(0, (0,0,0)) \in \abs(HC_1C_2)$.
 
 \item From $1 \in I^{\circled{C_2}}_{tr}$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we have $(2, (1 + \csta^{\circled{C_2}}_{1, 1}, 1+\csta^{\circled{C_2}}_{2, 1}, 0 + \csta^{\circled{C_2}}_{3, 1})) = (2, (1+1, 1+3, 0 +5))= (2, (2, 4, 5)) \in \abs(HC_1C_2)$. In addition, we have $(1, (\cstb^{\circled{C_2}}_{1, 1}, \dots, \cstb^{\circled{C_2}}_{3, 1}))=(1, (3, 2, 1)) \in \abs(HC_1C_2)$.
 
-\item Since $(2, (2, 4, 6))$ occurs in $\abs(HC_1)$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we have $(2, (2, 4, 6)) \in \abs(HC_1C_2)$. Moreover, because $[r^{\circled{C_2}}] \setminus \rng(\pi^{\circled{C_2}})=\emptyset$, no other tuples are added into $\abs(HC_1C_2)$.
+\item Since $(2, (2, 4, 6))$ occurs in $\abs(HC_1)$ and $\cstl^{\circled{C_2}}_1 = \cstl^{\circled{C_2}}_2 = \cstl^{\circled{C_2}}_3 = 1$, we have $(2, (2, 4, 6)) \in \abs(HC_1C_2)$. Moreover, because $[r^{\circled{C_2}}] \setminus \rng(\pi^{\circled{C_2}}_{tr})=\emptyset$, no other tuples are added into $\abs(HC_1C_2)$.
 \end{itemize}
 In summary, 
 $$\abs(HC_1C_2)= \{(0,(0,0,0)), (1, (3,2,1)), (2, (2,4,5)), (2, (2, 4,6))\}.$$
